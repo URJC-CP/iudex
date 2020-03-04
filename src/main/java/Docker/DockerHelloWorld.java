@@ -46,7 +46,7 @@ public class DockerHelloWorld {
 
         //#Construir imagen
         //docker build -t pavlo/pavlo .;
-        File dckfl = new File("/home/pavlo/IdeaProjects/TheJudge/src/main/java/Docker/Dockerfile");
+        File dckfl = new File("DOCKERS/Dockerfile");
         String imageId = dockerClient.buildImageCmd().withDockerfile(dckfl)
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
@@ -62,7 +62,7 @@ public class DockerHelloWorld {
         //#Copiar codigo
         //docker cp codigo.java cont:/root;
         //withHostResouces eliges el fichero a copiar with RometePath, donde lo vas a copiar
-        dockerClient.copyArchiveToContainerCmd(container.getId()).withHostResource("/home/pavlo/IdeaProjects/TheJudge/DOCKERS/codigo.java").withRemotePath("/root").exec();
+        dockerClient.copyArchiveToContainerCmd(container.getId()).withHostResource("DOCKERS/codigo.java").withRemotePath("/root").exec();
 
 
         //#Copiar entrada
@@ -70,7 +70,7 @@ public class DockerHelloWorld {
        // try(InputStream uploadStream = Files.newInputStream(Path.of("salida.ans"))){
 
        // }
-        dockerClient.copyArchiveToContainerCmd(container.getId()).withHostResource("/home/pavlo/IdeaProjects/TheJudge/DOCKERS/entrada.in").withRemotePath("/root").exec();
+        dockerClient.copyArchiveToContainerCmd(container.getId()).withHostResource("DOCKERS/entrada.in").withRemotePath("/root").exec();
 
 
         //#Arrancar contenedor
@@ -79,7 +79,7 @@ public class DockerHelloWorld {
         dockerClient.startContainerCmd(container.getId()).exec();
         //necesario el retraso para que no se intente copiar sin que se haya ejecutado ya el codigo
         try {
-            TimeUnit.MILLISECONDS.sleep(1500);
+            TimeUnit.MILLISECONDS.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
