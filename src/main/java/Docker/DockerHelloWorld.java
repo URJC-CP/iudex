@@ -3,6 +3,7 @@ package Docker;
 import com.fasterxml.jackson.core.json.UTF8DataInputJsonParser;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.core.DockerClientBuilder;
@@ -78,11 +79,20 @@ public class DockerHelloWorld {
         //sleep 1;
         dockerClient.startContainerCmd(container.getId()).exec();
         //necesario el retraso para que no se intente copiar sin que se haya ejecutado ya el codigo
-        try {
-            TimeUnit.MILLISECONDS.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    TimeUnit.MILLISECONDS.sleep(1500);
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //}
+
+
+        //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
+        InspectContainerResponse inspectContainerResponse=null;
+        do {
+
+             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
+        }while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+
 
         //#Copiar salida Estandar
         //docker cp cont:/root/salidaEstandar.txt .;
@@ -125,6 +135,8 @@ public class DockerHelloWorld {
         //docker rm cont;
 
     }
+
+    //Funcion que convierte de inputstream a string
     public String convert(InputStream inputStream, Charset charset) throws IOException {
 
         try (Scanner scanner = new Scanner(inputStream, charset.name())) {

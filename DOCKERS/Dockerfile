@@ -7,7 +7,7 @@ RUN apk add --no-cache bash
 #RUN sleep 30
 
 #Compila y Ejecuta el proyecto
-ENTRYPOINT javac codigo.java > salidaCompilador.txt; java codigo <entrada.in >salidaEstandar.ans 2>salidaError.ans; sleep 999
+ENTRYPOINT javac codigo.java > salidaCompilador.txt; java codigo <entrada.in >salidaEstandar.ans 2>salidaError.ans;
 
 
 
