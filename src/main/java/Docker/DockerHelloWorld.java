@@ -32,22 +32,19 @@ import java.util.concurrent.TimeUnit;
 
 public class DockerHelloWorld {
 
+    private File entrada;
+    private File codigo;
+    private String salidaEstandar;
+    private String salidaError;
+    private String salidaCompilador;
+    private File dockerFile;
+
     private static DockerClient dockerClient;
+
     public DockerHelloWorld ()  {
 
         //Creamos la comunicacion con el docker
         dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
-        //List<Container> containers = dockerClient.listContainersCmd().exec();
-        //dockerClient.copyArchiveToContainerCmd(containers.get(0).getId()).withHostResource("/home/pavlo/IdeaProjects/TheJudge/DOCKERS/codigo.java").withRemotePath("/root").exec();
-
-        //Obtenemos la info del cliente para ver que funciona.
-        //Info info = dockerClient.infoCmd().exec();
-        //System.out.print(info);
-
-
-        //List<Container> containers = dockerClient.listContainersCmd().exec();        //crear contenedor
-        //CreateContainerResponse container= dockerClient.createContainerCmd("openjdk:alpine").withName("container2").withCmd("bash").exec();
-        //dockerClient.startContainerCmd(container.getId());
 
 
         //#Construir imagen
