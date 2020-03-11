@@ -9,32 +9,33 @@ public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 
-    private File entrada;
-    private File codigo;
+    private String entrada;
+    private String codigo;
     private String salidaEstandar;
     private String salidaError;
     private String salidaCompilador;
 
     public Answer() {
     }
-    public Answer(File entrada, File codigo) {
-        this.entrada=entrada;
-        this.codigo=codigo;
+
+    public Answer(String codigo, String entrada) {
+        this.entrada = entrada;
+        this.codigo = codigo;
     }
 
-    public File getEntrada() {
+    public String getEntrada() {
         return entrada;
     }
 
-    public void setEntrada(File entrada) {
+    public void setEntrada(String entrada) {
         this.entrada = entrada;
     }
 
-    public File getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(File codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
@@ -61,26 +62,4 @@ public class Answer {
     public void setSalidaCompilador(String salidaCompilador) {
         this.salidaCompilador = salidaCompilador;
     }
-
-    public String getLenguaje() {
-        return lenguaje;
-    }
-
-    public void setLenguaje(String lenguaje) {
-        this.lenguaje = lenguaje;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }
-
-    private String lenguaje;
-    private Team team;
-
-
-
 }

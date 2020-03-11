@@ -8,10 +8,12 @@ import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
+import com.github.dockerjava.core.util.CompressArchiveUtil;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 //para convertir de stdin a string
@@ -60,16 +62,44 @@ public class DockerHelloWorld {
         CreateContainerResponse container = dockerClient.createContainerCmd(imageId).exec();
         System.out.println(container.getId()+"");
 
-
+        String cont1 = "import java.util.Scanner;\n" +
+                "\n" +
+                "public class codigo {\n" +
+                "\n" +
+                "    public static void main(String[] args) {\n" +
+                "        // Prints \"Hello, World\" to the terminal window.\n" +
+                "        //System.out.println(\"HOLA, mundo\");\n" +
+                "\n" +
+                "        Scanner sc = new Scanner(System.in);\n" +
+                "\n" +
+                "        while(sc.hasNext()){\n" +
+                "            int n = sc.nextInt();\n" +
+                "            System.out.println(n*2);\n" +
+                "        }\n" +
+                "        throw new RuntimeException(\"ERROR PROVOCADO\");\n" +
+                "    }\n" +
+                "}";
 
         //#Copiar codigo
         //docker cp codigo.java cont:/root;
         //withHostResouces eliges el fichero a copiar with RometePath, donde lo vas a copiar
-        copiarArchivoAContenedor(container.getId(), "DOCKERS/codigo.java", "/root");
+        try {
+            copiarArchivoAContenedor(container.getId(),"codigo.java" ,cont1 , "/root");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        String cont2 = "1\n" +
+                "2\n" +
+                "3\n" +
+                "8";
         //#Copiar entrada
         //docker cp entrada.txt cont:/root;
-        copiarArchivoAContenedor(container.getId(), "DOCKERS/entrada.in", "/root");
+        try {
+            copiarArchivoAContenedor(container.getId(), "entrada.in", cont2, "/root");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //#Arrancar contenedor
         //docker start cont;
@@ -134,8 +164,14 @@ public class DockerHelloWorld {
 
     }
 
-    private static void copiarArchivoAContenedor (String contAux, String pathOrigen, String pathDestino ){
-        dockerClient.copyArchiveToContainerCmd(contAux).withHostResource(pathOrigen).withRemotePath(pathDestino).exec();
+    private static void copiarArchivoAContenedor (String contAux, String nombre, String contenido, String pathDestino ) throws IOException {
+
+        //CompressArchiveUtil.tar
+        //InputStream ioAux = new ByteArrayInputStream(sAux.getBytes(Charset.forName("UTF-8")));
+        //new TarArchiveInputStream(ioAux).;
+        dockerClient.copyArchiveToContainerCmd(contAux).withTarInputStream(convertStringtoInputStream(nombre, contenido)).withRemotePath(pathDestino).exec();
+
+        //dockerClient.copyArchiveToContainerCmd(contAux).withHostResource(pathOrigen).withRemotePath(pathDestino).exec();
 
     }
 
@@ -169,9 +205,28 @@ public class DockerHelloWorld {
             }
         }
 
-
-
         tarIn.close();
+        return salida;
+    }
+
+    //Para que el codigo acepte bien la copia, tenemos que crear un Input Stream utilizando tar cuya primera linea corresponda al nombre del arvchivo y el resto al contenido
+    //https://www.codota.com/code/java/methods/com.github.dockerjava.api.command.CopyArchiveToContainerCmd/withTarInputStream
+    private static InputStream convertStringtoInputStream(String nombre, String contenido) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        TarArchiveOutputStream tar = new TarArchiveOutputStream(bos);
+        TarArchiveEntry entry = new TarArchiveEntry(nombre);
+        entry.setSize(contenido.getBytes().length);
+        entry.setMode(0700);
+        tar.putArchiveEntry(entry);
+        tar.write(contenido.getBytes());
+
+        tar.closeArchiveEntry();
+        tar.close();
+
+
+        InputStream salida = new ByteArrayInputStream(bos.toByteArray());
+
+
         return salida;
     }
 
