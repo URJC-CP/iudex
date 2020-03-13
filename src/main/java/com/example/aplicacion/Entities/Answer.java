@@ -1,19 +1,31 @@
-package Entities;
+package com.example.aplicacion.Entities;
 import javax.persistence.*;
 
-
-import java.io.File;
-
 //En esta clase se mantendra una copia de la ejecucion de un ejercicio por un grupo. Sera la entrada, el codigo, la salidaEstandar, salida error y salida compilador
+@Entity
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     private String entrada;
     private String codigo;
     private String salidaEstandar;
     private String salidaError;
     private String salidaCompilador;
+
+    private String lenguaje;
+    //private Team team;
+
+    public String getLenguaje() {
+        return lenguaje;
+    }
+
+    public void setLenguaje(String lenguaje) {
+        this.lenguaje = lenguaje;
+    }
+
+
 
     public Answer() {
     }

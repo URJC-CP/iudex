@@ -1,4 +1,4 @@
-package Entities;
+package com.example.aplicacion.Entities;
 
 import java.util.List;
 
