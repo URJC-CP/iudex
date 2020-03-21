@@ -8,7 +8,9 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Lob
     private String entrada;
+    @Lob
     private String codigo;
     private String salidaEstandar;
     private String salidaError;
