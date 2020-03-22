@@ -1,7 +1,6 @@
 package com.example.aplicacion.Controllers;
 
 
-import com.example.aplicacion.AnswerHandler;
 import com.example.aplicacion.Entities.Answer;
 import com.example.aplicacion.Repository.AnswerRepository;
 import com.example.aplicacion.rabbitMQ.ConfigureRabbitMq;
@@ -21,7 +20,6 @@ import java.io.IOException;
 @Controller
 public class IndiceController {
 
-    private AnswerHandler ansHandler;
     private  final RabbitTemplate rabbitTemplate;
 
     @Autowired
@@ -34,17 +32,13 @@ public class IndiceController {
     @PostConstruct
     public void init() {
 
-        ansHandler = new AnswerHandler();
         //this.rabbitTemplate = new RabbitTemplate();
 
     }
     @GetMapping("/")
     public String index(Model model){
-        System.out.println("HEY");
-
         //Pruebas de rabbit
-        rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmessages", "ESTE ES UN MENSAJE DE PRUEBA COMO SI DE UN HOLA MUNDO SE TRATASE JIJI");
-        //return "We have sent a message! : ESTE ES UN MENSAJE DE PRUEBA COMO SI DE UN HOLA MUNDO SE TRATASE JIJI";
+        //rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmessages", "ESTE ES UN MENSAJE DE PRUEBA COMO SI DE UN HOLA MUNDO SE TRATASE JIJI");
 
         return "index";
     }
@@ -54,13 +48,16 @@ public class IndiceController {
 
         String cod = new String(codigo.getBytes());
         String ent = new String(entrada.getBytes());
+        String lenguaje = "java";
 
-        Answer ans = new Answer(cod, ent);    //Creamos la entrada
+        Answer ans = new Answer(cod, ent, lenguaje);    //Creamos la entrada
         answerRepository.save(ans);                     //La guardamos en la bbdd
 
-        ansHandler.ejecutorJava(ans);
+        //ansHandler.ejecutorJava(ans);
 
+        //Paso de mensaje a la cola
+        rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmesage", ans.getId());
 
-        return "salida";
+        return "scoreboard";
     }
 }

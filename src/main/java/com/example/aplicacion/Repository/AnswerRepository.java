@@ -10,6 +10,6 @@
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
 
-	List<Answer> findById(long id);
+	Answer findAnswerById(long id);
 
 }

@@ -15,6 +15,7 @@ public class ConfigureRabbitMq {
 
     public static final String EXCHANGE_NAME = "dockerExchange";
     public static final String QUEUE_NAME = "dockerCola";
+    public static final int DEFAULT_CONSUMERS=2;
 
 
     @Bean
@@ -39,10 +40,11 @@ public class ConfigureRabbitMq {
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(QUEUE_NAME);
         container.setMessageListener(messageListenerAdapter);
+        container.setMaxConcurrentConsumers(3);
         return container;
     }
     @Bean
-    MessageListenerAdapter listenerAdapter(ReceieverRabbit handler){
+    MessageListenerAdapter listenerAdapter(ListenerDockerExecRabbit handler){
         return new MessageListenerAdapter(handler, "handleMessage");
     }
 

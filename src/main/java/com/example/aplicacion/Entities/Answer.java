@@ -32,9 +32,23 @@ public class Answer {
     public Answer() {
     }
 
-    public Answer(String codigo, String entrada) {
+    public Answer(String codigo, String entrada, String lenguaje) {
         this.entrada = entrada;
         this.codigo = codigo;
+        this.lenguaje =lenguaje;
+    }
+
+    @Override
+    public String toString() {
+        return entrada + codigo + lenguaje;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getEntrada() {
