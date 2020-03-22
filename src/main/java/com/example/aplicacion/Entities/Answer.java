@@ -16,7 +16,12 @@ public class Answer {
     private String salidaError;
     private String salidaCompilador;
 
+
+    //private Exercises ejercicio;
     private String lenguaje;
+    private boolean correjido;
+    private String resultado;
+
     //private Team team;
 
     public String getLenguaje() {
@@ -89,5 +94,21 @@ public class Answer {
 
     public void setSalidaCompilador(String salidaCompilador) {
         this.salidaCompilador = salidaCompilador;
+    }
+
+    public boolean isCorrejido() {
+        return correjido;
+    }
+
+    public void setCorrejido(boolean correjido) {
+        this.correjido = correjido;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
 }

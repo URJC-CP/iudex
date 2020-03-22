@@ -15,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.List;
+
+import java.util.ArrayList;
 
 
 @Controller
@@ -31,19 +34,16 @@ public class IndiceController {
 
     @PostConstruct
     public void init() {
-
         //this.rabbitTemplate = new RabbitTemplate();
 
     }
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
-        //rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmessages", "ESTE ES UN MENSAJE DE PRUEBA COMO SI DE UN HOLA MUNDO SE TRATASE JIJI");
-
         return "index";
     }
 
-    @PostMapping("/subida")
+    @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam MultipartFile entrada) throws IOException {
 
         String cod = new String(codigo.getBytes());
@@ -57,6 +57,16 @@ public class IndiceController {
 
         //Paso de mensaje a la cola
         rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmesage", ans.getId());
+
+
+        return "answerSubida";
+    }
+    @GetMapping("/scoreboard")
+    public String subida (Model model){
+
+        //Cargamos la BBDD de answer en el scoreboard
+        List<Answer> listAns = answerRepository.findAll();
+        model.addAttribute("answers", listAns);
 
         return "scoreboard";
     }
