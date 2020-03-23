@@ -2,7 +2,9 @@ package com.example.aplicacion.Controllers;
 
 
 import com.example.aplicacion.Entities.Answer;
+import com.example.aplicacion.Entities.Exercise;
 import com.example.aplicacion.Repository.AnswerRepository;
+import com.example.aplicacion.Repository.ExerciseRepository;
 import com.example.aplicacion.rabbitMQ.ConfigureRabbitMq;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,10 @@ public class IndiceController {
 
     @Autowired
     private AnswerRepository answerRepository;
+    @Autowired
+    public ExerciseRepository exerciseRepository;
 
+    //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -40,23 +45,31 @@ public class IndiceController {
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
+        List<Exercise> listaEjercicios = exerciseRepository.findAll();
+        model.addAttribute("exercices", listaEjercicios);
+
+
         return "index";
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam MultipartFile entrada) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam MultipartFile entrada, @RequestParam String exerciseAsig) throws IOException {
 
         String cod = new String(codigo.getBytes());
         String ent = new String(entrada.getBytes());
         String lenguaje = "java";
 
         Answer ans = new Answer(cod, ent, lenguaje);    //Creamos la entrada
+        ans.setEjercicio(exerciseRepository.findExerciseByNombreEjercicio(exerciseAsig));
         answerRepository.save(ans);                     //La guardamos en la bbdd
 
         //ansHandler.ejecutorJava(ans);
 
         //Paso de mensaje a la cola
         rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmesage", ans.getId());
+
+
+        //Cargamos todos los ejercicios disponibles
 
 
         return "answerSubida";
@@ -67,6 +80,7 @@ public class IndiceController {
         //Cargamos la BBDD de answer en el scoreboard
         List<Answer> listAns = answerRepository.findAll();
         model.addAttribute("answers", listAns);
+
 
         return "scoreboard";
     }

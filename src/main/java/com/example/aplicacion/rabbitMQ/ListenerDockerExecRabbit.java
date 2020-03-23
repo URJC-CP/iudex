@@ -39,18 +39,13 @@ public class ListenerDockerExecRabbit {
         //recibe el id del answer
         System.out.println(mensaje.toString() );
         Answer ans = answerRepository.findAnswerById(mensaje);
-        Exercise ejer = new Exercise();
-        ejer.setSalidaCorrecta("\t2\n" +
-                "4\n" +
-                "6\n" +
-                "16");
 
         if(ans==null){
             throw new RuntimeException("EL ID:" +mensaje+ " DEL ANSWER NO ESTA EN LA BBDD");
         }
         else{
             ansHandler.ejecutorJava(ans);
-            ansReviser.revisar(ans, ejer);
+            ansReviser.revisar(ans);
 
             //guardamos los resultados
             answerRepository.save(ans);

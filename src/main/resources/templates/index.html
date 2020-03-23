@@ -18,6 +18,14 @@
                 <input type="file" id="entrada" name="entrada"  required>
             </div>
 
+            <div class="row">
+                <select class="form-control" name="exerciseAsig">
+                    {{#exercices}}
+                    <option>{{nombreEjercicio}}</option>
+                    {{/exercices}}
+                </select>
+            </div>
+
             <div class="siguiente">
                 <button type="submit" class="btn btn-success">Guardar</button>
             </div>

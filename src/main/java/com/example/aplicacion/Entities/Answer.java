@@ -16,10 +16,10 @@ public class Answer {
     private String salidaError;
     private String salidaCompilador;
 
-
-    //private Exercises ejercicio;
+    @ManyToOne
+    private Exercise ejercicio;
     private String lenguaje;
-    private boolean correjido;
+    private boolean corregido;
     private String resultado;
 
     //private Team team;
@@ -41,6 +41,8 @@ public class Answer {
         this.entrada = entrada;
         this.codigo = codigo;
         this.lenguaje =lenguaje;
+        this.corregido=false;
+        this.resultado ="";
     }
 
     @Override
@@ -96,12 +98,12 @@ public class Answer {
         this.salidaCompilador = salidaCompilador;
     }
 
-    public boolean isCorrejido() {
-        return correjido;
+    public boolean isCorregido() {
+        return corregido;
     }
 
-    public void setCorrejido(boolean correjido) {
-        this.correjido = correjido;
+    public void setCorregido(boolean correjido) {
+        this.corregido = correjido;
     }
 
     public String getResultado() {
@@ -110,5 +112,13 @@ public class Answer {
 
     public void setResultado(String resultado) {
         this.resultado = resultado;
+    }
+
+    public Exercise getEjercicio() {
+        return ejercicio;
+    }
+
+    public void setEjercicio(Exercise ejercicio) {
+        this.ejercicio = ejercicio;
     }
 }

@@ -10,7 +10,8 @@ import java.util.Objects;
 @Service
 public class AnswerReviser {
 
-    public void revisar(Answer respuesta, Exercise ejercicio){
+    public void revisar(Answer respuesta){
+
         //Si existe errores en la salida del compliador
         if(!Objects.equals(respuesta.getSalidaCompilador(), "")){   //Comprobar salida compilador
             respuesta.setResultado("FAILED IN COMPILER"+"\n"+respuesta.getSalidaCompilador());
@@ -18,9 +19,9 @@ public class AnswerReviser {
         }else if(!Objects.equals(respuesta.getSalidaError(), "")){  //Comprobar salida Error
             respuesta.setResultado("FAILED IN EXECUTION"+"\n"+respuesta.getSalidaError());
         }else {                                                         //Comprobar salida Estandar
-            if(Objects.equals(respuesta.getSalidaEstandar(), ejercicio.getSalidaCorrecta() )){
+            if(Objects.equals(respuesta.getSalidaEstandar(), respuesta.getEjercicio().getSalidaCorrecta() )){
                 respuesta.setResultado("GOOD ANSWER");
-            }else if(compareIgnoreExpressions(respuesta.getSalidaEstandar(), ejercicio.getSalidaCorrecta())){
+            }else if(compareIgnoreExpressions(respuesta.getSalidaEstandar(), respuesta.getEjercicio().getSalidaCorrecta())){
                 respuesta.setResultado("GOOD ANSWER despues de revisar");
 
             }
@@ -31,7 +32,7 @@ public class AnswerReviser {
         }
 
 
-        respuesta.setCorrejido(true);
+        respuesta.setCorregido(true);
 
     }
 
