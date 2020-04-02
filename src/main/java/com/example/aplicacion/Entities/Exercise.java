@@ -12,6 +12,8 @@ public class Exercise {
     private String nombreEjercicio;
 
     @Lob
+    private String  entrada;
+    @Lob
     private String  salidaCorrecta;
     @Lob
     private String codigoCorrecto;
@@ -50,5 +52,13 @@ public class Exercise {
 
     public void setCodigoCorrecto(String codigoCorrecto) {
         this.codigoCorrecto = codigoCorrecto;
+    }
+
+    public String getEntrada() {
+        return entrada;
+    }
+
+    public void setEntrada(String entrada) {
+        this.entrada = entrada;
     }
 }
