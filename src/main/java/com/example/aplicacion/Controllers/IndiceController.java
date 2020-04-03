@@ -1,11 +1,13 @@
 package com.example.aplicacion.Controllers;
 
 
-import com.example.aplicacion.Entities.Answer;
-import com.example.aplicacion.Entities.Exercise;
-import com.example.aplicacion.Repository.AnswerRepository;
-import com.example.aplicacion.Repository.ExerciseRepository;
-import com.example.aplicacion.rabbitMQ.ConfigureRabbitMq;
+import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.Entities.Submission;
+import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.ResultRepository;
+import com.example.aplicacion.Repository.SubmissionRepository;
+import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,20 +19,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.List;
-
 import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
 public class IndiceController {
 
     private  final RabbitTemplate rabbitTemplate;
+    RabbitResultExecutionSender sender;
 
     @Autowired
-    private AnswerRepository answerRepository;
+    private SubmissionRepository submissionRepository;
     @Autowired
-    public ExerciseRepository exerciseRepository;
+    public ProblemRepository problemRepository;
+    @Autowired
+    private ResultRepository resultRepository;
 
     //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
@@ -40,12 +44,12 @@ public class IndiceController {
     @PostConstruct
     public void init() {
         //this.rabbitTemplate = new RabbitTemplate();
-
+    this.sender = new RabbitResultExecutionSender(rabbitTemplate);
     }
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
-        List<Exercise> listaEjercicios = exerciseRepository.findAll();
+        List<Problem> listaEjercicios = problemRepository.findAll();
         model.addAttribute("exercices", listaEjercicios);
 
 
@@ -53,32 +57,49 @@ public class IndiceController {
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam MultipartFile entrada, @RequestParam String exerciseAsig) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado) throws IOException {
 
         String cod = new String(codigo.getBytes());
-        String ent = new String(entrada.getBytes());
+        //String ent = new String(entrada.getBytes());
         String lenguaje = "java";
 
-        Answer ans = new Answer(cod, ent, lenguaje);    //Creamos la entrada
-        ans.setEjercicio(exerciseRepository.findExerciseByNombreEjercicio(exerciseAsig));
-        answerRepository.save(ans);                     //La guardamos en la bbdd
+        //Obtedemos el Problema del que se trata
+        Problem problema = problemRepository.findProblemByNombreEjercicio(problemaAsignado);
 
-        //ansHandler.ejecutorJava(ans);
+        //Creamos la Submission
+        Submission submission = new Submission(cod, lenguaje);
 
-        //Paso de mensaje a la cola
-        rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "docker.springmesage", ans.getId());
+        //anadimos el probelma a la submsion
+        submission.setProblema(problema);
+
+        //Creamos los result que tienen que ir con la submission y anadimos a submision
+        List<String> entradasProblema = problema.getEntrada();
+        List<String> salidaCorrectaProblema = problema.getSalidaCorrecta();
+        int numeroEntradas = entradasProblema.size();
+        for(int i =0; i<numeroEntradas; i++){
+            Result resAux = new Result(entradasProblema.get(i), cod, salidaCorrectaProblema.get(i));
+            resultRepository.save(resAux);
+            submission.addResult(resAux);
+        }
+
+        //Guardamos la submission
+        submissionRepository.save(submission);
 
 
-        //Cargamos todos los ejercicios disponibles
 
 
-        return "answerSubida";
+        //Envio de mensaje a la cola
+        for (Result res : submission.getResults()  ) {
+            sender.sendMessage(res);
+        }
+
+        return "subidaSubmission";
     }
     @GetMapping("/scoreboard")
     public String subida (Model model){
 
         //Cargamos la BBDD de answer en el scoreboard
-        List<Answer> listAns = answerRepository.findAll();
+        List<Submission> listAns = submissionRepository.findAll();
         model.addAttribute("answers", listAns);
 
 

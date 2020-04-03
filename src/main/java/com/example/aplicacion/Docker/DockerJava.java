@@ -1,6 +1,6 @@
 package com.example.aplicacion.Docker;
 
-import com.example.aplicacion.Entities.Answer;
+import com.example.aplicacion.Entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -14,26 +14,26 @@ import java.io.*;
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerJava {
 
-    private Answer answer;
+    private Result result;
     private static DockerClient dockerClient;
 
-    public  DockerJava(Answer answer, DockerClient dockerClient){
-        this.answer = answer;
+    public  DockerJava(Result result, DockerClient dockerClient){
+        this.result = result;
         this.dockerClient = dockerClient;
 
     }
 
-    public Answer ejecutar(String imagenId) throws IOException {
+    public Result ejecutar(String imagenId) throws IOException {
         //Creamos el contendor
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).exec();
 
         //Copiamos el codigo
 
-        copiarArchivoAContenedor(container.getId(), "codigo.java", answer.getCodigo(),  "/root");
+        copiarArchivoAContenedor(container.getId(), "codigo.java", result.getCodigo(),  "/root");
 
         //Copiamos la entrada
 
-        copiarArchivoAContenedor(container.getId(), "entrada.in", answer.getEntrada(), "/root");
+        copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
 
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
@@ -50,7 +50,7 @@ public class DockerJava {
         salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
 
         System.out.println(salidaEstandar);
-        answer.setSalidaEstandar(salidaEstandar);
+        result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
         String salidaError=null;
@@ -58,7 +58,7 @@ public class DockerJava {
         salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
 
         System.out.println(salidaError);
-        answer.setSalidaError(salidaError);
+        result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
         String salidaCompilador=null;
@@ -66,10 +66,10 @@ public class DockerJava {
         salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
 
         System.out.println(salidaCompilador);
-        answer.setSalidaCompilador(salidaCompilador);
+        result.setSalidaCompilador(salidaCompilador);
 
 
-        return answer;
+        return result;
     }
 
     private static void copiarArchivoAContenedor (String contAux, String nombre, String contenido, String pathDestino ) throws IOException {

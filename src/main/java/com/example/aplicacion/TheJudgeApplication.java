@@ -1,6 +1,6 @@
 package com.example.aplicacion;
 
-import com.example.aplicacion.services.AnswerHandler;
+import com.example.aplicacion.services.ResultHandler;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,7 +11,7 @@ public class TheJudgeApplication {
 
         SpringApplication.run(TheJudgeApplication.class, args);
         //new DockerHelloWorld();
-        new AnswerHandler();
+        new ResultHandler();
     }
 
 }

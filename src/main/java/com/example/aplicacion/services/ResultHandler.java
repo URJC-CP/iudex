@@ -1,7 +1,8 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Docker.DockerJava;
-import com.example.aplicacion.Entities.Answer;
+import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.Entities.Submission;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
@@ -12,11 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
-public class AnswerHandler {
+public class ResultHandler {
 
     private DockerClient dockerClient;
     private Map<String, String> imagenes;
-    public AnswerHandler(){
+    public ResultHandler(){
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
         dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
@@ -30,10 +31,10 @@ public class AnswerHandler {
 
     }
 
-    public void ejecutorJava(Answer ans){
+    public void ejecutorJava(Result res){
 
         try {
-            new DockerJava(ans, dockerClient).ejecutar(imagenes.get("java"));
+            new DockerJava(res, dockerClient).ejecutar(imagenes.get("java"));
         } catch (IOException e) {
             e.printStackTrace();
         }
