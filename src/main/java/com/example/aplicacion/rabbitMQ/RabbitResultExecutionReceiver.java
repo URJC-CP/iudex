@@ -8,10 +8,12 @@ import com.example.aplicacion.Repository.SubmissionRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
 //Clase que se encarga de recibir un result y mandarlo al servicio docker.
@@ -39,6 +41,11 @@ public class RabbitResultExecutionReceiver {
     //LIstener que recibe el objeto resultado desde la cola
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME)
     public void handleMessage2(Result res){
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         ansHandler.ejecutorJava(res);
         resultRepository.save(res);
 
