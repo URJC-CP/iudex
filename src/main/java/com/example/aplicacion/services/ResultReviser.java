@@ -22,7 +22,7 @@ public class ResultReviser {
         }else {
              //Comprobar salida Estandar
             if(compareIgnoreExpressions(res.getSalidaEstandar(), res.getSalidaEstandarCorrecta())){
-                res.setResultadoRevision("GOOD ANSWER despues de revisar");
+                res.setResultadoRevision("GOOD ANSWER");
 
             }
             else{

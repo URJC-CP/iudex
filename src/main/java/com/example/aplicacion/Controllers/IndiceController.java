@@ -99,8 +99,8 @@ public class IndiceController {
     public String subida (Model model){
 
         //Cargamos la BBDD de answer en el scoreboard
-        List<Submission> listAns = submissionRepository.findAll();
-        model.addAttribute("answers", listAns);
+        List<Submission> listSubmiss = submissionRepository.findAll();
+        model.addAttribute("submissions", listSubmiss);
 
 
         return "scoreboard";

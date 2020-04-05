@@ -39,6 +39,7 @@ public class Result {
         this.salidaError="";
         this.salidaCompilador="";
         this.salidaEstandarCorrecta = salidaEstandarCorrecta;
+        this.resultadoRevision="";
 
     }
 

@@ -7,13 +7,13 @@
 <body>
 
     <h4> Mostrando BBDD de ANSWERS</h4>
-    {{#answers}}
+    {{#submissions}}
     <div class="row">
-        <p class="col-md-2">ID:{{id}} Corregido:{{corregido}}  Resultado: {{resultado}} </p>
+        <p class="col-md-2">ID:{{id}} {{#results}}  RESULT:  ID:{{id}}   Revisado:{{revisado}}  Resultado: {{resultadoRevision}}  {{/results}} </p>
         <p class="col-md-6"></p>
     </div>
    
-    {{/answers}}
+    {{/submissions}}
 
 
 </body>

@@ -41,11 +41,7 @@ public class RabbitResultExecutionReceiver {
     //LIstener que recibe el objeto resultado desde la cola
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME)
     public void handleMessage2(Result res){
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         ansHandler.ejecutorJava(res);
         resultRepository.save(res);
 
@@ -54,7 +50,7 @@ public class RabbitResultExecutionReceiver {
     }
 
 
-
+/*
     //No esta funcionando ahora mismo
     public void handleMessage(Result res){
         //Si hay procesadores disponibles
@@ -63,7 +59,7 @@ public class RabbitResultExecutionReceiver {
         //recibe el id del answer
         //System.out.println(res.toString() );
         //Submission ans = submissionRepository.findAnswerById(mensaje);
-/*
+
         if(res==null){
             throw new RuntimeException("EL ID:" +res.getId()+ " DEL ANSWER NO ESTA EN LA BBDD");
         }
@@ -76,7 +72,8 @@ public class RabbitResultExecutionReceiver {
 
         }
 
- */
+
     }
 
+    */
 }
