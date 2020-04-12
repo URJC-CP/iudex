@@ -72,6 +72,13 @@ public class DockerJava {
         result.setSalidaTime(time);
 
 
+        String timeout=null;
+        timeout = copiarArchivoDeContenedor(container.getId(), "root/timeout.txt");
+        System.out.println(timeout);
+        result.setTimeout(timeout);
+
+
+
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         return result;

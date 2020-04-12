@@ -22,7 +22,7 @@ public class ConfigureRabbitMq {
     public static final String EXCHANGE_NAME = "dockerExchange";
     public static final String QUEUE_NAME = "colaExecution";
     public static final String QUEUE_NAME2 = "colaReceiver";
-    public static final int DEFAULT_CONSUMERS=4;
+    public static final int DEFAULT_CONSUMERS=2;
 
     private ConnectionFactory connectionFactory;
 

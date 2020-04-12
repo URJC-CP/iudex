@@ -27,7 +27,7 @@ public class Result {
     private int numeroEntrada;
 
     private String salidaTime;
-
+    private String timeout;
     private float execTime;
     private float execMemory;
 
@@ -156,5 +156,13 @@ public class Result {
 
     public void setExecMemory(float execMemory) {
         this.execMemory = execMemory;
+    }
+
+    public String getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(String timeout) {
+        this.timeout = timeout;
     }
 }

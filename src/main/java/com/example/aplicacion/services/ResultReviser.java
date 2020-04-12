@@ -13,28 +13,36 @@ import java.util.Objects;
 public class ResultReviser {
 
     public void revisar(Result res){
+        //En caso de que haya dado timeout, se pone como wrong answer y no se compara nada
+        if(compareIgnoreExpressions(res.getTimeout(), "TIMEOUT")){
+            res.setResultadoRevision("FAILED TIMEOUT");
+        }
+        else{
 
-        //Si existe errores en la salida del compliador
-        if(!Objects.equals(res.getSalidaCompilador(), "")){   //Comprobar salida compilador
-            res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
+            //Si existe errores en la salida del compliador
+            if(!Objects.equals(res.getSalidaCompilador(), "")){   //Comprobar salida compilador
+                res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
 
-        }else if(!Objects.equals(res.getSalidaError(), "")){  //Comprobar salida Error
-            res.setResultadoRevision("FAILED IN EXECUTION"+"\n"+res.getSalidaError());
-        }else {
-             //Comprobar salida Estandar
-            if(compareIgnoreExpressions(res.getSalidaEstandar(), res.getSalidaEstandarCorrecta())){
-                res.setResultadoRevision("GOOD ANSWER");
+            }else if(!Objects.equals(res.getSalidaError(), "")){  //Comprobar salida Error
+                res.setResultadoRevision("FAILED IN EXECUTION"+"\n"+res.getSalidaError());
+            }else {
+                //Comprobar salida Estandar
+                if(compareIgnoreExpressions(res.getSalidaEstandar(), res.getSalidaEstandarCorrecta())){
+                    res.setResultadoRevision("GOOD ANSWER");
+
+                }
+                else{
+                    res.setResultadoRevision("WRONG ANSWER");
+                }
 
             }
-            else{
-                res.setResultadoRevision("WRONG ANSWER");
-            }
 
+            String[] time =getTime(res.getSalidaTime());
+            res.setExecTime(Float.parseFloat(time[0]));
+            res.setExecMemory(Float.parseFloat(time[1]));
         }
 
-        String[] time =getTime(res.getSalidaTime());
-        res.setExecTime(Float.parseFloat(time[0]));
-        res.setExecMemory(Float.parseFloat(time[1]));
+
 
         res.setRevisado(true);
 
