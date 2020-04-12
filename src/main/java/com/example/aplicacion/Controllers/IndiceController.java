@@ -1,13 +1,16 @@
 package com.example.aplicacion.Controllers;
 
 
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.ResultRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.services.SubmissionProceser;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,72 +30,45 @@ import java.util.List;
 public class IndiceController {
 
     private  final RabbitTemplate rabbitTemplate;
-    RabbitResultExecutionSender sender;
 
     @Autowired
     private SubmissionRepository submissionRepository;
     @Autowired
-    public ProblemRepository problemRepository;
+    private ProblemRepository problemRepository;
     @Autowired
     private ResultRepository resultRepository;
+    @Autowired
+    private SubmissionProceser submissionProceser;
+    @Autowired
+    private LanguageRepository languageRepository;
 
     //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @PostConstruct
-    public void init() {
-        //this.rabbitTemplate = new RabbitTemplate();
-    this.sender = new RabbitResultExecutionSender(rabbitTemplate);
-    }
+
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
         List<Problem> listaEjercicios = problemRepository.findAll();
         model.addAttribute("exercices", listaEjercicios);
-
+        model.addAttribute("languages", languageRepository.findAll());
 
         return "index";
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje ) throws IOException {
 
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
-        String lenguaje = "java";
-
-        //Obtedemos el Problema del que se trata
-        Problem problema = problemRepository.findProblemByNombreEjercicio(problemaAsignado);
-
-        //Creamos la Submission
-        Submission submission = new Submission(cod, lenguaje);
-
-        //anadimos el probelma a la submsion
-        submission.setProblema(problema);
-
-        //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<String> entradasProblema = problema.getEntrada();
-        List<String> salidaCorrectaProblema = problema.getSalidaCorrecta();
-        int numeroEntradas = entradasProblema.size();
-        for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), cod, salidaCorrectaProblema.get(i));
-            resultRepository.save(resAux);
-            submission.addResult(resAux);
-        }
-
-        //Guardamos la submission
-        submissionRepository.save(submission);
+        //Crea la submission
+        String salida =submissionProceser.crearPeticion(cod, problemaAsignado, lenguaje);
 
 
 
-
-        //Envio de mensaje a la cola
-        for (Result res : submission.getResults()  ) {
-            sender.sendMessage(res);
-        }
-
+        model.addAttribute("comentario" , salida);
         return "subidaSubmission";
     }
     @GetMapping("/scoreboard")

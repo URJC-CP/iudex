@@ -3,6 +3,7 @@ package com.example.aplicacion.rabbitMQ;
 
 import com.example.aplicacion.Entities.Result;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -10,12 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitResultReviserSender {
 
-    private final RabbitTemplate rabbitTemplate;
+    @Autowired
+    private   RabbitTemplate rabbitTemplate;
 
-
-    public RabbitResultReviserSender(final RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     public void sendMenssage (Result res){
         final var message = res;

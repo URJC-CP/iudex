@@ -26,6 +26,11 @@ public class Result {
     private String  salidaEstandarCorrecta;
     private int numeroEntrada;
 
+    private String salidaTime;
+
+    private float execTime;
+    private float execMemory;
+
     private boolean revisado;
     private String resultadoRevision;
 
@@ -127,5 +132,29 @@ public class Result {
 
     public void setSalidaEstandarCorrecta(String salidaEstandarCorrecta) {
         this.salidaEstandarCorrecta = salidaEstandarCorrecta;
+    }
+
+    public String getSalidaTime() {
+        return salidaTime;
+    }
+
+    public void setSalidaTime(String salidaTime) {
+        this.salidaTime = salidaTime;
+    }
+
+    public float getExecTime() {
+        return execTime;
+    }
+
+    public void setExecTime(float execTime) {
+        this.execTime = execTime;
+    }
+
+    public float getExecMemory() {
+        return execMemory;
+    }
+
+    public void setExecMemory(float execMemory) {
+        this.execMemory = execMemory;
     }
 }

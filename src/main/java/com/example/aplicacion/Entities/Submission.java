@@ -19,28 +19,21 @@ public class Submission {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Result> results;
 
-    private String lenguaje;
     private boolean corregido;
     private String resultado;
 
+    @ManyToOne
+    private Language language;
+
     //private Team team;
-
-    public String getLenguaje() {
-        return lenguaje;
-    }
-
-    public void setLenguaje(String lenguaje) {
-        this.lenguaje = lenguaje;
-    }
-
 
 
     public Submission() {
     }
 
-    public Submission(String codigo, String lenguaje) {
+    public Submission(String codigo, Language lenguaje) {
         this.codigo = codigo;
-        this.lenguaje =lenguaje;
+        this.language =lenguaje;
         this.corregido=false;
         this.resultado ="";
         this.results = new ArrayList<>();
@@ -48,7 +41,7 @@ public class Submission {
 
     @Override
     public String toString() {
-        return  codigo + lenguaje;
+        return  codigo + language.getNombreLenguaje();
     }
 
     public long getId() {
@@ -103,5 +96,13 @@ public class Submission {
 
     public void addResult(Result res){
         this.results.add(res);
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

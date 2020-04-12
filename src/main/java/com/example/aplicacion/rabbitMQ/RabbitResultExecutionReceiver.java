@@ -5,6 +5,7 @@ import com.example.aplicacion.Repository.ResultRepository;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.Repository.SubmissionRepository;
 //import com.example.aplicacion.services.AnswerReviser;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,34 +20,31 @@ import static java.lang.Thread.sleep;
 //Clase que se encarga de recibir un result y mandarlo al servicio docker.
 @Service
 public class RabbitResultExecutionReceiver {
-    private ResultHandler ansHandler;
-    private final RabbitTemplate rabbitTemplate;
+    @Autowired
+    private ResultHandler resultHandler;
+    @Autowired
+    private  RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private RabbitResultReviserSender rabbitResultReviserSender;
 
 
-    public RabbitResultExecutionReceiver(RabbitTemplate rabbitTemplate){
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     @Autowired
     private ResultRepository resultRepository;
 
-    @PostConstruct
-    public void init() {
 
-        ansHandler = new ResultHandler();
-        //ansReviser = new AnswerReviser();
-
-    }
 
     //LIstener que recibe el objeto resultado desde la cola
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME)
     public void handleMessage2(Result res){
 
-        ansHandler.ejecutorJava(res);
+        //Primero ejecutamos el codigo y guardamos
+        resultHandler.ejecutorJava(res);
         resultRepository.save(res);
 
         //Enviamos el res a la cola de reviser
-        new RabbitResultReviserSender(rabbitTemplate).sendMenssage(res);
+        rabbitResultReviserSender.sendMenssage(res);
     }
 
 

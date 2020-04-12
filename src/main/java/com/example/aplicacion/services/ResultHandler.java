@@ -6,6 +6,9 @@ import com.example.aplicacion.Entities.Submission;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
+@Service
 public class ResultHandler {
+
+    Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+
 
     private DockerClient dockerClient;
     private Map<String, String> imagenes;
@@ -28,6 +35,8 @@ public class ResultHandler {
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
         this.imagenes.put("java", imageId);
+        System.out.println("\nhemos creado la imagen \n " + imageId);
+        //logger.info("hemos creado la imagen " + imageId);
 
     }
 
@@ -38,7 +47,7 @@ public class ResultHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("FINAL");
+        System.out.println("Conenedor terminado");
 
     }
 

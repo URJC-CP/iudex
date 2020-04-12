@@ -6,6 +6,7 @@ import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Entities.Submission;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -30,6 +31,11 @@ public class ResultReviser {
             }
 
         }
+
+        String[] time =getTime(res.getSalidaTime());
+        res.setExecTime(Float.parseFloat(time[0]));
+        res.setExecMemory(Float.parseFloat(time[1]));
+
         res.setRevisado(true);
 
     }
@@ -50,5 +56,10 @@ public class ResultReviser {
         aux= aux.endsWith(" ") ? aux.substring(0, aux.length()-1) : aux;
         return aux;
     }
+    private String[] getTime(String aux){
+        String[] salida = aux.split(" ");
+        return salida;
+    }
+
 
 }

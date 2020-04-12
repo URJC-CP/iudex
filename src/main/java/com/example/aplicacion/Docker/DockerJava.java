@@ -25,7 +25,8 @@ public class DockerJava {
 
     public Result ejecutar(String imagenId) throws IOException {
         //Creamos el contendor
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).exec();
+
 
         //Copiamos el codigo
 
@@ -37,7 +38,6 @@ public class DockerJava {
 
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
-
         //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
         InspectContainerResponse inspectContainerResponse=null;
         do {
@@ -49,7 +49,7 @@ public class DockerJava {
         String salidaEstandar=null;
         salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
 
-        System.out.println(salidaEstandar);
+        //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
@@ -57,17 +57,22 @@ public class DockerJava {
 
         salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
 
-        System.out.println(salidaError);
+        //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
         String salidaCompilador=null;
-
         salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
-
-        System.out.println(salidaCompilador);
+        //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
+        String time= null;
+        time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+        System.out.println(time);
+        result.setSalidaTime(time);
+
+
+        dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         return result;
     }
