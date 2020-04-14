@@ -54,7 +54,7 @@ public class ResultHandler {
 
     @Value("${docker.dockerfile.timeout}")
     private String timeoutTime;
-    public void ejecutorJava(Result res){
+    public void ejecutor(Result res){
 
         try {
             new DockerGeneralExecutor(res, dockerClient, timeoutTime).ejecutar(res.getLanguage().getImgenId());

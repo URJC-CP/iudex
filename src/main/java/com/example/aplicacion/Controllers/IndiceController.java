@@ -1,16 +1,15 @@
 package com.example.aplicacion.Controllers;
 
 
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.ResultRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
-import com.example.aplicacion.services.SubmissionProceser;
+import com.example.aplicacion.services.LanguageService;
+import com.example.aplicacion.services.ProblemService;
+import com.example.aplicacion.services.SubmissionService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,9 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,16 +28,14 @@ public class IndiceController {
 
     private  final RabbitTemplate rabbitTemplate;
 
+
     @Autowired
-    private SubmissionRepository submissionRepository;
+    private SubmissionService submissionService;
     @Autowired
-    private ProblemRepository problemRepository;
+    private ProblemService problemService;
     @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private SubmissionProceser submissionProceser;
-    @Autowired
-    private LanguageRepository languageRepository;
+    private LanguageService languageService;
+
 
     //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
@@ -51,9 +46,8 @@ public class IndiceController {
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
-        List<Problem> listaEjercicios = problemRepository.findAll();
-        model.addAttribute("exercices", listaEjercicios);
-        model.addAttribute("languages", languageRepository.findAll());
+        model.addAttribute("exercices", problemService.getNProblemas());
+        model.addAttribute("languages", languageService.getNLanguages());
 
         return "index";
     }
@@ -64,7 +58,7 @@ public class IndiceController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida =submissionProceser.crearPeticion(cod, problemaAsignado, lenguaje);
+        String salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje);
 
 
 
@@ -75,7 +69,7 @@ public class IndiceController {
     public String subida (Model model){
 
         //Cargamos la BBDD de answer en el scoreboard
-        List<Submission> listSubmiss = submissionRepository.findAll();
+        List<Submission> listSubmiss = submissionService.getNSubmissions();
         model.addAttribute("submissions", listSubmiss);
 
 

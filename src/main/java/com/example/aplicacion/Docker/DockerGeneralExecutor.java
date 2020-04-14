@@ -23,6 +23,7 @@ public class DockerGeneralExecutor {
     public DockerGeneralExecutor(Result result, DockerClient dockerClient, String timeoutTime){
         this.result = result;
         this.dockerClient = dockerClient;
+
         this.timeoutTime = timeoutTime;
     }
 

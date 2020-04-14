@@ -19,7 +19,7 @@ import java.util.List;
 
 //This class Sends the propeer information to the rabbitqueu
 @Service
-public class SubmissionProceser {
+public class SubmissionService {
 
     @Autowired
     private   RabbitTemplate rabbitTemplate;
@@ -75,5 +75,9 @@ public class SubmissionProceser {
 
 
         return "Su peticion ha sido enviada";
+    }
+
+    public List<Submission> getNSubmissions(){
+        return submissionRepository.findAll();
     }
 }

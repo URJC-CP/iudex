@@ -40,7 +40,7 @@ public class RabbitResultExecutionReceiver {
     public void handleMessage2(Result res){
 
         //Primero ejecutamos el codigo y guardamos
-        resultHandler.ejecutorJava(res);
+        resultHandler.ejecutor(res);
         resultRepository.save(res);
 
         //Enviamos el res a la cola de reviser
