@@ -33,11 +33,12 @@ public class Result {
 
     private boolean revisado;
     private String resultadoRevision;
-
+    @ManyToOne
+    private Language language;
     public Result() { }
 
 
-    public Result(String entrada, String codigo, String salidaEstandarCorrecta) {
+    public Result(String entrada, String codigo, String salidaEstandarCorrecta, Language language) {
         this.codigo=codigo;
         this.entrada = entrada;
         this.salidaEstandar="";
@@ -45,7 +46,7 @@ public class Result {
         this.salidaCompilador="";
         this.salidaEstandarCorrecta = salidaEstandarCorrecta;
         this.resultadoRevision="";
-
+        this.language=language;
     }
 
     public long getId() {
@@ -164,5 +165,13 @@ public class Result {
 
     public void setTimeout(String timeout) {
         this.timeout = timeout;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

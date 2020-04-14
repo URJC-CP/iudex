@@ -10,10 +10,12 @@ public class Language {
     @Column(unique = true)
     private String nombreLenguaje;
 
+    private String imgenId;
+
     public Language() {    }
 
-    public Language(String lenguaje) {
-        this.nombreLenguaje = lenguaje;
+    public Language(String lenguaje, String imgenId) {
+        this.nombreLenguaje = lenguaje; this.imgenId = imgenId;
     }
 
     public long getId() {
@@ -30,5 +32,13 @@ public class Language {
 
     public void setNombreLenguaje(String nombreLenguaje) {
         this.nombreLenguaje = nombreLenguaje;
+    }
+
+    public String getImgenId() {
+        return imgenId;
+    }
+
+    public void setImgenId(String imgenId) {
+        this.imgenId = imgenId;
     }
 }

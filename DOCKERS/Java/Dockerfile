@@ -13,7 +13,7 @@ RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 RUN touch salidaCompilador.ans
 #Compila y Ejecuta el proyecto
-ENTRYPOINT javac codigo.java >salidaCompilador.ans; timeout -t 5 /usr/bin/time -o time.txt -f "%e %M" java codigo <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
+ENTRYPOINT javac codigo.java >salidaCompilador.ans; timeout -t $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%e %M" java codigo <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
 
 
 

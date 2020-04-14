@@ -54,7 +54,7 @@ public class SubmissionProceser {
         List<String> salidaCorrectaProblema = problema.getSalidaCorrecta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i));
+            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language);
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }

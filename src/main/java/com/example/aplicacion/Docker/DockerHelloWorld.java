@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 
+//Clase incial para hacer pruebas TOCA BORRARLA EN UN FUTURO
 public class DockerHelloWorld {
 
     private File entrada;

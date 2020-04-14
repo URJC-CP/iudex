@@ -4,28 +4,35 @@ import com.example.aplicacion.Entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.HostConfig;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
-public class DockerJava {
+public class DockerGeneralExecutor {
 
     private Result result;
     private static DockerClient dockerClient;
+    private final String timeoutTime;
 
-    public  DockerJava(Result result, DockerClient dockerClient){
+    public DockerGeneralExecutor(Result result, DockerClient dockerClient, String timeoutTime){
         this.result = result;
         this.dockerClient = dockerClient;
-
+        this.timeoutTime = timeoutTime;
     }
+
+
 
     public Result ejecutar(String imagenId) throws IOException {
         //Creamos el contendor
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).exec();
+        HostConfig hostConfig = new HostConfig();
+        hostConfig.withMemory(100000000L).withCpuPercent(100L);
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime).withHostConfig(hostConfig).exec();
 
 
         //Copiamos el codigo
