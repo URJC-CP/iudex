@@ -80,4 +80,9 @@ public class SubmissionService {
     public List<Submission> getNSubmissions(){
         return submissionRepository.findAll();
     }
+
+    public List<Submission> getAllSubmissions(){
+        return submissionRepository.findAll();
+    }
+
 }
