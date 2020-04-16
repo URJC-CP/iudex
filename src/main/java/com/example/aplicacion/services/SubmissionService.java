@@ -11,6 +11,9 @@ import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -77,8 +80,10 @@ public class SubmissionService {
         return "Su peticion ha sido enviada";
     }
 
-    public List<Submission> getNSubmissions(){
-        return submissionRepository.findAll();
+    public Page<Submission> getNSubmissions(int n){
+        Pageable firstPageWithTwoElements = PageRequest.of(0, n);
+
+        return submissionRepository.findAll(firstPageWithTwoElements);
     }
 
     public List<Submission> getAllSubmissions(){

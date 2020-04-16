@@ -14,7 +14,7 @@ public class ResultReviser {
 
     public void revisar(Result res){
         //Mira en el compilador
-        if(res.getSalidaCompilador().equals("")){
+        if(!res.getSalidaCompilador().equals("")){
             res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
         }
         //En caso de que haya dado timeout, se pone como wrong answer y no se compara nada

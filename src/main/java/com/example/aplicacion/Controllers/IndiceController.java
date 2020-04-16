@@ -14,6 +14,7 @@ import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,7 +74,7 @@ public class IndiceController {
     public String subida (Model model){
 
         //Cargamos la BBDD de answer en el scoreboard
-        List<Submission> listSubmiss = submissionService.getNSubmissions();
+        Page<Submission> listSubmiss = submissionService.getNSubmissions(10);
         model.addAttribute("submissions", listSubmiss);
 
 
