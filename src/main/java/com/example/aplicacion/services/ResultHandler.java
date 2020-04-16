@@ -1,7 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.DockerGeneralExecutor;
-import com.example.aplicacion.Entities.Language;
+import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.github.dockerjava.api.DockerClient;
@@ -57,7 +56,7 @@ public class ResultHandler {
     public void ejecutor(Result res){
 
         try {
-            new DockerGeneralExecutor(res, dockerClient, timeoutTime).ejecutar(res.getLanguage().getImgenId());
+            new DockerContainerJava(res, dockerClient, timeoutTime).ejecutar(res.getLanguage().getImgenId());
         } catch (IOException e) {
             e.printStackTrace();
         }
