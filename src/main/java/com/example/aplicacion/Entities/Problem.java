@@ -14,11 +14,19 @@ public class Problem {
 
     @Lob
     @ElementCollection
-    private List<String>  entrada;
+    private List<String>  entradaOculta;
 
     @Lob
     @ElementCollection
-    private List<String>  salidaCorrecta;
+    private List<String>  entradaVisible;
+
+    @Lob
+    @ElementCollection
+    private List<String>  salidaOculta;
+
+    @Lob
+    @ElementCollection
+    private List<String>  salidaVisible;
 
     @Lob
     @ElementCollection
@@ -26,6 +34,15 @@ public class Problem {
 
 
     public Problem() {
+    }
+
+    public Problem(String nombreEjercicio, List<String> entradaOculta, List<String> salidaOculta, List<String> codigoCorrecto, List<String>  entradaVisible, List<String>  salidaVisible) {
+        this.nombreEjercicio = nombreEjercicio;
+        this.entradaOculta = entradaOculta;
+        this.salidaOculta = salidaOculta;
+        this.codigoCorrecto = codigoCorrecto;
+        this.entradaVisible = entradaVisible;
+        this.salidaVisible = salidaVisible;
     }
 
     public long getId() {
@@ -45,20 +62,12 @@ public class Problem {
     }
 
 
-    public List<String> getEntrada() {
-        return entrada;
+    public List<String> getEntradaOculta() {
+        return entradaOculta;
     }
 
-    public void setEntrada(List<String> entrada) {
-        this.entrada = entrada;
-    }
-
-    public List<String> getSalidaCorrecta() {
-        return salidaCorrecta;
-    }
-
-    public void setSalidaCorrecta(List<String> salidaCorrecta) {
-        this.salidaCorrecta = salidaCorrecta;
+    public void setEntradaOculta(List<String> entradaOculta) {
+        this.entradaOculta = entradaOculta;
     }
 
     public List<String> getCodigoCorrecto() {
@@ -67,5 +76,29 @@ public class Problem {
 
     public void setCodigoCorrecto(List<String> codigoCorrecto) {
         this.codigoCorrecto = codigoCorrecto;
+    }
+
+    public List<String> getEntradaVisible() {
+        return entradaVisible;
+    }
+
+    public void setEntradaVisible(List<String> entradaVisible) {
+        this.entradaVisible = entradaVisible;
+    }
+
+    public List<String> getSalidaOculta() {
+        return salidaOculta;
+    }
+
+    public void setSalidaOculta(List<String> salidaOculta) {
+        this.salidaOculta = salidaOculta;
+    }
+
+    public List<String> getSalidaVisible() {
+        return salidaVisible;
+    }
+
+    public void setSalidaVisible(List<String> salidaVisible) {
+        this.salidaVisible = salidaVisible;
     }
 }

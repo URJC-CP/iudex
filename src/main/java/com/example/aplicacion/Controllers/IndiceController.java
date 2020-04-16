@@ -49,7 +49,7 @@ public class IndiceController {
     @GetMapping("/")
     public String index(Model model){
         //Pruebas de rabbit
-        model.addAttribute("exercices", problemService.getNProblemas());
+        model.addAttribute("exercices", problemService.getAllProblemas());
         model.addAttribute("languages", languageService.getNLanguages());
 
         return "index";

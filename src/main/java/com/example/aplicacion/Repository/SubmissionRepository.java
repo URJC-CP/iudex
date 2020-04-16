@@ -13,7 +13,6 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
 	Submission findAnswerById(long id);
 
-    //List<Submission> findAll(firstPageWithTwoElements);
 
 
 }
