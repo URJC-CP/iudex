@@ -25,18 +25,20 @@ public class Submission {
     @ManyToOne
     private Language language;
 
+    private String filename;
     //private Team team;
 
 
     public Submission() {
     }
 
-    public Submission(String codigo, Language lenguaje) {
+    public Submission(String codigo, Language lenguaje, String filename) {
         this.codigo = codigo;
         this.language =lenguaje;
         this.corregido=false;
         this.resultado ="";
         this.results = new ArrayList<>();
+        this.filename=filename;
     }
 
     @Override
@@ -104,5 +106,13 @@ public class Submission {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

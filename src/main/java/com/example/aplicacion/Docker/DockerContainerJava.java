@@ -32,12 +32,12 @@ public class DockerContainerJava extends DockerContainer {
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(100000000L).withCpuPercent(100L);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime).withHostConfig(hostConfig).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime,"FILENAME="+result.getFileName() ).withHostConfig(hostConfig).exec();
 
 
         //Copiamos el codigo
 
-        copiarArchivoAContenedor(container.getId(), "codigo.java", result.getCodigo(),  "/root");
+        copiarArchivoAContenedor(container.getId(), result.getFileName()+".java", result.getCodigo(),  "/root");
 
         //Copiamos la entrada
 

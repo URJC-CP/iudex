@@ -13,17 +13,18 @@ import java.util.Objects;
 public class ResultReviser {
 
     public void revisar(Result res){
+        //Mira en el compilador
+        if(res.getSalidaCompilador().equals("")){
+            res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
+        }
         //En caso de que haya dado timeout, se pone como wrong answer y no se compara nada
-        if(compareIgnoreExpressions(res.getTimeout(), "TIMEOUT")){
+        else if(compareIgnoreExpressions(res.getTimeout(), "TIMEOUT")){
             res.setResultadoRevision("FAILED TIMEOUT");
         }
         else{
 
-            //Si existe errores en la salida del compliador
-            if(!Objects.equals(res.getSalidaCompilador(), "")){   //Comprobar salida compilador
-                res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
-
-            }else if(!Objects.equals(res.getSalidaError(), "")){  //Comprobar salida Error
+            //Si existe errores en la salida del ejecutor
+             if(!Objects.equals(res.getSalidaError(), "")){  //Comprobar salida Error
                 res.setResultadoRevision("FAILED IN EXECUTION"+"\n"+res.getSalidaError());
             }else {
                 //Comprobar salida Estandar

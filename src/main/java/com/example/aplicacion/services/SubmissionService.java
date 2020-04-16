@@ -37,14 +37,14 @@ public class SubmissionService {
     private RabbitResultExecutionSender sender;
 
 
-    public String crearPeticion(String codigo,  String problem, String lenguaje ){
+    public String crearPeticion(String codigo,  String problem, String lenguaje, String fileName ){
 
 
         //Obtedemos el Problema del que se trata
         Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         //Creamos la Submission
-        Submission submission = new Submission(codigo, language);
+        Submission submission = new Submission(codigo, language, fileName);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
@@ -54,7 +54,7 @@ public class SubmissionService {
         List<String> salidaCorrectaProblema = problema.getSalidaCorrecta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language);
+            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename());
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }

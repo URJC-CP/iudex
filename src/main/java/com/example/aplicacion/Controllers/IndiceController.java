@@ -10,6 +10,8 @@ import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.LanguageService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
+import org.apache.commons.compress.compressors.FileNameUtil;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,10 +57,12 @@ public class IndiceController {
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje ) throws IOException {
 
+        String fileNameaux = codigo.getOriginalFilename();
+        String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje);
+        String salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje, fileName);
 
 
 

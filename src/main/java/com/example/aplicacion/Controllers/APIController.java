@@ -26,8 +26,8 @@ public class APIController {
     }
 
     @PostMapping("/addSubmission")
-    public String addsubmissions(@RequestParam String codigo, @RequestParam String lenguaje, @RequestParam String problema){
-        submissionService.crearPeticion(codigo, problema, lenguaje);
+    public String addsubmissions(@RequestParam String codigo,@RequestParam String filename,  @RequestParam String lenguaje, @RequestParam String problema){
+        submissionService.crearPeticion(codigo, problema, lenguaje, filename);
 
         return "Submission subida";
     }

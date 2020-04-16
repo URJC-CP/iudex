@@ -35,10 +35,12 @@ public class Result {
     private String resultadoRevision;
     @ManyToOne
     private Language language;
+    private String fileName;
+
     public Result() { }
 
 
-    public Result(String entrada, String codigo, String salidaEstandarCorrecta, Language language) {
+    public Result(String entrada, String codigo, String salidaEstandarCorrecta, Language language, String fileName) {
         this.codigo=codigo;
         this.entrada = entrada;
         this.salidaEstandar="";
@@ -47,6 +49,7 @@ public class Result {
         this.salidaEstandarCorrecta = salidaEstandarCorrecta;
         this.resultadoRevision="";
         this.language=language;
+        this.fileName=fileName;
     }
 
     public long getId() {
@@ -173,5 +176,13 @@ public class Result {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
