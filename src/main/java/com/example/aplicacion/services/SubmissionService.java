@@ -53,8 +53,8 @@ public class SubmissionService {
         submission.setProblema(problema);
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<String> entradasProblema = problema.getEntrada();
-        List<String> salidaCorrectaProblema = problema.getSalidaCorrecta();
+        List<String> entradasProblema = problema.getEntradaOculta();
+        List<String> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename());

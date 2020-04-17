@@ -1,6 +1,7 @@
 package com.example.aplicacion.Entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,10 @@ public class Problem {
 
 
     public Problem() {
+        this.entradaVisible = new ArrayList<>();
+        this.salidaVisible = new ArrayList<>();
+        this.entradaOculta = new ArrayList<>();
+        this.salidaOculta = new ArrayList<>();
     }
 
     public Problem(String nombreEjercicio, List<String> entradaOculta, List<String> salidaOculta, List<String> codigoCorrecto, List<String>  entradaVisible, List<String>  salidaVisible) {
@@ -43,6 +48,12 @@ public class Problem {
         this.codigoCorrecto = codigoCorrecto;
         this.entradaVisible = entradaVisible;
         this.salidaVisible = salidaVisible;
+
+        this.entradaVisible = new ArrayList<>();
+        this.salidaVisible = new ArrayList<>();
+        this.entradaOculta = new ArrayList<>();
+        this.salidaOculta = new ArrayList<>();
+
     }
 
     public long getId() {
@@ -100,5 +111,9 @@ public class Problem {
 
     public void setSalidaVisible(List<String> salidaVisible) {
         this.salidaVisible = salidaVisible;
+    }
+
+    public void addEntradaVisible(String aux){
+        this.entradaVisible.add(aux);
     }
 }
