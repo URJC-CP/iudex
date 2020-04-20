@@ -1,6 +1,8 @@
 package com.example.aplicacion.services;
 
+import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,11 @@ public class ProblemService {
     @Autowired
     private ProblemRepository problemRepository;
 
+
     private static final int BUFFER_SIZE = 4096;
 
 
-    public void addProblem(String nombre, List<String> entrada, List<String>  salidaCorrecta, List<String> codigoCorrecto, List<String>  entradaVisible, List<String>  salidaVisible ){
+    public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
         problemRepository.save(new Problem(nombre, entrada, salidaCorrecta, codigoCorrecto, entradaVisible, salidaVisible));
     }
 
@@ -37,53 +40,55 @@ public class ProblemService {
         Problem problem = new Problem();
 
 
-            //File destDir = new File("src/main/resources/unzipTest");
-            byte[] buffer = new byte[BUFFER_SIZE];
 
-            File file = new File("DOCKERS/PROBLEMA.zip");
-            //Guardamos el nombre del problema
-            problem.setNombreEjercicio(file.getName().split("\\.")[0]);
+    }
 
-            //Empezamos a descomprimir
-            ZipInputStream zipFile = new ZipInputStream(new FileInputStream(file));
-            ZipEntry zipEntry = zipFile.getNextEntry();
+    private void generateProblemformZip(Problem problem) throws IOException {
 
-            while (zipEntry != null) {
-                String nombreZip = zipEntry.getName();
+        File file = new File("DOCKERS/PROBLEMA.zip");
+        //Guardamos el nombre del problema
+        problem.setNombreEjercicio(file.getName().split("\\.")[0]);
 
-                //trunyo de Raul
-                Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)$");
-                Matcher m = p.matcher(nombreZip);
-                if (m.matches()){
-                    //Objetemos el primer gruo data
-                    String path1 = m.group(1);
-                    String path2 = m.group(2);
-                    String filename = m.group(3);
-                    String extension = m.group(4);
+        //Empezamos a descomprimir
+        ZipInputStream zipFile = new ZipInputStream(new FileInputStream(file));
+        ZipEntry zipEntry = zipFile.getNextEntry();
 
-                    if(path2.equals("sample")){
-                        if(extension.equals("ans")){
-                            String aux = convertZipToString(zipEntry, zipFile);
-                            problem.addEntradaVisible(aux);
-                        }else if(extension.equals("in")){
+        while (zipEntry != null) {
+            String nombreZip = zipEntry.getName();
 
-                        }
+            //trunyo de Raul
+            Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)$");
+            Matcher m = p.matcher(nombreZip);
+            if (m.matches()){
+                //Objetemos el primer gruo data
+                String path1 = m.group(1);
+                String path2 = m.group(2);
+                String filename = m.group(3);
+                String extension = m.group(4);
+
+                if(path2.equals("sample")){
+                    if(extension.equals("ans")){
+                        String aux = convertZipToString(zipEntry, zipFile);
+                        problem.addEntradaVisible(new InNOut(filename, aux));
+                    }else if(extension.equals("in")){
+                        String aux = convertZipToString(zipEntry, zipFile);
+
                     }
                 }
-
-
-               if(nombreZip.startsWith("data/sample/")){
-                   if(nombreZip.endsWith(".in")){
-                       System.out.println(nombreZip+"Es in visible");
-                   }
-               }
-
-
-                zipEntry = zipFile.getNextEntry();
             }
-            zipFile.closeEntry();
-            zipFile.close();
 
+
+            if(nombreZip.startsWith("data/sample/")){
+                if(nombreZip.endsWith(".in")){
+                    System.out.println(nombreZip+"Es in visible");
+                }
+            }
+
+
+            zipEntry = zipFile.getNextEntry();
+        }
+        zipFile.closeEntry();
+        zipFile.close();
 
     }
 

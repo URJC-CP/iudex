@@ -13,25 +13,21 @@ public class Problem {
     @Column(unique = true)
     private String nombreEjercicio;
 
-    @Lob
-    @ElementCollection
-    private List<String>  entradaOculta;
 
-    @Lob
-    @ElementCollection
-    private List<String>  entradaVisible;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<InNOut>  entradaOculta;
 
-    @Lob
-    @ElementCollection
-    private List<String>  salidaOculta;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<InNOut>  entradaVisible;
 
-    @Lob
-    @ElementCollection
-    private List<String>  salidaVisible;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<InNOut>  salidaOculta;
 
-    @Lob
-    @ElementCollection
-    private List<String> codigoCorrecto;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<InNOut>  salidaVisible;
+
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<InNOut> codigoCorrecto;
 
 
     public Problem() {
@@ -41,7 +37,7 @@ public class Problem {
         this.salidaOculta = new ArrayList<>();
     }
 
-    public Problem(String nombreEjercicio, List<String> entradaOculta, List<String> salidaOculta, List<String> codigoCorrecto, List<String>  entradaVisible, List<String>  salidaVisible) {
+    public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
         this.nombreEjercicio = nombreEjercicio;
         this.entradaOculta = entradaOculta;
         this.salidaOculta = salidaOculta;
@@ -73,47 +69,47 @@ public class Problem {
     }
 
 
-    public List<String> getEntradaOculta() {
+    public List<InNOut> getEntradaOculta() {
         return entradaOculta;
     }
 
-    public void setEntradaOculta(List<String> entradaOculta) {
+    public void setEntradaOculta(List<InNOut> entradaOculta) {
         this.entradaOculta = entradaOculta;
     }
 
-    public List<String> getCodigoCorrecto() {
+    public List<InNOut> getCodigoCorrecto() {
         return codigoCorrecto;
     }
 
-    public void setCodigoCorrecto(List<String> codigoCorrecto) {
+    public void setCodigoCorrecto(List<InNOut> codigoCorrecto) {
         this.codigoCorrecto = codigoCorrecto;
     }
 
-    public List<String> getEntradaVisible() {
+    public List<InNOut> getEntradaVisible() {
         return entradaVisible;
     }
 
-    public void setEntradaVisible(List<String> entradaVisible) {
+    public void setEntradaVisible(List<InNOut> entradaVisible) {
         this.entradaVisible = entradaVisible;
     }
 
-    public List<String> getSalidaOculta() {
+    public List<InNOut> getSalidaOculta() {
         return salidaOculta;
     }
 
-    public void setSalidaOculta(List<String> salidaOculta) {
+    public void setSalidaOculta(List<InNOut> salidaOculta) {
         this.salidaOculta = salidaOculta;
     }
 
-    public List<String> getSalidaVisible() {
+    public List<InNOut> getSalidaVisible() {
         return salidaVisible;
     }
 
-    public void setSalidaVisible(List<String> salidaVisible) {
+    public void setSalidaVisible(List<InNOut> salidaVisible) {
         this.salidaVisible = salidaVisible;
     }
 
-    public void addEntradaVisible(String aux){
+    public void addEntradaVisible(InNOut aux){
         this.entradaVisible.add(aux);
     }
 }

@@ -1,9 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Entities.Submission;
+import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.ResultRepository;
@@ -53,8 +50,8 @@ public class SubmissionService {
         submission.setProblema(problema);
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<String> entradasProblema = problema.getEntradaOculta();
-        List<String> salidaCorrectaProblema = problema.getSalidaOculta();
+        List<InNOut> entradasProblema = problema.getEntradaOculta();
+        List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename());

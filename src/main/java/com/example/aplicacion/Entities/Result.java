@@ -2,19 +2,26 @@ package com.example.aplicacion.Entities;
 
 
 
+import com.example.aplicacion.Repository.InNOutRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
 public class Result {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Lob
     private String codigo;
-    @Lob
-    private String entrada;
+
+    @ManyToOne
+    private InNOut entradaInO;
 
     @Lob
     private String salidaEstandar;
@@ -22,8 +29,9 @@ public class Result {
     private String salidaError;
     @Lob
     private String salidaCompilador;
-    @Lob
-    private String  salidaEstandarCorrecta;
+
+    @ManyToOne
+    private InNOut  salidaEstandarCorrectaInO;
     private int numeroEntrada;
 
     private String salidaTime;
@@ -40,13 +48,13 @@ public class Result {
     public Result() { }
 
 
-    public Result(String entrada, String codigo, String salidaEstandarCorrecta, Language language, String fileName) {
+    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName) {
         this.codigo=codigo;
-        this.entrada = entrada;
+        this.entradaInO = entrada;
         this.salidaEstandar="";
         this.salidaError="";
         this.salidaCompilador="";
-        this.salidaEstandarCorrecta = salidaEstandarCorrecta;
+        this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
         this.resultadoRevision="";
         this.language=language;
         this.fileName=fileName;
@@ -71,15 +79,19 @@ public class Result {
 
     @Override
     public String toString() {
-        return codigo + entrada + salidaCompilador + salidaError + salidaEstandar;
+        return codigo + entradaInO + salidaCompilador + salidaError + salidaEstandar;
     }
 
     public String getEntrada() {
-        return entrada;
+        return entradaInO.getText();
+    }
+    public InNOut getEntradaInO() {
+        return entradaInO;
     }
 
-    public void setEntrada(String entrada) {
-        this.entrada = entrada;
+
+    public void setEntradaInO(InNOut entrada) {
+        this.entradaInO = entrada;
     }
 
     public String getSalidaEstandar() {
@@ -131,11 +143,14 @@ public class Result {
     }
 
     public String getSalidaEstandarCorrecta() {
-        return salidaEstandarCorrecta;
+        return salidaEstandarCorrectaInO.getText();
+    }
+    public InNOut getSalidaEstandarCorrectaInO() {
+        return salidaEstandarCorrectaInO;
     }
 
-    public void setSalidaEstandarCorrecta(String salidaEstandarCorrecta) {
-        this.salidaEstandarCorrecta = salidaEstandarCorrecta;
+    public void setSalidaEstandarCorrectaInO(InNOut salidaEstandarCorrectaInO) {
+        this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
     }
 
     public String getSalidaTime() {
@@ -185,4 +200,5 @@ public class Result {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
 }
