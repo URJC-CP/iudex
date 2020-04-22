@@ -28,7 +28,8 @@ public class ResultReviser {
                 res.setResultadoRevision("FAILED IN EXECUTION"+"\n"+res.getSalidaError());
             }else {
                 //Comprobar salida Estandar
-                if(compareIgnoreExpressions(res.getSalidaEstandar(), res.getSalidaEstandarCorrecta())){
+                 String salidaCorrecta = res.getSalidaEstandarCorrectaInO().getText();
+                if(compareIgnoreExpressions(res.getSalidaEstandar(), salidaCorrecta)){
                     res.setResultadoRevision("GOOD ANSWER");
 
                 }
@@ -56,8 +57,9 @@ public class ResultReviser {
 
         salidaAux = removeWhitespace(salidaAux);
         ejerAux = removeWhitespace(ejerAux);
-        
-        return Objects.equals(salidaAux, ejerAux);
+
+        boolean aux = ejerAux.equals(salidaAux);
+        return aux;
     }
 
     private String removeWhitespace(String aux){

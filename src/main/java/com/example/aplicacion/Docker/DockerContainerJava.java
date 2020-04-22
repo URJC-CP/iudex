@@ -12,6 +12,8 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerJava extends DockerContainer {
@@ -26,13 +28,14 @@ public class DockerContainerJava extends DockerContainer {
 
     public Result ejecutar(String imagenId) throws IOException {
 
+        String nombreClase = getClassName();
         Result result = getResult();
         DockerClient dockerClient = getDockerClient();
         String timeoutTime = getTimeoutTime();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(100000000L).withCpuPercent(100L);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime,"FILENAME="+result.getFileName() ).withHostConfig(hostConfig).exec();
+        hostConfig.withMemory(100000000L).withCpuCount(1L);
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime,"FILENAME1="+result.getFileName(), "FILENAME2="+getClassName() ).withHostConfig(hostConfig).exec();
 
 
         //Copiamos el codigo
@@ -89,5 +92,26 @@ public class DockerContainerJava extends DockerContainer {
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         return result;
+    }
+    private String getClassName(){
+        String salida="";
+        //Primero buscamos si existe una classe tipo "public class.."
+        Pattern p = Pattern.compile("public\\s+class\\s+([a-zA-Z_$][a-zA-Z_$0-9]*)");
+        Matcher m = p.matcher(getResult().getCodigo());
+        if(m.find()){
+            salida = m.group(1);
+
+        }
+        //Si no, buscamos la clase q no es publica
+        else{
+            Pattern p2 = Pattern.compile("class\\s+([a-zA-Z_$][a-zA-Z_$0-9]*)");
+            Matcher m2 = p2.matcher(getResult().getCodigo());
+            if(m2.find()){
+                salida = m2.group(1);
+
+            }
+        }
+
+        return salida;
     }
 }

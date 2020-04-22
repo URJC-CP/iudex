@@ -14,7 +14,7 @@ RUN touch salidaError.ans
 RUN touch salidaCompilador.ans
 #Compila y Ejecuta el proyecto
 #ENTRYPOINT javac codigo.java >salidaCompilador.ans; timeout -t $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%e %M" java codigo <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
-ENTRYPOINT javac $FILENAME.java 2>salidaCompilador.ans; timeout -t $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%e %M" java $FILENAME <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
+ENTRYPOINT javac $FILENAME1.java 2>salidaCompilador.ans; timeout -t $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%e %M" java $FILENAME2 <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
 
 
 

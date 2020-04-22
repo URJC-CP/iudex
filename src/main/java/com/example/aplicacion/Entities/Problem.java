@@ -112,4 +112,15 @@ public class Problem {
     public void addEntradaVisible(InNOut aux){
         this.entradaVisible.add(aux);
     }
+    public void addSalidaVisible(InNOut aux){
+        this.salidaVisible.add(aux);
+    }
+    public void addEntradaOculta(InNOut aux){
+        this.entradaOculta.add(aux);
+    }
+    public void addSalidaOculta(InNOut aux){
+        this.salidaOculta.add(aux);
+    }
+
+
 }

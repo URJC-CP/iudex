@@ -50,6 +50,15 @@ public class SubmissionService {
         submission.setProblema(problema);
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
+        List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
+        List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
+        int numeroEntradasVisible = entradasProblemaVisible.size();
+        for(int i =0; i<numeroEntradasVisible; i++){
+            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename());
+            resultRepository.save(resAux);
+            submission.addResult(resAux);
+        }
+
         List<InNOut> entradasProblema = problema.getEntradaOculta();
         List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
@@ -58,6 +67,7 @@ public class SubmissionService {
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
+
 
         //Guardamos la submission
         submissionRepository.save(submission);

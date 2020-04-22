@@ -7,7 +7,7 @@ import java.util.List;
 @Entity
 public class Submission {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
 
