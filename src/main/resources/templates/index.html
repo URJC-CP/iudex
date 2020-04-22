@@ -5,37 +5,54 @@
     <title>Title</title>
 </head>
 <body>
-    <div class="container">
-        <form method="post" action="/answerSubida" enctype="multipart/form-data">
+<div class="container">
+    <form method="post" action="/answerSubida" enctype="multipart/form-data">
 
-            <div class="row">
-                <p>Codigo</p>
-                <input type="file" id="codigo" name="codigo"  required>
-            </div>
+        <div class="row">
+            <p>Codigo</p>
+            <input type="file" id="codigo" name="codigo"  required>
+        </div>
 
 
 
-            <div class="row">
-                <select class="form-control" name="problemaAsignado">
-                    {{#exercices}}
-                    <option>{{nombreEjercicio}}</option>
-                    {{/exercices}}
-                </select>
-            </div>
-            <div class="row">
-                <select class="form-control" name="lenguaje">
-                    {{#languages}}
-                    <option>{{nombreLenguaje}}</option>
-                    {{/languages}}
-                </select>
-            </div>
+        <div class="row">
+            <select class="form-control" name="problemaAsignado">
+                {{#exercices}}
+                <option>{{nombreEjercicio}}</option>
+                {{/exercices}}
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" name="lenguaje">
+                {{#languages}}
+                <option>{{nombreLenguaje}}</option>
+                {{/languages}}
+            </select>
+        </div>
 
-            <div class="siguiente">
-                <button type="submit" class="btn btn-success">Guardar</button>
-            </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
 
-        </form>
-    </div>
+    </form>
+</div>
+
+<div class="container">
+    <form method="post" action="/problemSubida" enctype="multipart/form-data">
+
+        <div class="row">
+            <p>multipartFile</p>
+            <input type="file" id="problema" name="problema"  required>
+        </div>
+
+
+
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+
+    </form>
+</div>
 
 </body>
 </html>
