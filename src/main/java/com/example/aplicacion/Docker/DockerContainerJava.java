@@ -34,8 +34,8 @@ public class DockerContainerJava extends DockerContainer {
         String timeoutTime = getTimeoutTime();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(100000000L).withCpuCount(1L);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeoutTime,"FILENAME1="+result.getFileName(), "FILENAME2="+getClassName() ).withHostConfig(hostConfig).exec();
+        hostConfig.withMemory(1000000000L).withCpuCount(1L);
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+result.getFileName(), "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
 
 
         //Copiamos el codigo
@@ -82,10 +82,10 @@ public class DockerContainerJava extends DockerContainer {
         result.setSalidaTime(time);
 
 
-        String timeout=null;
-        timeout = copiarArchivoDeContenedor(container.getId(), "root/timeout.txt");
-        System.out.println(timeout);
-        result.setTimeout(timeout);
+        String signal=null;
+        signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
+        System.out.println(signal);
+        result.setSignalFile(signal);
 
 
 

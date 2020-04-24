@@ -54,7 +54,7 @@ public class SubmissionService {
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename());
+            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
@@ -63,7 +63,7 @@ public class SubmissionService {
         List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename());
+            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }

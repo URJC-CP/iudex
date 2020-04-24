@@ -29,12 +29,18 @@ public class Problem {
     @OneToMany(cascade = CascadeType.MERGE)
     private List<InNOut> codigoCorrecto;
 
+    private String timeout;
+    private String memoryLimit;
+
 
     public Problem() {
         this.entradaVisible = new ArrayList<>();
         this.salidaVisible = new ArrayList<>();
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
+        //valores por defecto
+        this.timeout = "10";
+        this.memoryLimit ="500";
     }
 
     public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
@@ -50,6 +56,8 @@ public class Problem {
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
 
+        this.timeout = "10";
+        this.memoryLimit ="500";
     }
 
     public long getId() {
@@ -123,4 +131,19 @@ public class Problem {
     }
 
 
+    public String getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(String timeout) {
+        this.timeout = timeout;
+    }
+
+    public String getMemoryLimit() {
+        return memoryLimit;
+    }
+
+    public void setMemoryLimit(String memoryLimit) {
+        this.memoryLimit = memoryLimit;
+    }
 }

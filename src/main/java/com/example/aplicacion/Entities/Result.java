@@ -35,7 +35,8 @@ public class Result {
     private int numeroEntrada;
 
     private String salidaTime;
-    private String timeout;
+    //TIMEOUT FILE fromthe container
+    private String signalFile;
     private float execTime;
     private float execMemory;
 
@@ -45,10 +46,18 @@ public class Result {
     private Language language;
     private String fileName;
 
-    public Result() { }
+
+    private String maxMemory;
+    private String maxTimeout;
+
+    public Result() {
+
+        this.maxMemory="100";
+        this.maxTimeout="10";
+    }
 
 
-    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName) {
+    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory ) {
         this.codigo=codigo;
         this.entradaInO = entrada;
         this.salidaEstandar="";
@@ -58,6 +67,8 @@ public class Result {
         this.resultadoRevision="";
         this.language=language;
         this.fileName=fileName;
+        this.maxTimeout = maxtimeout;
+        this.maxMemory =maxMemory;
     }
 
     public long getId() {
@@ -177,12 +188,12 @@ public class Result {
         this.execMemory = execMemory;
     }
 
-    public String getTimeout() {
-        return timeout;
+    public String getSignalFile() {
+        return signalFile;
     }
 
-    public void setTimeout(String timeout) {
-        this.timeout = timeout;
+    public void setSignalFile(String signalFile) {
+        this.signalFile = signalFile;
     }
 
     public Language getLanguage() {
@@ -201,4 +212,19 @@ public class Result {
         this.fileName = fileName;
     }
 
+    public String getMaxMemory() {
+        return maxMemory;
+    }
+
+    public void setMaxMemory(String maxMemory) {
+        this.maxMemory = maxMemory;
+    }
+
+    public String getMaxTimeout() {
+        return maxTimeout;
+    }
+
+    public void setMaxTimeout(String maxTimeout) {
+        this.maxTimeout = maxTimeout;
+    }
 }
