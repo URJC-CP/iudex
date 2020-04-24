@@ -20,8 +20,8 @@ public class DockerContainerJava extends DockerContainer {
 
 
 
-    public DockerContainerJava(Result result, DockerClient dockerClient, String timeoutTime){
-        super(result, dockerClient, timeoutTime);
+    public DockerContainerJava(Result result, DockerClient dockerClient){
+        super(result, dockerClient);
     }
 
 
@@ -31,7 +31,6 @@ public class DockerContainerJava extends DockerContainer {
         String nombreClase = getClassName();
         Result result = getResult();
         DockerClient dockerClient = getDockerClient();
-        String timeoutTime = getTimeoutTime();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(1000000000L).withCpuCount(1L);

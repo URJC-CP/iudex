@@ -56,7 +56,7 @@ public class ResultHandler {
     public void ejecutor(Result res){
 
         try {
-            new DockerContainerJava(res, dockerClient, timeoutTime).ejecutar(res.getLanguage().getImgenId());
+            new DockerContainerJava(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
         } catch (IOException e) {
             e.printStackTrace();
         }

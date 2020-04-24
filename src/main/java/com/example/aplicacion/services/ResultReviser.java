@@ -43,10 +43,10 @@ public class ResultReviser {
                 res.setResultadoRevision("WRONG ANSWER");
             }
 
-            String[] time =getTime(res.getSalidaTime());
-            res.setExecTime(Float.parseFloat(time[0]));
-            res.setExecMemory(Float.parseFloat(time[1]));
         }
+        String[] time =getTime(res.getSalidaTime());
+        res.setExecTime(Float.parseFloat(time[0]));
+        res.setExecMemory(Float.parseFloat(time[1]));
 
         res.setRevisado(true);
 

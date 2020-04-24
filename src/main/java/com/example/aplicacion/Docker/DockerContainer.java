@@ -15,13 +15,11 @@ import java.io.InputStream;
 public class DockerContainer {
     private Result result;
     private static DockerClient dockerClient;
-    private final String timeoutTime;
 
-    public DockerContainer(Result result, DockerClient dockerClient, String timeoutTime){
+    public DockerContainer(Result result, DockerClient dockerClient ){
         this.result = result;
         this.dockerClient = dockerClient;
 
-        this.timeoutTime = timeoutTime;
     }
     static void copiarArchivoAContenedor(String contAux, String nombre, String contenido, String pathDestino) throws IOException {
         dockerClient.copyArchiveToContainerCmd(contAux).withTarInputStream(convertStringtoInputStream(nombre, contenido)).withRemotePath(pathDestino).exec();
@@ -98,7 +96,4 @@ public class DockerContainer {
         DockerContainer.dockerClient = dockerClient;
     }
 
-    public String getTimeoutTime() {
-        return timeoutTime;
-    }
 }

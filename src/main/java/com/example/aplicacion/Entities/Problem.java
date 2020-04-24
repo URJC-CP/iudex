@@ -1,5 +1,7 @@
 package com.example.aplicacion.Entities;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,8 @@ public class Problem {
     private String timeout;
     private String memoryLimit;
 
+    public final String timeoutPropierties = "10";
+    public final String memoryLimitPropierties="1000";
 
     public Problem() {
         this.entradaVisible = new ArrayList<>();
@@ -39,8 +43,8 @@ public class Problem {
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
         //valores por defecto
-        this.timeout = "10";
-        this.memoryLimit ="500";
+        this.timeout = timeoutPropierties;
+        this.memoryLimit =memoryLimitPropierties;
     }
 
     public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
@@ -56,8 +60,8 @@ public class Problem {
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
 
-        this.timeout = "10";
-        this.memoryLimit ="500";
+        this.timeout = timeoutPropierties;
+        this.memoryLimit =memoryLimitPropierties;
     }
 
     public long getId() {
