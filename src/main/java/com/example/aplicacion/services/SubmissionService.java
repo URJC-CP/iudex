@@ -37,7 +37,7 @@ public class SubmissionService {
     private RabbitResultExecutionSender sender;
 
 
-    public String crearPeticion(String codigo,  String problem, String lenguaje, String fileName ){
+    public Submission crearPeticion(String codigo,  String problem, String lenguaje, String fileName ){
 
 
         //Obtedemos el Problema del que se trata
@@ -84,7 +84,7 @@ public class SubmissionService {
         //Envio de mensaje a la cola
 
 
-        return "Su peticion ha sido enviada";
+        return submission;
     }
 
     public Page<Submission> getNSubmissions(int n){

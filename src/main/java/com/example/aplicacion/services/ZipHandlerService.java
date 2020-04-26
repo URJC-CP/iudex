@@ -2,6 +2,7 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,6 +25,10 @@ public class ZipHandlerService {
     private ProblemRepository problemRepository;
     @Autowired
     private InNOutRepository inNOutRepository;
+    @Autowired
+    private SubmissionService submissionService;
+    @Autowired
+    private SubmissionProblemValidatorService submissionProblemValidatorService;
 
 
     public Problem generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws IOException {
@@ -50,6 +55,7 @@ public class ZipHandlerService {
             //Si entra significa q es de la categoria /algo/algo/fichero
             if (m.matches()){
                 //Objetemos el primer gruo data
+                String path = m.group(1);
                 String path1 = m.group(2);
                 String path2 = m.group(3);
                 String filename = m.group(4);
@@ -58,7 +64,7 @@ public class ZipHandlerService {
 
 
                 //Si es ES de ejemplo
-                if(path2.equals("sample")){
+                if(path1.equals("data") && path2.equals("sample")){
                     if(extension.equals("ans")){
                         //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
                         addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
@@ -77,7 +83,7 @@ public class ZipHandlerService {
                     }
                 }
                 //Si es ES secreta
-                else if(path2.equals("secret")){
+                else if(path1.equals("data") && path2.equals("secret")){
                     if(extension.equals("ans")){
                         //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
                         addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
@@ -94,6 +100,23 @@ public class ZipHandlerService {
                         inNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
                     }
+                }
+                //Buscamos ahora las submission
+                else if (path1.equals("submissions") && path2.equals("accepted")){
+                    //Buscamos el lenguaje que es analizando la extension
+                    if(extension.equals("java")){
+                        String lenguaje ="java";
+                        //obtenemos el string del codigo
+                        String aux = convertZipToString( zipFile);
+
+                        //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  "accepted");
+                        //Anyadimos el submissionproblemvalidator al problema
+                        problem.addSubmissionProblemValidator(submissionProblemValidator);
+                    }
+
+
+
                 }
             }
             //Si no es de esa carpeta siginfica q esta en la carpeta base

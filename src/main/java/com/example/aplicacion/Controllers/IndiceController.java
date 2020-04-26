@@ -63,11 +63,11 @@ public class IndiceController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje, fileName);
+        Submission salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje, fileName);
 
 
 
-        model.addAttribute("comentario" , salida);
+        model.addAttribute("comentario" , "Ha sido creado con el ID: "+salida.getId());
         return "subidaSubmission";
     }
     @GetMapping("/scoreboard")

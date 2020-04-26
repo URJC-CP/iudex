@@ -32,6 +32,9 @@ public class Problem {
     @OneToMany(cascade = CascadeType.MERGE)
     private List<InNOut> codigoCorrecto;
 
+    @OneToMany
+    private List<SubmissionProblemValidator> submissionProblemValidators;
+
     private String timeout;
     private String memoryLimit;
 
@@ -64,6 +67,8 @@ public class Problem {
         this.salidaVisible = new ArrayList<>();
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
+        this.submissionProblemValidators = new ArrayList<>();
+
         //valores por defecto
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
@@ -81,6 +86,7 @@ public class Problem {
         this.salidaVisible = new ArrayList<>();
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
+        this.submissionProblemValidators = new ArrayList<>();
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
@@ -307,5 +313,17 @@ public class Problem {
 
     public void setLimit_time_safety_margin(String limit_time_safety_margin) {
         this.limit_time_safety_margin = limit_time_safety_margin;
+    }
+
+    public List<SubmissionProblemValidator> getSubmissionProblemValidators() {
+        return submissionProblemValidators;
+    }
+
+    public void setSubmissionProblemValidators(List<SubmissionProblemValidator> submissionProblemValidators) {
+        this.submissionProblemValidators = submissionProblemValidators;
+    }
+
+    public void addSubmissionProblemValidator(SubmissionProblemValidator submissionProblemValidator){
+        this.submissionProblemValidators.add(submissionProblemValidator);
     }
 }
