@@ -32,6 +32,8 @@ public class ProblemService {
     private InNOutRepository inNOutRepository;
     @Autowired
     private ZipHandlerService zipHandlerService;
+    @Autowired
+    private ProblemValidatorService problemValidatorService;
 
 
     public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
@@ -45,6 +47,10 @@ public class ProblemService {
         zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
 
         problemRepository.save(problem);
+
+        problemValidatorService.validateProblem(problem);
+
+        problemValidatorService.checkSubmissionResult(problem);
 
     }
 

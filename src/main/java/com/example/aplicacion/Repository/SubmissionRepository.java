@@ -10,6 +10,6 @@
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
-	Submission findAnswerById(long id);
+	Submission findSubmissionById(long id);
 
 }

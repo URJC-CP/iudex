@@ -45,8 +45,14 @@ public class ResultReviser {
 
         }
         String[] time =getTime(res.getSalidaTime());
-        res.setExecTime(Float.parseFloat(time[0]));
-        res.setExecMemory(Float.parseFloat(time[1]));
+        if(time.length!=2){
+            res.setExecTime(0.0f);
+            res.setExecMemory(0.0f);
+        }else {
+            res.setExecTime(Float.parseFloat(time[0]));
+            res.setExecMemory(Float.parseFloat(time[1]));
+        }
+
 
         res.setRevisado(true);
 

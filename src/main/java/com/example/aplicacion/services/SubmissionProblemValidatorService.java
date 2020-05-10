@@ -23,6 +23,7 @@ public class SubmissionProblemValidatorService {
 
 
 
+    //clase que crea los results y los services dentro de un submission
     public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult){
         problemRepository.save(problema);
 
@@ -31,26 +32,28 @@ public class SubmissionProblemValidatorService {
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         //Creamos la Submission
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator(codigo, language, fileName, expectedResult);
+        Submission submission = submissionProblemValidator.getSubmission();
         //anadimos el probelma a la submsion
-        submissionProblemValidator.setProblema(problema);
+        submission.setProblema(problema);
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submissionProblemValidator.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
+            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
             resultRepository.save(resAux);
-            submissionProblemValidator.addResult(resAux);
+            submission.addResult(resAux);
         }
 
         List<InNOut> entradasProblema = problema.getEntradaOculta();
         List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submissionProblemValidator.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resultRepository.save(resAux);
-            submissionProblemValidator.addResult(resAux);
+            submission.addResult(resAux);
         }
+        submissionRepository.save(submissionProblemValidator.getSubmission());
         submissionProblemValidatorRepository.save(submissionProblemValidator);
 
         return submissionProblemValidator;

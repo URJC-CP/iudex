@@ -1,18 +1,23 @@
 package com.example.aplicacion.Entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
-public class SubmissionProblemValidator extends Submission{
+public class SubmissionProblemValidator{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
     private String expectedSolution;
+    @OneToOne
+    private Submission submission;
 
     public SubmissionProblemValidator(){}
 
     public SubmissionProblemValidator(String codigo, Language language, String filename, String expectedSolution){
-        super(codigo,language, filename);
+        submission = new Submission(codigo,language, filename);
         this.expectedSolution = expectedSolution;
     }
-
 
     public String getExpectedSolution() {
         return expectedSolution;
@@ -20,5 +25,13 @@ public class SubmissionProblemValidator extends Submission{
 
     public void setExpectedSolution(String expectedSolution) {
         this.expectedSolution = expectedSolution;
+    }
+
+    public Submission getSubmission() {
+        return submission;
+    }
+
+    public void setSubmission(Submission submission) {
+        this.submission = submission;
     }
 }
