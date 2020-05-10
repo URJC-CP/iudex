@@ -20,6 +20,7 @@ public class Submission {
     private List<Result> results;
 
     private boolean corregido;
+    private int numeroResultCorregidos;
     private String resultado;
 
     @ManyToOne
@@ -39,6 +40,7 @@ public class Submission {
         this.resultado ="";
         this.results = new ArrayList<>();
         this.filename=filename;
+
     }
 
     @Override
@@ -114,5 +116,21 @@ public class Submission {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public int isNumeroResultCorregidos() {
+        return numeroResultCorregidos;
+    }
+
+    public int getNumeroResultCorregidos() {
+        return numeroResultCorregidos;
+    }
+
+    public void setNumeroResultCorregidos(int numeroResultCorregidos) {
+        this.numeroResultCorregidos = numeroResultCorregidos;
+    }
+
+    public void sumarResultCorregido(){
+        this.numeroResultCorregidos++;
     }
 }

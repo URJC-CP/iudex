@@ -50,7 +50,7 @@ public class ProblemService {
 
         problemValidatorService.validateProblem(problem);
 
-        problemValidatorService.checkSubmissionResult(problem);
+        //problemValidatorService.checkSubmissionResult(problem);
 
     }
 
