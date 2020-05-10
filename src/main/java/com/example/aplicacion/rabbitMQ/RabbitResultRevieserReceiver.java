@@ -6,6 +6,7 @@ import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Repository.ResultRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ResultReviser;
+import com.example.aplicacion.services.SubmissionReviserService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ public class RabbitResultRevieserReceiver {
     private ResultRepository resultRepository;
     @Autowired
     private SubmissionRepository submissionRepository;
+    @Autowired
+    private SubmissionReviserService submissionReviserService;
 
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME2)
     public void handleMessage(Result res){
@@ -34,7 +37,7 @@ public class RabbitResultRevieserReceiver {
 
         //en caso de que ya se hayan corregido todos mandaremos una senal para que se valire el submission mediante otra cola
         if(submission.getNumeroResultCorregidos()==submission.getResults().size()){
-            
+            submissionReviserService.revisarSubmission(submission);
         }
         submissionRepository.save(submission);
 
