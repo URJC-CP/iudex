@@ -80,6 +80,7 @@ public class ProblemValidatorService {
             Submission submission = submissionProblemValidator.getSubmission();
             waitForResult(submissionProblemValidator);  //Esperamos q este corregido
 
+            System.out.println("Ha pasado el while q espera a q este todo terminado");
             //Si es accepted comprueba que es asi y ha salido correctamente
             if(submissionProblemValidator.getExpectedSolution().equals("accepted")){
                 if(submission.getResultado().equals("accepted")){
@@ -99,7 +100,7 @@ public class ProblemValidatorService {
         Submission submission = submissionProblemValidator.getSubmission();
         while(!submission.isCorregido()){
             try {
-                Thread.sleep(100);
+                Thread.sleep(10000);
                 submission = submissionRepository.findSubmissionById(submission.getId());
             } catch (InterruptedException e) {
                 e.printStackTrace();
