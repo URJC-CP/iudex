@@ -24,7 +24,7 @@ public class ConfigureRabbitMq {
     public static final String QUEUE_NAME2 = "colaReceiver";
     public static final String QUEUE_NAME3 = "colaSubmissionReviser";
 
-    public static final int DEFAULT_CONSUMERS=2;
+    public static final int DEFAULT_CONSUMERS=1;
 
     private ConnectionFactory connectionFactory;
 

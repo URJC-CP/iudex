@@ -10,6 +10,7 @@ import com.example.aplicacion.services.SubmissionReviserService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 //Clase que se encarga de recibir el
@@ -24,6 +25,7 @@ public class RabbitResultRevieserReceiver {
     private SubmissionReviserService submissionReviserService;
 
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME2)
+    @Transactional
     public void handleMessage(Result res){
 
         //enviamos el res a revisar
@@ -36,7 +38,7 @@ public class RabbitResultRevieserReceiver {
         submission.sumarResultCorregido();
 
         //en caso de que ya se hayan corregido todos mandaremos una senal para que se valire el submission mediante otra cola
-        if(submission.getNumeroResultCorregidos()==submission.getResults().size()){
+        if(submission.isTerminadoDeEjecutarResults()){
             submissionReviserService.revisarSubmission(submission);
         }
         submissionRepository.save(submission);

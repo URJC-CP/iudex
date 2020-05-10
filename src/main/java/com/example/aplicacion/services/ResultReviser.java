@@ -24,10 +24,10 @@ public class ResultReviser {
         else if(!compareIgnoreExpressions(signalAux[1], "0")){
             //Si el codigo es el 143 significa que ha dado timeout
             if(compareIgnoreExpressions(signalAux[1], "143")){
-                res.setResultadoRevision("FAILED TIMEOUT");
+                res.setResultadoRevision("time_limit_exceeded");
             }
             else {
-                res.setResultadoRevision("FAILED IN EXECUTION"+"\n"+res.getSalidaError()+ "\n El codigo de salida de error es " + signalAux[1]);
+                res.setResultadoRevision("run_time_error"+"\n"+res.getSalidaError()+ "\n El codigo de salida de error es " + signalAux[1]);
             }
 
         }
@@ -36,11 +36,11 @@ public class ResultReviser {
             //Comprobar salida Estandar
             String salidaCorrecta = res.getSalidaEstandarCorrectaInO().getText();
             if(compareIgnoreExpressions(res.getSalidaEstandar(), salidaCorrecta)){
-                res.setResultadoRevision("GOOD ANSWER");
+                res.setResultadoRevision("accepted");
 
             }
             else{
-                res.setResultadoRevision("WRONG ANSWER");
+                res.setResultadoRevision("wrong_answer");
             }
 
         }

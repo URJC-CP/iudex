@@ -40,7 +40,7 @@ public class Submission {
         this.resultado ="";
         this.results = new ArrayList<>();
         this.filename=filename;
-
+        this.numeroResultCorregidos=0;
     }
 
     @Override
@@ -132,5 +132,8 @@ public class Submission {
 
     public void sumarResultCorregido(){
         this.numeroResultCorregidos++;
+    }
+    public boolean isTerminadoDeEjecutarResults(){
+        return this.numeroResultCorregidos == results.size();
     }
 }
