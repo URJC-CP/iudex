@@ -30,6 +30,9 @@ public class SubmissionReviserService {
         if(checkAccepted(submission)){
             submission.setResultado("accepted");
         }
+        else {
+            submission.setResultado(checkSubmission(submission));
+        }
         //HAY QUE HACERLO CON EL RESTO DE OPCIONES WRONG ANSWER ETCETC
 
         submission.setCorregido(true);
@@ -50,6 +53,7 @@ public class SubmissionReviserService {
     private boolean checkAccepted(Submission submission){
         boolean salida = true;
         for (Result result: submission.getResults()){
+
             if(result.getResultadoRevision().equals("accepted")){
 
             }
@@ -58,6 +62,24 @@ public class SubmissionReviserService {
                 break;
             }
         }
+        return salida;
+    }
+
+    private String checkSubmission(Submission submission){
+        String salida = "";
+
+        for (Result result: submission.getResults()){
+            if(result.getResultadoRevision().equals("accepted")){
+
+            }else{
+                //Obtenemos el primero de los errores
+                String aux = result.getResultadoRevision();
+                salida = aux;
+                break;
+            }
+
+            }
+
         return salida;
     }
 }

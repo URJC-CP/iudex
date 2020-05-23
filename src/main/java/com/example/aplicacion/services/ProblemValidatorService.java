@@ -7,10 +7,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 //Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
 @Service
+
 public class ProblemValidatorService {
 
     @Autowired
@@ -113,16 +117,22 @@ public class ProblemValidatorService {
         for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
             Submission submission = submissionProblemValidator.getSubmission();
 
-            //Si es accepted comprueba que es asi y ha salido correctamente
-            if(submissionProblemValidator.getExpectedSolution().equals("accepted")){
-                if(submission.getResultado().equals("accepted")){
-
-                }
-                else {
-                    //Si no coincide lo ponemos a false. DEBERIA TIRAR ERROR
-                    salida = false;
-                }
+            //Obtenemos la primera linea del resultado del Submission
+            String aux = submission.getResultado();
+            try {
+                aux = new BufferedReader(new StringReader(aux)).readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+            //Si el resultado esperado es igual al obtenido devolvemos true si no false
+            if(submissionProblemValidator.getExpectedSolution().equals(aux)){
+
+            }
+            else {
+                salida= false;
+            }
+
         }
 
 
