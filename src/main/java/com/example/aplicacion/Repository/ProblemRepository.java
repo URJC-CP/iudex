@@ -11,6 +11,7 @@
   public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
 
+      Problem findById(long id);
       Problem findProblemByNombreEjercicio(String nombreEjercicio);
 
   }

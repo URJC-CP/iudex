@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+//Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
 @Service
 public class ProblemValidatorService {
 
@@ -31,12 +32,14 @@ public class ProblemValidatorService {
 
 
     public void validateProblem(Problem problem){
+        //Recorremos la lista de submission y las enviamos
         for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
 
             Submission submission= submissionProblemValidator.getSubmission();
             List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
             List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
 
+            //Creamos los result correspondientes
             int numeroEntradasVisible = entradasProblemaVisible.size();
             for(int i =0; i<numeroEntradasVisible; i++){
                 Result resAux = new Result(entradasProblemaVisible.get(i), submission.getCodigo(), salidaCorrectaProblemaVisible.get(i), submission.getLanguage(), submission.getFilename(), problem.getTimeout(), problem.getMemoryLimit() );
@@ -44,6 +47,7 @@ public class ProblemValidatorService {
                 submission.addResult(resAux);
             }
 
+            //Creamos las entradas no visibles
             List<InNOut> entradasProblema = problem.getEntradaOculta();
             List<InNOut> salidaCorrectaProblema = problem.getSalidaOculta();
             int numeroEntradas = entradasProblema.size();
@@ -58,6 +62,7 @@ public class ProblemValidatorService {
             submissionProblemValidatorRepository.save(submissionProblemValidator);
 
 
+            //Ejecutamos
             switch (submission.getLanguage().getNombreLenguaje()){
                 case "java":
                     for (Result res : submission.getResults()  ) {
@@ -71,16 +76,43 @@ public class ProblemValidatorService {
 
 
     }
+    public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator){
+        //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
+        Problem problem = problemRepository.findById(submissionProblemValidator.getSubmission().getProblema().getId());
+
+        //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
+        Boolean estaTerminado = true;
+        for(SubmissionProblemValidator submissionProblemValidator1:problem.getSubmissionProblemValidators()){
+            if(submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()){
+
+            }
+            else {
+                estaTerminado = false;
+                break;
+            }
+        }
+
+        //Si esta terminado ejecutaremos que el resultado correspondiente de cada submission es el q tiene q ser, q los accepted sean aceepted etcetc
+        if(estaTerminado){
+            //En caso de que sea valido lo apuntamos
+            if(checkSubmissionResultIsValide(problem)){
+                problem.setValido(true);
+            }else
+            {
+                problem.setValido(false);
+            }
+            problemRepository.save(problem);
+        }
+
+    }
 
     //checkea que la submission del problema den el resultado q tienen que dar
-    public boolean checkSubmissionResult(Problem problem){
+    private boolean checkSubmissionResultIsValide(Problem problem){
         boolean salida = true;
 
         for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
             Submission submission = submissionProblemValidator.getSubmission();
-            waitForResult(submissionProblemValidator);  //Esperamos q este corregido
 
-            System.out.println("Ha pasado el while q espera a q este todo terminado");
             //Si es accepted comprueba que es asi y ha salido correctamente
             if(submissionProblemValidator.getExpectedSolution().equals("accepted")){
                 if(submission.getResultado().equals("accepted")){
@@ -96,6 +128,8 @@ public class ProblemValidatorService {
 
         return salida;
     }
+
+    /*
     private void waitForResult(SubmissionProblemValidator submissionProblemValidator){
         Submission submission = submissionProblemValidator.getSubmission();
         while(!submission.isCorregido()){
@@ -107,6 +141,8 @@ public class ProblemValidatorService {
             }
         }
     }
+
+     */
 
 
 

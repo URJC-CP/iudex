@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-//Clase que se encarga de recibir el
+//Clase que se encarga de recibir el result
 @Service
 public class RabbitResultRevieserReceiver {
 
@@ -23,6 +23,7 @@ public class RabbitResultRevieserReceiver {
     private SubmissionRepository submissionRepository;
     @Autowired
     private SubmissionReviserService submissionReviserService;
+
 
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME2)
     @Transactional
@@ -37,7 +38,7 @@ public class RabbitResultRevieserReceiver {
         Submission submission = submissionRepository.findSubmissionByResults(res);
         submission.sumarResultCorregido();
 
-        //en caso de que ya se hayan corregido todos mandaremos una senal para que se valire el submission mediante otra cola
+        //en caso de que ya se hayan corregido todos mandaremos una senal para que se valide el submission
         if(submission.isTerminadoDeEjecutarResults()){
             submissionReviserService.revisarSubmission(submission);
         }

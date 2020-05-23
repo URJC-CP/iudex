@@ -34,6 +34,7 @@ public class Problem {
 
     @OneToMany
     private List<SubmissionProblemValidator> submissionProblemValidators;
+    private Boolean valido;
 
     private String timeout;
     private String memoryLimit;
@@ -326,4 +327,13 @@ public class Problem {
     public void addSubmissionProblemValidator(SubmissionProblemValidator submissionProblemValidator){
         this.submissionProblemValidators.add(submissionProblemValidator);
     }
+
+    public Boolean getValido() {
+        return valido;
+    }
+
+    public void setValido(Boolean valido) {
+        this.valido = valido;
+    }
+
 }
