@@ -2,7 +2,10 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.TheJudgeApplication;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,7 @@ public class ProblemValidatorService {
     @Autowired
     private RabbitResultExecutionSender sender;
 
+    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
 
     public void validateProblem(Problem problem){
         //Recorremos la lista de submission y las enviamos
@@ -71,6 +75,7 @@ public class ProblemValidatorService {
                 case "java":
                     for (Result res : submission.getResults()  ) {
                         sender.sendMessage(res);
+                        logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
                     }
                     break;
 
@@ -80,17 +85,19 @@ public class ProblemValidatorService {
 
 
     }
+
+
     public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator){
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Problem problem = problemRepository.findById(submissionProblemValidator.getSubmission().getProblema().getId());
 
+        logger.info("COMPROBANDO PROBLEMA: La comprobacion del problema " + problem.getNombreEjercicio()+ " se ha comenzado");
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
         Boolean estaTerminado = true;
         for(SubmissionProblemValidator submissionProblemValidator1:problem.getSubmissionProblemValidators()){
             if(submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()){
-
             }
-            else {
+            else {  //Aun no ha terminado
                 estaTerminado = false;
                 break;
             }
@@ -101,9 +108,14 @@ public class ProblemValidatorService {
             //En caso de que sea valido lo apuntamos
             if(checkSubmissionResultIsValide(problem)){
                 problem.setValido(true);
+                logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado");
+
             }else
             {
                 problem.setValido(false);
+                logger.info("El problema "+ problem.getNombreEjercicio() + " NO es valido");
+
+
             }
             problemRepository.save(problem);
         }
@@ -131,6 +143,9 @@ public class ProblemValidatorService {
             }
             else {
                 salida= false;
+                logger.warn("COMPROBANDO PROBLEMA: La submission "+submissionProblemValidator.getSubmission().getId()+" NO da el resultado esperado");
+                logger.warn("COMPROBANDO PROBLEMA: Se espera " +submissionProblemValidator.getExpectedSolution()+ " se obtiene " + aux);
+
             }
 
         }

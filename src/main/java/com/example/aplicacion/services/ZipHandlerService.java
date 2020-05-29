@@ -5,7 +5,10 @@ import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.TheJudgeApplication;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +23,7 @@ import java.util.zip.ZipInputStream;
 
 @Service
 public class ZipHandlerService {
+    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
 
     @Autowired
     private ProblemRepository problemRepository;
@@ -102,7 +106,24 @@ public class ZipHandlerService {
                     }
                 }
                 //Buscamos ahora las submission
-                else if (path1.equals("submissions") && path2.equals("accepted")){
+                else if ("submissions".equals(path1)){
+                    String resultadoEsperado ="";
+
+                    if( path2.equals("accepted")){
+                        resultadoEsperado = "accepted";
+
+                    }
+                    else if (path2.equals("wrong_answer")){
+                        resultadoEsperado = "wrong_answer";
+                    }
+                    else if (path2.equals("run_time_error")){
+                        resultadoEsperado = "run_time_error";
+                    }
+                    else {
+                        logger.warn("ZIPHANDLER: Se ha introducido una carpeta dentro de submissions con un nombre no compatible");
+                        break;
+                    }
+
                     //Buscamos el lenguaje que es analizando la extension
                     if(extension.equals("java")){
                         String lenguaje ="java";
@@ -110,14 +131,13 @@ public class ZipHandlerService {
                         String aux = convertZipToString( zipFile);
 
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  "accepted");
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.addSubmissionProblemValidator(submissionProblemValidator);
                     }
-
-
-
                 }
+
+
             }
             //Si no es de esa carpeta siginfica q esta en la carpeta base
             else {
@@ -131,6 +151,10 @@ public class ZipHandlerService {
                         String aux = convertZipToString(zipFile);
                         Map<String, Object> obj = yaml.load(aux);
                         rellenaElYuml(obj, problem);
+                    }
+                    if(extension.equals("ini")){
+                        String aux = convertZipToString(zipFile);
+                        rellenaElYumlConIni(aux, problem);
                     }
                 }
             }
@@ -200,6 +224,31 @@ public class ZipHandlerService {
             salida.deleteCharAt(salida.length()-1);
         }
         return salida.toString();
+    }
+    private  void rellenaElYumlConIni(String configuracion, Problem problem){
+        String split[] = configuracion.split("\\r?\\n");
+        Pattern pattern = Pattern.compile("(.+)=(.+)");
+        String propiedad, valor;
+        for(String aux :split){
+            Matcher m = pattern.matcher(aux);
+            if(m.find()){
+                propiedad = m.group(1);
+                valor = m.group(2);
+                valor = valor.replace("\'", ""); //quitamos las comillas
+                valor = valor.replace("\"", "");
+
+                if(propiedad.equals("name")){
+                    problem.setNombreEjercicio(valor);
+                }
+                else if(propiedad.equals("timelimit")){
+                    problem.setTimeout(valor);
+                }
+                else if(propiedad.equals("color")){
+                    problem.setColor(valor);
+                }
+
+            }
+        }
     }
     private  void rellenaElYuml(Map<String, Object> mapa, Problem problem){
         Object aux;

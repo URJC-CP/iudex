@@ -13,7 +13,6 @@ public class Problem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(unique = true)
     private String nombreEjercicio;
 
 
@@ -59,6 +58,7 @@ public class Problem {
     private String limit_validation_time;
     private String limit_validation_memory;
     private String limit_validation_output;
+    private String color;
 
     public final String timeoutPropierties = "10";
     public final String memoryLimitPropierties="1000";
@@ -336,4 +336,11 @@ public class Problem {
         this.valido = valido;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

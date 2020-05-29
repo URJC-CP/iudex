@@ -1,6 +1,7 @@
 package com.example.aplicacion.Docker;
 
 import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.TheJudgeApplication;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -9,6 +10,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
@@ -17,6 +20,7 @@ import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerJava extends DockerContainer {
+    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
 
 
 
@@ -36,6 +40,7 @@ public class DockerContainerJava extends DockerContainer {
         hostConfig.withMemory(1000000000L).withCpuCount(1L);
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+result.getFileName(), "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
 
+        logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -77,19 +82,20 @@ public class DockerContainerJava extends DockerContainer {
 
         String time= null;
         time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
-        System.out.println(time);
+        //System.out.println(time);
         result.setSalidaTime(time);
 
 
         String signal=null;
         signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
-        System.out.println(signal);
+        //System.out.println(signal);
         result.setSignalFile(signal);
 
 
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
+        logger.info("DOCKERJAVA: Se termina el result "+ result.getId() + " ");
         return result;
     }
     private String getClassName(){

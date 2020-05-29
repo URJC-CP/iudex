@@ -20,9 +20,11 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 public class ConfigureRabbitMq {
 
     public static final String EXCHANGE_NAME = "dockerExchange";
+    public static final String EXCHANGE_NAME2 = "revisorSubmissions";
+
     public static final String QUEUE_NAME = "colaExecution";
     public static final String QUEUE_NAME2 = "colaReceiver";
-    public static final String QUEUE_NAME3 = "colaSubmissionReviser";
+    //public static final String QUEUE_NAME3 = "colaSubmissionReviser";
 
     public static final int DEFAULT_CONSUMERS=1;
 
@@ -32,6 +34,9 @@ public class ConfigureRabbitMq {
     public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE_NAME);
     }
+
+    //@Bean
+    //public TopicExchange exchange2(){return new TopicExchange(EXCHANGE_NAME2);}
 
     @Bean
     Queue queueExecution(){
