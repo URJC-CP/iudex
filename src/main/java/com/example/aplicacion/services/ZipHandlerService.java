@@ -42,13 +42,15 @@ public class ZipHandlerService {
 
         //Guardamos el nombre del problema
         problem.setNombreEjercicio(problemName.split("\\.")[0]);
+        logger.info("ZIPUNCOMRESS: Se ha anyadido un nuevo zip para descomprimir con el nombre: "+ problemName);
 
         //Empezamos a descomprimir
         ZipInputStream zipFile = new ZipInputStream(inputStream);
         ZipEntry zipEntry = zipFile.getNextEntry();
 
+
         //Patron que parsea los apth de los archivos
-        Pattern p = Pattern.compile("(.+)/(.+)/(.+)/(.+)\\.(.+)$");
+        Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)");
         Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
 
         while (zipEntry != null) {
@@ -57,15 +59,16 @@ public class ZipHandlerService {
             //ER para gestionar los path
             Matcher m = p.matcher(nombreZip);
             //Si entra significa q es de la categoria /algo/algo/fichero
-            if (m.matches()){
+            if (m.find()){
                 //Objetemos el primer gruo data
-                String path = m.group(1);
-                String path1 = m.group(2);
-                String path2 = m.group(3);
-                String filename = m.group(4);
-                String extension = m.group(5);
+                //String path = m.group(1);
+                String path1 = m.group(1);
+                String path2 = m.group(2);
+                String filename = m.group(3);
+                String extension = m.group(4);
 
-
+                //Hay que quitar parte del path que no necesitamos CHUCHES/data
+                path1 = path1.replaceAll(".+/", "");
 
                 //Si es ES de ejemplo
                 if(path1.equals("data") && path2.equals("sample")){
@@ -103,6 +106,7 @@ public class ZipHandlerService {
                         InNOut inNOut = new InNOut(filename, aux);
                         inNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
+                        logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de prueba para el problema "+ problemName);
                     }
                 }
                 //Buscamos ahora las submission
@@ -134,6 +138,7 @@ public class ZipHandlerService {
                         SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.addSubmissionProblemValidator(submissionProblemValidator);
+                        logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema"+ problemName);
                     }
                 }
 

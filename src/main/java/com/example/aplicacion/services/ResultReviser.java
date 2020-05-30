@@ -13,6 +13,7 @@ import java.util.Objects;
 public class ResultReviser {
 
     public void revisar(Result res){
+
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion
         String signalAux[] = res.getSignalFile().split("\n");
 

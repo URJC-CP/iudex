@@ -41,6 +41,7 @@ public class Result {
     private float execMemory;
 
     private boolean revisado;
+    @Lob
     private String resultadoRevision;
     @ManyToOne
     private Language language;
