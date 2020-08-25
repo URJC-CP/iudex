@@ -44,6 +44,10 @@ public class ProblemValidatorService {
         for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
 
             Submission submission= submissionProblemValidator.getSubmission();
+            logger.info("COMPROBANDO PROBLEMA: La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
+
+            //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
+            /*
             List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
             List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
 
@@ -68,7 +72,7 @@ public class ProblemValidatorService {
 
             //Guardamos la submission
             submissionProblemValidatorRepository.save(submissionProblemValidator);
-
+             */
 
             //Ejecutamos
             switch (submission.getLanguage().getNombreLenguaje()){

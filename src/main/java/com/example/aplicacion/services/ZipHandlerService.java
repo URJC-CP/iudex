@@ -6,7 +6,6 @@ import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.TheJudgeApplication;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+
+//Clase que lee el zip y genera el problema adecuado
 @Service
 public class ZipHandlerService {
     Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
@@ -35,7 +36,7 @@ public class ZipHandlerService {
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
 
-    public Problem generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws IOException {
+    public Problem generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws Exception {
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
         Map<String, List<String>> mapaRevisionEntradas = new HashMap<>();
@@ -129,17 +130,20 @@ public class ZipHandlerService {
                     }
 
                     //Buscamos el lenguaje que es analizando la extension
-                    if(extension.equals("java")){
-                        String lenguaje ="java";
-                        //obtenemos el string del codigo
-                        String aux = convertZipToString( zipFile);
-
-                        //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
-                        //Anyadimos el submissionproblemvalidator al problema
-                        problem.addSubmissionProblemValidator(submissionProblemValidator);
-                        logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema"+ problemName);
+                    String lenguaje = selectLenguaje(extension);
+                    if(lenguaje==null){
+                        throw new Exception("Lenguaje no soportado");
                     }
+                    logger.info("ZIPCOMPRESS: Detectado el lenguaje "+lenguaje);
+                    //obtenemos el string del codigo
+                    String aux = convertZipToString( zipFile);
+
+                    //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
+                    SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
+                    //Anyadimos el submissionproblemvalidator al problema
+                    problem.addSubmissionProblemValidator(submissionProblemValidator);
+                    logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);
+
                 }
 
 
@@ -179,7 +183,19 @@ public class ZipHandlerService {
         return problem;
     }
 
-    public Problem generateProblemFromZIP(Problem problem, MultipartFile multipartFile) throws IOException {
+    public String selectLenguaje(String lenguaje){
+        if(lenguaje.equals("java")){
+            return "java";
+        }
+
+
+
+        else {
+            return null;
+        }
+    }
+
+    public Problem generateProblemFromZIP(Problem problem, MultipartFile multipartFile) throws Exception {
         File convFile = new File(multipartFile.getOriginalFilename());
         multipartFile.transferTo(convFile);
         return generateProblemFromZIP(problem, multipartFile.getOriginalFilename(), multipartFile.getInputStream());

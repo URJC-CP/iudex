@@ -82,11 +82,15 @@ public class IndiceController {
     }
 
     @PostMapping("/problemSubida")
-    public void subidaProblema(Model model,@RequestParam MultipartFile problema){
+    public String subidaProblema(Model model,@RequestParam MultipartFile problema){
         try {
             problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return "scoreboard";
+
     }
 }

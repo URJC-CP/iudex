@@ -41,7 +41,7 @@ public class ProblemService {
     }
 
 
-    public void addProblemFromZip(String nombreFichero, InputStream inputStream) throws IOException {
+    public void addProblemFromZip(String nombreFichero, InputStream inputStream) throws Exception {
         Problem problem = new Problem();
 
         zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
