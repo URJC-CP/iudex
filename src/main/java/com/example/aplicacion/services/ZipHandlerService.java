@@ -35,7 +35,6 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
-
     public Problem generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws Exception {
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
@@ -179,7 +178,8 @@ public class ZipHandlerService {
             e.printStackTrace();
         }
 
-
+        String hash = problem.generaHash();
+        System.out.println(hash);
         return problem;
     }
 

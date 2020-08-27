@@ -60,7 +60,7 @@ public class ResultHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Conenedor terminado");
+        //System.out.println("Conenedor terminado");
 
     }
     public String buildImage(File file){

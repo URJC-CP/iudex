@@ -44,7 +44,7 @@ public class DockerHelloWorld {
         //docker create --name cont pavlo/pavlo;
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imageId).exec();
-        System.out.println(container.getId()+"");
+        //System.out.println(container.getId()+"");
 
         String cont1 = "import java.util.Scanner;\n" +
                 "\n" +
@@ -104,7 +104,7 @@ public class DockerHelloWorld {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(salidaEstandar);
+        //System.out.println(salidaEstandar);
 
         /*
         File s = new File("salidaEstandar.ans");
@@ -129,7 +129,7 @@ public class DockerHelloWorld {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(salidaError);
+        //System.out.println(salidaError);
         //#Copiar salida compilador
         //docker cp cont:/root/salidaCompilador.txt .;
 
@@ -139,11 +139,11 @@ public class DockerHelloWorld {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(salidaCompilador);
+        //System.out.println(salidaCompilador);
         //#Borrar contenedor
         //docker rm cont;
 
-        System.out.println("Final");
+        //System.out.println("Final");
 
 
     }

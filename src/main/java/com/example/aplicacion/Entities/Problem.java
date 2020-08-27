@@ -1,8 +1,10 @@
 package com.example.aplicacion.Entities;
 
+import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
 @Entity
 public class Problem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String nombreEjercicio;
@@ -63,6 +65,8 @@ public class Problem {
     public final String timeoutPropierties = "10";
     public final String memoryLimitPropierties="1000";
 
+    private String hashString;
+
     public Problem() {
         this.entradaVisible = new ArrayList<>();
         this.salidaVisible = new ArrayList<>();
@@ -91,6 +95,22 @@ public class Problem {
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
+
+        this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
+    }
+    private String listaToString(List<InNOut> lista){
+        String salida = new String();
+        for (InNOut inout : lista ){
+            salida.concat(inout.toString());
+        }
+        return salida;
+    }
+    public String generaHash(){
+        return  this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
+    }
+
+    public String hasheaElString(String string){
+        return Hashing.sha256().hashString(string, StandardCharsets.UTF_8).toString();
     }
 
     public long getId() {
@@ -343,4 +363,5 @@ public class Problem {
     public void setColor(String color) {
         this.color = color;
     }
+
 }

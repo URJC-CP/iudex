@@ -11,7 +11,7 @@ public class codigo {
 
         while(sc.hasNext()){
             int n = sc.nextInt();
-            System.out.println(n*2);
+            //System.out.println(n*2);
         }
         throw new RuntimeException("ERROR PROVOCADO");
     }

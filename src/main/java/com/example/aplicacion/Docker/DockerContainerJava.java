@@ -91,8 +91,7 @@ public class DockerContainerJava extends DockerContainer {
         //System.out.println(signal);
         result.setSignalFile(signal);
 
-        logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
-
+        //logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 

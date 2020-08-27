@@ -51,4 +51,8 @@ public class InNOut {
     public void setText(String text) {
         this.text = text;
     }
+
+    public String toString(){
+        return this.name+this.text;
+    }
 }

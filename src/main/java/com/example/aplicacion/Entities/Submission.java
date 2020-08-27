@@ -1,5 +1,8 @@
 package com.example.aplicacion.Entities;
+import com.google.common.hash.Hashing;
+
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,8 @@ public class Submission {
 
     private String filename;
     //private Team team;
+    private String hashString;
+
 
 
     public Submission() {
@@ -41,6 +46,22 @@ public class Submission {
         this.results = new ArrayList<>();
         this.filename=filename;
         this.numeroResultCorregidos=0;
+        generaHash();
+    }
+
+    private String listaToString(List<InNOut> lista){
+        String salida = new String();
+        for (InNOut inout : lista ){
+            salida.concat(inout.toString());
+        }
+        return salida;
+    }
+    public String generaHash(){
+        return  this.hashString = hasheaElString(codigo);
+    }
+
+    public String hasheaElString(String string){
+        return Hashing.sha256().hashString(string, StandardCharsets.UTF_8).toString();
     }
 
     @Override
@@ -63,7 +84,9 @@ public class Submission {
     }
 
     public void setCodigo(String codigo) {
+
         this.codigo = codigo;
+        generaHash();
     }
 
     public List<Result> getResults() {
