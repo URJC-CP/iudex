@@ -364,4 +364,11 @@ public class Problem {
         this.color = color;
     }
 
+    public String getHashString() {
+        return hashString;
+    }
+
+    public void setHashString(String hashString) {
+        this.hashString = hashString;
+    }
 }

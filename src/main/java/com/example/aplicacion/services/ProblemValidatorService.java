@@ -75,15 +75,22 @@ public class ProblemValidatorService {
              */
 
             //Ejecutamos
-            switch (submission.getLanguage().getNombreLenguaje()){
-                case "java":
-                    for (Result res : submission.getResults()  ) {
-                        sender.sendMessage(res);
-                        logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
-                    }
-                    break;
+            if(submission.getLanguage()!=null){
+                switch (submission.getLanguage().getNombreLenguaje()){
+                    case "java":
+                        for (Result res : submission.getResults()  ) {
+                            logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
+                            sender.sendMessage(res);
+                        }
+                        break;
+
+                }
+            }
+            else {
+                logger.error("COMPROBANDO PROBLEMA: El lenguaje no esta soportado");
 
             }
+
 
         }
 

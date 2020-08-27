@@ -131,17 +131,22 @@ public class ZipHandlerService {
                     //Buscamos el lenguaje que es analizando la extension
                     String lenguaje = selectLenguaje(extension);
                     if(lenguaje==null){
-                        throw new Exception("Lenguaje no soportado");
-                    }
-                    logger.info("ZIPCOMPRESS: Detectado el lenguaje "+lenguaje);
-                    //obtenemos el string del codigo
-                    String aux = convertZipToString( zipFile);
+                        //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
+                        logger.error("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
 
-                    //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                    SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
-                    //Anyadimos el submissionproblemvalidator al problema
-                    problem.addSubmissionProblemValidator(submissionProblemValidator);
-                    logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);
+                    }
+                    else {
+                        logger.info("ZIPCOMPRESS: Detectado el lenguaje "+lenguaje);
+                        //obtenemos el string del codigo
+                        String aux = convertZipToString( zipFile);
+
+                        //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
+                        //Anyadimos el submissionproblemvalidator al problema
+                        problem.addSubmissionProblemValidator(submissionProblemValidator);
+                        logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);
+                    }
+
 
                 }
 
@@ -179,7 +184,6 @@ public class ZipHandlerService {
         }
 
         String hash = problem.generaHash();
-        System.out.println(hash);
         return problem;
     }
 

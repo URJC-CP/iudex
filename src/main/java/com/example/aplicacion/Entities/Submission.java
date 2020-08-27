@@ -32,6 +32,7 @@ public class Submission {
     private String filename;
     //private Team team;
     private String hashString;
+    private String hashStringDelProblema;
 
 
 
@@ -118,6 +119,7 @@ public class Submission {
     }
 
     public void setProblema(Problem problema) {
+        this.hashStringDelProblema = problema.getHashString();
         this.problema = problema;
     }
 
@@ -151,6 +153,22 @@ public class Submission {
 
     public void setNumeroResultCorregidos(int numeroResultCorregidos) {
         this.numeroResultCorregidos = numeroResultCorregidos;
+    }
+
+    public String getHashString() {
+        return hashString;
+    }
+
+    public void setHashString(String hashString) {
+        this.hashString = hashString;
+    }
+
+    public String getHashStringDelProblema() {
+        return hashStringDelProblema;
+    }
+
+    public void setHashStringDelProblema(String hashStringDelProblema) {
+        this.hashStringDelProblema = hashStringDelProblema;
     }
 
     public void sumarResultCorregido(){

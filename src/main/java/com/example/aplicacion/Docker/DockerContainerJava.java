@@ -38,13 +38,13 @@ public class DockerContainerJava extends DockerContainer {
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(1000000000L).withCpuCount(1L);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+result.getFileName(), "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
 
         logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 
         //Copiamos el codigo
 
-        copiarArchivoAContenedor(container.getId(), result.getFileName()+".java", result.getCodigo(),  "/root");
+        copiarArchivoAContenedor(container.getId(), nombreClase+".java", result.getCodigo(),  "/root");
 
         //Copiamos la entrada
 
