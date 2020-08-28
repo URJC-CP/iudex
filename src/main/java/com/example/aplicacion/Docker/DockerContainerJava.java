@@ -86,10 +86,13 @@ public class DockerContainerJava extends DockerContainer {
         result.setSalidaTime(time);
 
 
-        String signal=null;
-        signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
-        //System.out.println(signal);
-        result.setSignalFile(signal);
+        String signalEjecutor=null;
+        signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
+        result.setSignalEjecutor(signalEjecutor);
+
+        String signalCompilador=null;
+        signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
+        result.setSignalCompilador(signalCompilador);
 
         //logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 

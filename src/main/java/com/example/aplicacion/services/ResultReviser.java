@@ -15,20 +15,20 @@ public class ResultReviser {
     public void revisar(Result res){
 
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion
-        String signalAux[] = res.getSignalFile().split("\n");
+        //String signalAux[] = res.getSignalFile().split("\n");
 
         //si hay errores en compilacion no miramos mas
-        if(!compareIgnoreExpressions(signalAux[0],"0")){
+        if(!compareIgnoreExpressions(res.getSignalCompilador(),"0")){
             res.setResultadoRevision("FAILED IN COMPILER"+"\n"+res.getSalidaCompilador());
         }
         //Si hay errores en la ejecucion buscamos cual es
-        else if(!compareIgnoreExpressions(signalAux[1], "0")){
+        else if(!compareIgnoreExpressions(res.getSignalEjecutor(), "0")){
             //Si el codigo es el 143 significa que ha dado timeout
-            if(compareIgnoreExpressions(signalAux[1], "143")){
+            if(compareIgnoreExpressions(res.getSignalEjecutor(), "143")){
                 res.setResultadoRevision("time_limit_exceeded");
             }
             else {
-                res.setResultadoRevision("run_time_error"+"\n"+res.getSalidaError()+ "\n El codigo de salida de error es " + signalAux[1]);
+                res.setResultadoRevision("run_time_error"+"\n"+res.getSalidaError()+ "\n El codigo de salida de error es " + res.getSignalEjecutor());
             }
 
         }

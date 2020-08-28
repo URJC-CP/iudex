@@ -85,7 +85,7 @@ public class DockerContainerPython3 extends DockerContainer {
         String signal=null;
         signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
         //System.out.println(signal);
-        result.setSignalFile(signal);
+        result.setSignalEjecutor(signal);
 
         //logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 

@@ -36,7 +36,8 @@ public class Result {
 
     private String salidaTime;
     //TIMEOUT FILE fromthe container
-    private String signalFile;
+    private String signalCompilador;
+    private String signalEjecutor;
     private float execTime;
     private float execMemory;
 
@@ -55,6 +56,8 @@ public class Result {
 
         this.maxMemory="100";
         this.maxTimeout="10";
+        this.signalCompilador="0";
+
     }
 
 
@@ -64,6 +67,8 @@ public class Result {
         this.salidaEstandar="";
         this.salidaError="";
         this.salidaCompilador="";
+        this.signalCompilador="0";
+        this.signalEjecutor="";
         this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
         this.resultadoRevision="";
         this.language=language;
@@ -189,14 +194,6 @@ public class Result {
         this.execMemory = execMemory;
     }
 
-    public String getSignalFile() {
-        return signalFile;
-    }
-
-    public void setSignalFile(String signalFile) {
-        this.signalFile = signalFile;
-    }
-
     public Language getLanguage() {
         return language;
     }
@@ -227,5 +224,21 @@ public class Result {
 
     public void setMaxTimeout(String maxTimeout) {
         this.maxTimeout = maxTimeout;
+    }
+
+    public String getSignalCompilador() {
+        return signalCompilador;
+    }
+
+    public void setSignalCompilador(String signalCompilador) {
+        this.signalCompilador = signalCompilador;
+    }
+
+    public String getSignalEjecutor() {
+        return signalEjecutor;
+    }
+
+    public void setSignalEjecutor(String signalEjecutor) {
+        this.signalEjecutor = signalEjecutor;
     }
 }
