@@ -1,6 +1,8 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Docker.DockerContainerJava;
+import com.example.aplicacion.Docker.DockerContainerPython3;
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.github.dockerjava.api.DockerClient;
@@ -53,13 +55,23 @@ public class ResultHandler {
 
     @Value("${docker.dockerfile.timeout}")
     private String timeoutTime;
-    public void ejecutor(Result res){
+    public void ejecutor(Result res) throws IOException {
 
-        try {
-            new DockerContainerJava(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        Language lenguaje = res.getLanguage();
+        switch (lenguaje.getNombreLenguaje()){
+            case "java":
+                new DockerContainerJava(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
+                break;
+
+            case"python3":
+                new DockerContainerPython3(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
+                break;
+
+
+
         }
+
         //System.out.println("Conenedor terminado");
 
     }

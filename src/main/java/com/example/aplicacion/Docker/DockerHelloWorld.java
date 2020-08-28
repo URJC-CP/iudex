@@ -35,7 +35,7 @@ public class DockerHelloWorld {
 
         //#Construir imagen
         //docker build -t pavlo/pavlo .;
-        File dckfl = new File("DOCKERS/Dockerfile");
+        File dckfl = new File("DOCKERS/Python3/Dockerfile");
         String imageId = dockerClient.buildImageCmd().withDockerfile(dckfl)
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();

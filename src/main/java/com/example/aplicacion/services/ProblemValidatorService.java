@@ -76,14 +76,10 @@ public class ProblemValidatorService {
 
             //Ejecutamos
             if(submission.getLanguage()!=null){
-                switch (submission.getLanguage().getNombreLenguaje()){
-                    case "java":
-                        for (Result res : submission.getResults()  ) {
-                            logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
-                            sender.sendMessage(res);
-                        }
-                        break;
 
+                for (Result res : submission.getResults()  ) {
+                    logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
+                    sender.sendMessage(res);
                 }
             }
             else {

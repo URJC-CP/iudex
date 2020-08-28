@@ -73,6 +73,8 @@ public class SubmissionService {
         submissionRepository.save(submission);
 
 
+        /*
+        //No hace falta un Switch, direcamente se encarga el ResultHandler
         switch (submission.getLanguage().getNombreLenguaje()){
             case "java":
                 for (Result res : submission.getResults()  ) {
@@ -80,8 +82,15 @@ public class SubmissionService {
                 }
                 break;
 
+
         }
+
+         */
+
         //Envio de mensaje a la cola
+        for (Result res : submission.getResults()  ) {
+            sender.sendMessage(res);
+        }
 
 
         return submission;

@@ -41,6 +41,12 @@ public class basicController {
         Language lenguaje = new Language("java", imageId);
         languageRepository.save(lenguaje);
 
+        //Creamos el lenguaje Python
+        File dckfl2 = new File("DOCKERS/Python3/Dockerfile");
+        String imageId2 = resultHandler.buildImage(dckfl2);
+        Language lenguaje2 = new Language("python3", imageId2);
+        languageRepository.save(lenguaje2);
+
 
         Problem problem = new Problem();
         problem.setNombreEjercicio("Problema de prueba");

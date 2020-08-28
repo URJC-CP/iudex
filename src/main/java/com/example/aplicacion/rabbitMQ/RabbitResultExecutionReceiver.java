@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
+import java.io.IOException;
+
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
 
@@ -40,7 +42,11 @@ public class RabbitResultExecutionReceiver {
     public void handleMessage2(Result res){
 
         //Primero ejecutamos el codigo y guardamos
-        resultHandler.ejecutor(res);
+        try {
+            resultHandler.ejecutor(res);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         resultRepository.save(res);
 
         //Enviamos el res a la cola de reviser
