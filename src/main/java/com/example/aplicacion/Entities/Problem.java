@@ -35,6 +35,10 @@ public class Problem {
 
     @OneToMany
     private List<SubmissionProblemValidator> submissionProblemValidators;
+
+    @OneToMany
+    private List<Submission> submissions;
+
     private Boolean valido;
 
     private String timeout;
@@ -73,6 +77,7 @@ public class Problem {
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
         this.submissionProblemValidators = new ArrayList<>();
+        this.submissions = new ArrayList<>();
 
         //valores por defecto
         this.timeout = timeoutPropierties;
@@ -92,6 +97,7 @@ public class Problem {
         this.entradaOculta = new ArrayList<>();
         this.salidaOculta = new ArrayList<>();
         this.submissionProblemValidators = new ArrayList<>();
+        this.submissions = new ArrayList<>();
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
@@ -347,6 +353,9 @@ public class Problem {
     public void addSubmissionProblemValidator(SubmissionProblemValidator submissionProblemValidator){
         this.submissionProblemValidators.add(submissionProblemValidator);
     }
+    public void addSubmission(Submission submission){
+        this.submissions.add(submission);
+    }
 
     public Boolean getValido() {
         return valido;
@@ -370,5 +379,13 @@ public class Problem {
 
     public void setHashString(String hashString) {
         this.hashString = hashString;
+    }
+
+    public List<Submission> getSubmissions() {
+        return submissions;
+    }
+
+    public void setSubmissions(List<Submission> submissions) {
+        this.submissions = submissions;
     }
 }

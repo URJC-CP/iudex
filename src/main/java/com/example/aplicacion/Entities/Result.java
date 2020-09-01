@@ -22,6 +22,8 @@ public class Result {
 
     @ManyToOne
     private InNOut entradaInO;
+    @ManyToOne
+    private InNOut  salidaEstandarCorrectaInO;
 
     @Lob
     private String salidaEstandar;
@@ -30,8 +32,7 @@ public class Result {
     @Lob
     private String salidaCompilador;
 
-    @ManyToOne
-    private InNOut  salidaEstandarCorrectaInO;
+
     private int numeroEntrada;
 
     private String salidaTime;

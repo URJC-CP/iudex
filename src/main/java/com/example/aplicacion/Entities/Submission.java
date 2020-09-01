@@ -16,6 +16,7 @@ public class Submission {
 
     @Lob
     private String codigo;
+    private String filename;
 
     @ManyToOne
     private Problem problema;
@@ -29,7 +30,6 @@ public class Submission {
     @ManyToOne
     private Language language;
 
-    private String filename;
     //private Team team;
     private String hashString;
     private String hashStringDelProblema;

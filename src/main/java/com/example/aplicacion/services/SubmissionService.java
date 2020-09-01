@@ -72,6 +72,8 @@ public class SubmissionService {
         //Guardamos la submission
         submissionRepository.save(submission);
 
+        problema.addSubmission(submission);
+        problemRepository.save(problema);
 
         /*
         //No hace falta un Switch, direcamente se encarga el ResultHandler
