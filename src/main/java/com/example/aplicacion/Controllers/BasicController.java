@@ -21,7 +21,7 @@ import java.util.List;
 
 
 @Controller
-public class basicController {
+public class BasicController {
     @Autowired
     public SubmissionRepository submissionRepository;
     @Autowired

@@ -86,9 +86,9 @@ public class IndiceController {
         try {
             problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return "scoreboard";
 

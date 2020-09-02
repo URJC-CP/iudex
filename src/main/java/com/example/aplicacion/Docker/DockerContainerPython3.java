@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerPython3 extends DockerContainer {
-    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
+    Logger logger = LoggerFactory.getLogger(DockerContainerPython3.class);
 
 
 

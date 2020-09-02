@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 //Clase que lee el zip y genera el problema adecuado
 @Service
 public class ZipHandlerService {
-    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
+    Logger logger = LoggerFactory.getLogger(ZipHandlerService.class);
 
     @Autowired
     private ProblemRepository problemRepository;
@@ -180,7 +180,7 @@ public class ZipHandlerService {
         try {
             checkMap(mapaRevisionEntradas);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         String hash = problem.generaHash();

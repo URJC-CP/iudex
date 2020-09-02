@@ -4,6 +4,8 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Entities.Submission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Objects;
 
 @Service
 public class ResultReviser {
+    Logger logger = LoggerFactory.getLogger(ResultReviser.class);
 
     public void revisar(Result res){
 
@@ -54,7 +57,7 @@ public class ResultReviser {
             res.setExecMemory(Float.parseFloat(time[1]));
         }
 
-
+        logger.info("Result "+res.getId()+" corregido con resultado "+ res.getResultadoRevision());
         res.setRevisado(true);
 
     }

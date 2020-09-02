@@ -70,6 +70,7 @@ public class Problem {
     public final String memoryLimitPropierties="1000";
 
     private String hashString;
+    private boolean disponible;
 
     public Problem() {
         this.entradaVisible = new ArrayList<>();
@@ -82,6 +83,7 @@ public class Problem {
         //valores por defecto
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
+        disponible = false;
     }
 
     public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
@@ -101,6 +103,7 @@ public class Problem {
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
+        this.disponible = false;
 
         this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
     }
@@ -387,5 +390,21 @@ public class Problem {
 
     public void setSubmissions(List<Submission> submissions) {
         this.submissions = submissions;
+    }
+
+    public String getTimeoutPropierties() {
+        return timeoutPropierties;
+    }
+
+    public String getMemoryLimitPropierties() {
+        return memoryLimitPropierties;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
     }
 }

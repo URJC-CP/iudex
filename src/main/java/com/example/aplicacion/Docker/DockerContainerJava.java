@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerJava extends DockerContainer {
-    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
+    Logger logger = LoggerFactory.getLogger(DockerContainerJava.class);
 
 
 
@@ -37,7 +37,7 @@ public class DockerContainerJava extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(1000000000L).withCpuCount(1L);
+        hostConfig.withMemory(1000000000L).withCpuCount(1L).withDiskQuota(1000000000L);
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
 
         logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());

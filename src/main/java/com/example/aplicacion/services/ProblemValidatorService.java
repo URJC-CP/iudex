@@ -37,14 +37,14 @@ public class ProblemValidatorService {
     @Autowired
     private RabbitResultExecutionSender sender;
 
-    Logger logger = LoggerFactory.getLogger(TheJudgeApplication.class);
+    Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
 
     public void validateProblem(Problem problem){
         //Recorremos la lista de submission y las enviamos
         for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
 
             Submission submission= submissionProblemValidator.getSubmission();
-            logger.info("COMPROBANDO PROBLEMA: La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
+            logger.info("La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
 
             //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
@@ -78,12 +78,12 @@ public class ProblemValidatorService {
             if(submission.getLanguage()!=null){
 
                 for (Result res : submission.getResults()  ) {
-                    logger.info("COMPROBANDO PROBLEMA: El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
+                    logger.info(" El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
                     sender.sendMessage(res);
                 }
             }
             else {
-                logger.error("COMPROBANDO PROBLEMA: El lenguaje no esta soportado");
+                logger.error(" El lenguaje no esta soportado");
 
             }
 
@@ -141,7 +141,7 @@ public class ProblemValidatorService {
             try {
                 aux = new BufferedReader(new StringReader(aux)).readLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
 
             //Si el resultado esperado es igual al obtenido devolvemos true si no false
@@ -169,7 +169,7 @@ public class ProblemValidatorService {
                 Thread.sleep(10000);
                 submission = submissionRepository.findSubmissionById(submission.getId());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+            throw new RuntimeException(e);
             }
         }
     }

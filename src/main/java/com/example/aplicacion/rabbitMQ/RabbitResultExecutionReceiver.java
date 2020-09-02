@@ -45,7 +45,7 @@ public class RabbitResultExecutionReceiver {
         try {
             resultHandler.ejecutor(res);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         resultRepository.save(res);
 

@@ -70,7 +70,7 @@ public class DockerHelloWorld {
         try {
             copiarArchivoAContenedor(container.getId(),"codigo.java" ,cont1 , "/root");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         String cont2 = "1\n" +
@@ -82,7 +82,7 @@ public class DockerHelloWorld {
         try {
             copiarArchivoAContenedor(container.getId(), "entrada.in", cont2, "/root");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         //#Arrancar contenedor
@@ -102,7 +102,7 @@ public class DockerHelloWorld {
         try {
             salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         //System.out.println(salidaEstandar);
 
@@ -117,7 +117,7 @@ public class DockerHelloWorld {
             convertirTarFile(tarArchivo, new File("DOCKERS/salidaEstandar.ans"));
         }
         catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
          */
 
@@ -127,7 +127,7 @@ public class DockerHelloWorld {
         try {
             salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         //System.out.println(salidaError);
         //#Copiar salida compilador
@@ -137,7 +137,7 @@ public class DockerHelloWorld {
         try {
             salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         //System.out.println(salidaCompilador);
         //#Borrar contenedor
