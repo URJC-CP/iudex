@@ -44,7 +44,7 @@ public class SubmissionService {
         Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         //Creamos la Submission
-        Submission submission = new Submission(codigo, language, fileName);
+        Submission submission = new Submission(codigo, language, fileName, true);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);

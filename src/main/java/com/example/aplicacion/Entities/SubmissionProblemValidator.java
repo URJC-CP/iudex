@@ -15,7 +15,7 @@ public class SubmissionProblemValidator{
     public SubmissionProblemValidator(){}
 
     public SubmissionProblemValidator(String codigo, Language language, String filename, String expectedSolution){
-        submission = new Submission(codigo,language, filename);
+        submission = new Submission(codigo,language, filename, false);
         this.expectedSolution = expectedSolution;
     }
 

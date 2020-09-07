@@ -34,12 +34,12 @@ public class Submission {
     private String hashString;
     private String hashStringDelProblema;
 
-
+    private boolean esPublica;
 
     public Submission() {
     }
 
-    public Submission(String codigo, Language lenguaje, String filename) {
+    public Submission(String codigo, Language lenguaje, String filename, boolean esPublica) {
         this.codigo = codigo;
         this.language =lenguaje;
         this.corregido=false;
@@ -48,6 +48,7 @@ public class Submission {
         this.filename=filename;
         this.numeroResultCorregidos=0;
         generaHash();
+        this.esPublica = esPublica;
     }
 
     private String listaToString(List<InNOut> lista){
@@ -176,5 +177,13 @@ public class Submission {
     }
     public boolean isTerminadoDeEjecutarResults(){
         return this.numeroResultCorregidos == results.size();
+    }
+
+    public boolean isEsPublica() {
+        return esPublica;
+    }
+
+    public void setEsPublica(boolean esPublica) {
+        this.esPublica = esPublica;
     }
 }

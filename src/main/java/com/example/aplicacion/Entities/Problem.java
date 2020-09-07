@@ -53,6 +53,7 @@ public class Problem {
     private String hashString;
     private boolean disponible;
 
+
     private String validation;
     private String validation_flags;
 
