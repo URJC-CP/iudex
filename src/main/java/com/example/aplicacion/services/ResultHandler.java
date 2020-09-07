@@ -53,19 +53,25 @@ public class ResultHandler {
 
     }
 
-    @Value("${docker.dockerfile.timeout}")
+    @Value("${problem.default.timeout}")
     private String timeoutTime;
+    @Value("${problem.default.memory}")
+    private String memoryLimit;
+    @Value("${problem.default.cores}")
+    private String defaultCPU;
+    @Value("${problem.default.storage}")
+    private String defaultStorage;
     public void ejecutor(Result res) throws IOException {
 
 
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()){
             case "java":
-                new DockerContainerJava(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
+                new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
             case"python3":
-                new DockerContainerPython3(res, dockerClient).ejecutar(res.getLanguage().getImgenId());
+                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
                 break;
 
 

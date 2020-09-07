@@ -50,6 +50,8 @@ public class Problem {
     private String license;
     private String rights_owner;
     //private String keywords;
+    private String hashString;
+    private boolean disponible;
 
     private String validation;
     private String validation_flags;
@@ -69,8 +71,7 @@ public class Problem {
     public final String timeoutPropierties = "10";
     public final String memoryLimitPropierties="1000";
 
-    private String hashString;
-    private boolean disponible;
+
 
     public Problem() {
         this.entradaVisible = new ArrayList<>();

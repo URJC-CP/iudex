@@ -20,25 +20,39 @@ import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerJava extends DockerContainer {
+
     Logger logger = LoggerFactory.getLogger(DockerContainerJava.class);
 
-
-
-    public DockerContainerJava(Result result, DockerClient dockerClient){
-        super(result, dockerClient);
+    public DockerContainerJava(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit){
+        super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
     }
 
 
 
     public Result ejecutar(String imagenId) throws IOException {
 
+        Long defaultCPU = Long.parseLong(this.getDefaultCPU());
+        Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
+        Long defaultStorageLimit = Long.parseLong(this.getDefaultStorageLimit());
+
+
         String nombreClase = getClassName();
         Result result = getResult();
+
+        String timeout;
+        if(result.getMaxTimeout()!=null){
+            timeout= result.getMaxTimeout();
+        }
+        else {
+             timeout = this.getDefaultTimeout();
+        }
+
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(1000000000L).withCpuCount(1L).withDiskQuota(1000000000L);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).exec();
+        hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU)
+                .withDiskQuota(defaultStorageLimit);
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeout,"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).withName("a"+Long.toString(result.getId())).exec();
 
         logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 

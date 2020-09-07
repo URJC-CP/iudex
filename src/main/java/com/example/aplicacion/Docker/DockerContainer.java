@@ -15,11 +15,18 @@ import java.io.InputStream;
 public class DockerContainer {
     private Result result;
     private static DockerClient dockerClient;
+    private String defaultMemoryLimit;
+    private String defaultTimeout;
+    private String defaultCPU;
+    private String defaultStorageLimit;
 
-    public DockerContainer(Result result, DockerClient dockerClient ){
+    public DockerContainer(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU , String defaultStorageLimit){
         this.result = result;
         this.dockerClient = dockerClient;
-
+        this.defaultMemoryLimit=defaultMemoryLimit;
+        this.defaultTimeout=defaultTimeout;
+        this.defaultCPU=defaultCPU;
+        this.defaultStorageLimit=defaultStorageLimit;
     }
     static void copiarArchivoAContenedor(String contAux, String nombre, String contenido, String pathDestino) throws IOException {
         dockerClient.copyArchiveToContainerCmd(contAux).withTarInputStream(convertStringtoInputStream(nombre, contenido)).withRemotePath(pathDestino).exec();
@@ -96,4 +103,35 @@ public class DockerContainer {
         DockerContainer.dockerClient = dockerClient;
     }
 
+    public String getDefaultMemoryLimit() {
+        return defaultMemoryLimit;
+    }
+
+    public void setDefaultMemoryLimit(String defaultMemoryLimit) {
+        this.defaultMemoryLimit = defaultMemoryLimit;
+    }
+
+    public String getDefaultTimeout() {
+        return defaultTimeout;
+    }
+
+    public void setDefaultTimeout(String defaultTimeout) {
+        this.defaultTimeout = defaultTimeout;
+    }
+
+    public String getDefaultCPU() {
+        return defaultCPU;
+    }
+
+    public void setDefaultCPU(String defaultCPU) {
+        this.defaultCPU = defaultCPU;
+    }
+
+    public String getDefaultStorageLimit() {
+        return defaultStorageLimit;
+    }
+
+    public void setDefaultStorageLimit(String defaultStorageLimit) {
+        this.defaultStorageLimit = defaultStorageLimit;
+    }
 }
