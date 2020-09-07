@@ -123,6 +123,10 @@ public class Submission {
         this.hashStringDelProblema = problema.getHashString();
         this.problema = problema;
     }
+    public void generaHashProblema(){
+        this.hashStringDelProblema = problema.getHashString();
+
+    }
 
     public void addResult(Result res){
         this.results.add(res);

@@ -33,8 +33,8 @@ public class SubmissionProblemValidatorService {
         //Creamos la Submission
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator(codigo, language, fileName, expectedResult);
         Submission submission = submissionProblemValidator.getSubmission();
-        //anadimos el probelma a la submsion
-        submission.setProblema(problema);
+
+
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
@@ -53,6 +53,10 @@ public class SubmissionProblemValidatorService {
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
+        submission.setProblema(problema);
+        problema.generaHash();
+        submission.generaHashProblema();
+
         submissionRepository.save(submissionProblemValidator.getSubmission());
         submissionProblemValidatorRepository.save(submissionProblemValidator);
 
