@@ -41,17 +41,24 @@ public class ProblemService {
     }
 
 
-    public void addProblemFromZip(String nombreFichero, InputStream inputStream) throws Exception {
-        Problem problem = new Problem();
+    public String addProblemFromZip(String nombreFichero, InputStream inputStream) throws Exception {
+        if(problemDuplicated(nombreFichero)){
+            //El problema esta duplicado no deberia dejar guardar
+            return "PROBLEM NAME DUPLICATED";
 
-        zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
+        }else {
+            Problem problem = new Problem();
+            zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
 
-        problemRepository.save(problem);
+            problemRepository.save(problem);
 
-        problemValidatorService.validateProblem(problem);
+            problemValidatorService.validateProblem(problem);
+            return "OK";
+        }
+    }
 
-        //problemValidatorService.checkSubmissionResult(problem);
-
+    private boolean problemDuplicated(String nombre){
+        return problemRepository.existsByNombreEjercicio(nombre);
     }
 
 

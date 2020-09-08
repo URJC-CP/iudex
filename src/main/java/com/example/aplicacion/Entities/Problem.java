@@ -39,6 +39,12 @@ public class Problem {
     @OneToMany
     private List<Submission> submissions;
 
+    @ManyToOne
+    private Team equipoPropietario;
+
+    @ManyToMany(mappedBy = "listaProblemasIntentados")
+    private List<Team> listaEquiposIntentados;
+
     private Boolean valido;
 
     private String timeout;

@@ -14,4 +14,6 @@
       Problem findById(long id);
       Problem findProblemByNombreEjercicio(String nombreEjercicio);
 
+      boolean existsByNombreEjercicio(String nombre);
+
   }

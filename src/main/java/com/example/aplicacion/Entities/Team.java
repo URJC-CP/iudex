@@ -1,24 +1,29 @@
 package com.example.aplicacion.Entities;
 
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 //CLASE donde se guarda la informacion referente a los equipos
+@Entity
 public class Team {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String nombreEquipo;
 
-    @OneToMany
+    @ManyToMany (fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
     private List<User> participantes;
 
     @OneToMany
     private List<Submission> listaDeSubmissions;
     @OneToMany
-    private List<Problem> listaProblemasIntentados;
-    @OneToMany
     private List<Problem> listaProblemasCreados;
+    @ManyToMany
+    private List<Problem> listaProblemasIntentados;
 
     public Team(){
+        this.participantes = new ArrayList<>();
         this.listaDeSubmissions = new ArrayList<>();
         this.listaProblemasCreados = new ArrayList<>();
         this.listaProblemasIntentados = new ArrayList<>();

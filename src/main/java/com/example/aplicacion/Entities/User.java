@@ -12,30 +12,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(name="nickname", unique = true)
     private String nickname;
+
+    @Column(name="email", unique = true)
     private String email;
-    @OneToMany
-    private List<Submission> listaDeSubmissions;
 
-    @OneToMany
-    private List<Problem> listaProblemasIntentados;
 
-    @OneToMany
-    private List<Problem> listaProblemasCreados;
+
+    @ManyToMany
+    private List<Team> equiposParticipantes;
+
+
 
     public User(String nickname, String email) {
         this.nickname = nickname;
         this.email = email;
-        this.listaDeSubmissions = new ArrayList<>();
-        this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasIntentados = new ArrayList<>();
+        this.equiposParticipantes = new ArrayList<>();
 
     }
 
     public User() {
-        this.listaDeSubmissions = new ArrayList<>();
-        this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasIntentados = new ArrayList<>();
+
     }
 
 
@@ -64,36 +62,17 @@ public class User {
         this.email = email;
     }
 
-    public List<Submission> getListaDeSubmissions() {
-        return listaDeSubmissions;
-    }
-
-    public void setListaDeSubmissions(List<Submission> listaDeSubmissions) {
-        this.listaDeSubmissions = listaDeSubmissions;
-    }
-
-    public List<Problem> getListaProblemasIntentados() {
-        return listaProblemasIntentados;
-    }
-
-    public void setListaProblemasIntentados(List<Problem> listaProblemasIntentados) {
-        this.listaProblemasIntentados = listaProblemasIntentados;
-    }
-
-    public List<Problem> getListaProblemasCreados() {
-        return listaProblemasCreados;
-    }
-
-    public void setListaProblemasCreados(List<Problem> listaProblemasCreados) {
-        this.listaProblemasCreados = listaProblemasCreados;
-    }
-
-    public void addProblemaCreado(Problem problem){
-        this.listaProblemasCreados.add(problem);
-    }
-    public void addProblemaIntentado(Problem problem){
-        this.listaProblemasIntentados.add(problem);
-    }
 
 
+   public void addTeam(Team team){
+        this.equiposParticipantes.add(team);
+   }
+
+    public List<Team> getEquiposParticipantes() {
+        return equiposParticipantes;
+    }
+
+    public void setEquiposParticipantes(List<Team> equiposParticipantes) {
+        this.equiposParticipantes = equiposParticipantes;
+    }
 }
