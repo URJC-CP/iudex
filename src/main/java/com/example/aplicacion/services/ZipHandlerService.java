@@ -5,7 +5,6 @@ import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.TheJudgeApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +168,9 @@ public class ZipHandlerService {
                         String aux = convertZipToString(zipFile);
                         rellenaElYumlConIni(aux, problem);
                     }
+                    if (extension.equals("pdf")){
+                        problem.setDocumento(convertZipToByte(zipFile));
+                    }
                 }
             }
 
@@ -240,6 +242,7 @@ public class ZipHandlerService {
     private String convertZipToString( ZipInputStream zipFile) throws IOException {
         StringBuilder salida = new StringBuilder();
 
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile));
 
         String linea;
@@ -252,6 +255,11 @@ public class ZipHandlerService {
         }
         return salida.toString();
     }
+    private byte[] convertZipToByte(ZipInputStream zipInputStream) throws IOException {
+        byte[] bits = zipInputStream.readAllBytes();
+        return bits;
+    }
+
     private  void rellenaElYumlConIni(String configuracion, Problem problem){
         String split[] = configuracion.split("\\r?\\n");
         Pattern pattern = Pattern.compile("(.+)=(.+)");

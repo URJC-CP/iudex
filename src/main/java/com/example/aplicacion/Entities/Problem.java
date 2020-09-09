@@ -1,9 +1,12 @@
 package com.example.aplicacion.Entities;
 
 import com.google.common.hash.Hashing;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
 
+import javax.ejb.LocalBean;
 import javax.persistence.*;
+import javax.swing.text.Document;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,7 @@ public class Problem {
     @OneToMany
     private List<SubmissionProblemValidator> submissionProblemValidators;
 
-    @OneToMany
+    @OneToMany(cascade =  CascadeType.ALL)
     private List<Submission> submissions;
 
     @ManyToOne
@@ -58,7 +61,8 @@ public class Problem {
     //private String keywords;
     private String hashString;
     private boolean disponible;
-
+    @Lob
+    private byte[] documento;
 
     private String validation;
     private String validation_flags;
@@ -414,5 +418,29 @@ public class Problem {
 
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
+    }
+
+    public Team getEquipoPropietario() {
+        return equipoPropietario;
+    }
+
+    public void setEquipoPropietario(Team equipoPropietario) {
+        this.equipoPropietario = equipoPropietario;
+    }
+
+    public List<Team> getListaEquiposIntentados() {
+        return listaEquiposIntentados;
+    }
+
+    public void setListaEquiposIntentados(List<Team> listaEquiposIntentados) {
+        this.listaEquiposIntentados = listaEquiposIntentados;
+    }
+
+    public byte[] getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(byte[] documento) {
+        this.documento = documento;
     }
 }

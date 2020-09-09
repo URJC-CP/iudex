@@ -42,11 +42,6 @@ public class ProblemService {
 
 
     public String addProblemFromZip(String nombreFichero, InputStream inputStream) throws Exception {
-        if(problemDuplicated(nombreFichero)){
-            //El problema esta duplicado no deberia dejar guardar
-            return "PROBLEM NAME DUPLICATED";
-
-        }else {
             Problem problem = new Problem();
             zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
 
@@ -54,7 +49,7 @@ public class ProblemService {
 
             problemValidatorService.validateProblem(problem);
             return "OK";
-        }
+
     }
 
     private boolean problemDuplicated(String nombre){

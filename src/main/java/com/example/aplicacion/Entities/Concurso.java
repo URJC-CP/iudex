@@ -11,5 +11,5 @@ public class Concurso {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    
+
 }
