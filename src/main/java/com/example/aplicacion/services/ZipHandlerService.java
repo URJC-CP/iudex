@@ -50,7 +50,8 @@ public class ZipHandlerService {
 
         //Patron que parsea los apth de los archivos
         Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)");
-        Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
+        //Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
+        Pattern p2 = Pattern.compile("(.+)\\.(.+)$");
 
         while (zipEntry != null) {
             String nombreZip = zipEntry.getName();
@@ -155,8 +156,8 @@ public class ZipHandlerService {
             else {
                 Matcher m2 =p2.matcher(nombreZip);
                 if(m2.matches()){
-                    String name = m2.group(2);
-                    String extension = m2.group(3);
+                    String name = m2.group(1);
+                    String extension = m2.group(2);
                     //SI es el archivo de configuracion jaml
                     if(extension.equals("yaml")&&name.equals("problem")){
                         Yaml yaml = new Yaml();
