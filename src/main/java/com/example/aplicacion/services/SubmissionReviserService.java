@@ -25,7 +25,6 @@ public class SubmissionReviserService {
     private LanguageRepository languageRepository;
 
     //Hay que anyadirlo por que da fallo al no obtener todo en la BBDD haciendolo mediante evaluacion perezosa. Esto elimina esa variable de la lista
-
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission){
@@ -57,6 +56,9 @@ public class SubmissionReviserService {
         for (Result result: submission.getResults()){
 
             if(result.getResultadoRevision().equals("accepted")){
+                //Sumamos los tiempos de ejecucion
+                submission.setExecSubmissionTime(submission.getExecSubmissionTime()+result.getExecTime());
+                submission.setExecSubmissionMemory(submission.getExecSubmissionMemory()+result.getExecMemory());
 
             }
             else {
@@ -67,12 +69,15 @@ public class SubmissionReviserService {
         return salida;
     }
 
+    //Obtiene el primer error
     private String checkSubmission(Submission submission){
         String salida = "";
 
         for (Result result: submission.getResults()){
             if(result.getResultadoRevision().equals("accepted")){
-
+                //Sumamos los tiempos de ejecucion
+                submission.setExecSubmissionTime(submission.getExecSubmissionTime()+result.getExecTime());
+                submission.setExecSubmissionMemory(submission.getExecSubmissionMemory()+result.getExecMemory());
             }else{
                 //Obtenemos el primero de los errores
                 String aux = result.getResultadoRevision();

@@ -35,6 +35,8 @@ public class Submission {
     private String hashStringDelProblema;
 
     private boolean esPublica;
+    private float execSubmissionTime;
+    private float execSubmissionMemory;
 
     public Submission() {
     }
@@ -189,5 +191,21 @@ public class Submission {
 
     public void setEsPublica(boolean esPublica) {
         this.esPublica = esPublica;
+    }
+
+    public float getExecSubmissionTime() {
+        return execSubmissionTime;
+    }
+
+    public void setExecSubmissionTime(float execSubmissionTime) {
+        this.execSubmissionTime = execSubmissionTime;
+    }
+
+    public float getExecSubmissionMemory() {
+        return execSubmissionMemory;
+    }
+
+    public void setExecSubmissionMemory(float execSubmissionMemory) {
+        this.execSubmissionMemory = execSubmissionMemory;
     }
 }
