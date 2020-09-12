@@ -45,9 +45,11 @@ public class Problem {
     @ManyToOne
     private Team equipoPropietario;
 
-    @ManyToMany(mappedBy = "listaProblemasIntentados")
+    @ManyToMany(mappedBy = "listaProblemasParticipados")
     private List<Team> listaEquiposIntentados;
 
+    @ManyToMany(mappedBy = "listaProblemas")
+    private List<Concurso> listaConcursosPertenece;
     private Boolean valido;
 
     private String timeout;

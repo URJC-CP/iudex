@@ -2,8 +2,10 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.TeamRepository;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
@@ -34,6 +36,8 @@ public class ProblemService {
     private ZipHandlerService zipHandlerService;
     @Autowired
     private ProblemValidatorService problemValidatorService;
+    @Autowired
+    private TeamRepository teamRepository;
 
 
     public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
@@ -41,10 +45,15 @@ public class ProblemService {
     }
 
 
-    public String addProblemFromZip(String nombreFichero, InputStream inputStream) throws Exception {
+    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String nombreEquipo) throws Exception {
             Problem problem = new Problem();
             zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
 
+            Team team =teamRepository.findByNombreEquipo(nombreEquipo);
+            if (team == null) {
+                return "TEAM NOT FOUND";
+            }
+            problem.setEquipoPropietario(team);
             problemRepository.save(problem);
 
             problemValidatorService.validateProblem(problem);

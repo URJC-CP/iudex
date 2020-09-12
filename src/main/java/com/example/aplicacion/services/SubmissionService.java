@@ -1,10 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Repository.LanguageRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.ResultRepository;
-import com.example.aplicacion.Repository.SubmissionRepository;
+import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +29,14 @@ public class SubmissionService {
     private ResultRepository resultRepository;
     @Autowired
     private LanguageRepository languageRepository;
+    @Autowired
+    private TeamRepository teamRepository;
 
     @Autowired
     private RabbitResultExecutionSender sender;
 
 
-    public Submission crearPeticion(String codigo,  String problem, String lenguaje, String fileName ){
+    public Submission creaSubmission(String codigo, String problem, String lenguaje, String fileName, String nombreEquipo ){
 
 
         //Obtedemos el Problema del que se trata
@@ -68,7 +67,11 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-
+        Team team =teamRepository.findByNombreEquipo(nombreEquipo);
+        if (team == null) {
+            //return "TEAM NOT FOUND";
+        }
+        submission.setTeam(team);
         //Guardamos la submission
         submissionRepository.save(submission);
 

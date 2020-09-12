@@ -20,20 +20,29 @@ public class Team {
     @OneToMany
     private List<Problem> listaProblemasCreados;
     @ManyToMany
-    private List<Problem> listaProblemasIntentados;
+    private List<Problem> listaProblemasParticipados;
+    @ManyToMany(mappedBy = "listaParticipantes")
+    private List<Concurso> listaConcursosParticipados;
+    @OneToMany
+    private List<Concurso> listaConcursosCreados;
 
     public Team(){
         this.participantes = new ArrayList<>();
         this.listaDeSubmissions = new ArrayList<>();
         this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasIntentados = new ArrayList<>();
+        this.listaProblemasParticipados = new ArrayList<>();
+        this.listaConcursosCreados= new ArrayList<>();
+        this.listaConcursosParticipados= new ArrayList<>();
+
     }
     public Team(String nombreEquipo){
         this.nombreEquipo=nombreEquipo;
         this.participantes = new ArrayList<>();
         this.listaDeSubmissions = new ArrayList<>();
         this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasIntentados = new ArrayList<>();
+        this.listaProblemasParticipados = new ArrayList<>();
+        this.listaConcursosCreados= new ArrayList<>();
+        this.listaConcursosParticipados= new ArrayList<>();
     }
 
     public String getNombreEquipo() {
@@ -60,12 +69,12 @@ public class Team {
         this.listaDeSubmissions = listaDeSubmissions;
     }
 
-    public List<Problem> getListaProblemasIntentados() {
-        return listaProblemasIntentados;
+    public List<Problem> getListaProblemasParticipados() {
+        return listaProblemasParticipados;
     }
 
-    public void setListaProblemasIntentados(List<Problem> listaProblemasIntentados) {
-        this.listaProblemasIntentados = listaProblemasIntentados;
+    public void setListaProblemasParticipados(List<Problem> listaProblemasIntentados) {
+        this.listaProblemasParticipados = listaProblemasIntentados;
     }
 
     public List<Problem> getListaProblemasCreados() {
@@ -87,6 +96,30 @@ public class Team {
         this.listaProblemasCreados.add(problem);
     }
     public void addProblemaIntentado(Problem problem){
-        this.listaProblemasIntentados.add(problem);
+        this.listaProblemasParticipados.add(problem);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<Concurso> getListaConcursosParticipados() {
+        return listaConcursosParticipados;
+    }
+
+    public void setListaConcursosParticipados(List<Concurso> listaConcursosParticipados) {
+        this.listaConcursosParticipados = listaConcursosParticipados;
+    }
+
+    public List<Concurso> getListaConcursosCreados() {
+        return listaConcursosCreados;
+    }
+
+    public void setListaConcursosCreados(List<Concurso> listaConcursosCreados) {
+        this.listaConcursosCreados = listaConcursosCreados;
     }
 }

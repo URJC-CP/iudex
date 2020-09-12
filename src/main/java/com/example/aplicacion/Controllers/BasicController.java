@@ -74,11 +74,10 @@ public class BasicController {
 
         problemRepository.save(problem);
 
-        userService.crearUsuario("pavloXD", "mail1");
-        userService.crearUsuario("pavloXD", "mail2");
-        userService.crearUsuario("pavloXD2", "mail1");
-
-        userService.deleteUserByNickname("pavloXD");
+        userService.crearUsuario("pavloXd", "mail1");
+        //userService.crearUsuario("pavloXD", "mail2");
+        //userService.crearUsuario("pavloXD2", "mail1");
+        //userService.deleteUserByNickname("pavloXD");
 
 
     }

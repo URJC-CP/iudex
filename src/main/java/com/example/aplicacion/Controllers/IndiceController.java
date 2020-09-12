@@ -2,15 +2,9 @@ package com.example.aplicacion.Controllers;
 
 
 import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Repository.LanguageRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.ResultRepository;
-import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.LanguageService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
-import org.apache.commons.compress.compressors.FileNameUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 
 @Controller
@@ -63,7 +56,7 @@ public class IndiceController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        Submission salida = submissionService.crearPeticion(cod, problemaAsignado, lenguaje, fileName);
+        Submission salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, "pavloXd");
 
 
 
@@ -84,7 +77,7 @@ public class IndiceController {
     @PostMapping("/problemSubida")
     public String subidaProblema(Model model,@RequestParam MultipartFile problema){
         try {
-            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream());
+            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), "pavloXd");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

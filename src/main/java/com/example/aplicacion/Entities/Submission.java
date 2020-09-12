@@ -38,6 +38,9 @@ public class Submission {
     private float execSubmissionTime;
     private float execSubmissionMemory;
 
+    @ManyToOne (cascade = CascadeType.ALL)
+    private Team team;
+
     public Submission() {
     }
 
@@ -207,5 +210,13 @@ public class Submission {
 
     public void setExecSubmissionMemory(float execSubmissionMemory) {
         this.execSubmissionMemory = execSubmissionMemory;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
