@@ -78,9 +78,9 @@ public class IndiceController {
     }
 
     @PostMapping("/problemSubida")
-    public String subidaProblema(Model model,@RequestParam MultipartFile problema){
+    public String subidaProblema(Model model,@RequestParam MultipartFile problema, @RequestParam String problemaName){
         try {
-            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), "pavloXd");
+            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), "pavloXd", problemaName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
@@ -93,7 +93,6 @@ public class IndiceController {
     @PostMapping("/asignaProblemaAConcurso")
     public String AsignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
         concursoService.anyadeProblemaConcurso(concursoId, problemId);
-
         return "scoreboard";
     }
 

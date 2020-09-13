@@ -32,6 +32,21 @@
 </div>
 
 <div class="container">
+    <form method="post" action="/problemSubida" enctype="multipart/form-data">
+        <div class="row">
+            <p>ZIP de nuevo problema</p>
+            <input type="file" id="problema" name="problema"  required>
+        </div>
+        <div class="row">
+            <input type="text" id="problemaName" name="problemaName"  >
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
     <p>Problema a Concurso</p>
     <form method="post" action="/asignaProblemaAConcurso" enctype="multipart/form-data">
         <div class="row">
@@ -41,6 +56,7 @@
                 {{/exercices}}
             </select>
         </div>
+
         <div class="row">
             <select class="form-control" name="concursoId">
                 {{#concursos}}
@@ -51,24 +67,6 @@
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
         </div>
-    </form>
-</div>
-
-
-<div class="container">
-    <form method="post" action="/problemSubida" enctype="multipart/form-data">
-
-        <div class="row">
-            <p>ZIP de nuevo problema</p>
-            <input type="file" id="problema" name="problema"  required>
-        </div>
-
-
-
-        <div class="siguiente">
-            <button type="submit" class="btn btn-success">Guardar</button>
-        </div>
-
     </form>
 </div>
 

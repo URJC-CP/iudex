@@ -40,8 +40,10 @@ public class ZipHandlerService {
         Map<String, List<String>> mapaRevisionEntradas = new HashMap<>();
 
         //Guardamos el nombre del problema
-        problem.setNombreEjercicio(problemName.split("\\.")[0]);
-        logger.info("ZIPUNCOMRESS: Se ha anyadido un nuevo zip para descomprimir con el nombre: "+ problemName);
+        if(problem.getNombreEjercicio()==null){
+            problem.setNombreEjercicio(problemName.split("\\.")[0]);
+        }
+        logger.info("ZIPUNCOMRESS: Se ha anyadido un nuevo zip para descomprimir con el nombre: "+ problem.getNombreEjercicio());
 
         //Empezamos a descomprimir
         ZipInputStream zipFile = new ZipInputStream(inputStream);

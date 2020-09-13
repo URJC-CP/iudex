@@ -45,8 +45,11 @@ public class ProblemService {
     }
 
 
-    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String nombreEquipo) throws Exception {
+    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String nombreEquipo, String nombreProblema) throws Exception {
             Problem problem = new Problem();
+            if(!nombreProblema.equals("")){
+                problem.setNombreEjercicio(nombreProblema);
+            }
             zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
 
             Team team =teamRepository.findByNombreEquipo(nombreEquipo);
