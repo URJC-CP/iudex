@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ConcursoRepository extends JpaRepository<Concurso, Long> {
     boolean existsByNombreConcurso(String nombre);
 
-    Optional<Concurso> findById(Long id);
+    Concurso findConcursoById(Long id);
 }

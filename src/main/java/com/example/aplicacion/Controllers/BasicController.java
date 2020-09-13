@@ -4,6 +4,7 @@ import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.services.ConcursoService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.UserService;
 import com.github.dockerjava.api.DockerClient;
@@ -32,6 +33,8 @@ public class BasicController {
     private InNOutRepository inNOutRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ConcursoService concursoService;
     @PostConstruct
     public void init() {
 
@@ -78,6 +81,8 @@ public class BasicController {
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
+
+        concursoService.creaConcurso("concursoPrueba", "pavloXd");
 
 
     }

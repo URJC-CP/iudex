@@ -64,4 +64,8 @@ public class Concurso {
         this.listaParticipantes = listaParticipantes;
     }
 
+    public void addProblem(Problem problem){
+        this.listaProblemas.add(problem);
+    }
+
 }

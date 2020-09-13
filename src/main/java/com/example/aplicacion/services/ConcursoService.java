@@ -44,10 +44,11 @@ public class ConcursoService {
 
     public String anyadeProblemaConcurso(String idConcurso, String idProblema){
 
-        Optional<Concurso> concurso = concursoRepository.findById(Long.getLong(idConcurso));
-        Optional<Problem> problema = problemRepository.findById(Long.getLong(idProblema));
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
 
-
+        concurso.addProblem(problema);
+        concursoRepository.save(concurso);
 
 
         return "OK";

@@ -32,19 +32,19 @@
 </div>
 
 <div class="container">
+    <p>Problema a Concurso</p>
     <form method="post" action="/asignaProblemaAConcurso" enctype="multipart/form-data">
         <div class="row">
-            <select class="form-control" name="problemaAsignado">
+            <select class="form-control" name="problemId">
                 {{#exercices}}
-                <option>{{nombreEjercicio}}</option>
+                <option value="{{id}}">{{nombreEjercicio}}</option>
                 {{/exercices}}
             </select>
         </div>
         <div class="row">
             <select class="form-control" name="concursoId">
                 {{#concursos}}
-                <option>{{nombreConcurso}}</option>
-                <option hidden> {{id}}</option>
+                <option value="{{id}}">{{nombreConcurso}}</option>
                 {{/concursos}}
             </select>
         </div>
