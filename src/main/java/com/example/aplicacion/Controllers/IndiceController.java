@@ -96,4 +96,5 @@ public class IndiceController {
 
         return "scoreboard";
     }
+
 }
