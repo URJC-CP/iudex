@@ -53,14 +53,14 @@ public class IndiceController {
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje ) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId) throws IOException {
 
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        Submission salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, "pavloXd");
+        Submission salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId);
 
 
 
@@ -79,9 +79,9 @@ public class IndiceController {
     }
 
     @PostMapping("/problemSubida")
-    public String subidaProblema(Model model,@RequestParam MultipartFile problema, @RequestParam String problemaName){
+    public String subidaProblema(Model model,@RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId){
         try {
-            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), "pavloXd", problemaName);
+            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {

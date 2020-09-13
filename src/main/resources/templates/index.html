@@ -25,6 +25,13 @@
                 {{/languages}}
             </select>
         </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+        </div>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
         </div>
@@ -38,7 +45,14 @@
             <input type="file" id="problema" name="problema"  required>
         </div>
         <div class="row">
-            <input type="text" id="problemaName" name="problemaName" ><p> Nombre del problema (si no esta en archivos de configuracion)</p>
+            <input type="text" id="problemaName" name="problemaName" > Nombre del problema (si no esta en archivos de configuracion)
+        </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
         </div>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
@@ -73,10 +87,10 @@
     <form method="post" action="/creaUsuario" enctype="multipart/form-data">
         <p>Crea Usuario</p>
         <div class="row">
-            <input type="text" id="userNickname" name="userNickname" required><p> Nickname</p>
+            <input type="text" id="userNickname" name="userNickname" required> Nickname
         </div>
         <div class="row">
-            <input type="text" id="userMail" name="userMail"required ><p> Mail</p>
+            <input type="text" id="userMail" name="userMail"required > Mail
         </div>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
@@ -87,7 +101,7 @@
     <form method="post" action="/creaConcurso" enctype="multipart/form-data">
         <p>Crea Concurso</p>
         <div class="row">
-            <input type="text" id="concursoName" name="" ><p> Nombre Concurso</p>
+            <input type="text" id="concursoName" name="" > Nombre Concurso
         </div>
         <div class="row">
             <select class="form-control" name="teamId">

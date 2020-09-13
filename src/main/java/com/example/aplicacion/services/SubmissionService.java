@@ -36,7 +36,7 @@ public class SubmissionService {
     private RabbitResultExecutionSender sender;
 
 
-    public Submission creaSubmission(String codigo, String problem, String lenguaje, String fileName, String nombreEquipo ){
+    public Submission creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo ){
 
 
         //Obtedemos el Problema del que se trata
@@ -67,7 +67,7 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        Team team =teamRepository.findByNombreEquipo(nombreEquipo);
+        Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
         if (team == null) {
             //return "TEAM NOT FOUND";
         }
