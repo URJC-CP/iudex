@@ -62,6 +62,7 @@ public class Problem {
     private String rights_owner;
     //private String keywords;
     private String hashString;
+    //Marca si el problema es publico o no
     private boolean disponible;
     @Lob
     private byte[] documento;

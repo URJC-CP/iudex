@@ -2,10 +2,7 @@ package com.example.aplicacion.Controllers;
 
 
 import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.services.ConcursoService;
-import com.example.aplicacion.services.LanguageService;
-import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.SubmissionService;
+import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,10 @@ public class IndiceController {
     private LanguageService languageService;
     @Autowired
     private ConcursoService concursoService;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TeamService teamService;
 
     //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
@@ -48,6 +48,7 @@ public class IndiceController {
         model.addAttribute("exercices", problemService.getAllProblemas());
         model.addAttribute("languages", languageService.getNLanguages());
         model.addAttribute("concursos", concursoService.getAllConcursos());
+        model.addAttribute("teams", teamService.getAllTeams());
         return "index";
     }
 
@@ -91,9 +92,19 @@ public class IndiceController {
     }
 
     @PostMapping("/asignaProblemaAConcurso")
-    public String AsignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
+    public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
         concursoService.anyadeProblemaConcurso(concursoId, problemId);
         return "scoreboard";
+    }
+
+    @PostMapping("/creaUsuario")
+    public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail){
+        String salida = userService.crearUsuario(userNickname, userMail);
+        if(salida.equals("OK")){
+            return "scoreboard";
+        }else {
+            return "ERROR algun parametro esta duplicado";
+        }
     }
 
 }

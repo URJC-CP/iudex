@@ -51,7 +51,7 @@ public class UserService {
                return salidaCreaTeam;
            }
         }
-        return null;
+        return "OK";
     }
 
 

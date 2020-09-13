@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 
+import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Entities.User;
 import com.example.aplicacion.Repository.TeamRepository;
@@ -48,4 +49,8 @@ public class TeamService {
             return "OK";
         }
     }
+    public List<Team> getAllTeams(){
+        return teamRepository.findAll();
+    }
+
 }
