@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.Concurso;
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Repository.ConcursoRepository;
@@ -9,6 +10,7 @@ import com.example.aplicacion.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,6 +49,11 @@ public class ConcursoService {
 
 
 
+
         return "OK";
     }
+    public List<Concurso> getAllConcursos(){
+        return concursoRepository.findAll();
+    }
+
 }

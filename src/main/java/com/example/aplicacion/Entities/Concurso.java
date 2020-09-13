@@ -63,4 +63,5 @@ public class Concurso {
     public void setListaParticipantes(List<Team> listaParticipantes) {
         this.listaParticipantes = listaParticipantes;
     }
+
 }

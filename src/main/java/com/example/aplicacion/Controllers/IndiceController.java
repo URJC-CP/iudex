@@ -2,6 +2,7 @@ package com.example.aplicacion.Controllers;
 
 
 import com.example.aplicacion.Entities.Submission;
+import com.example.aplicacion.services.ConcursoService;
 import com.example.aplicacion.services.LanguageService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
@@ -31,6 +32,8 @@ public class IndiceController {
     private ProblemService problemService;
     @Autowired
     private LanguageService languageService;
+    @Autowired
+    private ConcursoService concursoService;
 
 
     //Inicio del rabbittemplate
@@ -44,7 +47,7 @@ public class IndiceController {
         //Pruebas de rabbit
         model.addAttribute("exercices", problemService.getAllProblemas());
         model.addAttribute("languages", languageService.getNLanguages());
-
+        model.addAttribute("concursos", concursoService.getAllConcursos());
         return "index";
     }
 
@@ -85,5 +88,12 @@ public class IndiceController {
         }
         return "scoreboard";
 
+    }
+
+    @PostMapping("/asignaProblemaAConcurso")
+    public String AsignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
+        concursoService.anyadeProblemaConcurso(concursoId, problemId);
+
+        return "scoreboard";
     }
 }
