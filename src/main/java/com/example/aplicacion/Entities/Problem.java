@@ -4,7 +4,7 @@ import com.google.common.hash.Hashing;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.ejb.LocalBean;
+
 import javax.persistence.*;
 import javax.swing.text.Document;
 import java.nio.charset.StandardCharsets;

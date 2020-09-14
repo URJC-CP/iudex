@@ -141,7 +141,6 @@ public class ZipHandlerService {
                         logger.info("ZIPCOMPRESS: Detectado el lenguaje "+lenguaje);
                         //obtenemos el string del codigo
                         String aux = convertZipToString( zipFile);
-
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
                         SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado);
                         //Anyadimos el submissionproblemvalidator al problema

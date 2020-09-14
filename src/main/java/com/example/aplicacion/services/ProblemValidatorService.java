@@ -41,12 +41,13 @@ public class ProblemValidatorService {
 
     public void validateProblem(Problem problem){
         //Recorremos la lista de submission y las enviamos
-        for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
+        if(problem.getSubmissionProblemValidators().size()!=0){
+            for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
 
-            Submission submission= submissionProblemValidator.getSubmission();
-            logger.info("La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
+                Submission submission= submissionProblemValidator.getSubmission();
+                logger.info("La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
 
-            //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
+                //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
             List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
             List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
@@ -74,22 +75,27 @@ public class ProblemValidatorService {
             submissionProblemValidatorRepository.save(submissionProblemValidator);
              */
 
-            //Ejecutamos
-            if(submission.getLanguage()!=null){
+                //Ejecutamos
+                if(submission.getLanguage()!=null){
 
-                for (Result res : submission.getResults()  ) {
-                    logger.info(" El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
-                    sender.sendMessage(res);
+                    for (Result res : submission.getResults()  ) {
+                        logger.info(" El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
+                        sender.sendMessage(res);
+                    }
                 }
-            }
-            else {
-                logger.error(" El lenguaje no esta soportado");
+                else {
+                    logger.error(" El lenguaje no esta soportado");
+
+                }
 
             }
-
-
         }
-
+        //Si es un problema sin submission validamos
+        else {
+            problem.setValido(true);
+            logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado");
+            problemRepository.save(problem);
+        }
 
     }
 
