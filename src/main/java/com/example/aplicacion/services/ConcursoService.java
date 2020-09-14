@@ -53,6 +53,49 @@ public class ConcursoService {
 
         return "OK";
     }
+    public String addTeamTocompetition(String idcompetition, String idTeam){
+        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
+        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
+        if(competition==null){
+            return "competition NOT FOUND";
+        }
+        if (team==null){
+            return "USER NOT FOUND";
+        }
+        else {
+            competition.addTeam(team);
+        }
+        return "OK";
+    }
+
+    public String borracompetition(String idcompetition){
+        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
+        if(competition==null){
+            return "competition NOT FOUND";
+        }
+        concursoRepository.delete(competition);
+
+        return "OK";
+    }
+    public String deleteTeamFromcompetition(String idcompetition, String idTeam){
+        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
+        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
+        if(competition==null){
+            return "competition NOT FOUND";
+        }
+        if (team==null){
+            return "USER NOT FOUND";
+        }
+        else {
+            if(!competition.getListaParticipantes().contains(team)){
+                competition.addTeam(team);
+            }
+            else {
+                return "YA ESTA EN EL CONCURSO";
+            }
+        }
+        return "OK";
+    }
     public List<Concurso> getAllConcursos(){
         return concursoRepository.findAll();
     }

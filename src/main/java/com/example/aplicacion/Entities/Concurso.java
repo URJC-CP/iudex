@@ -68,4 +68,8 @@ public class Concurso {
         this.listaProblemas.add(problem);
     }
 
+    public void addTeam(Team team){
+        this.listaParticipantes.add(team);
+    }
+
 }
