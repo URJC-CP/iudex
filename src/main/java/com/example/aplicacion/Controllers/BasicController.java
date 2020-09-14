@@ -51,31 +51,7 @@ public class BasicController {
         languageRepository.save(lenguaje2);
 
 
-        Problem problem = new Problem();
-        problem.setNombreEjercicio("Problema de prueba");
-
-
-        List<InNOut> entradas = new ArrayList<>();
-        InNOut aux1 = new InNOut("1","1\n" +"2\n" +"3\n" +"8");
-        inNOutRepository.save(aux1);
-        entradas.add(aux1);
-        InNOut aux2 = new InNOut("2","5\n" +"6\n" +"7\n" +"8");
-        inNOutRepository.save(aux2);
-        entradas.add(aux2);
-        problem.setEntradaOculta(entradas);
-
-        List<InNOut> salidas = new ArrayList<>();
-        InNOut aux3 = new InNOut("1", "\t2\n" +  "4\n" + "6\n" + "16");
-        inNOutRepository.save(aux3);
-        salidas.add(aux3);
-        InNOut aux4 = new InNOut("2","\t10\n" +  "12\n" + "14\n" +"16");
-        inNOutRepository.save(aux4);
-        salidas.add(aux4);
-
-
-        problem.setSalidaOculta(salidas);
-
-        problemRepository.save(problem);
+        
 
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");
