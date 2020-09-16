@@ -24,7 +24,7 @@ public class ConcursoService {
 
     public String creaConcurso(String nameConcurso, String teamName){
         if(concursoRepository.existsByNombreConcurso(nameConcurso)){
-            return "COMPETITION NAME DUPLICATED";
+            return "concurso NAME DUPLICATED";
         }
 
         Concurso concurso = new Concurso();
@@ -42,56 +42,95 @@ public class ConcursoService {
         return "OK";
     }
 
+
+    public String borraconcurso(String idconcurso){
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idconcurso));
+        if(concurso==null){
+            return "concurso NOT FOUND";
+        }
+        concursoRepository.delete(concurso);
+
+        return "OK";
+    }
+
     public String anyadeProblemaConcurso(String idConcurso, String idProblema){
 
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
         Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
-
+        if(concurso==null){
+            return "concurso NOT FOUND";
+        }
+        if (problema==null){
+            return "USER NOT FOUND";
+        }
+        if(concurso.getListaProblemas().contains(problema)){
+            return "PROBLEM DUPLICATED";
+        }
         concurso.addProblem(problema);
+        concursoRepository.save(concurso);
+
+        return "OK";
+    }
+
+    public String borraProblemaConcurso(String idConcurso, String idProblema){
+
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if(concurso==null){
+            return "concurso NOT FOUND";
+        }
+        if (problema==null){
+            return "USER NOT FOUND";
+        }
+        if(concurso.getListaProblemas().contains(problema)){
+            return "PROBLEM DUPLICATED";
+        }
+        concurso.deleteProblem(problema);
         concursoRepository.save(concurso);
 
 
         return "OK";
     }
-    public String addTeamTocompetition(String idcompetition, String idTeam){
-        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
+
+    public String addTeamToconcurso(String idconcurso, String idTeam){
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idconcurso));
         Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
-        if(competition==null){
-            return "competition NOT FOUND";
+        if(concurso==null){
+            return "concurso NOT FOUND";
         }
         if (team==null){
             return "USER NOT FOUND";
         }
         else {
-            competition.addTeam(team);
-        }
-        return "OK";
-    }
+            if(!concurso.getListaParticipantes().contains(team)){
+                concurso.addTeam(team);
+                concursoRepository.save(concurso);
 
-    public String borracompetition(String idcompetition){
-        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
-        if(competition==null){
-            return "competition NOT FOUND";
-        }
-        concursoRepository.delete(competition);
-
-        return "OK";
-    }
-    public String deleteTeamFromcompetition(String idcompetition, String idTeam){
-        Concurso competition = concursoRepository.findConcursoById(Long.valueOf(idcompetition));
-        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
-        if(competition==null){
-            return "competition NOT FOUND";
-        }
-        if (team==null){
-            return "USER NOT FOUND";
-        }
-        else {
-            if(!competition.getListaParticipantes().contains(team)){
-                competition.addTeam(team);
             }
             else {
                 return "YA ESTA EN EL CONCURSO";
+            }
+        }
+        return "OK";
+    }
+
+
+    public String deleteTeamFromconcurso(String idconcurso, String idTeam){
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idconcurso));
+        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
+        if(concurso==null){
+            return "concurso NOT FOUND";
+        }
+        if (team==null){
+            return "USER NOT FOUND";
+        }
+        else {
+            if(!concurso.getListaParticipantes().contains(team)){
+                return "NO ESTA EN EL CONCURSO";
+            }
+            else {
+                concurso.deleteTeam(team);
+                concursoRepository.save(concurso);
             }
         }
         return "OK";

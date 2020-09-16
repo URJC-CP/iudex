@@ -67,9 +67,14 @@ public class Concurso {
     public void addProblem(Problem problem){
         this.listaProblemas.add(problem);
     }
+    public void deleteProblem(Problem problem){this.listaProblemas.remove(problem );}
 
     public void addTeam(Team team){
         this.listaParticipantes.add(team);
+    }
+
+    public void deleteTeam(Team team){
+        this.listaParticipantes.remove(teamPropietario);
     }
 
 }
