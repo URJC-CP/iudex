@@ -64,6 +64,18 @@ public class ProblemService {
 
     }
 
+    public String removeProblem(String problemId){
+        Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
+        if(problem==null){
+            return "PROBLEM NOT FOUND";
+        }
+
+
+        problemRepository.delete(problem);
+        return "OK";
+    }
+
+
     private boolean problemDuplicated(String nombre){
         return problemRepository.existsByNombreEjercicio(nombre);
     }
