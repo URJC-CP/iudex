@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container">
+    <form method="post" action="/answerSubida" enctype="multipart/form-data">
+        <div class="row">
+            <p>Codigo</p>
+            <input type="file" id="codigo" name="codigo"  required>
+        </div>
+        <div class="row">
+            <select class="form-control" name="problemaAsignado">
+                {{#exercices}}
+                <option>{{nombreEjercicio}}</option>
+                {{/exercices}}
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" name="lenguaje">
+                {{#languages}}
+                <option>{{nombreLenguaje}}</option>
+                {{/languages}}
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <form method="post" action="/problemSubida" enctype="multipart/form-data">
+        <div class="row">
+            <p>ZIP de nuevo problema</p>
+            <input type="file" id="problema" name="problema"  required>
+        </div>
+        <div class="row">
+            <input type="text" id="problemaName" name="problemaName" > Nombre del problema (si no esta en archivos de configuracion)
+        </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <p>Problema a Concurso</p>
+    <form method="post" action="/asignaProblemaAConcurso" enctype="multipart/form-data">
+        <div class="row">
+            <select class="form-control" name="problemId">
+                {{#exercices}}
+                <option value="{{id}}">{{nombreEjercicio}}</option>
+                {{/exercices}}
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" name="concursoId">
+                {{#concursos}}
+                <option value="{{id}}">{{nombreConcurso}}</option>
+                {{/concursos}}
+            </select>
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <form method="post" action="/creaUsuario" enctype="multipart/form-data">
+        <p>Crea Usuario</p>
+        <div class="row">
+            <input type="text" id="userNickname" name="userNickname" required> Nickname
+        </div>
+        <div class="row">
+            <input type="text" id="userMail" name="userMail"required > Mail
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <form method="post" action="/creaConcurso" enctype="multipart/form-data">
+        <p>Crea Concurso</p>
+        <div class="row">
+            <input type="text" id="concursoName" name="" > Nombre Concurso
+        </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+        </div>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

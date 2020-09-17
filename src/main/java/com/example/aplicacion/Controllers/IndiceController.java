@@ -49,7 +49,7 @@ public class IndiceController {
         model.addAttribute("languages", languageService.getNLanguages());
         model.addAttribute("concursos", concursoService.getAllConcursos());
         model.addAttribute("teams", teamService.getAllTeams());
-        return "index";
+        return "indexOriginal";
     }
 
     @PostMapping("/answerSubida")
