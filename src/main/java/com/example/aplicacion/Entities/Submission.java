@@ -29,6 +29,9 @@ public class Submission {
 
     @ManyToOne
     private Language language;
+    @ManyToOne
+    private Concurso concurso;
+
 
     //private Team team;
     private String hashString;
@@ -218,5 +221,13 @@ public class Submission {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public Concurso getConcurso() {
+        return concurso;
+    }
+
+    public void setConcurso(Concurso concurso) {
+        this.concurso = concurso;
     }
 }

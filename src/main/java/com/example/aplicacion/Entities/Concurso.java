@@ -18,6 +18,8 @@ public class Concurso {
     private List<Problem> listaProblemas;
     @ManyToMany
     private List<Team> listaParticipantes;
+    @OneToMany(mappedBy = "concurso")
+    private List<Submission> listaSubmissions;
 
     public Concurso() {
         this.listaProblemas = new ArrayList<>();
@@ -77,4 +79,18 @@ public class Concurso {
         this.listaParticipantes.remove(teamPropietario);
     }
 
+    public List<Submission> getListaSubmissions() {
+        return listaSubmissions;
+    }
+
+    public void setListaSubmissions(List<Submission> listaSubmissions) {
+        this.listaSubmissions = listaSubmissions;
+    }
+
+    public void addSubmission(Submission submission){
+        this.listaSubmissions.add(submission);
+    }
+    public void removeSubmission(Submission submission){
+        this.listaSubmissions.remove(submission);
+    }
 }

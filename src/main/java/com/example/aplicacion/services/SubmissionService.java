@@ -31,22 +31,36 @@ public class SubmissionService {
     private LanguageRepository languageRepository;
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private ConcursoRepository concursoRepository;
 
     @Autowired
     private RabbitResultExecutionSender sender;
 
 
-    public Submission creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo ){
+    public String creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
 
 
         //Obtedemos el Problema del que se trata
         Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
+        if(problema ==null){
+            return "PROBLEM NOT FOUND";
+        }
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
+        if(language==null){
+            return "LANGUAGE NOT FOUND";
+        }
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName, true);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
+
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        if(concurso==null){
+            return "CONCURSO NOT FOUND";
+        }
+        submission.setConcurso(concurso);
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
@@ -98,7 +112,7 @@ public class SubmissionService {
         }
 
 
-        return submission;
+        return "OK";
     }
 
     public Page<Submission> getNSubmissions(int n){
