@@ -66,6 +66,11 @@
                 <option value="{{id}}">{{nombreEquipo}}</option>
                 {{/teams}}
             </select>
+            <select class="form-control" name="concursoId">
+                {{#concursos}}
+                <option value="{{id}}">{{nombreConcurso}}</option>
+                {{/concursos}}
+            </select>
         </div>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
@@ -140,15 +145,13 @@
         </thead>
 
         <tbody>
-        <tr>
-            {{#exercices}}
-            <th><option>{{id}}</option></th>
-            <th><option>{{nombreEjercicio}}</option></th>
-            <th><option>{{numeroSubmissions}}</option></th>
-
-
-            {{/exercices}}
-        </tr>
+        {{#exercices}}
+            <tr>
+                <th><option>{{id}}</option></th>
+                <th><option>{{nombreEjercicio}}</option></th>
+                <th><option>{{numeroSubmissions}}</option></th>
+            </tr>
+        {{/exercices}}
 
         </tbody>
     </table>
