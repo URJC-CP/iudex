@@ -88,7 +88,14 @@ public class ProblemService {
     }
 
     public List<Problem> getAllProblemas(){
-        return problemRepository.findAll();
+        List<Problem> problemas= problemRepository.findAll();
+        sumatorioSubmissionProblemas(problemas);
+        return problemas;
     }
 
+    private void sumatorioSubmissionProblemas(List<Problem> problems){
+        for (Problem problem : problems){
+            problem.setNumeroSubmissions(problem.getSubmissions().size());
+        }
+    }
 }

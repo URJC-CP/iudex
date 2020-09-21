@@ -41,7 +41,7 @@ public class Problem {
 
     @OneToMany(cascade =  CascadeType.ALL)
     private List<Submission> submissions;
-
+    private  int numeroSubmissions;
     @ManyToOne
     private Team equipoPropietario;
 
@@ -99,6 +99,7 @@ public class Problem {
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
         disponible = false;
+        numeroSubmissions = 0;
     }
 
     public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
@@ -119,7 +120,7 @@ public class Problem {
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
         this.disponible = false;
-
+        numeroSubmissions = 0;
         this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
     }
     private String listaToString(List<InNOut> lista){
@@ -445,5 +446,21 @@ public class Problem {
 
     public void setDocumento(byte[] documento) {
         this.documento = documento;
+    }
+
+    public int getNumeroSubmissions() {
+        return numeroSubmissions;
+    }
+
+    public void setNumeroSubmissions(int numeroSubmissions) {
+        this.numeroSubmissions = numeroSubmissions;
+    }
+
+    public List<Concurso> getListaConcursosPertenece() {
+        return listaConcursosPertenece;
+    }
+
+    public void setListaConcursosPertenece(List<Concurso> listaConcursosPertenece) {
+        this.listaConcursosPertenece = listaConcursosPertenece;
     }
 }
