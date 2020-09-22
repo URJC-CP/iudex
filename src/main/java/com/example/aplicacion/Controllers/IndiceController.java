@@ -53,19 +53,21 @@ public class IndiceController {
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
 
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        Submission salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId);
+        String salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId, concursoId);
 
+        if(!salida.equals("OK")){
+            return "ERROR";
+        }
 
-
-        model.addAttribute("comentario" , "Ha sido creado con el ID: "+salida.getId());
-        return "subidaSubmission";
+        //model.addAttribute("comentario" , "Ha sido creado con el ID: "+salida.getId());
+        return "indexOriginal";
     }
     @GetMapping("/scoreboard")
     public String subida (Model model){
@@ -75,7 +77,7 @@ public class IndiceController {
         model.addAttribute("submissions", listSubmiss);
 
 
-        return "scoreboard";
+        return "indexOriginal";
     }
 
     @PostMapping("/problemSubida")
@@ -87,21 +89,21 @@ public class IndiceController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return "scoreboard";
+        return "indexOriginal";
 
     }
 
     @PostMapping("/asignaProblemaAConcurso")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
         concursoService.anyadeProblemaConcurso(concursoId, problemId);
-        return "scoreboard";
+        return "indexOriginal";
     }
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail){
         String salida = userService.crearUsuario(userNickname, userMail);
         if(salida.equals("OK")){
-            return "scoreboard";
+            return "indexOriginal";
         }else {
             return "ERROR algun parametro esta duplicado";
         }

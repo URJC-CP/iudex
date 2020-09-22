@@ -62,6 +62,11 @@ public class SubmissionService {
         }
         submission.setConcurso(concurso);
 
+        //Comprobamos q el problema pertenezca al concurso
+        if(!concurso.getListaProblemas().contains(problema)){
+            return "PROBLEM NOT IN CONCURSO";
+        }
+
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();

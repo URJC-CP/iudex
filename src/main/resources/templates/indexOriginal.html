@@ -45,6 +45,11 @@
                 {{/teams}}
             </select>
         </div>
+        <select class="form-control" name="concursoId">
+            {{#concursos}}
+            <option value="{{id}}">{{nombreConcurso}}</option>
+            {{/concursos}}
+        </select>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
         </div>
