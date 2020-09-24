@@ -31,13 +31,13 @@
             </thead>
 
             <tbody>
-            {{#concursoId.listaProblemas}}
+            {{#concurso.listaProblemas}}
             <tr>
                 <th><option>{{id}}</option></th>
                 <th><option>{{nombreEjercicio}}</option></th>
                 <th><option>{{numeroSubmissions}}</option></th>
             </tr>
-            {{/concursoId.listaProblemas}}
+            {{/concurso.listaProblemas}}
 
             </tbody>
         </table>
@@ -58,17 +58,30 @@
                     <option value="{{id}}">{{nombreEquipo}}</option>
                     {{/teams}}
                 </select>
-                <select class="form-control" name="concursoId">
-                    {{#concursos}}
-                    <option value="{{id}}">{{nombreConcurso}}</option>
-                    {{/concursos}}
-                </select>
+
+                <input type="hidden" name="concursoId" value="{{concurso.id}}">
+
             </div>
             <div class="siguiente">
                 <button type="submit" class="btn btn-success">Guardar</button>
             </div>
         </form>
     </div>
+
+    <div class="container">
+        <form method="post" action="/addUserToConcurso" >
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{teamId}}</option>
+                {{/teams}}
+            </select>
+            <input type="hidden" name="concursoId" value="{{concurso.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
 </body>
 
 

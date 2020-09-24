@@ -111,14 +111,28 @@ public class IndiceController {
     }
 
 
+    //CONCURSO html
     @PostMapping("/goToConcurso")
     public String goToConcurso(Model model, @RequestParam String concursoId){
         Concurso concurso= concursoService.getConcurso(concursoId);
         if(concurso==null){
             return "ERROR CONCURSO NO ECONTRADO";
         }
-        model.addAttribute("concursoId",concurso);
+        model.addAttribute("concurso",concurso);
+        model.addAttribute("teams", teamService.getAllTeams());
+
         return "concurso";
     }
+    @PostMapping("/addUserToConcurso")
+    public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String concursoId){
 
+        String salida = concursoService.addTeamToConcurso(teamId, concursoId);
+
+        if (salida.equals("OK")){
+            return "indexOriginal";
+        }
+        else {
+            return "ERROR";
+        }
+    }
 }

@@ -135,6 +135,21 @@ public class ConcursoService {
         }
         return "OK";
     }
+    public String addTeamToConcurso(String teamId, String concursoId){
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(concursoId));
+        Team team = teamRepository.findTeamById(Long.valueOf(teamId));
+        if(concurso==null){
+            return "concurso NOT FOUND";
+        }
+        if (team==null){
+            return "USER NOT FOUND";
+        }
+
+        concurso.addTeam(team);
+        concursoRepository.save(concurso);
+        return "OK";
+    }
+
     public Concurso getConcurso(String idConcurso){
         return concursoRepository.findConcursoById(Long.valueOf(idConcurso));
     }
