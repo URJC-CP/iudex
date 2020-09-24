@@ -133,7 +133,29 @@ public class IndiceController {
             return "indexOriginal";
         }
         else {
-            return "ERROR";
+            return "404";
+        }
+    }
+    @PostMapping("/deleteConcurso")
+    public  String deleteConcorso(Model model, @RequestParam String concursoId){
+        String salida = concursoService.borraconcurso(concursoId);
+
+        if (salida.equals("OK")){
+            return "indexOriginal";
+        }
+        else {
+            return "404";
+        }
+    }
+    @PostMapping("/deleteTeamFromConcurso")
+    public String deleteTeamFromConcurso(Model model, @RequestParam String teamId, @RequestParam String concursoId){
+        String salida = concursoService.deleteTeamFromconcurso(concursoId, teamId);
+
+        if (salida.equals("OK")){
+            return "indexOriginal";
+        }
+        else {
+            return "404";
         }
     }
 }
