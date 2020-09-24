@@ -127,7 +127,7 @@ public class IndiceController {
     @PostMapping("/addUserToConcurso")
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String concursoId){
 
-        String salida = concursoService.addTeamToConcurso(teamId, concursoId);
+        String salida = concursoService.addTeamToconcurso(teamId, concursoId);
 
         if (salida.equals("OK")){
             return "indexOriginal";
