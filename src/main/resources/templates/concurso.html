@@ -69,10 +69,11 @@
     </div>
 
     <div class="container">
+        <p>Add Team to concurso</p>
         <form method="post" action="/addUserToConcurso" >
             <select class="form-control" name="teamId">
                 {{#teams}}
-                <option value="{{id}}">{{teamId}}</option>
+                <option value="{{id}}">{{nombreEquipo}}</option>
                 {{/teams}}
             </select>
             <input type="hidden" name="concursoId" value="{{concurso.id}}">
