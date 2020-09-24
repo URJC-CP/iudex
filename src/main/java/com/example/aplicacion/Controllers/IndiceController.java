@@ -1,6 +1,7 @@
 package com.example.aplicacion.Controllers;
 
 
+import com.example.aplicacion.Entities.Concurso;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
@@ -107,6 +108,17 @@ public class IndiceController {
         }else {
             return "ERROR algun parametro esta duplicado";
         }
+    }
+
+
+    @PostMapping("/goToConcurso")
+    public String goToConcurso(Model model, @RequestParam String concursoId){
+        Concurso concurso= concursoService.getConcurso(concursoId);
+        if(concurso==null){
+            return "ERROR CONCURSO NO ECONTRADO";
+        }
+        model.addAttribute("concursoId",concurso);
+        return "concurso";
     }
 
 }

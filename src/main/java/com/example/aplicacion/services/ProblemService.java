@@ -66,8 +66,9 @@ public class ProblemService {
                 return "CONCURSO NOT FOUND";
             }
             concurso.addProblem(problem);
-            concursoRepository.save(concurso);
             problemRepository.save(problem);
+
+            concursoRepository.save(concurso);
 
             problemValidatorService.validateProblem(problem);
             return "OK";

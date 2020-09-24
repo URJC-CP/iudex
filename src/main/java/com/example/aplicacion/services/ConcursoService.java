@@ -135,6 +135,9 @@ public class ConcursoService {
         }
         return "OK";
     }
+    public Concurso getConcurso(String idConcurso){
+        return concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+    }
     public List<Concurso> getAllConcursos(){
         return concursoRepository.findAll();
     }
