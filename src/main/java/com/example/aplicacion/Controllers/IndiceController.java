@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -112,9 +113,9 @@ public class IndiceController {
 
 
     //CONCURSO html
-    @PostMapping("/goToConcurso")
-    public String goToConcurso(Model model, @RequestParam String concursoId){
-        Concurso concurso= concursoService.getConcurso(concursoId);
+    @PostMapping("/goToConcurso/{concursoId}")
+    public String goToConcurso(Model model, @PathVariable Long concursoId){
+        Concurso concurso= concursoService.getConcurso(Long.toString(concursoId));
         if(concurso==null){
             return "ERROR CONCURSO NO ECONTRADO";
         }
