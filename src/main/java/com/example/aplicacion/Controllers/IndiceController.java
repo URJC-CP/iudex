@@ -177,4 +177,16 @@ public class IndiceController {
             return "404";
         }
     }
+    @PostMapping("/deleteProblemFromConcurso")
+    public String deleteProblemFromConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
+        String salida = concursoService.deleteProblemFromConcurso(concursoId, problemId);
+
+        if (salida.equals("OK")){
+            return "indexOriginal";
+        }
+        else {
+            return "404";
+        }
+    }
+
 }

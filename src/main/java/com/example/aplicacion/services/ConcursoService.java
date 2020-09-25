@@ -72,7 +72,7 @@ public class ConcursoService {
         return "OK";
     }
 
-    public String borraProblemaConcurso(String idConcurso, String idProblema){
+    public String deleteProblemFromConcurso(String idConcurso, String idProblema){
 
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
         Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
@@ -82,8 +82,8 @@ public class ConcursoService {
         if (problema==null){
             return "USER NOT FOUND";
         }
-        if(concurso.getListaProblemas().contains(problema)){
-            return "PROBLEM DUPLICATED";
+        if(!concurso.getListaProblemas().contains(problema)){
+            return "PROBLEM NOT IN CONCURSO";
         }
         concurso.deleteProblem(problema);
         concursoRepository.save(concurso);

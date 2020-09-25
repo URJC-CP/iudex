@@ -73,7 +73,7 @@
         <form method="post" action="/addProblemToConcurso" >
             <select class="form-control" name="problemId">
                 {{#problems}}
-                <option value="{{id}}">{{nombreEquipo}}</option>
+                <option value="{{id}}">{{nombreEjercicio}}</option>
                 {{/problems}}
             </select>
             <input type="hidden" name="concursoId" value="{{concurso.id}}">
@@ -116,6 +116,21 @@
                 {{#teams}}
                 <option value="{{id}}">{{nombreEquipo}}</option>
                 {{/teams}}
+            </select>
+            <input type="hidden" name="concursoId" value="{{concurso.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Delete Problem from concurso</p>
+        <form method="post" action="/deleteProblemFromConcurso" >
+            <select class="form-control" name="problemId">
+                {{#concurso.listaProblemas}}
+                <option value="{{id}}">{{nombreEjercicio}}</option>
+                {{/concurso.listaProblemas}}
             </select>
             <input type="hidden" name="concursoId" value="{{concurso.id}}">
             <div class="siguiente">
