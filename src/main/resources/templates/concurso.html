@@ -85,7 +85,7 @@
 
     <div class="container">
         <p>Delete Concurso</p>
-        <form method="post" action="/addUserToConcurso" >
+        <form method="post" action="/deleteConcurso" >
 
             <input type="hidden" name="concursoId" value="{{concurso.id}}">
             <div class="siguiente">
@@ -96,7 +96,7 @@
 
     <div class="container">
         <p>Delete Team from concurso</p>
-        <form method="post" action="/addUserToConcurso" >
+        <form method="post" action="/deleteTeamFromConcurso" >
             <select class="form-control" name="teamId">
                 {{#teams}}
                 <option value="{{id}}">{{nombreEquipo}}</option>
