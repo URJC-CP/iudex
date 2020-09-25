@@ -128,6 +128,7 @@ public class IndiceController {
         }
         model.addAttribute("concurso",concurso);
         model.addAttribute("teams", teamService.getAllTeams());
+        model.addAttribute("problems", problemService.getAllProblemas());
 
         return "concurso";
     }
@@ -158,6 +159,17 @@ public class IndiceController {
     public String deleteTeamFromConcurso(Model model, @RequestParam String teamId, @RequestParam String concursoId){
         String salida = concursoService.deleteTeamFromconcurso(concursoId, teamId);
 
+        if (salida.equals("OK")){
+            return "indexOriginal";
+        }
+        else {
+            return "404";
+        }
+    }
+
+    @PostMapping("/addProblemToConcurso")
+    public String addProblemToConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
+        String salida = concursoService.anyadeProblemaConcurso(concursoId, problemId);
         if (salida.equals("OK")){
             return "indexOriginal";
         }
