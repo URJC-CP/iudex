@@ -113,8 +113,8 @@ public class IndiceController {
 
 
     //CONCURSO html
-    @PostMapping("/goToConcurso")
-    public String goToConcurso(Model model, @RequestParam String concursoId){
+    @GetMapping("/goToConcurso/{concursoId}")
+    public String goToConcurso(Model model, @PathVariable String concursoId){
         Concurso concurso= concursoService.getConcurso(concursoId);
         if(concurso==null){
             return "ERROR CONCURSO NO ECONTRADO";

@@ -33,7 +33,6 @@ public class Submission {
     private Concurso concurso;
 
 
-    //private Team team;
     private String hashString;
     private String hashStringDelProblema;
 
