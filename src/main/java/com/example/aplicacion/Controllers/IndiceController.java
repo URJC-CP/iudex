@@ -110,6 +110,13 @@ public class IndiceController {
             return "ERROR algun parametro esta duplicado";
         }
     }
+    @PostMapping("/creaConcurso")
+    public String creaConcurso(Model model, @RequestParam String concursoName, @RequestParam String teamId){
+        concursoService.creaConcurso(concursoName, teamId);
+
+        return "indexOriginal";
+
+    }
 
 
     //CONCURSO html

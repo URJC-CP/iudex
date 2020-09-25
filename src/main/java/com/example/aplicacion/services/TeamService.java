@@ -49,6 +49,9 @@ public class TeamService {
             return "OK";
         }
     }
+    public Team getTeamByNick(String nick){
+        return teamRepository.findByNombreEquipo(nick);
+    }
     public List<Team> getAllTeams(){
         return teamRepository.findAll();
     }

@@ -22,7 +22,7 @@ public class ConcursoService {
     @Autowired
     private ProblemRepository problemRepository;
 
-    public String creaConcurso(String nameConcurso, String teamName){
+    public String creaConcurso(String nameConcurso, String teamId){
         if(concursoRepository.existsByNombreConcurso(nameConcurso)){
             return "concurso NAME DUPLICATED";
         }
@@ -30,7 +30,7 @@ public class ConcursoService {
         Concurso concurso = new Concurso();
         concurso.setNombreConcurso(nameConcurso);
 
-        Team team =teamRepository.findByNombreEquipo(teamName);
+        Team team =teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
             return "TEAM NOT FOUND";
         }

@@ -6,6 +6,7 @@ import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.services.ConcursoService;
 import com.example.aplicacion.services.ResultHandler;
+import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.services.UserService;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
@@ -35,6 +36,8 @@ public class BasicController {
     private UserService userService;
     @Autowired
     private ConcursoService concursoService;
+    @Autowired
+    private TeamService teamService;
     @PostConstruct
     public void init() {
 
@@ -58,7 +61,8 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        concursoService.creaConcurso("concursoPrueba", "pavloXd");
+
+        concursoService.creaConcurso("concursoPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()));
 
 
     }
