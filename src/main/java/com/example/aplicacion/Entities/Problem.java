@@ -50,7 +50,7 @@ public class Problem {
 
     @ManyToMany(mappedBy = "listaProblemas")
     private List<Concurso> listaConcursosPertenece;
-    private Boolean valido;
+    private boolean valido;
 
     private String timeout;
     private String memoryLimit;
@@ -64,6 +64,7 @@ public class Problem {
     private String hashString;
     //Marca si el problema es publico o no
     private boolean disponible;
+
     @Lob
     private byte[] documento;
 
@@ -463,4 +464,5 @@ public class Problem {
     public void setListaConcursosPertenece(List<Concurso> listaConcursosPertenece) {
         this.listaConcursosPertenece = listaConcursosPertenece;
     }
+
 }

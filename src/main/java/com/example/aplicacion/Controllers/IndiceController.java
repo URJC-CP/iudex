@@ -64,12 +64,13 @@ public class IndiceController {
         //Crea la submission
         String salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId, concursoId);
 
-        if(!salida.equals("OK")){
-            return "ERROR";
+        if (salida.equals("OK")){
+            return "indexOriginal";
         }
-
-        //model.addAttribute("comentario" , "Ha sido creado con el ID: "+salida.getId());
-        return "indexOriginal";
+        else {
+            model.addAttribute("error", salida);
+            return "errorConocido";
+        }
     }
     @GetMapping("/scoreboard")
     public String subida (Model model){
@@ -104,10 +105,12 @@ public class IndiceController {
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail){
         String salida = userService.crearUsuario(userNickname, userMail);
-        if(salida.equals("OK")){
+        if (salida.equals("OK")){
             return "indexOriginal";
-        }else {
-            return "ERROR algun parametro esta duplicado";
+        }
+        else {
+            model.addAttribute("error", salida);
+            return "errorConocido";
         }
     }
     @PostMapping("/creaConcurso")
@@ -119,74 +122,6 @@ public class IndiceController {
     }
 
 
-    //CONCURSO html
-    @PostMapping("/goToConcurso")
-    public String goToConcurso(Model model, @RequestParam String concursoId){
-        Concurso concurso= concursoService.getConcurso(concursoId);
-        if(concurso==null){
-            return "ERROR CONCURSO NO ECONTRADO";
-        }
-        model.addAttribute("concurso",concurso);
-        model.addAttribute("teams", teamService.getAllTeams());
-        model.addAttribute("problems", problemService.getAllProblemas());
 
-        return "concurso";
-    }
-    @PostMapping("/addUserToConcurso")
-    public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String concursoId){
-
-        String salida = concursoService.addTeamToconcurso(teamId, concursoId);
-
-        if (salida.equals("OK")){
-            return "indexOriginal";
-        }
-        else {
-            return "404";
-        }
-    }
-    @PostMapping("/deleteConcurso")
-    public  String deleteConcorso(Model model, @RequestParam String concursoId){
-        String salida = concursoService.borraconcurso(concursoId);
-
-        if (salida.equals("OK")){
-            return "indexOriginal";
-        }
-        else {
-            return "404";
-        }
-    }
-    @PostMapping("/deleteTeamFromConcurso")
-    public String deleteTeamFromConcurso(Model model, @RequestParam String teamId, @RequestParam String concursoId){
-        String salida = concursoService.deleteTeamFromconcurso(concursoId, teamId);
-
-        if (salida.equals("OK")){
-            return "indexOriginal";
-        }
-        else {
-            return "404";
-        }
-    }
-
-    @PostMapping("/addProblemToConcurso")
-    public String addProblemToConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
-        String salida = concursoService.anyadeProblemaConcurso(concursoId, problemId);
-        if (salida.equals("OK")){
-            return "indexOriginal";
-        }
-        else {
-            return "404";
-        }
-    }
-    @PostMapping("/deleteProblemFromConcurso")
-    public String deleteProblemFromConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
-        String salida = concursoService.deleteProblemFromConcurso(concursoId, problemId);
-
-        if (salida.equals("OK")){
-            return "indexOriginal";
-        }
-        else {
-            return "404";
-        }
-    }
 
 }
