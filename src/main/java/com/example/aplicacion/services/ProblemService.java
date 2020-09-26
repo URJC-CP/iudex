@@ -97,7 +97,9 @@ public class ProblemService {
 
         return problemRepository.findAll();
     }
-
+    public Problem getProblem(String idProblem){
+        return problemRepository.findProblemById(Long.valueOf(idProblem));
+    }
     public List<Problem> getAllProblemas(){
         List<Problem> problemas= problemRepository.findAll();
         sumatorioSubmissionProblemas(problemas);

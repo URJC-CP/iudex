@@ -32,14 +32,16 @@
 
             <tbody>
             {{#concurso.listaProblemas}}
-            <tr>
-                <th><option>{{id}}</option></th>
-                <th><option>{{nombreEjercicio}}</option></th>
-                <th><option>{{numeroSubmissions}}</option></th>
-                <th><option>{{valido}}</option></th>
 
+            <tr >
+
+                    <th>{{id}}</option></a></th>
+                    <th><a id="enlace" href="/concurso/{{concurso.id}}/problema/{{id}}"><option>{{nombreEjercicio}}</option></th>
+                    <th><option>{{numeroSubmissions}}</option></th>
+                    <th><option>{{valido}}</option></th>
 
             </tr>
+
             {{/concurso.listaProblemas}}
 
             </tbody>

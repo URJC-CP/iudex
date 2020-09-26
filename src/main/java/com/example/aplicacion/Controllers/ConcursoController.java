@@ -30,7 +30,8 @@ public class ConcursoController {
     public String goToConcurso(Model model, @RequestParam String concursoId){
         Concurso concurso= concursoService.getConcurso(concursoId);
         if(concurso==null){
-            return "ERROR CONCURSO NO ECONTRADO";
+            model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
+            return "errorConocido";
         }
         model.addAttribute("concurso",concurso);
         model.addAttribute("teams", teamService.getAllTeams());
