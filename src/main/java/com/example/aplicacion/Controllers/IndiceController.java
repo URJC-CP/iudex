@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 
@@ -45,13 +46,15 @@ public class IndiceController {
 
 
     @GetMapping("/")
-    public String index(Model model){
+    public ModelAndView index(){
+        ModelAndView model = new ModelAndView();
         //Pruebas de rabbit
-        model.addAttribute("exercices", problemService.getAllProblemas());
-        model.addAttribute("languages", languageService.getNLanguages());
-        model.addAttribute("concursos", concursoService.getAllConcursos());
-        model.addAttribute("teams", teamService.getAllTeams());
-        return "indexOriginal";
+        model.getModel().put("exercices", problemService.getAllProblemas());
+        model.getModel().put("languages", languageService.getNLanguages());
+        model.getModel().put("concursos", concursoService.getAllConcursos());
+        model.getModel().put("teams", teamService.getAllTeams());
+        model.setViewName("indexOriginal");
+        return model;
     }
 
     @PostMapping("/answerSubida")

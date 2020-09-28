@@ -50,7 +50,7 @@ public class ProblemaController {
         return "problem";
     }
 
-    @GetMapping("/2/concurso/{idConcurso}/problema/{idProblem}")
+    @GetMapping("getPDF/concurso/{idConcurso}/problema/{idProblem}")
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idConcurso, @PathVariable String idProblem){
         Problem problem = problemService.getProblem(idProblem);
         Concurso concurso = concursoService.getConcurso(idConcurso);
