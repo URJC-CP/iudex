@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
@@ -54,6 +55,7 @@ public class IndiceController {
         model.getModel().put("concursos", concursoService.getAllConcursos());
         model.getModel().put("teams", teamService.getAllTeams());
         model.setViewName("indexOriginal");
+        //return new RedirectView()
         return model;
     }
 
@@ -68,7 +70,7 @@ public class IndiceController {
         String salida = submissionService.creaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId, concursoId);
 
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
@@ -83,7 +85,7 @@ public class IndiceController {
         model.addAttribute("submissions", listSubmiss);
 
 
-        return "indexOriginal";
+        return "redirect:/";
     }
 
     @PostMapping("/problemSubida")
@@ -95,7 +97,7 @@ public class IndiceController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        return "indexOriginal";
+        return "redirect:/";
 
     }
 
@@ -109,7 +111,7 @@ public class IndiceController {
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail){
         String salida = userService.crearUsuario(userNickname, userMail);
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
@@ -120,7 +122,7 @@ public class IndiceController {
     public String creaConcurso(Model model, @RequestParam String concursoName, @RequestParam String teamId){
         concursoService.creaConcurso(concursoName, teamId);
 
-        return "indexOriginal";
+        return "redirect:/";
 
     }
 

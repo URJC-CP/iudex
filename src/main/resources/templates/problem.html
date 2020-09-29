@@ -72,7 +72,35 @@ viewer?embedded=true&url=/getPDF/concurso/{{concurso.id}}/problema/{{problem.id}
     <!----<iframe src="/getPDF/concurso/5/problema/1" style="width:1000px; height:800px;" frameborder="0" allowfullscreen></iframe> -->
 </div>
 
+<div class="container">
+    <form method="post" action="/answerSubida" enctype="multipart/form-data">
+        <div class="row">
+            <p>Codigo</p>
+            <input type="file" id="codigo" name="codigo"  required>
+        </div>
 
+        <input type="hidden" name="problemaAsignado" value="{{problem.id}}">
+        <div class="row">
+            <select class="form-control" name="lenguaje">
+                {{#languages}}
+                <option>{{nombreLenguaje}}</option>
+                {{/languages}}
+            </select>
+        </div>
+        <div class="row">
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+        </div>
+        <input type="hidden" name="concursoId" value="{{concurso.id}}">
+
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+</div>
 
 </body>
 
