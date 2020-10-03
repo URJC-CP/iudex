@@ -183,16 +183,18 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
+        //generamos el hash
+        String hash = problem.generaHash();
+
         //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")){
             //Si hay algun fallo borramos todos los inNOut que hemos creado
-
+            borraInNOut(problem);
             problemStringResult.setSalida(checkMap);
         }
 
 
-        String hash = problem.generaHash();
         problemStringResult.setProblem(problem);
         return problemStringResult;
     }
@@ -251,7 +253,15 @@ public class ZipHandlerService {
 
     private void borraInNOut(Problem problem){
         for(InNOut aux:problem.getEntradaVisible()){
-
+            inNOutRepository.delete(aux);
+        }for(InNOut aux:problem.getSalidaVisible()){
+            inNOutRepository.delete(aux);
+        }
+        for(InNOut aux:problem.getEntradaOculta()){
+            inNOutRepository.delete(aux);
+        }
+        for(InNOut aux:problem.getSalidaOculta()){
+            inNOutRepository.delete(aux);
         }
 
     }

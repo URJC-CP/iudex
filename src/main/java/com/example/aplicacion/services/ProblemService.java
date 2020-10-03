@@ -52,6 +52,7 @@ public class ProblemService {
 
     public String addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idConcurso) throws Exception {
         Problem problem = new Problem();
+        ProblemStringResult problemStringResult = new ProblemStringResult();
 
         Team team =teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
@@ -64,18 +65,21 @@ public class ProblemService {
         }
         //Si el usuario introduce un nombre lo metemos a cholon
         if(!nombreProblema.equals("")){
-            ProblemStringResult problemStringResult = new ProblemStringResult();
             problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
             problem = problemStringResult.getProblem();
             problem.setNombreEjercicio(nombreProblema);
         }
         //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
         else {
-            ProblemStringResult problemStringResult = new ProblemStringResult();
             problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
             problem = problemStringResult.getProblem();
         }
 
+        //Verificamos si hubiera dado fallo el problema al guardarse
+        //SI FALLA NO SE GUARDA EL PROBLEMA
+        if(!problemStringResult.getSalida().equals(null)){
+            return problemStringResult.getSalida();
+        }
         concurso.addProblem(problem);
         problemRepository.save(problem);
 
