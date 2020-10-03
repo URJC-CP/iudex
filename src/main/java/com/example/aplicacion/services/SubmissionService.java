@@ -126,6 +126,35 @@ public class SubmissionService {
         return submissionRepository.findAll(firstPageWithTwoElements);
     }
 
+    public String deleteSubmission(String submissionId, String problemId, String concursoId){
+        Submission submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
+        if (submission==null){
+            return "SUBMISSION NOT FOUND";
+        }
+        Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
+        if(problem==null){
+            return "PROBLEM NOT FOUND";
+        }
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(concursoId));
+        if(concurso==null){
+            return "CONCURSO NOT FOUND";
+        }
+
+        if (!concurso.getListaProblemas().contains(problem)) {
+            return "CONCURSO NOT CONTAINS PROBLEM";
+        }
+        if(submission.getProblema().equals(problem)){
+            return "SUBMISSION NO PERTENECE A ESTE PROBLEMA";
+        }
+        if(submission.getConcurso().equals(concurso)){
+            return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
+        }
+
+
+        submissionRepository.delete(submission);
+
+        return "OK";
+    }
     public List<Submission> getAllSubmissions(){
         return submissionRepository.findAll();
     }
