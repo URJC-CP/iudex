@@ -19,21 +19,19 @@ public class Problem {
     private long id;
 
     private String nombreEjercicio;
-
-
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaOculta;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaVisible;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaOculta;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaVisible;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut> codigoCorrecto;
 
     @OneToMany

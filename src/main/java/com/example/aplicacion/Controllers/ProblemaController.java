@@ -11,7 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.io.IOException;
 
 @Controller
 public class ProblemaController {
@@ -54,6 +58,7 @@ public class ProblemaController {
 
         modelAndView.getModel().put("problem", problem);
         modelAndView.getModel().put("concurso", concurso);
+        modelAndView.setViewName("problem");
 
         return modelAndView;
     }
@@ -90,6 +95,20 @@ public class ProblemaController {
 
     }
 
+    @PostMapping("/problemSubida")
+    public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String concursoId) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        String salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, concursoId);
 
+        if(!salida.equals("OK")){
+            modelAndView.getModel().put("error", salida);
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+
+    }
 
 }

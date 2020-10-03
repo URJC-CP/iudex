@@ -254,7 +254,8 @@ public class ZipHandlerService {
     private void borraInNOut(Problem problem){
         for(InNOut aux:problem.getEntradaVisible()){
             inNOutRepository.delete(aux);
-        }for(InNOut aux:problem.getSalidaVisible()){
+        }
+        for(InNOut aux:problem.getSalidaVisible()){
             inNOutRepository.delete(aux);
         }
         for(InNOut aux:problem.getEntradaOculta()){

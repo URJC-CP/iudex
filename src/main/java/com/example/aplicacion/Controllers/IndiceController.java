@@ -88,18 +88,7 @@ public class IndiceController {
         return "redirect:/";
     }
 
-    @PostMapping("/problemSubida")
-    public String subidaProblema(Model model,@RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String concursoId){
-        try {
-            problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, concursoId);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return "redirect:/";
 
-    }
 
     @PostMapping("/asignaProblemaAConcurso")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
