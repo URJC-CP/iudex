@@ -190,7 +190,7 @@ public class ZipHandlerService {
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")){
             //Si hay algun fallo borramos todos los inNOut que hemos creado
-            borraInNOut(problem);
+            //borraInNOut(problem);
             problemStringResult.setSalida(checkMap);
         }
 

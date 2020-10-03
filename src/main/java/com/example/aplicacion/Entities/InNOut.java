@@ -10,6 +10,10 @@ public class InNOut {
     private long id;
 
     private String name;
+    @ManyToOne
+    private Problem problem;
+    @ManyToOne
+    private Submission submission;
 
     @Lob
     private String text;
