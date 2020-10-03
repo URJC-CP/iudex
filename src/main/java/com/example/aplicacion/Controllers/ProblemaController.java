@@ -58,6 +58,8 @@ public class ProblemaController {
 
         modelAndView.getModel().put("problem", problem);
         modelAndView.getModel().put("concurso", concurso);
+        modelAndView.getModel().put("languages", languageService.getNLanguages());
+        modelAndView.getModel().put("teams", teamService.getAllTeams());
         modelAndView.setViewName("problem");
 
         return modelAndView;

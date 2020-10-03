@@ -77,7 +77,7 @@ public class ProblemService {
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
-        if(!problemStringResult.getSalida().equals(null)){
+        if(!(problemStringResult.getSalida()==null)){
             return problemStringResult.getSalida();
         }
         concurso.addProblem(problem);

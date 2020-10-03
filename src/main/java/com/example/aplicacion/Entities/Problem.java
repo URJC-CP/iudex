@@ -190,21 +190,33 @@ public class Problem {
         return salidaVisible;
     }
 
-    public void setSalidaVisible(List<InNOut> salidaVisible) {
-        this.salidaVisible = salidaVisible;
-    }
 
     public void addEntradaVisible(InNOut aux){
         this.entradaVisible.add(aux);
     }
+    public void removeEntradaVisible(InNOut aux){
+        this.entradaVisible.remove(aux);
+    }
+
     public void addSalidaVisible(InNOut aux){
         this.salidaVisible.add(aux);
     }
+    public void removeSalidaVisible(InNOut aux){
+        this.salidaVisible.remove(aux);
+    }
+
     public void addEntradaOculta(InNOut aux){
         this.entradaOculta.add(aux);
     }
+    public void removeEntradaOculta(InNOut aux){
+        this.entradaOculta.remove(aux);
+    }
+
     public void addSalidaOculta(InNOut aux){
         this.salidaOculta.add(aux);
+    }
+    public void removeSalidaOculta(InNOut aux){
+        this.salidaOculta.remove(aux);
     }
 
 
