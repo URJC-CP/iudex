@@ -12,8 +12,6 @@ public class InNOut {
     private String name;
     @ManyToOne
     private Problem problem;
-    @ManyToOne
-    private Submission submission;
 
     @Lob
     private String text;
@@ -59,4 +57,5 @@ public class InNOut {
     public String toString(){
         return this.name+this.text;
     }
+
 }

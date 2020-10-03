@@ -9,7 +9,7 @@ public class SubmissionProblemValidator{
     private long id;
 
     private String expectedSolution;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Submission submission;
 
     public SubmissionProblemValidator(){}

@@ -19,24 +19,25 @@ public class Problem {
     private long id;
 
     private String nombreEjercicio;
-    
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
     private List<InNOut>  entradaOculta;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
     private List<InNOut>  entradaVisible;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
     private List<InNOut>  salidaOculta;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
     private List<InNOut>  salidaVisible;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
     private List<InNOut> codigoCorrecto;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
 
-    @OneToMany(cascade =  CascadeType.ALL)
+    @OneToMany(cascade =  CascadeType.ALL, mappedBy = "problema")
     private List<Submission> submissions;
+
     private  int numeroSubmissions;
     @ManyToOne
     private Team equipoPropietario;

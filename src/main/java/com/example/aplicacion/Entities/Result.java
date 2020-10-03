@@ -11,8 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
 public class Result {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -20,9 +18,9 @@ public class Result {
     @Lob
     private String codigo;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private InNOut entradaInO;
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private InNOut  salidaEstandarCorrectaInO;
 
     @Lob
