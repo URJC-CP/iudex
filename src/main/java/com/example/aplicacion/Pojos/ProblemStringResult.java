@@ -2,7 +2,7 @@ package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.Problem;
 
-public class ZipProblemGenerateResult {
+public class ProblemStringResult {
     Problem problem;
     String salida;
 

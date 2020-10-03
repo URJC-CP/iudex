@@ -3,6 +3,7 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.SubmissionProblemValidator;
+import com.example.aplicacion.Pojos.ProblemStringResult;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
-    public Problem generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws Exception {
+    public ProblemStringResult generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream) throws Exception {
+        ProblemStringResult problemStringResult = new ProblemStringResult();
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
         Map<String, List<String>> mapaRevisionEntradas = new HashMap<>();
@@ -181,14 +183,18 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
-        try {
-            checkMap(mapaRevisionEntradas);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
+        String checkMap = checkMap(mapaRevisionEntradas);
+        if (!checkMap.equals("OK")){
+            //Si hay algun fallo borramos todos los inNOut que hemos creado
+
+            problemStringResult.setSalida(checkMap);
         }
 
+
         String hash = problem.generaHash();
-        return problem;
+        problemStringResult.setProblem(problem);
+        return problemStringResult;
     }
 
     public String selectLenguaje(String lenguaje){
@@ -205,12 +211,13 @@ public class ZipHandlerService {
         }
     }
 
+    /*
     public Problem generateProblemFromZIP(Problem problem, MultipartFile multipartFile) throws Exception {
         File convFile = new File(multipartFile.getOriginalFilename());
         multipartFile.transferTo(convFile);
         return generateProblemFromZIP(problem, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
     }
-
+     */
     private void addStringToMap(Map<String, List<String>> mapa, String nombre, String extension){
         if (mapa.containsKey(nombre)){
             List<String> laux = mapa.get(nombre);
@@ -225,19 +232,28 @@ public class ZipHandlerService {
 
 
     //Funcion que checkea que el mapa se haya completado y por lo tanto la entrada sea correcta
-    private void checkMap(Map<String, List<String>> mapa) throws Exception {
+    private String checkMap(Map<String, List<String>> mapa) throws Exception {
         Collection<List<String>> laux = mapa.values();
         for (List<String> aux : laux) {
             if (aux.size() != 2) {
                 //Significa que algo ha fallado
                 if (aux.get(0).endsWith(".in")) {
-                    throw new Exception("El ZIP tiene fallos, la entrada " + aux.get(0) + " no tiene salida");
+                    //throw new Exception("El ZIP tiene fallos, la entrada " + aux.get(0) + " no tiene salida");
+                    return ("El ZIP tiene fallos, la entrada " + aux.get(0) + " no tiene salida");
                 } else if (aux.get(0).endsWith(".ans")) {
-                    throw new Exception("El ZIP tiene fallos, la salida " + aux.get(0) + " no tiene entrada");
-
+                    //throw new Exception("El ZIP tiene fallos, la salida " + aux.get(0) + " no tiene entrada");
+                    return ("El ZIP tiene fallos, la salida " + aux.get(0) + " no tiene entrada");
                 }
             }
         }
+        return "OK";
+    }
+
+    private void borraInNOut(Problem problem){
+        for(InNOut aux:problem.getEntradaVisible()){
+
+        }
+
     }
 
     //clase que coge un zipInput y lo convierte en string a traves del zipentry

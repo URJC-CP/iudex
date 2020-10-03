@@ -4,6 +4,7 @@ import com.example.aplicacion.Entities.Concurso;
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Pojos.ProblemStringResult;
 import com.example.aplicacion.Repository.ConcursoRepository;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
@@ -50,33 +51,38 @@ public class ProblemService {
 
 
     public String addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idConcurso) throws Exception {
-            Problem problem = new Problem();
-            //Si el usuario introduce un nombre lo metemos a cholon
-            if(!nombreProblema.equals("")){
-                problem = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
-                problem.setNombreEjercicio(nombreProblema);
-            }
-            //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
-            else {
-                problem = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
-            }
+        Problem problem = new Problem();
 
-            Team team =teamRepository.findTeamById(Long.valueOf(teamId));
-            if (team == null) {
-                return "TEAM NOT FOUND";
-            }
-            problem.setEquipoPropietario(team);
-            Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-            if(concurso==null){
-                return "CONCURSO NOT FOUND";
-            }
-            concurso.addProblem(problem);
-            problemRepository.save(problem);
+        Team team =teamRepository.findTeamById(Long.valueOf(teamId));
+        if (team == null) {
+            return "TEAM NOT FOUND";
+        }
+        problem.setEquipoPropietario(team);
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        if(concurso==null){
+            return "CONCURSO NOT FOUND";
+        }
+        //Si el usuario introduce un nombre lo metemos a cholon
+        if(!nombreProblema.equals("")){
+            ProblemStringResult problemStringResult = new ProblemStringResult();
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
+            problem = problemStringResult.getProblem();
+            problem.setNombreEjercicio(nombreProblema);
+        }
+        //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
+        else {
+            ProblemStringResult problemStringResult = new ProblemStringResult();
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
+            problem = problemStringResult.getProblem();
+        }
 
-            concursoRepository.save(concurso);
+        concurso.addProblem(problem);
+        problemRepository.save(problem);
 
-            problemValidatorService.validateProblem(problem);
-            return "OK";
+        concursoRepository.save(concurso);
+
+        problemValidatorService.validateProblem(problem);
+        return "OK";
 
     }
 

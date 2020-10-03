@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InNOutRepository extends JpaRepository<InNOut, Long> {
 
+
 }
