@@ -31,32 +31,31 @@ public class ProblemaController {
 
 
     @GetMapping("/concurso/{idConcurso}/problema/{idProblem}")
-    public String goToProblem(Model model, @PathVariable String idConcurso, @PathVariable String idProblem){
+    public ModelAndView goToProblem( @PathVariable String idConcurso, @PathVariable String idProblem){
         ModelAndView modelAndView = new ModelAndView();
 
         Problem problem = problemService.getProblem(idProblem);
         Concurso concurso = concursoService.getConcurso(idConcurso);
         if(concurso==null){
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
-            //modelAndView.setViewName();
-            model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
-            return "errorConocido";
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
         }
         if(problem==null){
-            model.addAttribute("error", "ERROR PROBLEMA NO ECONTRADO");
-            //return "errorConocido";
-            return "errorConocido";
+            modelAndView.getModel().put("error", "ERROR PROBLEMA NO ECONTRADO");
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
         }
         if(!concurso.getListaProblemas().contains(problem)){
-            model.addAttribute("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
-            return "errorConocido";
-
+            modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
         }
 
-        model.addAttribute("problem", problem);
-        model.addAttribute("concurso", concurso);
+        modelAndView.getModel().put("problem", problem);
+        modelAndView.getModel().put("concurso", concurso);
 
-        return "problem";
+        return modelAndView;
     }
 
     //Controller que devuelve en un HTTP el pdf del problema pedido
@@ -90,6 +89,7 @@ public class ProblemaController {
         return response;
 
     }
+
 
 
 }

@@ -45,7 +45,7 @@ public class ConcursoController {
         String salida = concursoService.addTeamToconcurso(teamId, concursoId);
 
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
@@ -57,7 +57,7 @@ public class ConcursoController {
         String salida = concursoService.borraconcurso(concursoId);
 
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
 
@@ -69,7 +69,7 @@ public class ConcursoController {
         String salida = concursoService.deleteTeamFromconcurso(concursoId, teamId);
 
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
@@ -81,7 +81,7 @@ public class ConcursoController {
     public String addProblemToConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
         String salida = concursoService.anyadeProblemaConcurso(concursoId, problemId);
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
@@ -93,7 +93,7 @@ public class ConcursoController {
         String salida = concursoService.deleteProblemFromConcurso(concursoId, problemId);
 
         if (salida.equals("OK")){
-            return "indexOriginal";
+            return "redirect:/";
         }
         else {
             model.addAttribute("error", salida);
