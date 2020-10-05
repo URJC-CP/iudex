@@ -81,6 +81,7 @@ public class ProblemService {
             //problemRepository.deleteById(problem.getId());
             return problemStringResult.getSalida();
         }
+
         concurso.addProblem(problem);
         problemRepository.save(problem);
 

@@ -33,7 +33,7 @@ public class Submission {
     private Concurso concurso;
 
 
-    private String hashString;
+    private String hashStringSubmission;
     private String hashStringDelProblema;
 
     private boolean esPublica;
@@ -66,7 +66,7 @@ public class Submission {
         return salida;
     }
     public String generaHash(){
-        return  this.hashString = hasheaElString(codigo);
+        return  this.hashStringSubmission = hasheaElString(codigo);
     }
 
     public String hasheaElString(String string){
@@ -167,12 +167,12 @@ public class Submission {
         this.numeroResultCorregidos = numeroResultCorregidos;
     }
 
-    public String getHashString() {
-        return hashString;
+    public String getHashStringSubmission() {
+        return hashStringSubmission;
     }
 
-    public void setHashString(String hashString) {
-        this.hashString = hashString;
+    public void setHashStringSubmission(String hashString) {
+        this.hashStringSubmission = hashString;
     }
 
     public String getHashStringDelProblema() {

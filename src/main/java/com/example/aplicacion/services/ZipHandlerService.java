@@ -2,6 +2,7 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Pojos.ProblemStringResult;
 import com.example.aplicacion.Repository.InNOutRepository;
@@ -185,7 +186,7 @@ public class ZipHandlerService {
 
         //generamos el hash
         String hash = problem.generaHash();
-
+        rellenaSubmissionConProblemHash(problem);
         //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")){
@@ -291,6 +292,11 @@ public class ZipHandlerService {
     private byte[] convertZipToByte(ZipInputStream zipInputStream) throws IOException {
         byte[] bits = zipInputStream.readAllBytes();
         return bits;
+    }
+    private void rellenaSubmissionConProblemHash(Problem problem){
+        for(Submission submission: problem.getSubmissions()){
+            submission.generaHashProblema();
+        }
     }
 
     private  void rellenaElYumlConIni(String configuracion, Problem problem){

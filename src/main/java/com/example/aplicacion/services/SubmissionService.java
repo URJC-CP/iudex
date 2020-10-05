@@ -142,7 +142,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
         //Creamos la Submission
-        Submission submission = new Submission(codigo, language, fileName, true);
+        Submission submission = new Submission(codigo, language, fileName, false);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
@@ -157,7 +157,7 @@ public class SubmissionService {
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
-            resultRepository.save(resAux);
+            //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
 
@@ -166,7 +166,7 @@ public class SubmissionService {
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resultRepository.save(resAux);
+            //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
 
@@ -179,10 +179,11 @@ public class SubmissionService {
 
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
-
+        System.out.println( "submission");
         return submissionStringResult;
     }
     public void ejecutaSubmission(Submission submission){
+        //Envio de mensaje a la cola
         //Envio de mensaje a la cola
         for (Result res : submission.getResults()  ) {
             sender.sendMessage(res);
