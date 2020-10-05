@@ -35,7 +35,7 @@ public class SubmissionProblemValidatorService {
         submissionProblemValidator.setExpectedSolution(expectedResult);
 
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = submissionService.creaSubmission(codigo, String.valueOf(problema.getId()), lenguaje, fileName, idEquipo, idConcurso);
+        SubmissionStringResult submissionStringResult = submissionService.creaSubmission(codigo, String.valueOf(problema.getId()), lenguaje, fileName, idConcurso, idEquipo);
         if(!submissionStringResult.getSalida().equals("OK")){
             //REVISAR
             return null;

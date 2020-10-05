@@ -67,7 +67,7 @@ public class IndiceController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, teamId, concursoId);
+        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, concursoId, teamId);
 
         if (salida.equals("OK")){
             return "redirect:/";

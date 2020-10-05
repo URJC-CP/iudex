@@ -144,7 +144,7 @@ public class ZipHandlerService {
                         //obtenemos el string del codigo
                         String aux = convertZipToString( zipFile);
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, teamId, concursoId);
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, concursoId, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.addSubmissionProblemValidator(submissionProblemValidator);
                         logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);

@@ -38,9 +38,9 @@ public class SubmissionService {
     @Autowired
     private RabbitResultExecutionSender sender;
 
-    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
+    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idConcurso , String idEquipo){
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idEquipo, idConcurso);
+        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idConcurso, idEquipo);
         if(!submissionStringResult.getSalida().equals("OK")){
             return submissionStringResult.getSalida();
         }
@@ -49,7 +49,7 @@ public class SubmissionService {
         return "OK";
     }
 
-    public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
+    public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idConcurso , String idEquipo){
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
