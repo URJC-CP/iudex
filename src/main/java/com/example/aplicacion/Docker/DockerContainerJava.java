@@ -38,7 +38,8 @@ public class DockerContainerJava extends DockerContainer {
 
         String nombreClase = getClassName();
         Result result = getResult();
-
+        String nombreDocker = "a"+Long.toString(result.getId())+java.time.LocalDateTime.now();
+        nombreDocker =nombreDocker.replace(":", "");
         String timeout;
         if(result.getMaxTimeout()!=null){
             timeout= result.getMaxTimeout();
@@ -52,7 +53,7 @@ public class DockerContainerJava extends DockerContainer {
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU)
                 .withDiskQuota(defaultStorageLimit);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeout,"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).withName("a"+Long.toString(result.getId())+java.time.LocalDateTime.now()).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeout,"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
 
         logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 

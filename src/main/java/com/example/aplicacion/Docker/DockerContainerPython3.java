@@ -31,12 +31,14 @@ public class DockerContainerPython3 extends DockerContainer {
 
         Result result = getResult();
         String nombreClase = result.getFileName();
+        String nombreDocker = "a"+Long.toString(result.getId())+java.time.LocalDateTime.now();
+        nombreDocker =nombreDocker.replace(":", "");
 
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU).withDiskQuota(defaultStorageLimit);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(), "FILENAME2="+nombreClase+".py" ).withHostConfig(hostConfig).withName("a"+Long.toString(result.getId())+java.time.LocalDateTime.now()).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(), "FILENAME2="+nombreClase+".py" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
 
         logger.info("DOCKERPYTHON: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 
