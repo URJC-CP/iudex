@@ -39,20 +39,36 @@ public class SubmissionService {
     private RabbitResultExecutionSender sender;
 
     public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
-        String salida = creaSubmission(codigo, problem, lenguaje, fileName, idEquipo, idConcurso);
-
-        return salida;
+        //Creamos la submission
+        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idEquipo, idConcurso);
+        if(!submissionStringResult.getSalida().equals("OK")){
+            return submissionStringResult.getSalida();
+        }
+        //ejecutamos
+        ejecutaSubmission(submissionStringResult.getSubmission());
+        return "OK";
     }
 
     public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
-        //Obtedemos el Problema del que se trata
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        if(concurso==null){
+            submissionStringResult.setSalida("CONCURSO NOT FOUND");
+            return submissionStringResult;
+        }
+
         Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
         if(problema ==null){
             submissionStringResult.setSalida("PROBLEM NOT FOUND");
             return submissionStringResult;
         }
+        Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
+        if (team == null) {
+            submissionStringResult.setSalida("TEAM NOT FOUND");
+            return submissionStringResult;
+        }
+
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
@@ -63,13 +79,8 @@ public class SubmissionService {
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
-
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-        if(concurso==null){
-            submissionStringResult.setSalida("CONCURSO NOT FOUND");
-            return submissionStringResult;
-        }
         submission.setConcurso(concurso);
+        submission.setTeam(team);
 
         //Comprobamos q el problema pertenezca al concurso
         if(!concurso.getListaProblemas().contains(problema)){
@@ -96,19 +107,13 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
-        if (team == null) {
-            submissionStringResult.setSalida("TEAM NOT FOUND");
-            return submissionStringResult;
-        }
-        submission.setTeam(team);
+
         //Guardamos la submission
-        submissionRepository.save(submission);
 
         problema.addSubmission(submission);
         problemRepository.save(problema);
 
-        
+
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
 

@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,31 @@ public class SubmissionProblemValidatorService {
     private ConcursoService concursoService;
     @Autowired
     private ConcursoRepository concursoRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private SubmissionService submissionService;
+
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String idEquipo){
+        SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();
+        submissionProblemValidator.setExpectedSolution(expectedResult);
+
+        //Creamos la submission
+        SubmissionStringResult submissionStringResult = submissionService.creaSubmission(codigo, String.valueOf(problema.getId()), lenguaje, fileName, idEquipo, idConcurso);
+        if(!submissionStringResult.getSalida().equals("OK")){
+            //REVISAR
+            return null;
+        }
+        submissionProblemValidator.setSubmission(submissionStringResult.getSubmission());
+
+        return submissionProblemValidator;
+
+    }
 
 
-
+    /*
     //clase que crea los results y los services dentro de un submission
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String ){
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String idEquipo){
         //problemRepository.save(problema);
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
         if(concurso==null){
@@ -79,4 +100,6 @@ public class SubmissionProblemValidatorService {
 
         return submissionProblemValidator;
     }
+
+     */
 }

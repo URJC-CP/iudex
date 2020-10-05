@@ -65,13 +65,13 @@ public class ProblemService {
         }
         //Si el usuario introduce un nombre lo metemos a cholon
         if(!nombreProblema.equals("")){
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idConcurso, teamId);
             problem = problemStringResult.getProblem();
             problem.setNombreEjercicio(nombreProblema);
         }
         //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
         else {
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream);
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idConcurso, teamId);
             problem = problemStringResult.getProblem();
         }
 
