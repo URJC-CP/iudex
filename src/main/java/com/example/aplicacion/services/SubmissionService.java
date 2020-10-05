@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -37,18 +38,25 @@ public class SubmissionService {
     @Autowired
     private RabbitResultExecutionSender sender;
 
+    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
+        String salida = creaSubmission(codigo, problem, lenguaje, fileName, idEquipo, idConcurso);
 
-    public String creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
+        return salida;
+    }
 
+    public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idEquipo , String idConcurso){
+        SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
         //Obtedemos el Problema del que se trata
         Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
         if(problema ==null){
-            return "PROBLEM NOT FOUND";
+            submissionStringResult.setSalida("PROBLEM NOT FOUND");
+            return submissionStringResult;
         }
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         if(language==null){
-            return "LANGUAGE NOT FOUND";
+            submissionStringResult.setSalida("LANGUAGE NOT FOUND");
+            return submissionStringResult;
         }
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName, true);
@@ -58,13 +66,15 @@ public class SubmissionService {
 
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
         if(concurso==null){
-            return "CONCURSO NOT FOUND";
+            submissionStringResult.setSalida("CONCURSO NOT FOUND");
+            return submissionStringResult;
         }
         submission.setConcurso(concurso);
 
         //Comprobamos q el problema pertenezca al concurso
         if(!concurso.getListaProblemas().contains(problema)){
-            return "PROBLEM NOT IN CONCURSO";
+            submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
+            return submissionStringResult;
         }
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
@@ -88,7 +98,8 @@ public class SubmissionService {
 
         Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
         if (team == null) {
-            //return "TEAM NOT FOUND";
+            submissionStringResult.setSalida("TEAM NOT FOUND");
+            return submissionStringResult;
         }
         submission.setTeam(team);
         //Guardamos la submission
@@ -97,27 +108,17 @@ public class SubmissionService {
         problema.addSubmission(submission);
         problemRepository.save(problema);
 
-        /*
-        //No hace falta un Switch, direcamente se encarga el ResultHandler
-        switch (submission.getLanguage().getNombreLenguaje()){
-            case "java":
-                for (Result res : submission.getResults()  ) {
-                    sender.sendMessage(res);
-                }
-                break;
+        
+        submissionStringResult.setSalida("OK");
+        submissionStringResult.setSubmission(submission);
 
-
-        }
-
-         */
-
+        return submissionStringResult;
+    }
+    public void ejecutaSubmission(Submission submission){
         //Envio de mensaje a la cola
         for (Result res : submission.getResults()  ) {
             sender.sendMessage(res);
         }
-
-
-        return "OK";
     }
 
     public Page<Submission> getNSubmissions(int n){

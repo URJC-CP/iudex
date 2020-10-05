@@ -20,13 +20,30 @@ public class SubmissionProblemValidatorService {
     private LanguageRepository languageRepository;
     @Autowired
     private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
+    @Autowired
+    private ConcursoService concursoService;
+    @Autowired
+    private ConcursoRepository concursoRepository;
 
 
 
     //clase que crea los results y los services dentro de un submission
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult){
-        problemRepository.save(problema);
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String ){
+        //problemRepository.save(problema);
+        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
+        if(concurso==null){
+            //return "CONCURSO NOT FOUND";
+        }
+        submission.setConcurso(concurso);
 
+        Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
+        if (team == null) {
+            //return "TEAM NOT FOUND";
+        }
+        //Comprobamos q el problema pertenezca al concurso
+        if(!concurso.getListaProblemas().contains(problema)){
+            //return "PROBLEM NOT IN CONCURSO";
+        }
 
         //Obtedemos el Problema del que se trata
         Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
@@ -57,8 +74,8 @@ public class SubmissionProblemValidatorService {
         problema.generaHash();
         submission.generaHashProblema();
 
-        submissionRepository.save(submissionProblemValidator.getSubmission());
-        submissionProblemValidatorRepository.save(submissionProblemValidator);
+        //submissionRepository.save(submissionProblemValidator.getSubmission());
+        //submissionProblemValidatorRepository.save(submissionProblemValidator);
 
         return submissionProblemValidator;
     }
