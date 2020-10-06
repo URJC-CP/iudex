@@ -18,9 +18,9 @@ public class Result {
     @Lob
     private String codigo;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private InNOut entradaInO;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private InNOut  salidaEstandarCorrectaInO;
 
     @Lob

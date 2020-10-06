@@ -16,10 +16,12 @@ public class Concurso {
     private Team teamPropietario;
     @ManyToMany
     private List<Problem> listaProblemas;
+
     @ManyToMany
     private List<Team> listaParticipantes;
-    @OneToMany(mappedBy = "concurso")
+    @OneToMany(mappedBy = "concurso", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
+
 
     public Concurso() {
         this.listaProblemas = new ArrayList<>();

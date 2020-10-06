@@ -21,6 +21,8 @@ public class ConcursoService {
     private TeamRepository teamRepository;
     @Autowired
     private ProblemRepository problemRepository;
+    @Autowired
+    private ProblemService problemService;
 
     public String creaConcurso(String nameConcurso, String teamId){
         if(concursoRepository.existsByNombreConcurso(nameConcurso)){
@@ -43,10 +45,17 @@ public class ConcursoService {
     }
 
 
-    public String borraconcurso(String idconcurso){
+    public String deleteConcurso(String idconcurso){
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idconcurso));
         if(concurso==null){
             return "concurso NOT FOUND";
+        }
+        //buscamos si en la lista de problemas hay alguno que solo este en este concurso
+        for(Problem problemAux: concurso.getListaProblemas()){
+            //Si hay algun problema que solo pertece a un concurso lo borramos
+            if(problemAux.getListaConcursosPertenece().size()==1 &&problemAux.getListaConcursosPertenece().contains(concurso)){
+                problemService.deleteProblem(Long.toString(problemAux.getId()));
+            }
         }
         concursoRepository.delete(concurso);
 

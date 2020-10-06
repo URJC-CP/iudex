@@ -105,7 +105,7 @@ public class ProblemService {
         for(Concurso concursoAux:problem.getListaConcursosPertenece()){
             concursoAux.getListaProblemas().remove(problem);
         }
-        
+
         problemRepository.delete(problem);
         logger.info("El problema "+problem.getNombreEjercicio()+" ha sido eliminado");
         return "OK";

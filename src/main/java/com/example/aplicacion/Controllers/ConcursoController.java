@@ -54,7 +54,7 @@ public class ConcursoController {
     }
     @PostMapping("/deleteConcurso")
     public  String deleteConcorso(Model model, @RequestParam String concursoId){
-        String salida = concursoService.borraconcurso(concursoId);
+        String salida = concursoService.deleteConcurso(concursoId);
 
         if (salida.equals("OK")){
             return "redirect:/";
