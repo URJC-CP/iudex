@@ -12,6 +12,8 @@ import com.example.aplicacion.Repository.TeamRepository;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +45,7 @@ public class ProblemService {
     private TeamRepository teamRepository;
     @Autowired
     private ConcursoRepository concursoRepository;
+    Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
 
     public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
@@ -92,16 +95,23 @@ public class ProblemService {
 
     }
 
-    public String removeProblem(String problemId){
+    public String deleteProblem(String problemId){
         Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
         if(problem==null){
             return "PROBLEM NOT FOUND";
         }
 
-
+        //Quitamos los problemas del concurso
+        for(Concurso concursoAux:problem.getListaConcursosPertenece()){
+            concursoAux.getListaProblemas().remove(problem);
+        }
+        
         problemRepository.delete(problem);
+        logger.info("El problema "+problem.getNombreEjercicio()+" ha sido eliminado");
         return "OK";
     }
+
+
 
 
     private boolean problemDuplicated(String nombre){

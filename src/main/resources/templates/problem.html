@@ -36,7 +36,7 @@
         {{#problem.submissions}}
         <tr>
             <th><option>{{id}}</option></th>
-            <th><option>{{nombreEjercicio}}</option></th>
+            <th><option>{{problema.nombreEjercicio}}</option></th>
             <th><option>{{team.nombreEquipo}}</option></th>
         </tr>
         {{/problem.submissions}}
@@ -85,6 +85,10 @@
     </form>
 </div>
 
+<div class="container">
+    <p>Borrar este problema </p><a href="/deleteProblem/{{problem.id}}">Eliminar</a>
+
+</div>
 </body>
 
 

@@ -38,7 +38,7 @@ public class DockerContainerJava extends DockerContainer {
 
         String nombreClase = getClassName();
         Result result = getResult();
-        String nombreDocker = "a"+Long.toString(result.getId())+java.time.LocalDateTime.now();
+        String nombreDocker = "a"+Long.toString(result.getId())+"_"+java.time.LocalDateTime.now();
         nombreDocker =nombreDocker.replace(":", "");
         String timeout;
         if(result.getMaxTimeout()!=null){

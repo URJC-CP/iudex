@@ -112,5 +112,19 @@ public class ProblemaController {
         return modelAndView;
 
     }
+    @GetMapping("/deleteProblem/{problemId}")
+    public ModelAndView deleteProblem(@PathVariable String problemId ){
+        ModelAndView modelAndView = new ModelAndView();
+        String salida = problemService.deleteProblem(problemId);
+
+        if(!salida.equals("OK")){
+            modelAndView.getModel().put("error", salida);
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+    }
 
 }

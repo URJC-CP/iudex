@@ -40,7 +40,7 @@ public class Submission {
     private float execSubmissionTime;
     private float execSubmissionMemory;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     private Team team;
 
     public Submission() {

@@ -31,7 +31,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         Result result = getResult();
         String nombreClase = result.getFileName();
-        String nombreDocker = "a"+Long.toString(result.getId())+java.time.LocalDateTime.now();
+        String nombreDocker = "a"+Long.toString(result.getId())+"_"+java.time.LocalDateTime.now();
         nombreDocker =nombreDocker.replace(":", "");
 
         DockerClient dockerClient = getDockerClient();
