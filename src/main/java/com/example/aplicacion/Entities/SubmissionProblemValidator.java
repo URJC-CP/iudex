@@ -14,10 +14,6 @@ public class SubmissionProblemValidator{
 
     public SubmissionProblemValidator(){}
 
-    public SubmissionProblemValidator(String codigo, Language language, String filename, String expectedSolution){
-        submission = new Submission(codigo,language, filename, false);
-        this.expectedSolution = expectedSolution;
-    }
 
     public String getExpectedSolution() {
         return expectedSolution;
@@ -34,4 +30,13 @@ public class SubmissionProblemValidator{
     public void setSubmission(Submission submission) {
         this.submission = submission;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
 }

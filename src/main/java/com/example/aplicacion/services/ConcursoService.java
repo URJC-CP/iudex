@@ -51,12 +51,20 @@ public class ConcursoService {
             return "concurso NOT FOUND";
         }
         //buscamos si en la lista de problemas hay alguno que solo este en este concurso
+        boolean borrar = false;
+        Problem problemAux2 = new Problem();
         for(Problem problemAux: concurso.getListaProblemas()){
             //Si hay algun problema que solo pertece a un concurso lo borramos
             if(problemAux.getListaConcursosPertenece().size()==1 &&problemAux.getListaConcursosPertenece().contains(concurso)){
-                problemService.deleteProblem(Long.toString(problemAux.getId()));
+                borrar=true;
+                problemAux2 = problemAux;
             }
         }
+        if (borrar) {
+            problemService.deleteProblem(Long.toString(problemAux2.getId()));
+        }
+
+        //borramos el concurso
         concursoRepository.delete(concurso);
 
         return "OK";

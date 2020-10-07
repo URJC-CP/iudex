@@ -26,7 +26,10 @@ public class Concurso {
     public Concurso() {
         this.listaProblemas = new ArrayList<>();
         this.listaParticipantes = new ArrayList<>();
+        this.listaSubmissions = new ArrayList<>();
+        this.listaProblemas = new ArrayList<>();
     }
+
 
     public long getId() {
         return id;

@@ -10,9 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 //This class Sends the propeer information to the rabbitqueu
@@ -75,7 +73,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
         //Creamos la Submission
-        Submission submission = new Submission(codigo, language, fileName, true);
+        Submission submission = new Submission(codigo, language, fileName);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
@@ -120,14 +118,17 @@ public class SubmissionService {
         return submissionStringResult;
     }
 
+    //Constructor para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
     public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idConcurso , String idEquipo){
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
+        /*
         Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
         if(concurso==null){
             submissionStringResult.setSalida("CONCURSO NOT FOUND");
             return submissionStringResult;
         }
+         */
 
 
         Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
@@ -142,11 +143,11 @@ public class SubmissionService {
             return submissionStringResult;
         }
         //Creamos la Submission
-        Submission submission = new Submission(codigo, language, fileName, false);
+        Submission submission = new Submission(codigo, language, fileName);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
-        submission.setConcurso(concurso);
+        //submission.setConcurso(concurso);
         submission.setTeam(team);
 
 
@@ -171,6 +172,7 @@ public class SubmissionService {
         }
 
 
+        submission.setEsProblemValidator(true);
         //Guardamos la submission
 
         problema.addSubmission(submission);

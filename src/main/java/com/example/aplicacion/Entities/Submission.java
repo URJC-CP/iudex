@@ -27,6 +27,7 @@ public class Submission {
     private int numeroResultCorregidos;
     private String resultado;
 
+
     @ManyToOne
     private Language language;
     @ManyToOne
@@ -35,18 +36,26 @@ public class Submission {
 
     private String hashStringSubmission;
     private String hashStringDelProblema;
+    private boolean esProblemValidator;
+    private String esProblemValidatorResultadoEsperado;
 
-    private boolean esPublica;
     private float execSubmissionTime;
     private float execSubmissionMemory;
 
     @ManyToOne
     private Team team;
 
+    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del concurso
+    @PreRemove
+    private void removeConcursoFromProblemValidator(){
+
+    }
+
+
     public Submission() {
     }
 
-    public Submission(String codigo, Language lenguaje, String filename, boolean esPublica) {
+    public Submission(String codigo, Language lenguaje, String filename) {
         this.codigo = codigo;
         this.language =lenguaje;
         this.corregido=false;
@@ -55,7 +64,6 @@ public class Submission {
         this.filename=filename;
         this.numeroResultCorregidos=0;
         generaHash();
-        this.esPublica = esPublica;
     }
 
     private String listaToString(List<InNOut> lista){
@@ -190,14 +198,6 @@ public class Submission {
         return this.numeroResultCorregidos == results.size();
     }
 
-    public boolean isEsPublica() {
-        return esPublica;
-    }
-
-    public void setEsPublica(boolean esPublica) {
-        this.esPublica = esPublica;
-    }
-
     public float getExecSubmissionTime() {
         return execSubmissionTime;
     }
@@ -228,5 +228,21 @@ public class Submission {
 
     public void setConcurso(Concurso concurso) {
         this.concurso = concurso;
+    }
+
+    public boolean isEsProblemValidator() {
+        return esProblemValidator;
+    }
+
+    public void setEsProblemValidator(boolean esProblemValidator) {
+        this.esProblemValidator = esProblemValidator;
+    }
+
+    public String getEsProblemValidatorResultadoEsperado() {
+        return esProblemValidatorResultadoEsperado;
+    }
+
+    public void setEsProblemValidatorResultadoEsperado(String esProblemValidatorResultadoEsperado) {
+        this.esProblemValidatorResultadoEsperado = esProblemValidatorResultadoEsperado;
     }
 }
