@@ -20,16 +20,16 @@ public class Problem {
 
     private String nombreEjercicio;
 
-    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaOculta;
-    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaVisible;
-    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaOculta;
-    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaVisible;
 
-    @OneToMany(mappedBy = "problem" ,cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut> codigoCorrecto;
 
     @OneToMany(cascade = CascadeType.ALL)

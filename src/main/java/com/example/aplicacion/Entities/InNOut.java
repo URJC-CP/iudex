@@ -54,8 +54,17 @@ public class InNOut {
         this.text = text;
     }
 
+    public Problem getProblem() {
+        return problem;
+    }
+
+    public void setProblem(Problem problem) {
+        this.problem = problem;
+    }
+
     public String toString(){
         return this.name+this.text;
     }
+
 
 }

@@ -83,6 +83,7 @@ public class ZipHandlerService {
                         //Leemos el archivo zip a string
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
+                        //inNOut.setProblem(problem);
                         inNOutRepository.save(inNOut);
                         problem.addSalidaVisible(inNOut);
                     }else if(extension.equals("in")){
@@ -90,6 +91,7 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
+                        //inNOut.setProblem(problem);
                         inNOutRepository.save(inNOut);
                         problem.addEntradaVisible(inNOut);
                     }
@@ -102,6 +104,7 @@ public class ZipHandlerService {
                         //Leemos el archivo zip a string
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
+                        //inNOut.setProblem(problem);
                         inNOutRepository.save(inNOut);
                         problem.addSalidaOculta(inNOut);
                     }else if(extension.equals("in")){
@@ -109,6 +112,7 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
+                        //inNOut.setProblem(problem);
                         inNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
                         logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema "+ problemName);
