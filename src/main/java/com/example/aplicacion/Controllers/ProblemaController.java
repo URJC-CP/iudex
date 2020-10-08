@@ -4,14 +4,13 @@ import com.example.aplicacion.Entities.Concurso;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.services.*;
+import org.apache.commons.io.FilenameUtils;
+import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -124,6 +123,27 @@ public class ProblemaController {
         }
 
         modelAndView.setViewName("redirect:/");
+        return modelAndView;
+    }
+
+    @PostMapping("/createSubmission")
+    public ModelAndView subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
+        ModelAndView modelAndView = new ModelAndView();
+
+        String fileNameaux = codigo.getOriginalFilename();
+        String fileName = FilenameUtils.removeExtension(fileNameaux);
+        String cod = new String(codigo.getBytes());
+        //String ent = new String(entrada.getBytes());
+        //Crea la submission
+        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, concursoId, teamId);
+
+        if(!salida.equals("OK")){
+            modelAndView.getModel().put("error", salida);
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("redirect:/concurso/"+concursoId+"/problema/"+ problemaAsignado);
         return modelAndView;
     }
 

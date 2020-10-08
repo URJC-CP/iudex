@@ -56,7 +56,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        Problem problema = problemRepository.findProblemByNombreEjercicio(problem);
+        Problem problema = problemRepository.findProblemById(Long.valueOf(problem));
         if(problema ==null){
             submissionStringResult.setSalida("PROBLEM NOT FOUND");
             return submissionStringResult;
@@ -67,7 +67,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
+        Language language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;

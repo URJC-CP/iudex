@@ -11,5 +11,6 @@
 
       Language findLanguageByNombreLenguaje(String id);
       List<Language> findAll();
+      Language findLanguageById(Long id);
 
   }

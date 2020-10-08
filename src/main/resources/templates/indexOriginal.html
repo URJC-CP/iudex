@@ -27,14 +27,14 @@
         <div class="row">
             <select class="form-control" name="problemaAsignado">
                 {{#exercices}}
-                <option>{{nombreEjercicio}}</option>
+                <option value="{{id}}">{{nombreEjercicio}}</option>
                 {{/exercices}}
             </select>
         </div>
         <div class="row">
             <select class="form-control" name="lenguaje">
                 {{#languages}}
-                <option>{{nombreLenguaje}}</option>
+                <option value="{{id}}">{{nombreLenguaje}}</option>
                 {{/languages}}
             </select>
         </div>

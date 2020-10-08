@@ -28,6 +28,9 @@
             <th scope="col">Id</th>
             <th scope="col">Nombre</th>
             <th scope="col">Numero Submissions</th>
+            <th scope="col">Corregida</th>
+            <th scope="col">Resultado</th>
+            <th scope="col">Lengauje</th>
 
         </tr>
         </thead>
@@ -38,6 +41,10 @@
             <th><option>{{id}}</option></th>
             <th><option>{{problema.nombreEjercicio}}</option></th>
             <th><option>{{team.nombreEquipo}}</option></th>
+            <th><option>{{corregido}}</option></th>
+            <th><option>{{resultado}}</option></th>
+            <th><option>{{lenguage.nombreLenguaje}}</option></th>
+
         </tr>
         {{/problem.submissions}}
 
@@ -56,7 +63,7 @@
 </div>
 
 <div class="container">
-    <form method="post" action="/answerSubida" enctype="multipart/form-data">
+    <form method="post" action="/createSubmission" enctype="multipart/form-data">
         <div class="row">
             <p>Codigo</p>
             <input type="file" id="codigo" name="codigo"  required>
@@ -66,7 +73,7 @@
         <div class="row">
             <select class="form-control" name="lenguaje">
                 {{#languages}}
-                <option>{{nombreLenguaje}}</option>
+                <option value="{{id}}">{{nombreLenguaje}}</option>
                 {{/languages}}
             </select>
         </div>
