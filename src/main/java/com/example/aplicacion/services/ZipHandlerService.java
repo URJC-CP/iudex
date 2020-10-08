@@ -111,7 +111,7 @@ public class ZipHandlerService {
                         InNOut inNOut = new InNOut(filename, aux);
                         inNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
-                        logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de prueba para el problema "+ problemName);
+                        logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema "+ problemName);
                     }
                 }
                 //Buscamos ahora las submission
@@ -147,7 +147,7 @@ public class ZipHandlerService {
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
                         SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, concursoId, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
-                        problem.addSubmissionProblemValidator(submissionProblemValidator);
+                        problem.getSubmissionProblemValidators().add(submissionProblemValidator);
                         logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);
                     }
 

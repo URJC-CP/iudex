@@ -74,12 +74,13 @@ public class SubmissionService {
         }
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
-
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
         submission.setConcurso(concurso);
         submission.setTeam(team);
 
+        //Para que le asigne el@Id
+        submissionRepository.save(submission);
         //Comprobamos q el problema pertenezca al concurso
         if(!concurso.getListaProblemas().contains(problema)){
             submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
@@ -144,6 +145,8 @@ public class SubmissionService {
         }
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
+        //Para que le asigne el@Id
+        submissionRepository.save(submission);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
@@ -181,7 +184,6 @@ public class SubmissionService {
 
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
-        System.out.println( "submission");
         return submissionStringResult;
     }
     public void ejecutaSubmission(Submission submission){
