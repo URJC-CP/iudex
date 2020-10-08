@@ -5,6 +5,7 @@ import com.example.aplicacion.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,7 +27,7 @@ public class ConcursoController {
 
 
     //CONCURSO html
-    @PostMapping("/goToConcurso")
+    @GetMapping("/goToConcurso")
     public String goToConcurso(Model model, @RequestParam String concursoId){
         Concurso concurso= concursoService.getConcurso(concursoId);
         if(concurso==null){
