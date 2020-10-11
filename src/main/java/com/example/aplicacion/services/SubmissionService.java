@@ -87,12 +87,15 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
+        int numeroDeResult= 0;
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
+            resAux.setNumeroEntrada(numeroDeResult);
+            numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
@@ -102,6 +105,8 @@ public class SubmissionService {
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            resAux.setNumeroEntrada(numeroDeResult);
+            numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
@@ -154,6 +159,7 @@ public class SubmissionService {
         submission.setTeam(team);
 
 
+        int numeroDeResult =0;
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
@@ -161,6 +167,8 @@ public class SubmissionService {
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
+            resAux.setNumeroEntrada(numeroDeResult);
+            numeroDeResult++;
             //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
@@ -170,6 +178,8 @@ public class SubmissionService {
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            resAux.setNumeroEntrada(numeroDeResult);
+            numeroDeResult++;
             //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
@@ -206,6 +216,11 @@ public class SubmissionService {
             return "SUBMISSION NOT FOUND";
         }
 
+        //Comprobamos que no se este intentando borrar una SUBMISSIOn pertenciente a un SubmissionProblemValidator
+        if(submission.isEsProblemValidator()){
+            return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE, JUST DELETING DE PROBLEM";
+        }
+
 
         submissionRepository.delete(submission);
 
@@ -235,10 +250,8 @@ public class SubmissionService {
             return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
         }
 
+        return deleteSubmission(submissionId);
 
-        submissionRepository.delete(submission);
-
-        return "OK";
     }
     public List<Submission> getAllSubmissions(){
         return submissionRepository.findAll();
