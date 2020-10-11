@@ -4,6 +4,7 @@ import com.example.aplicacion.Entities.Concurso;
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.Pojos.ProblemStringResult;
 import com.example.aplicacion.Repository.ConcursoRepository;
 import com.example.aplicacion.Repository.InNOutRepository;
@@ -137,5 +138,20 @@ public class ProblemService {
         for (Problem problem : problems){
             problem.setNumeroSubmissions(problem.getSubmissions().size());
         }
+    }
+    public List<ProblemEntradaSalidaVisiblesHTML> getProblemEntradaSalidaVisiblesHTML(Problem problem){
+        List<ProblemEntradaSalidaVisiblesHTML> lista = new ArrayList<>();
+
+        List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
+        List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
+        int numeroEntradasVisible = entradasProblemaVisible.size();
+        for(int i =0; i<numeroEntradasVisible; i++){
+            ProblemEntradaSalidaVisiblesHTML problemEntradaSalidaVisiblesHTML = new ProblemEntradaSalidaVisiblesHTML();
+            problemEntradaSalidaVisiblesHTML.setEntrada(entradasProblemaVisible.get(i));
+            problemEntradaSalidaVisiblesHTML.setSalida(salidaCorrectaProblemaVisible.get(i));
+
+            lista.add(problemEntradaSalidaVisiblesHTML);
+        }
+        return lista;
     }
 }

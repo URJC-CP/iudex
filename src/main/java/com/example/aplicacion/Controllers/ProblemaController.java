@@ -59,6 +59,8 @@ public class ProblemaController {
         modelAndView.getModel().put("concurso", concurso);
         modelAndView.getModel().put("languages", languageService.getNLanguages());
         modelAndView.getModel().put("teams", teamService.getAllTeams());
+        modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
+
         modelAndView.setViewName("problem");
 
         return modelAndView;
@@ -146,5 +148,6 @@ public class ProblemaController {
         modelAndView.setViewName("redirect:/concurso/"+concursoId+"/problema/"+ problemaAsignado);
         return modelAndView;
     }
+
 
 }

@@ -117,6 +117,7 @@ public class ProblemValidatorService {
             }
         }
 
+
         //Si esta terminado ejecutaremos que el resultado correspondiente de cada submission es el q tiene q ser, q los accepted sean aceepted etcetc
         if(estaTerminado){
             //En caso de que sea valido lo apuntamos
