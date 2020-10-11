@@ -111,6 +111,21 @@
     <p>Borrar este problema </p><a href="/deleteProblem/{{problem.id}}">Eliminar</a>
 
 </div>
+
+<div class="container">
+    <p>Borra submission de este problema</p>
+    <form method="post" action="/deleteSubmission" >
+        <select class="form-control" name="submissionId">
+            {{#problem.submissions}}
+            <option value="{{id}}">{{id}}</option>
+            {{/problem.submissions}}
+        </select>
+        <div class="siguiente">
+            <button type="submit" class="btn btn-success">Guardar</button>
+        </div>
+    </form>
+
+</div>
 </body>
 
 

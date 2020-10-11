@@ -129,7 +129,7 @@ public class ProblemaController {
     }
 
     @PostMapping("/createSubmission")
-    public ModelAndView subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
+    public ModelAndView crearSubmission( @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
         ModelAndView modelAndView = new ModelAndView();
 
         String fileNameaux = codigo.getOriginalFilename();
@@ -149,5 +149,22 @@ public class ProblemaController {
         return modelAndView;
     }
 
+    @PostMapping("/deleteSubmission")
+    public ModelAndView deleteSubmission(@RequestParam String submissionId){
+        ModelAndView modelAndView = new ModelAndView();
+
+        String salida = submissionService.deleteSubmission(submissionId);
+
+
+        if(!salida.equals("OK")){
+            modelAndView.getModel().put("error", salida);
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+
+    }
 
 }

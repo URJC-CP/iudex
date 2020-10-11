@@ -200,6 +200,17 @@ public class SubmissionService {
         return submissionRepository.findAll(firstPageWithTwoElements);
     }
 
+    public String  deleteSubmission(String submissionId){
+        Submission submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
+        if (submission==null){
+            return "SUBMISSION NOT FOUND";
+        }
+
+
+        submissionRepository.delete(submission);
+
+        return "OK";
+    }
     public String deleteSubmission(String submissionId, String problemId, String concursoId){
         Submission submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
         if (submission==null){
