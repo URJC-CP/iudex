@@ -67,7 +67,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        Language language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
+        LanguageAPI language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
@@ -143,7 +143,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
+        LanguageAPI language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;

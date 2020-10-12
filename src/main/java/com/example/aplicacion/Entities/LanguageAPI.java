@@ -3,7 +3,7 @@ package com.example.aplicacion.Entities;
 import javax.persistence.*;
 
 @Entity
-public class Language {
+public class LanguageAPI {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -12,9 +12,9 @@ public class Language {
 
     private String imgenId;
 
-    public Language() {    }
+    public LanguageAPI() {    }
 
-    public Language(String lenguaje, String imgenId) {
+    public LanguageAPI(String lenguaje, String imgenId) {
         this.nombreLenguaje = lenguaje; this.imgenId = imgenId;
     }
 

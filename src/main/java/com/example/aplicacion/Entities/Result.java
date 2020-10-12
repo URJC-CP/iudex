@@ -2,11 +2,7 @@ package com.example.aplicacion.Entities;
 
 
 
-import com.example.aplicacion.Repository.InNOutRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
@@ -44,7 +40,7 @@ public class Result {
     @Lob
     private String resultadoRevision;
     @ManyToOne
-    private Language language;
+    private LanguageAPI language;
     private String fileName;
 
 
@@ -60,7 +56,7 @@ public class Result {
     }
 
 
-    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory ) {
+    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, LanguageAPI language, String fileName, String maxtimeout, String maxMemory ) {
         this.codigo=codigo;
         this.entradaInO = entrada;
         this.salidaEstandar="";
@@ -193,11 +189,11 @@ public class Result {
         this.execMemory = execMemory;
     }
 
-    public Language getLanguage() {
+    public LanguageAPI getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageAPI language) {
         this.language = language;
     }
 

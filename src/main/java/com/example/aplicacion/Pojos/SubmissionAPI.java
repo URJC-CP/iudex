@@ -1,9 +1,7 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.Entities.LanguageAPI;
 
-import javax.persistence.Lob;
 import java.util.List;
 
 public class SubmissionAPI {
@@ -17,7 +15,7 @@ public class SubmissionAPI {
     private int numeroResultCorregidos;
     private String resultado;
 
-    private Language language;
+    private LanguageAPI language;
 
     private String hashStringSubmission;
     private String hashStringDelProblema;
@@ -84,11 +82,11 @@ public class SubmissionAPI {
         this.resultado = resultado;
     }
 
-    public Language getLanguage() {
+    public LanguageAPI getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageAPI language) {
         this.language = language;
     }
 

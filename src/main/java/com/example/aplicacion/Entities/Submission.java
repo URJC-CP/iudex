@@ -29,7 +29,7 @@ public class Submission {
 
 
     @ManyToOne
-    private Language language;
+    private LanguageAPI language;
     @ManyToOne
     private Concurso concurso;
 
@@ -55,7 +55,7 @@ public class Submission {
     public Submission() {
     }
 
-    public Submission(String codigo, Language lenguaje, String filename) {
+    public Submission(String codigo, LanguageAPI lenguaje, String filename) {
         this.codigo = codigo;
         this.language =lenguaje;
         this.corregido=false;
@@ -147,11 +147,11 @@ public class Submission {
         this.results.add(res);
     }
 
-    public Language getLanguage() {
+    public LanguageAPI getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageAPI language) {
         this.language = language;
     }
 

@@ -1,6 +1,6 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Language;
+import com.example.aplicacion.Entities.LanguageAPI;
 
 public class ResultAPI {
     private long id;
@@ -19,7 +19,7 @@ public class ResultAPI {
     private boolean revisado;
     private String resultadoRevision;
 
-    private Language language;
+    private LanguageAPI language;
     private String fileName;
 
 
@@ -123,11 +123,11 @@ public class ResultAPI {
         this.resultadoRevision = resultadoRevision;
     }
 
-    public Language getLanguage() {
+    public LanguageAPI getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageAPI language) {
         this.language = language;
     }
 

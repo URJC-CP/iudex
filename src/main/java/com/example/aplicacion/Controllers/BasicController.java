@@ -1,23 +1,16 @@
 package com.example.aplicacion.Controllers;
 
-import com.example.aplicacion.Entities.InNOut;
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.LanguageAPI;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.services.ConcursoService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.services.UserService;
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.core.command.BuildImageResultCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.CascadeType;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Controller
@@ -44,13 +37,13 @@ public class BasicController {
         //Creamos el lenguaje JAVA
         File dckfl = new File("DOCKERS/Java/Dockerfile");
         String imageId = resultHandler.buildImage(dckfl);
-        Language lenguaje = new Language("java", imageId);
+        LanguageAPI lenguaje = new LanguageAPI("java", imageId);
         languageRepository.save(lenguaje);
 
         //Creamos el lenguaje Python
         File dckfl2 = new File("DOCKERS/Python3/Dockerfile");
         String imageId2 = resultHandler.buildImage(dckfl2);
-        Language lenguaje2 = new Language("python3", imageId2);
+        LanguageAPI lenguaje2 = new LanguageAPI("python3", imageId2);
         languageRepository.save(lenguaje2);
 
 

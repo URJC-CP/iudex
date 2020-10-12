@@ -1,16 +1,16 @@
   package com.example.aplicacion.Repository;
 
 
-  import com.example.aplicacion.Entities.Language;
+  import com.example.aplicacion.Entities.LanguageAPI;
   import org.springframework.data.jpa.repository.JpaRepository;
 
   import java.util.List;
 
-  public interface LanguageRepository extends JpaRepository<Language, Long> {
+  public interface LanguageRepository extends JpaRepository<LanguageAPI, Long> {
 
 
-      Language findLanguageByNombreLenguaje(String id);
-      List<Language> findAll();
-      Language findLanguageById(Long id);
+      LanguageAPI findLanguageByNombreLenguaje(String id);
+      List<LanguageAPI> findAll();
+      LanguageAPI findLanguageById(Long id);
 
   }
