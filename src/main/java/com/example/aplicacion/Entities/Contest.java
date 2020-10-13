@@ -38,10 +38,10 @@ public class Contest {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
-        contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPI());
+        contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for(Problem problem: this.listaProblemas){
-            listaProblemass.add(problem.toProblemAPI());
+            listaProblemass.add(problem.toProblemAPISimple());
         }
         contestAPI.setListaProblemas(listaProblemass);
 

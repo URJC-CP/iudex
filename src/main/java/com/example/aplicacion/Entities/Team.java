@@ -1,6 +1,6 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.TeamAPI;
+import com.example.aplicacion.Pojos.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -51,6 +51,16 @@ public class Team {
         TeamAPI teamAPI = new TeamAPI();
         teamAPI.setId(this.id);
         teamAPI.setNombreEquipo(this.nombreEquipo);
+        List<UserAPI> userAPIS = new ArrayList<>();
+        for(User user:participantes){
+            userAPIS.add(user.toUserAPISimple());
+        }
+        teamAPI.setParticipantes(userAPIS);
+        teamAPI.setListaDeSubmissions(submissionToSubmissionAPI(this.listaDeSubmissions));
+        teamAPI.setListaProblemasCreados(problemToProblemAPI(this.listaProblemasCreados));
+        teamAPI.setListaProblemasParticipados(problemToProblemAPI(this.listaProblemasParticipados));
+        teamAPI.setListaContestsParticipados(contestToContestAPI(this.listaContestsParticipados));
+        teamAPI.setListaContestsCreados(contestToContestAPI(this.listaContestsCreados));
 
         return teamAPI;
     }
@@ -62,6 +72,27 @@ public class Team {
         return teamAPI;
     }
 
+    private List<ProblemAPI> problemToProblemAPI(List<Problem> problems){
+        List<ProblemAPI> problemAPIS = new ArrayList<>();
+        for(Problem problem : problems){
+            problemAPIS.add(problem.toProblemAPISimple());
+        }
+        return problemAPIS;
+    }
+    private List<SubmissionAPI> submissionToSubmissionAPI(List<Submission> problems){
+        List<SubmissionAPI> listAux = new ArrayList<>();
+        for(Submission auxElement : problems){
+            listAux.add(auxElement.toSubmissionAPI());
+        }
+        return listAux;
+    }
+    private List<ContestAPI> contestToContestAPI(List<Contest> problems){
+        List<ContestAPI> listAux = new ArrayList<>();
+        for(Contest auxElement : problems){
+            listAux.add(auxElement.toContestAPISimple());
+        }
+        return listAux;
+    }
     public String getNombreEquipo() {
         return nombreEquipo;
     }

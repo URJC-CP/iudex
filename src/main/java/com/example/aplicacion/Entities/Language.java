@@ -21,10 +21,8 @@ public class Language {
     }
     public LanguageAPI toLanguageAPI(){
         LanguageAPI languageAPI = new LanguageAPI();
-        //RELLENAR
-
-
-
+        languageAPI.setId(this.id);
+        languageAPI.setNombreLenguaje(nombreLenguaje);
 
         return languageAPI;
     }

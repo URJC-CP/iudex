@@ -1,5 +1,7 @@
 package com.example.aplicacion.Entities;
 
+import com.example.aplicacion.Pojos.InNOutAPI;
+
 import javax.persistence.*;
 
 //tupla q contiene el nombre y texto de una answer
@@ -28,6 +30,13 @@ public class InNOut {
         this.id = id;
         this.name = name;
         this.text = text;
+    }
+    public InNOutAPI toInNOutAPI(){
+        InNOutAPI inNOutAPI = new InNOutAPI();
+        inNOutAPI.setId(this.id);
+        inNOutAPI.setName(this.name);
+        inNOutAPI.setText(this.text);
+        return inNOutAPI;
     }
 
     public long getId() {

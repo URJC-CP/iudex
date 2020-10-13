@@ -1,9 +1,13 @@
 package com.example.aplicacion.Entities;
 
+import com.example.aplicacion.Pojos.InNOutAPI;
+import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +121,37 @@ public class Problem {
         numeroSubmissions = 0;
         this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
     }
+    public ProblemAPI toProblemAPI(){
+        ProblemAPI problemAPI = new ProblemAPI();
+        problemAPI.setId(this.id);
+        problemAPI.setNombreEjercicio(this.nombreEjercicio);
+        problemAPI.setEntradaVisible(convertListINOtoListString(this.entradaVisible));
+        problemAPI.setSalidaVisible(convertListINOtoListString(this.salidaVisible));
+        List<SubmissionAPI> submissionAPIS= new ArrayList<>();
+        for(Submission submission: submissions){
+            submissionAPIS.add(submission.toSubmissionAPI());
+        }
+        problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
+        problemAPI.setValido(this.valido);
+        problemAPI.setTimeout(this.timeout);
+        problemAPI.setMemoryLimit(this.memoryLimit);
+        problemAPI.setAutor(this.autor);
+        problemAPI.setSource(this.source);
+        problemAPI.setSource_url(this.source_url);
+        problemAPI.setLicense(this.license);
+        problemAPI.setRights_owner(this.rights_owner);
+        problemAPI.setColor(this.color);
+        return problemAPI;
+    }
+
+    public ProblemAPI toProblemAPISimple() {
+        ProblemAPI problemAPI = new ProblemAPI();
+        problemAPI.setId(this.id);
+        problemAPI.setNombreEjercicio(this.nombreEjercicio);
+
+        return problemAPI;
+    }
+
     private String listaToString(List<InNOut> lista){
         String salida = new String();
         for (InNOut inout : lista ){
@@ -124,6 +159,21 @@ public class Problem {
         }
         return salida;
     }
+    private List<InNOutAPI> convertInNOuttoInNOUTAPI(List<InNOut> inNOuts){
+        List<InNOutAPI> salida = new ArrayList<>();
+        for(InNOut inNOut: inNOuts){
+            salida.add(inNOut.toInNOutAPI());
+        }
+        return salida;
+    }
+    private List<String> convertListINOtoListString(List<InNOut> inNOuts){
+        List<String> salida = new ArrayList<>();
+        for(InNOut inNOut: inNOuts){
+            salida.add(inNOut.getText());
+        }
+        return salida;
+    }
+
     public String generaHash(){
         return  this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
     }
