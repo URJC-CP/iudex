@@ -1,5 +1,7 @@
 package com.example.aplicacion.Entities;
 
+import com.example.aplicacion.Pojos.ConcursoAPI;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,21 @@ public class Concurso {
         this.listaProblemas = new ArrayList<>();
     }
 
+    public ConcursoAPI toConcursoAPI()  {
+        ConcursoAPI concursoAPI = new ConcursoAPI();
+        concursoAPI.setId(this.id);
+        concursoAPI.setNombreConcurso(this.nombreConcurso);
+
+        return concursoAPI;
+    }
+    public ConcursoAPI toConcursoAPISimple(){
+        ConcursoAPI concursoAPI = new ConcursoAPI();
+        concursoAPI.setId(this.id);
+        concursoAPI.setNombreConcurso(this.nombreConcurso);
+
+
+        return concursoAPI;
+    }
 
     public long getId() {
         return id;

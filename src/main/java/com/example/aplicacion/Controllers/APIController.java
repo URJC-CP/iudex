@@ -28,7 +28,7 @@ public class APIController {
     }
 
     //CONCURSOS
-    @GetMapping("/concurso/all")
+    @GetMapping("/concursos/all")
     public List<ConcursoAPI> concursos(){
         List<Concurso> concursoList = concursoService.getAllConcursos();
         List<ConcursoAPI> concursoAPIS = new ArrayList<>();
@@ -36,7 +36,6 @@ public class APIController {
         for (Concurso concurso:concursoList){
             concursoAPIS.add(concurso.toConcursoAPI());
         }
-
         return concursoAPIS;
     }
 

@@ -87,6 +87,11 @@ public class Result {
 
         return resultAPI;
     }
+    public ResultAPI toResultAPISimple(){
+        ResultAPI resultAPI = new ResultAPI();
+        resultAPI.setId(this.id);
+        return resultAPI;
+    }
 
     public long getId() {
         return id;
