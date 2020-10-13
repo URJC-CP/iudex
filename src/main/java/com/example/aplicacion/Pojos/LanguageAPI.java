@@ -1,6 +1,6 @@
 package com.example.aplicacion.Pojos;
 
-public class LanguajeAPI {
+public class LanguageAPI {
 
 
 

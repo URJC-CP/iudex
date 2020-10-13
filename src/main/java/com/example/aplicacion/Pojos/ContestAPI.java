@@ -13,7 +13,6 @@ public class ContestAPI {
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
-    private List<SubmissionAPI> listaSubmissions;
 
 
     public long getId() {
@@ -32,4 +31,27 @@ public class ContestAPI {
         this.nombreContest = nombreContest;
     }
 
+    public TeamAPI getTeamPropietario() {
+        return teamPropietario;
+    }
+
+    public void setTeamPropietario(TeamAPI teamPropietario) {
+        this.teamPropietario = teamPropietario;
+    }
+
+    public List<ProblemAPI> getListaProblemas() {
+        return listaProblemas;
+    }
+
+    public void setListaProblemas(List<ProblemAPI> listaProblemas) {
+        this.listaProblemas = listaProblemas;
+    }
+
+    public List<TeamAPI> getListaParticipantes() {
+        return listaParticipantes;
+    }
+
+    public void setListaParticipantes(List<TeamAPI> listaParticipantes) {
+        this.listaParticipantes = listaParticipantes;
+    }
 }

@@ -1,4 +1,6 @@
 package com.example.aplicacion.Entities;
+import com.example.aplicacion.Pojos.ResultAPI;
+import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
 import javax.persistence.*;
@@ -64,6 +66,22 @@ public class Submission {
         this.filename=filename;
         this.numeroResultCorregidos=0;
         generaHash();
+    }
+    public SubmissionAPI toSubmissionAPI(){
+        SubmissionAPI submissionAPI = new SubmissionAPI();
+        submissionAPI.setId(this.id);
+        List<ResultAPI> resultAPIS = new ArrayList<>();
+        for(Result result: results){
+            resultAPIS.add(result.toResultAPISimple());
+        }
+        submissionAPI.setResults(resultAPIS);
+        submissionAPI.setCorregido(this.corregido);
+        submissionAPI.setNumeroResultCorregidos(this.numeroResultCorregidos);
+        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setLanguage(this.language.toLanguageAPI());
+        submissionAPI.setExecSubmissionTime(this.execSubmissionTime);
+        submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
+        return submissionAPI;
     }
 
     private String listaToString(List<InNOut> lista){

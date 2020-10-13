@@ -1,6 +1,6 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.LanguajeAPI;
+import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
 
@@ -19,14 +19,14 @@ public class Language {
     public Language(String lenguaje, String imgenId) {
         this.nombreLenguaje = lenguaje; this.imgenId = imgenId;
     }
-    public LanguajeAPI toLanguageAPI(){
-        LanguajeAPI languajeAPI = new LanguajeAPI();
+    public LanguageAPI toLanguageAPI(){
+        LanguageAPI languageAPI = new LanguageAPI();
         //RELLENAR
 
 
 
 
-        return languajeAPI;
+        return languageAPI;
     }
 
     public long getId() {

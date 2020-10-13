@@ -7,20 +7,13 @@ import java.util.List;
 public class SubmissionAPI {
 
     private long id;
-    private String codigo;
-    private String filename;
     private List<ResultAPI> results;
 
     private boolean corregido;
     private int numeroResultCorregidos;
     private String resultado;
 
-    private Language language;
-
-    private String hashStringSubmission;
-    private String hashStringDelProblema;
-    private boolean esProblemValidator;
-    private String esProblemValidatorResultadoEsperado;
+    private LanguageAPI language;
 
     private float execSubmissionTime;
     private float execSubmissionMemory;
@@ -34,21 +27,7 @@ public class SubmissionAPI {
         this.id = id;
     }
 
-    public String getCodigo() {
-        return codigo;
-    }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
 
     public List<ResultAPI> getResults() {
         return results;
@@ -82,44 +61,12 @@ public class SubmissionAPI {
         this.resultado = resultado;
     }
 
-    public Language getLanguage() {
+    public LanguageAPI getLanguage() {
         return language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(LanguageAPI language) {
         this.language = language;
-    }
-
-    public String getHashStringSubmission() {
-        return hashStringSubmission;
-    }
-
-    public void setHashStringSubmission(String hashStringSubmission) {
-        this.hashStringSubmission = hashStringSubmission;
-    }
-
-    public String getHashStringDelProblema() {
-        return hashStringDelProblema;
-    }
-
-    public void setHashStringDelProblema(String hashStringDelProblema) {
-        this.hashStringDelProblema = hashStringDelProblema;
-    }
-
-    public boolean isEsProblemValidator() {
-        return esProblemValidator;
-    }
-
-    public void setEsProblemValidator(boolean esProblemValidator) {
-        this.esProblemValidator = esProblemValidator;
-    }
-
-    public String getEsProblemValidatorResultadoEsperado() {
-        return esProblemValidatorResultadoEsperado;
-    }
-
-    public void setEsProblemValidatorResultadoEsperado(String esProblemValidatorResultadoEsperado) {
-        this.esProblemValidatorResultadoEsperado = esProblemValidatorResultadoEsperado;
     }
 
     public float getExecSubmissionTime() {
