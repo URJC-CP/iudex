@@ -67,7 +67,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        LanguageAPI language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
+        Language language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
@@ -94,7 +94,7 @@ public class SubmissionService {
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
-            resAux.setNumeroEntrada(numeroDeResult);
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
@@ -105,7 +105,7 @@ public class SubmissionService {
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resAux.setNumeroEntrada(numeroDeResult);
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
@@ -143,7 +143,7 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
-        LanguageAPI language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
+        Language language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
         if(language==null){
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
@@ -167,7 +167,7 @@ public class SubmissionService {
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for(int i =0; i<numeroEntradasVisible; i++){
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
-            resAux.setNumeroEntrada(numeroDeResult);
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             //resultRepository.save(resAux);
             submission.addResult(resAux);
@@ -178,7 +178,7 @@ public class SubmissionService {
         int numeroEntradas = entradasProblema.size();
         for(int i =0; i<numeroEntradas; i++){
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resAux.setNumeroEntrada(numeroDeResult);
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             //resultRepository.save(resAux);
             submission.addResult(resAux);

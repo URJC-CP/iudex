@@ -1,9 +1,11 @@
 package com.example.aplicacion.Entities;
 
+import com.example.aplicacion.Pojos.LanguajeAPI;
+
 import javax.persistence.*;
 
 @Entity
-public class LanguageAPI {
+public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -12,10 +14,19 @@ public class LanguageAPI {
 
     private String imgenId;
 
-    public LanguageAPI() {    }
+    public Language() {    }
 
-    public LanguageAPI(String lenguaje, String imgenId) {
+    public Language(String lenguaje, String imgenId) {
         this.nombreLenguaje = lenguaje; this.imgenId = imgenId;
+    }
+    public LanguajeAPI toLanguageAPI(){
+        LanguajeAPI languajeAPI = new LanguajeAPI();
+        //RELLENAR
+
+
+
+
+        return languajeAPI;
     }
 
     public long getId() {

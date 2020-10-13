@@ -1,6 +1,6 @@
 package com.example.aplicacion.Controllers;
 
-import com.example.aplicacion.Entities.LanguageAPI;
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.services.ConcursoService;
 import com.example.aplicacion.services.ResultHandler;
@@ -37,13 +37,13 @@ public class BasicController {
         //Creamos el lenguaje JAVA
         File dckfl = new File("DOCKERS/Java/Dockerfile");
         String imageId = resultHandler.buildImage(dckfl);
-        LanguageAPI lenguaje = new LanguageAPI("java", imageId);
+        Language lenguaje = new Language("java", imageId);
         languageRepository.save(lenguaje);
 
         //Creamos el lenguaje Python
         File dckfl2 = new File("DOCKERS/Python3/Dockerfile");
         String imageId2 = resultHandler.buildImage(dckfl2);
-        LanguageAPI lenguaje2 = new LanguageAPI("python3", imageId2);
+        Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);
 
 

@@ -2,6 +2,8 @@ package com.example.aplicacion.Entities;
 
 
 
+import com.example.aplicacion.Pojos.ResultAPI;
+
 import javax.persistence.*;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
@@ -27,7 +29,7 @@ public class Result {
     private String salidaCompilador;
 
 
-    private int numeroEntrada;
+    private int numeroCasoDePrueba;
 
     private String salidaTime;
     //TIMEOUT FILE fromthe container
@@ -40,7 +42,7 @@ public class Result {
     @Lob
     private String resultadoRevision;
     @ManyToOne
-    private LanguageAPI language;
+    private Language language;
     private String fileName;
 
 
@@ -56,7 +58,7 @@ public class Result {
     }
 
 
-    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, LanguageAPI language, String fileName, String maxtimeout, String maxMemory ) {
+    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory ) {
         this.codigo=codigo;
         this.entradaInO = entrada;
         this.salidaEstandar="";
@@ -70,6 +72,19 @@ public class Result {
         this.fileName=fileName;
         this.maxTimeout = maxtimeout;
         this.maxMemory =maxMemory;
+    }
+    public ResultAPI toResultAPI(){
+        ResultAPI resultAPI = new ResultAPI();
+        resultAPI.setId(this.id);
+        resultAPI.setCodigo(this.codigo);
+        resultAPI.setNumeroCasoDePrueba(this.numeroCasoDePrueba);
+        resultAPI.setExecTime(this.execTime);
+        resultAPI.setExecMemory(this.execMemory);
+        resultAPI.setRevisado(this.revisado);
+        resultAPI.setResultadoRevision(this.resultadoRevision);
+        resultAPI.setLanguage(this.language.toLanguageAPI());
+
+        return resultAPI;
     }
 
     public long getId() {
@@ -146,12 +161,12 @@ public class Result {
         this.resultadoRevision = resultadoRevision;
     }
 
-    public int getNumeroEntrada() {
-        return numeroEntrada;
+    public int getNumeroCasoDePrueba() {
+        return numeroCasoDePrueba;
     }
 
-    public void setNumeroEntrada(int numeroEntrada) {
-        this.numeroEntrada = numeroEntrada;
+    public void setNumeroCasoDePrueba(int numeroEntrada) {
+        this.numeroCasoDePrueba = numeroEntrada;
     }
 
     public String getSalidaEstandarCorrecta() {
@@ -189,11 +204,11 @@ public class Result {
         this.execMemory = execMemory;
     }
 
-    public LanguageAPI getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(LanguageAPI language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 

@@ -2,7 +2,6 @@ package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.TeamApi;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class ProblemAPI {
 
     private List<SubmissionAPI> submissions;
 
-    private TeamApi equipoPropietario;
+    private TeamAPI equipoPropietario;
 
     private boolean valido;
 
@@ -99,11 +98,11 @@ public class ProblemAPI {
         this.submissions = submissions;
     }
 
-    public TeamApi getEquipoPropietario() {
+    public TeamAPI getEquipoPropietario() {
         return equipoPropietario;
     }
 
-    public void setEquipoPropietario(TeamApi equipoPropietario) {
+    public void setEquipoPropietario(TeamAPI equipoPropietario) {
         this.equipoPropietario = equipoPropietario;
     }
 
