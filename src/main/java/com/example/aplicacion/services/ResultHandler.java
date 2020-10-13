@@ -2,7 +2,7 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
-import com.example.aplicacion.Entities.LanguageAPI;
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.github.dockerjava.api.DockerClient;
@@ -64,7 +64,7 @@ public class ResultHandler {
     public void ejecutor(Result res) throws IOException {
 
 
-        LanguageAPI lenguaje = res.getLanguage();
+        Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()){
             case "java":
                 new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());

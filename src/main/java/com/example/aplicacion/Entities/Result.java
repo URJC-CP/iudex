@@ -73,6 +73,7 @@ public class Result {
         this.maxTimeout = maxtimeout;
         this.maxMemory =maxMemory;
     }
+
     public ResultAPI toResultAPI(){
         ResultAPI resultAPI = new ResultAPI();
         resultAPI.setId(this.id);

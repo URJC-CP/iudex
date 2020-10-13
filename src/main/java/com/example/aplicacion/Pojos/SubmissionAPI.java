@@ -1,6 +1,6 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.LanguageAPI;
+import com.example.aplicacion.Entities.Language;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class SubmissionAPI {
     private int numeroResultCorregidos;
     private String resultado;
 
-    private LanguageAPI language;
+    private Language language;
 
     private String hashStringSubmission;
     private String hashStringDelProblema;
@@ -82,11 +82,11 @@ public class SubmissionAPI {
         this.resultado = resultado;
     }
 
-    public LanguageAPI getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public void setLanguage(LanguageAPI language) {
+    public void setLanguage(Language language) {
         this.language = language;
     }
 
