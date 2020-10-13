@@ -23,17 +23,17 @@ public class Team {
     @ManyToMany
     private List<Problem> listaProblemasParticipados;
     @ManyToMany(mappedBy = "listaParticipantes")
-    private List<Concurso> listaConcursosParticipados;
+    private List<Contest> listaContestsParticipados;
     @OneToMany
-    private List<Concurso> listaConcursosCreados;
+    private List<Contest> listaContestsCreados;
 
     public Team(){
         this.participantes = new ArrayList<>();
         this.listaDeSubmissions = new ArrayList<>();
         this.listaProblemasCreados = new ArrayList<>();
         this.listaProblemasParticipados = new ArrayList<>();
-        this.listaConcursosCreados= new ArrayList<>();
-        this.listaConcursosParticipados= new ArrayList<>();
+        this.listaContestsCreados= new ArrayList<>();
+        this.listaContestsParticipados= new ArrayList<>();
 
     }
     public Team(String nombreEquipo){
@@ -42,8 +42,8 @@ public class Team {
         this.listaDeSubmissions = new ArrayList<>();
         this.listaProblemasCreados = new ArrayList<>();
         this.listaProblemasParticipados = new ArrayList<>();
-        this.listaConcursosCreados= new ArrayList<>();
-        this.listaConcursosParticipados= new ArrayList<>();
+        this.listaContestsCreados= new ArrayList<>();
+        this.listaContestsParticipados= new ArrayList<>();
     }
 
     public String getNombreEquipo() {
@@ -108,19 +108,19 @@ public class Team {
         this.id = id;
     }
 
-    public List<Concurso> getListaConcursosParticipados() {
-        return listaConcursosParticipados;
+    public List<Contest> getListaContestsParticipados() {
+        return listaContestsParticipados;
     }
 
-    public void setListaConcursosParticipados(List<Concurso> listaConcursosParticipados) {
-        this.listaConcursosParticipados = listaConcursosParticipados;
+    public void setListaContestsParticipados(List<Contest> listaContestsParticipados) {
+        this.listaContestsParticipados = listaContestsParticipados;
     }
 
-    public List<Concurso> getListaConcursosCreados() {
-        return listaConcursosCreados;
+    public List<Contest> getListaContestsCreados() {
+        return listaContestsCreados;
     }
 
-    public void setListaConcursosCreados(List<Concurso> listaConcursosCreados) {
-        this.listaConcursosCreados = listaConcursosCreados;
+    public void setListaContestsCreados(List<Contest> listaContestsCreados) {
+        this.listaContestsCreados = listaContestsCreados;
     }
 }

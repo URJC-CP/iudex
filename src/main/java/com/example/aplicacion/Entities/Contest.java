@@ -1,18 +1,18 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.ConcursoAPI;
+import com.example.aplicacion.Pojos.ContestAPI;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Concurso {
+public class Contest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    private String nombreConcurso;
+    private String nombreContest;
 
     @ManyToOne
     private Team teamPropietario;
@@ -21,31 +21,31 @@ public class Concurso {
 
     @ManyToMany
     private List<Team> listaParticipantes;
-    @OneToMany(mappedBy = "concurso", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
 
-    public Concurso() {
+    public Contest() {
         this.listaProblemas = new ArrayList<>();
         this.listaParticipantes = new ArrayList<>();
         this.listaSubmissions = new ArrayList<>();
         this.listaProblemas = new ArrayList<>();
     }
 
-    public ConcursoAPI toConcursoAPI()  {
-        ConcursoAPI concursoAPI = new ConcursoAPI();
-        concursoAPI.setId(this.id);
-        concursoAPI.setNombreConcurso(this.nombreConcurso);
+    public ContestAPI toContestAPI()  {
+        ContestAPI contestAPI = new ContestAPI();
+        contestAPI.setId(this.id);
+        contestAPI.setNombreContest(this.nombreContest);
 
-        return concursoAPI;
+        return contestAPI;
     }
-    public ConcursoAPI toConcursoAPISimple(){
-        ConcursoAPI concursoAPI = new ConcursoAPI();
-        concursoAPI.setId(this.id);
-        concursoAPI.setNombreConcurso(this.nombreConcurso);
+    public ContestAPI toContestAPISimple(){
+        ContestAPI contestAPI = new ContestAPI();
+        contestAPI.setId(this.id);
+        contestAPI.setNombreContest(this.nombreContest);
 
 
-        return concursoAPI;
+        return contestAPI;
     }
 
     public long getId() {
@@ -56,12 +56,12 @@ public class Concurso {
         this.id = id;
     }
 
-    public String getNombreConcurso() {
-        return nombreConcurso;
+    public String getNombreContest() {
+        return nombreContest;
     }
 
-    public void setNombreConcurso(String nombreConcurso) {
-        this.nombreConcurso = nombreConcurso;
+    public void setNombreContest(String nombreContest) {
+        this.nombreContest = nombreContest;
     }
 
     public Team getTeamPropietario() {

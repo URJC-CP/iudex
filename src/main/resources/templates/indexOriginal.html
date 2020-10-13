@@ -45,10 +45,10 @@
                 {{/teams}}
             </select>
         </div>
-        <select class="form-control" name="concursoId">
-            {{#concursos}}
-            <option value="{{id}}">{{nombreConcurso}}</option>
-            {{/concursos}}
+        <select class="form-control" name="contestId">
+            {{#contests}}
+            <option value="{{id}}">{{nombreContest}}</option>
+            {{/contests}}
         </select>
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>
@@ -71,10 +71,10 @@
                 <option value="{{id}}">{{nombreEquipo}}</option>
                 {{/teams}}
             </select>
-            <select class="form-control" name="concursoId">
-                {{#concursos}}
-                <option value="{{id}}">{{nombreConcurso}}</option>
-                {{/concursos}}
+            <select class="form-control" name="contestId">
+                {{#contests}}
+                <option value="{{id}}">{{nombreContest}}</option>
+                {{/contests}}
             </select>
         </div>
         <div class="siguiente">
@@ -84,8 +84,8 @@
 </div>
 
 <div class="container">
-    <p>Problema a Concurso</p>
-    <form method="post" action="/asignaProblemaAConcurso" enctype="multipart/form-data">
+    <p>Problema a Contest</p>
+    <form method="post" action="/asignaProblemaAContest" enctype="multipart/form-data">
         <div class="row">
             <select class="form-control" name="problemId" >
                 {{#exercices}}
@@ -94,10 +94,10 @@
             </select>
         </div>
         <div class="row">
-            <select class="form-control" name="concursoId">
-                {{#concursos}}
-                <option value="{{id}}">{{nombreConcurso}}</option>
-                {{/concursos}}
+            <select class="form-control" name="contestId">
+                {{#contests}}
+                <option value="{{id}}">{{nombreContest}}</option>
+                {{/contests}}
             </select>
         </div>
         <div class="siguiente">
@@ -121,10 +121,10 @@
     </form>
 </div>
 <div class="container">
-    <form method="post" action="/creaConcurso" enctype="multipart/form-data">
-        <p>Crea Concurso</p>
+    <form method="post" action="/creaContest" enctype="multipart/form-data">
+        <p>Crea Contest</p>
         <div class="row">
-            <input type="text" id="concursoName" name="concursoName" > Nombre Concurso
+            <input type="text" id="contestName" name="contestName" > Nombre Contest
         </div>
         <div class="row">
             <select class="form-control" name="teamId">
@@ -140,14 +140,14 @@
 </div>
 
 <div class="container">
-    <form method="get" action="/goToConcurso" >
-        <p>Selecciona Concurso</p>
+    <form method="get" action="/goToContest" >
+        <p>Selecciona Contest</p>
 
         <div class="row">
-            <select class="form-control" name="concursoId">
-                {{#concursos}}
-                <option value="{{id}}">{{nombreConcurso}}</option>
-                {{/concursos}}
+            <select class="form-control" name="contestId">
+                {{#contests}}
+                <option value="{{id}}">{{nombreContest}}</option>
+                {{/contests}}
             </select>
         </div>
         <div class="siguiente">

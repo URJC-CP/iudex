@@ -1,11 +1,9 @@
 package com.example.aplicacion.Controllers;
 
-import com.example.aplicacion.Entities.Concurso;
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
-import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -26,20 +24,20 @@ public class ProblemaController {
     @Autowired
     private LanguageService languageService;
     @Autowired
-    private ConcursoService concursoService;
+    private ContestService contestService;
     @Autowired
     private UserService userService;
     @Autowired
     private TeamService teamService;
 
 
-    @GetMapping("/concurso/{idConcurso}/problema/{idProblem}")
-    public ModelAndView goToProblem( @PathVariable String idConcurso, @PathVariable String idProblem){
+    @GetMapping("/contest/{idContest}/problema/{idProblem}")
+    public ModelAndView goToProblem( @PathVariable String idContest, @PathVariable String idProblem){
         ModelAndView modelAndView = new ModelAndView();
 
         Problem problem = problemService.getProblem(idProblem);
-        Concurso concurso = concursoService.getConcurso(idConcurso);
-        if(concurso==null){
+        Contest contest = contestService.getContest(idContest);
+        if(contest ==null){
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -49,14 +47,14 @@ public class ProblemaController {
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        if(!concurso.getListaProblemas().contains(problem)){
+        if(!contest.getListaProblemas().contains(problem)){
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
         modelAndView.getModel().put("problem", problem);
-        modelAndView.getModel().put("concurso", concurso);
+        modelAndView.getModel().put("contest", contest);
         modelAndView.getModel().put("languages", languageService.getNLanguages());
         modelAndView.getModel().put("teams", teamService.getAllTeams());
         modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
@@ -67,11 +65,11 @@ public class ProblemaController {
     }
 
     //Controller que devuelve en un HTTP el pdf del problema pedido
-    @GetMapping("getPDF/concurso/{idConcurso}/problema/{idProblem}")
-    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idConcurso, @PathVariable String idProblem){
+    @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
+    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem){
         Problem problem = problemService.getProblem(idProblem);
-        Concurso concurso = concursoService.getConcurso(idConcurso);
-        if(concurso==null){
+        Contest contest = contestService.getContest(idContest);
+        if(contest ==null){
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             //return "errorConocido";
         }
@@ -79,7 +77,7 @@ public class ProblemaController {
             model.addAttribute("error", "ERROR PROBLEMA NO ECONTRADO");
             //return "errorConocido";
         }
-        if(!concurso.getListaProblemas().contains(problem)){
+        if(!contest.getListaProblemas().contains(problem)){
             model.addAttribute("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             //return "errorConocido";
 
@@ -99,9 +97,9 @@ public class ProblemaController {
     }
 
     @PostMapping("/problemSubida")
-    public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String concursoId) throws Exception {
+    public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-        String salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, concursoId);
+        String salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
 
         if(!salida.equals("OK")){
             modelAndView.getModel().put("error", salida);
@@ -129,7 +127,7 @@ public class ProblemaController {
     }
 
     @PostMapping("/createSubmission")
-    public ModelAndView crearSubmission( @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
+    public ModelAndView crearSubmission( @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
         ModelAndView modelAndView = new ModelAndView();
 
         String fileNameaux = codigo.getOriginalFilename();
@@ -137,7 +135,7 @@ public class ProblemaController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, concursoId, teamId);
+        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if(!salida.equals("OK")){
             modelAndView.getModel().put("error", salida);
@@ -145,7 +143,7 @@ public class ProblemaController {
             return modelAndView;
         }
 
-        modelAndView.setViewName("redirect:/concurso/"+concursoId+"/problema/"+ problemaAsignado);
+        modelAndView.setViewName("redirect:/contest/"+contestId+"/problema/"+ problemaAsignado);
         return modelAndView;
     }
 

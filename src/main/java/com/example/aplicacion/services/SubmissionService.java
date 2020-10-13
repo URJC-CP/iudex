@@ -31,14 +31,14 @@ public class SubmissionService {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private ConcursoRepository concursoRepository;
+    private ContestRepository contestRepository;
 
     @Autowired
     private RabbitResultExecutionSender sender;
 
-    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idConcurso , String idEquipo){
+    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest , String idEquipo){
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idConcurso, idEquipo);
+        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
         if(!submissionStringResult.getSalida().equals("OK")){
             return submissionStringResult.getSalida();
         }
@@ -47,11 +47,11 @@ public class SubmissionService {
         return "OK";
     }
 
-    public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idConcurso , String idEquipo){
+    public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest , String idEquipo){
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-        if(concurso==null){
+        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
+        if(contest ==null){
             submissionStringResult.setSalida("CONCURSO NOT FOUND");
             return submissionStringResult;
         }
@@ -76,13 +76,13 @@ public class SubmissionService {
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
-        submission.setConcurso(concurso);
+        submission.setContest(contest);
         submission.setTeam(team);
 
         //Para que le asigne el@Id
         submissionRepository.save(submission);
-        //Comprobamos q el problema pertenezca al concurso
-        if(!concurso.getListaProblemas().contains(problema)){
+        //Comprobamos q el problema pertenezca al contest
+        if(!contest.getListaProblemas().contains(problema)){
             submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
             return submissionStringResult;
         }
@@ -125,12 +125,12 @@ public class SubmissionService {
     }
 
     //Constructor para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
-    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idConcurso , String idEquipo){
+    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idContest , String idEquipo){
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
         /*
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-        if(concurso==null){
+        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
+        if(contest==null){
             submissionStringResult.setSalida("CONCURSO NOT FOUND");
             return submissionStringResult;
         }
@@ -155,7 +155,7 @@ public class SubmissionService {
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
-        //submission.setConcurso(concurso);
+        //submission.setContest(contest);
         submission.setTeam(team);
 
 
@@ -226,7 +226,7 @@ public class SubmissionService {
 
         return "OK";
     }
-    public String deleteSubmission(String submissionId, String problemId, String concursoId){
+    public String deleteSubmission(String submissionId, String problemId, String contestId){
         Submission submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
         if (submission==null){
             return "SUBMISSION NOT FOUND";
@@ -235,18 +235,18 @@ public class SubmissionService {
         if(problem==null){
             return "PROBLEM NOT FOUND";
         }
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(concursoId));
-        if(concurso==null){
+        Contest contest = contestRepository.findContestById(Long.valueOf(contestId));
+        if(contest ==null){
             return "CONCURSO NOT FOUND";
         }
 
-        if (!concurso.getListaProblemas().contains(problem)) {
+        if (!contest.getListaProblemas().contains(problem)) {
             return "CONCURSO NOT CONTAINS PROBLEM";
         }
         if(submission.getProblema().equals(problem)){
             return "SUBMISSION NO PERTENECE A ESTE PROBLEMA";
         }
-        if(submission.getConcurso().equals(concurso)){
+        if(submission.getContest().equals(contest)){
             return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
         }
 

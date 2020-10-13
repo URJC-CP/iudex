@@ -1,10 +1,5 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Concurso;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.User;
-
 import java.util.List;
 
 public class TeamAPI {
@@ -15,8 +10,8 @@ public class TeamAPI {
     private List<SubmissionAPI> listaDeSubmissions;
     private List<ProblemAPI> listaProblemasCreados;
     private List<ProblemAPI> listaProblemasParticipados;
-    private List<ConcursoAPI> listaConcursosParticipados;
-    private List<ConcursoAPI> listaConcursosCreados;
+    private List<ContestAPI> listaContestsParticipados;
+    private List<ContestAPI> listaContestsCreados;
 
     public long getId() {
         return id;
@@ -66,19 +61,19 @@ public class TeamAPI {
         this.listaProblemasParticipados = listaProblemasParticipados;
     }
 
-    public List<ConcursoAPI> getListaConcursosParticipados() {
-        return listaConcursosParticipados;
+    public List<ContestAPI> getListaContestsParticipados() {
+        return listaContestsParticipados;
     }
 
-    public void setListaConcursosParticipados(List<ConcursoAPI> listaConcursosParticipados) {
-        this.listaConcursosParticipados = listaConcursosParticipados;
+    public void setListaContestsParticipados(List<ContestAPI> listaContestsParticipados) {
+        this.listaContestsParticipados = listaContestsParticipados;
     }
 
-    public List<ConcursoAPI> getListaConcursosCreados() {
-        return listaConcursosCreados;
+    public List<ContestAPI> getListaContestsCreados() {
+        return listaContestsCreados;
     }
 
-    public void setListaConcursosCreados(List<ConcursoAPI> listaConcursosCreados) {
-        this.listaConcursosCreados = listaConcursosCreados;
+    public void setListaContestsCreados(List<ContestAPI> listaContestsCreados) {
+        this.listaContestsCreados = listaContestsCreados;
     }
 }

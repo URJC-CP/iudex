@@ -1,6 +1,6 @@
 package com.example.aplicacion.Controllers;
 
-import com.example.aplicacion.Entities.Concurso;
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 
-public class ConcursoController {
+public class ContestController {
     @Autowired
     private SubmissionService submissionService;
     @Autowired
@@ -19,7 +19,7 @@ public class ConcursoController {
     @Autowired
     private LanguageService languageService;
     @Autowired
-    private ConcursoService concursoService;
+    private ContestService contestService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -27,23 +27,23 @@ public class ConcursoController {
 
 
     //CONCURSO html
-    @GetMapping("/goToConcurso")
-    public String goToConcurso(Model model, @RequestParam String concursoId){
-        Concurso concurso= concursoService.getConcurso(concursoId);
-        if(concurso==null){
+    @GetMapping("/goToContest")
+    public String goToContest(Model model, @RequestParam String contestId){
+        Contest contest = contestService.getContest(contestId);
+        if(contest ==null){
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }
-        model.addAttribute("concurso",concurso);
+        model.addAttribute("contest", contest);
         model.addAttribute("teams", teamService.getAllTeams());
         model.addAttribute("problems", problemService.getAllProblemas());
 
-        return "concurso";
+        return "contest";
     }
-    @PostMapping("/addUserToConcurso")
-    public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String concursoId){
+    @PostMapping("/addUserToContest")
+    public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId){
 
-        String salida = concursoService.addTeamToconcurso(teamId, concursoId);
+        String salida = contestService.addTeamTocontest(teamId, contestId);
 
         if (salida.equals("OK")){
             return "redirect:/";
@@ -53,9 +53,9 @@ public class ConcursoController {
             return "errorConocido";
         }
     }
-    @PostMapping("/deleteConcurso")
-    public  String deleteConcorso(Model model, @RequestParam String concursoId){
-        String salida = concursoService.deleteConcurso(concursoId);
+    @PostMapping("/deleteContest")
+    public  String deleteConcorso(Model model, @RequestParam String contestId){
+        String salida = contestService.deleteContest(contestId);
 
         if (salida.equals("OK")){
             return "redirect:/";
@@ -65,9 +65,9 @@ public class ConcursoController {
             return "404";
         }
     }
-    @PostMapping("/deleteTeamFromConcurso")
-    public String deleteTeamFromConcurso(Model model, @RequestParam String teamId, @RequestParam String concursoId){
-        String salida = concursoService.deleteTeamFromconcurso(concursoId, teamId);
+    @PostMapping("/deleteTeamFromContest")
+    public String deleteTeamFromContest(Model model, @RequestParam String teamId, @RequestParam String contestId){
+        String salida = contestService.deleteTeamFromcontest(contestId, teamId);
 
         if (salida.equals("OK")){
             return "redirect:/";
@@ -78,9 +78,9 @@ public class ConcursoController {
         }
     }
 
-    @PostMapping("/addProblemToConcurso")
-    public String addProblemToConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
-        String salida = concursoService.anyadeProblemaConcurso(concursoId, problemId);
+    @PostMapping("/addProblemToContest")
+    public String addProblemToContest(Model model, @RequestParam String problemId, @RequestParam String contestId){
+        String salida = contestService.anyadeProblemaContest(contestId, problemId);
         if (salida.equals("OK")){
             return "redirect:/";
         }
@@ -89,9 +89,9 @@ public class ConcursoController {
             return "errorConocido";
         }
     }
-    @PostMapping("/deleteProblemFromConcurso")
-    public String deleteProblemFromConcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
-        String salida = concursoService.deleteProblemFromConcurso(concursoId, problemId);
+    @PostMapping("/deleteProblemFromContest")
+    public String deleteProblemFromContest(Model model, @RequestParam String problemId, @RequestParam String contestId){
+        String salida = contestService.deleteProblemFromContest(contestId, problemId);
 
         if (salida.equals("OK")){
             return "redirect:/";

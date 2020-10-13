@@ -2,7 +2,7 @@ package com.example.aplicacion.Controllers;
 
 import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Repository.*;
-import com.example.aplicacion.services.ConcursoService;
+import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.services.UserService;
@@ -28,7 +28,7 @@ public class BasicController {
     @Autowired
     private UserService userService;
     @Autowired
-    private ConcursoService concursoService;
+    private ContestService contestService;
     @Autowired
     private TeamService teamService;
     @PostConstruct
@@ -55,7 +55,7 @@ public class BasicController {
         //userService.deleteUserByNickname("pavloXD");
 
 
-        concursoService.creaConcurso("concursoPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()));
 
 
     }

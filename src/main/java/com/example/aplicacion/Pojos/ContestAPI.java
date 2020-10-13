@@ -6,10 +6,10 @@ import com.example.aplicacion.Entities.Team;
 
 import java.util.List;
 
-public class ConcursoAPI {
+public class ContestAPI {
     private long id;
 
-    private String nombreConcurso;
+    private String nombreContest;
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
@@ -24,12 +24,12 @@ public class ConcursoAPI {
         this.id = id;
     }
 
-    public String getNombreConcurso() {
-        return nombreConcurso;
+    public String getNombreContest() {
+        return nombreContest;
     }
 
-    public void setNombreConcurso(String nombreConcurso) {
-        this.nombreConcurso = nombreConcurso;
+    public void setNombreContest(String nombreContest) {
+        this.nombreContest = nombreContest;
     }
 
 }

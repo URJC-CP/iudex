@@ -1,11 +1,10 @@
 package com.example.aplicacion.Controllers;
 
-import com.example.aplicacion.Entities.Concurso;
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Pojos.ConcursoAPI;
-import com.example.aplicacion.services.ConcursoService;
+import com.example.aplicacion.Pojos.ContestAPI;
+import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.SubmissionService;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class APIController {
     @Autowired
     SubmissionService submissionService;
     @Autowired
-    ConcursoService concursoService;
+    ContestService contestService;
 
 
     @GetMapping("/submissions/all")
@@ -28,15 +27,15 @@ public class APIController {
     }
 
     //CONCURSOS
-    @GetMapping("/concursos/all")
-    public List<ConcursoAPI> concursos(){
-        List<Concurso> concursoList = concursoService.getAllConcursos();
-        List<ConcursoAPI> concursoAPIS = new ArrayList<>();
+    @GetMapping("/contests/all")
+    public List<ContestAPI> contests(){
+        List<Contest> contestList = contestService.getAllContests();
+        List<ContestAPI> contestAPIS = new ArrayList<>();
 
-        for (Concurso concurso:concursoList){
-            concursoAPIS.add(concurso.toConcursoAPI());
+        for (Contest contest : contestList){
+            contestAPIS.add(contest.toContestAPI());
         }
-        return concursoAPIS;
+        return contestAPIS;
     }
 
 

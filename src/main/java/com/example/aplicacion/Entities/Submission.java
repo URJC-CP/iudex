@@ -31,7 +31,7 @@ public class Submission {
     @ManyToOne
     private Language language;
     @ManyToOne
-    private Concurso concurso;
+    private Contest contest;
 
 
     private String hashStringSubmission;
@@ -45,9 +45,9 @@ public class Submission {
     @ManyToOne
     private Team team;
 
-    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del concurso
+    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
     @PreRemove
-    private void removeConcursoFromProblemValidator(){
+    private void removeContestFromProblemValidator(){
 
     }
 
@@ -222,12 +222,12 @@ public class Submission {
         this.team = team;
     }
 
-    public Concurso getConcurso() {
-        return concurso;
+    public Contest getContest() {
+        return contest;
     }
 
-    public void setConcurso(Concurso concurso) {
-        this.concurso = concurso;
+    public void setContest(Contest contest) {
+        this.contest = contest;
     }
 
     public boolean isEsProblemValidator() {

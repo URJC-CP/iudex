@@ -36,7 +36,7 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
-    public ProblemStringResult generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String concursoId, String teamId) throws Exception {
+    public ProblemStringResult generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
         ProblemStringResult problemStringResult = new ProblemStringResult();
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
@@ -149,7 +149,7 @@ public class ZipHandlerService {
                         //obtenemos el string del codigo
                         String aux = convertZipToString( zipFile);
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, concursoId, teamId);
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, contestId, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.getSubmissionProblemValidators().add(submissionProblemValidator);
                         logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);

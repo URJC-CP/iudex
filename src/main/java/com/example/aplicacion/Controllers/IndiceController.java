@@ -1,7 +1,6 @@
 package com.example.aplicacion.Controllers;
 
 
-import com.example.aplicacion.Entities.Concurso;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
@@ -11,12 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
@@ -34,7 +31,7 @@ public class IndiceController {
     @Autowired
     private LanguageService languageService;
     @Autowired
-    private ConcursoService concursoService;
+    private ContestService contestService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -52,7 +49,7 @@ public class IndiceController {
         //Pruebas de rabbit
         model.getModel().put("exercices", problemService.getAllProblemas());
         model.getModel().put("languages", languageService.getNLanguages());
-        model.getModel().put("concursos", concursoService.getAllConcursos());
+        model.getModel().put("contests", contestService.getAllContests());
         model.getModel().put("teams", teamService.getAllTeams());
         model.setViewName("indexOriginal");
         //return new RedirectView()
@@ -60,14 +57,14 @@ public class IndiceController {
     }
 
     @PostMapping("/answerSubida")
-    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String concursoId) throws IOException {
+    public String subida(Model model, @RequestParam MultipartFile codigo,  @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
 
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, concursoId, teamId);
+        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (salida.equals("OK")){
             return "redirect:/";
@@ -90,9 +87,9 @@ public class IndiceController {
 
 
 
-    @PostMapping("/asignaProblemaAConcurso")
-    public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String concursoId){
-        concursoService.anyadeProblemaConcurso(concursoId, problemId);
+    @PostMapping("/asignaProblemaAContest")
+    public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String contestId){
+        contestService.anyadeProblemaContest(contestId, problemId);
         return "indexOriginal";
     }
 
@@ -107,9 +104,9 @@ public class IndiceController {
             return "errorConocido";
         }
     }
-    @PostMapping("/creaConcurso")
-    public String creaConcurso(Model model, @RequestParam String concursoName, @RequestParam String teamId){
-        concursoService.creaConcurso(concursoName, teamId);
+    @PostMapping("/creaContest")
+    public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId){
+        contestService.creaContest(contestName, teamId);
 
         return "redirect:/";
 

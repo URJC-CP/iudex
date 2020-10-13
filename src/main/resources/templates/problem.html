@@ -18,7 +18,7 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
 </head>
 <body>
-<p>Problema: {{problem.nombreEjercicio}} del concurso {{concurso.nombreConcurso}}</p>
+<p>Problema: {{problem.nombreEjercicio}} del contest {{contest.nombreContest}}</p>
 
 <div class="container">
     <p>Lista de submissions</p>
@@ -55,9 +55,9 @@
 <!--PDF show-->
 <div class="container">
    <p>PDF PROBLEMA</p>
-    <object data="/getPDF/concurso/{{concurso.id}}/problema/{{problem.id}}" type="application/pdf" width="70%" height="400px">
+    <object data="/getPDF/contest/{{contest.id}}/problema/{{problem.id}}" type="application/pdf" width="70%" height="400px">
         <p>It appears you don't have a PDF plugin for this browser.
-            No biggie... you can <a href="/getPDF/concurso/{{concurso.id}}/problema/{{problem.id}}">click here to
+            No biggie... you can <a href="/getPDF/contest/{{contest.id}}/problema/{{problem.id}}">click here to
                 download the PDF file.</a></p>
     </object>
 </div>
@@ -99,7 +99,7 @@
                 {{/teams}}
             </select>
         </div>
-        <input type="hidden" name="concursoId" value="{{concurso.id}}">
+        <input type="hidden" name="contestId" value="{{contest.id}}">
 
         <div class="siguiente">
             <button type="submit" class="btn btn-success">Guardar</button>

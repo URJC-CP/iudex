@@ -1,16 +1,12 @@
 package com.example.aplicacion.Entities;
 
 import com.google.common.hash.Hashing;
-import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Value;
 
 
 import javax.persistence.*;
-import javax.swing.text.Document;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 public class Problem {
@@ -46,7 +42,7 @@ public class Problem {
     private List<Team> listaEquiposIntentados;
 
     @ManyToMany(mappedBy = "listaProblemas")
-    private List<Concurso> listaConcursosPertenece;
+    private List<Contest> listaContestsPertenece;
     private boolean valido;
 
     private String timeout;
@@ -466,12 +462,12 @@ public class Problem {
         this.numeroSubmissions = numeroSubmissions;
     }
 
-    public List<Concurso> getListaConcursosPertenece() {
-        return listaConcursosPertenece;
+    public List<Contest> getListaContestsPertenece() {
+        return listaContestsPertenece;
     }
 
-    public void setListaConcursosPertenece(List<Concurso> listaConcursosPertenece) {
-        this.listaConcursosPertenece = listaConcursosPertenece;
+    public void setListaContestsPertenece(List<Contest> listaContestsPertenece) {
+        this.listaContestsPertenece = listaContestsPertenece;
     }
 
 }

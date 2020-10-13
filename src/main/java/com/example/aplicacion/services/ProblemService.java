@@ -1,35 +1,24 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Concurso;
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.Pojos.ProblemStringResult;
-import com.example.aplicacion.Repository.ConcursoRepository;
+import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 
 @Service
@@ -45,7 +34,7 @@ public class ProblemService {
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private ConcursoRepository concursoRepository;
+    private ContestRepository contestRepository;
     Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
 
@@ -54,7 +43,7 @@ public class ProblemService {
     }
 
 
-    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idConcurso) throws Exception {
+    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
         Problem problem = new Problem();
         ProblemStringResult problemStringResult = new ProblemStringResult();
 
@@ -63,19 +52,19 @@ public class ProblemService {
             return "TEAM NOT FOUND";
         }
         problem.setEquipoPropietario(team);
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-        if(concurso==null){
+        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        if(contest ==null){
             return "CONCURSO NOT FOUND";
         }
         //Si el usuario introduce un nombre lo metemos a cholon
         if(!nombreProblema.equals("")){
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idConcurso, teamId);
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
             problem = problemStringResult.getProblem();
             problem.setNombreEjercicio(nombreProblema);
         }
         //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
         else {
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idConcurso, teamId);
+            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
             problem = problemStringResult.getProblem();
         }
 
@@ -86,10 +75,10 @@ public class ProblemService {
             return problemStringResult.getSalida();
         }
 
-        concurso.addProblem(problem);
+        contest.addProblem(problem);
         problemRepository.save(problem);
 
-        concursoRepository.save(concurso);
+        contestRepository.save(contest);
 
         problemValidatorService.validateProblem(problem);
         return "OK";
@@ -102,9 +91,9 @@ public class ProblemService {
             return "PROBLEM NOT FOUND";
         }
 
-        //Quitamos los problemas del concurso
-        for(Concurso concursoAux:problem.getListaConcursosPertenece()){
-            concursoAux.getListaProblemas().remove(problem);
+        //Quitamos los problemas del contest
+        for(Contest contestAux :problem.getListaContestsPertenece()){
+            contestAux.getListaProblemas().remove(problem);
         }
 
         problemRepository.delete(problem);

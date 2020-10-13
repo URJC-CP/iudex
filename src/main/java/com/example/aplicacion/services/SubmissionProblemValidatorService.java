@@ -3,11 +3,8 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.Repository.*;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SubmissionProblemValidatorService {
@@ -22,20 +19,20 @@ public class SubmissionProblemValidatorService {
     @Autowired
     private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
     @Autowired
-    private ConcursoService concursoService;
+    private ContestService contestService;
     @Autowired
-    private ConcursoRepository concursoRepository;
+    private ContestRepository contestRepository;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private SubmissionService submissionService;
 
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String idEquipo){
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idContest, String idEquipo){
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();
         submissionProblemValidator.setExpectedSolution(expectedResult);
 
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = submissionService.creaSubmissionProblemValidator(codigo, problema, lenguaje, fileName, idConcurso, idEquipo);
+        SubmissionStringResult submissionStringResult = submissionService.creaSubmissionProblemValidator(codigo, problema, lenguaje, fileName, idContest, idEquipo);
         if(!submissionStringResult.getSalida().equals("OK")){
             //REVISAR
             return null;
@@ -49,20 +46,20 @@ public class SubmissionProblemValidatorService {
 
     /*
     //clase que crea los results y los services dentro de un submission
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idConcurso, String idEquipo){
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idContest, String idEquipo){
         //problemRepository.save(problema);
-        Concurso concurso = concursoRepository.findConcursoById(Long.valueOf(idConcurso));
-        if(concurso==null){
+        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
+        if(contest==null){
             //return "CONCURSO NOT FOUND";
         }
-        submission.setConcurso(concurso);
+        submission.setContest(contest);
 
         Team team =teamRepository.findTeamById(Long.valueOf(idEquipo));
         if (team == null) {
             //return "TEAM NOT FOUND";
         }
-        //Comprobamos q el problema pertenezca al concurso
-        if(!concurso.getListaProblemas().contains(problema)){
+        //Comprobamos q el problema pertenezca al contest
+        if(!contest.getListaProblemas().contains(problema)){
             //return "PROBLEM NOT IN CONCURSO";
         }
 
