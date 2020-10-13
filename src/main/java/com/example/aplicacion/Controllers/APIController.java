@@ -27,7 +27,7 @@ public class APIController {
     }
 
     //CONCURSOS
-    @GetMapping("/contests/all")
+    @GetMapping("/contests")
     public List<ContestAPI> contests(){
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();

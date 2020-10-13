@@ -1,5 +1,7 @@
 package com.example.aplicacion.Entities;
 
+import com.example.aplicacion.Pojos.TeamAPI;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,20 @@ public class Team {
         this.listaProblemasParticipados = new ArrayList<>();
         this.listaContestsCreados= new ArrayList<>();
         this.listaContestsParticipados= new ArrayList<>();
+    }
+    public TeamAPI toTeamAPI(){
+        TeamAPI teamAPI = new TeamAPI();
+        teamAPI.setId(this.id);
+        teamAPI.setNombreEquipo(this.nombreEquipo);
+
+        return teamAPI;
+    }
+
+    public TeamAPI toTeamAPISimple(){
+        TeamAPI teamAPI = new TeamAPI();
+        teamAPI.setId(this.id);
+        teamAPI.setNombreEquipo(this.nombreEquipo);
+        return teamAPI;
     }
 
     public String getNombreEquipo() {
