@@ -1,6 +1,9 @@
 package com.example.aplicacion.Entities;
 
 
+import com.example.aplicacion.Pojos.UserAPI;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,20 @@ public class User {
 
     }
 
+    public UserAPI toUserAPI(){
+        UserAPI userAPI = new UserAPI();
+        userAPI.setId(this.id);
+        userAPI.setNickname(this.nickname);
+        userAPI.setEmail(this.email);
+        return userAPI;
+    }
 
+    public UserAPI toUserAPISimple() {
+        UserAPI userAPI = new UserAPI();
+        userAPI.setId(this.id);
+        userAPI.setNickname(this.nickname);
+        return userAPI;
+    }
 
     public long getId() {
         return id;

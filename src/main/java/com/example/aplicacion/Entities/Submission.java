@@ -71,7 +71,7 @@ public class Submission {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         List<ResultAPI> resultAPIS = new ArrayList<>();
-        for(Result result: results){
+        for(Result result: this.results){
             resultAPIS.add(result.toResultAPISimple());
         }
         submissionAPI.setResults(resultAPIS);

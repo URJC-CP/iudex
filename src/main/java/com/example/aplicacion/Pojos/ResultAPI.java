@@ -1,31 +1,27 @@
 package com.example.aplicacion.Pojos;
 
 public class ResultAPI {
-    private long id;
+    private Long id;
 
     //Hay q tener en cuenta que otros usuarios no deberian ver el codigo, pero lo dejo dispobible
     private String codigo;
 
     private String salidaTime;
 
-    private int numeroCasoDePrueba;
+    private Integer numeroCasoDePrueba;
 
-    private float execTime;
-    private float execMemory;
-    private boolean revisado;
+    private Float execTime;
+    private Float execMemory;
+    private Boolean revisado;
     private String resultadoRevision;
 
     private LanguageAPI language;
 
-
-
-
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,28 +41,35 @@ public class ResultAPI {
         this.salidaTime = salidaTime;
     }
 
+    public Integer getNumeroCasoDePrueba() {
+        return numeroCasoDePrueba;
+    }
 
-    public float getExecTime() {
+    public void setNumeroCasoDePrueba(Integer numeroCasoDePrueba) {
+        this.numeroCasoDePrueba = numeroCasoDePrueba;
+    }
+
+    public Float getExecTime() {
         return execTime;
     }
 
-    public void setExecTime(float execTime) {
+    public void setExecTime(Float execTime) {
         this.execTime = execTime;
     }
 
-    public float getExecMemory() {
+    public Float getExecMemory() {
         return execMemory;
     }
 
-    public void setExecMemory(float execMemory) {
+    public void setExecMemory(Float execMemory) {
         this.execMemory = execMemory;
     }
 
-    public boolean isRevisado() {
+    public Boolean getRevisado() {
         return revisado;
     }
 
-    public void setRevisado(boolean revisado) {
+    public void setRevisado(Boolean revisado) {
         this.revisado = revisado;
     }
 
@@ -84,15 +87,5 @@ public class ResultAPI {
 
     public void setLanguage(LanguageAPI language) {
         this.language = language;
-    }
-
-
-
-    public int getNumeroCasoDePrueba() {
-        return numeroCasoDePrueba;
-    }
-
-    public void setNumeroCasoDePrueba(int numeroCasoDePrueba) {
-        this.numeroCasoDePrueba = numeroCasoDePrueba;
     }
 }

@@ -125,12 +125,13 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setEntradaVisible(convertListINOtoListString(this.entradaVisible));
-        problemAPI.setSalidaVisible(convertListINOtoListString(this.salidaVisible));
+        problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.entradaVisible));
+        problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.salidaVisible));
         List<SubmissionAPI> submissionAPIS= new ArrayList<>();
-        for(Submission submission: submissions){
+        for(Submission submission: this.submissions){
             submissionAPIS.add(submission.toSubmissionAPI());
         }
+        problemAPI.setSubmissions(submissionAPIS);
         problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
         problemAPI.setValido(this.valido);
         problemAPI.setTimeout(this.timeout);

@@ -90,6 +90,7 @@ public class Result {
     public ResultAPI toResultAPISimple(){
         ResultAPI resultAPI = new ResultAPI();
         resultAPI.setId(this.id);
+
         return resultAPI;
     }
 

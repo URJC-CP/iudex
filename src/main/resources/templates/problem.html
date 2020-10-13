@@ -65,7 +65,8 @@
 <!--Muestra entradas y salidas-->
 <div class="container">
     <p>Muestra entradas y salidas de ejempo</p>
-    {{#ejemplos}}
+    <pre><code>
+        {{#ejemplos}}
             <div class="text">
                 <p>Entrada</p>
                 <p>{{entrada.text}}</p>
@@ -74,7 +75,9 @@
                 <p>{{salida.text}}</p>
             </div>
 
-    {{/ejemplos}}
+        {{/ejemplos}}
+    </code></pre>
+
 </div>
 
 <div class="container">

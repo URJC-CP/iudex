@@ -10,8 +10,8 @@ public class ProblemAPI {
 
     private String nombreEjercicio;
 
-    private List<String> entradaVisible;
-    private List<String>  salidaVisible;
+    private List<InNOutAPI> entradaVisible;
+    private List<InNOutAPI>  salidaVisible;
 
 
     private List<SubmissionAPI> submissions;
@@ -130,19 +130,19 @@ public class ProblemAPI {
         this.rights_owner = rights_owner;
     }
 
-    public List<String> getEntradaVisible() {
+    public List<InNOutAPI> getEntradaVisible() {
         return entradaVisible;
     }
 
-    public void setEntradaVisible(List<String> entradaVisible) {
+    public void setEntradaVisible(List<InNOutAPI> entradaVisible) {
         this.entradaVisible = entradaVisible;
     }
 
-    public List<String> getSalidaVisible() {
+    public List<InNOutAPI> getSalidaVisible() {
         return salidaVisible;
     }
 
-    public void setSalidaVisible(List<String> salidaVisible) {
+    public void setSalidaVisible(List<InNOutAPI> salidaVisible) {
         this.salidaVisible = salidaVisible;
     }
 
