@@ -3,9 +3,11 @@ package com.example.aplicacion.Pojos;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.Team;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContestAPI {
     private long id;
 
