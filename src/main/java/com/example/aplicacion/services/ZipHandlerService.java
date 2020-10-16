@@ -4,14 +4,13 @@ import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.SubmissionProblemValidator;
-import com.example.aplicacion.Pojos.ProblemStringResult;
+import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -36,8 +35,8 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
-    public ProblemStringResult generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
-        ProblemStringResult problemStringResult = new ProblemStringResult();
+    public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
+        ProblemString problemString = new ProblemString();
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
         Map<String, List<String>> mapaRevisionEntradas = new HashMap<>();
@@ -196,12 +195,12 @@ public class ZipHandlerService {
         if (!checkMap.equals("OK")){
             //Si hay algun fallo borramos todos los inNOut que hemos creado
             //borraInNOut(problem);
-            problemStringResult.setSalida(checkMap);
+            problemString.setSalida(checkMap);
         }
 
 
-        problemStringResult.setProblem(problem);
-        return problemStringResult;
+        problemString.setProblem(problem);
+        return problemString;
     }
 
     public String selectLenguaje(String lenguaje){

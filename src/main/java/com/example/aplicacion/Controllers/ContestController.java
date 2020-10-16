@@ -40,6 +40,19 @@ public class ContestController {
 
         return "contest";
     }
+
+    @PostMapping("/deleteContest")
+    public  String deleteConcorso(Model model, @RequestParam String contestId){
+        String salida = contestService.deleteContest(contestId);
+
+        if (salida.equals("OK")){
+            return "redirect:/";
+        }
+        else {
+
+            return "404";
+        }
+    }
     @PostMapping("/addUserToContest")
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId){
 
@@ -51,18 +64,6 @@ public class ContestController {
         else {
             model.addAttribute("error", salida);
             return "errorConocido";
-        }
-    }
-    @PostMapping("/deleteContest")
-    public  String deleteConcorso(Model model, @RequestParam String contestId){
-        String salida = contestService.deleteContest(contestId);
-
-        if (salida.equals("OK")){
-            return "redirect:/";
-        }
-        else {
-
-            return "404";
         }
     }
     @PostMapping("/deleteTeamFromContest")

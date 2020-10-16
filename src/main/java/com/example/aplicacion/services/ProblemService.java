@@ -5,7 +5,7 @@ import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
-import com.example.aplicacion.Pojos.ProblemStringResult;
+import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
@@ -43,36 +43,40 @@ public class ProblemService {
     }
 
 
-    public String addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+        ProblemString salida = new ProblemString();
         Problem problem = new Problem();
-        ProblemStringResult problemStringResult = new ProblemStringResult();
+        ProblemString problemString = new ProblemString();
 
         Team team =teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
-            return "TEAM NOT FOUND";
+            salida.setSalida("TEAM NOT FOUND");
+            return salida;
         }
         problem.setEquipoPropietario(team);
         Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
         if(contest ==null){
-            return "CONCURSO NOT FOUND";
+            salida.setSalida("CONCURSO NOT FOUND");
+            return salida;
         }
         //Si el usuario introduce un nombre lo metemos a cholon
         if(!nombreProblema.equals("")){
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
-            problem = problemStringResult.getProblem();
+            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problem = problemString.getProblem();
             problem.setNombreEjercicio(nombreProblema);
         }
         //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
         else {
-            problemStringResult = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
-            problem = problemStringResult.getProblem();
+            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problem = problemString.getProblem();
         }
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
-        if(!(problemStringResult.getSalida()==null)){
+        if(!(problemString.getSalida()==null)){
             //problemRepository.deleteById(problem.getId());
-            return problemStringResult.getSalida();
+            salida.setSalida(problemString.getSalida());
+            return salida;
         }
 
         contest.addProblem(problem);
@@ -81,7 +85,9 @@ public class ProblemService {
         contestRepository.save(contest);
 
         problemValidatorService.validateProblem(problem);
-        return "OK";
+        salida.setProblem(problem);
+        salida.setSalida("OK");
+        return salida;
 
     }
 

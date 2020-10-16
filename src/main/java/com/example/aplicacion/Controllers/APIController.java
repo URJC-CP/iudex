@@ -5,16 +5,19 @@ import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -119,10 +122,69 @@ public class APIController {
         }
     }
 
+    //Crea problema y devuelve el problema
+    @PostMapping("/createProblem")
+    public ResponseEntity<ProblemAPI> createProblem(@RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId)  {
+        ProblemString salida;
+        try {
+             salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
+        } catch (Exception e) {
+            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    //Devuelve el pdf del problema
+    //Controller que devuelve en un HTTP el pdf del problema pedido
+    @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
+    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem){
+        Problem problem = problemService.getProblem(idProblem);
+        Contest contest = contestService.getContest(idContest);
+        if(contest ==null){
+            return  new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
+        }
+        if(problem==null){
+            return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
+        }
+        if(!contest.getListaProblemas().contains(problem)){
+            return  new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
+        }
+
+        byte[] contents = problem.getDocumento();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = problem.getNombreEjercicio()+".pdf";
+        //headers.setContentDispositionFormData(filename, filename);
+        headers.setContentDisposition(ContentDisposition.builder("inline").build());
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
+        return response;
+    }
+
+    //DeleteProblem
+    @DeleteMapping("/problem/{idProblem}")
+    public ResponseEntity deleteProblem(@PathVariable String problemId) {
+        String salida = problemService.deleteProblem(problemId);
+        if (salida.equals("OK")){
+            return new  ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+
+        
+    }
 
 
 
 
 
 
-}
+
+
+    }

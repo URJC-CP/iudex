@@ -129,7 +129,7 @@ public class Problem {
         problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.salidaVisible));
         List<SubmissionAPI> submissionAPIS= new ArrayList<>();
         for(Submission submission: this.submissions){
-            submissionAPIS.add(submission.toSubmissionAPI());
+            submissionAPIS.add(submission.toSubmissionAPISimple());
         }
         problemAPI.setSubmissions(submissionAPIS);
         problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());

@@ -2,6 +2,7 @@ package com.example.aplicacion.Controllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,21 +71,16 @@ public class ProblemaController {
         Problem problem = problemService.getProblem(idProblem);
         Contest contest = contestService.getContest(idContest);
         if(contest ==null){
-            model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
-            //return "errorConocido";
+            return  new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
         }
         if(problem==null){
-            model.addAttribute("error", "ERROR PROBLEMA NO ECONTRADO");
-            //return "errorConocido";
+            return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
         if(!contest.getListaProblemas().contains(problem)){
-            model.addAttribute("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
-            //return "errorConocido";
-
+            return  new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
         }
 
         byte[] contents = problem.getDocumento();
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
         String filename = problem.getNombreEjercicio()+".pdf";
@@ -93,16 +89,15 @@ public class ProblemaController {
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
         return response;
-
     }
 
     @PostMapping("/problemSubida")
     public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-        String salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
 
-        if(!salida.equals("OK")){
-            modelAndView.getModel().put("error", salida);
+        if(!salida.getSalida().equals("OK")){
+            modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
