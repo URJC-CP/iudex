@@ -94,7 +94,27 @@ public class APIController {
         }
     }
 
-
+    //Delete problem from contest
+    @DeleteMapping("/contest/{idContest}/problem{idProblem}")
+    public ResponseEntity deleteProblemFromContest(@PathVariable String idContest, @PathVariable String idProblem){
+        String salida = contestService.deleteProblemFromContest(idContest, idProblem);
+        if (salida.equals("OK")){
+            return new  ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+    //Get all problems from contest
+    @GetMapping("/contest/{idContest}/problems")
+    public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
+        Contest contest = contestService.getContest(idContest);
+        if(contest ==null){
+            return new ResponseEntity("CONTEST NOT FOUND",HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
+        }
+    }
 
 
 
@@ -111,23 +131,14 @@ public class APIController {
         return new ResponseEntity<>(salida, HttpStatus.OK);
     }
 
-    //Get all problems from contest
-    @GetMapping("/contest/{idContest}/problems")
-    public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
-        Contest contest = contestService.getContest(idContest);
-        if(contest ==null){
-            return new ResponseEntity("CONTEST NOT FOUND",HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
-        }
-    }
+
 
     //Crea problema y devuelve el problema
     @PostMapping("/createProblem")
-    public ResponseEntity<ProblemAPI> createProblem(@RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId)  {
+    public ResponseEntity<ProblemAPI> createProblem(@RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId)  {
         ProblemString salida;
         try {
-             salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
+             salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
         } catch (Exception e) {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -176,9 +187,10 @@ public class APIController {
         else {
             return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
-
-        
     }
+
+
+
 
 
 
