@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("/API/v1")
 @RestController
 
 public class APIContestController {
@@ -27,11 +26,10 @@ public class APIContestController {
     @Autowired
     ProblemService problemService;
 
-
-    //CONCURSOS
+//CONCURSOS
 
     //Get all concursos
-    @GetMapping("/contests")
+    @GetMapping("/API/v1/contests")
     public ResponseEntity<List<ContestAPI>> getAllcontests(){
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();
@@ -44,9 +42,11 @@ public class APIContestController {
 
     //Get page contest
     //@GetMapping("/contests/page")
-    
+
+
+
     //Get one Contest
-    @GetMapping("/contest/{contestId}")
+    @GetMapping("/API/v1/contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId){
 
         ContestAPI contestAPI = new ContestAPI();
@@ -61,7 +61,7 @@ public class APIContestController {
     }
 
     //Delete one Contest
-    @DeleteMapping("/contest/{contestId}")
+    @DeleteMapping("/API/v1/contest/{contestId}")
     public ResponseEntity deleteContest(@PathVariable String contestId){
         String salida = contestService.deleteContest(contestId);
         if (salida.equals("OK")){
@@ -74,7 +74,7 @@ public class APIContestController {
     }
 
     //Crea un concurso
-    @PostMapping("/addContest")
+    @PostMapping("/API/v1/addContest")
     public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
         String salida = contestService.creaContest(contestId, teamId);
         if (salida.equals("OK")){
@@ -86,7 +86,7 @@ public class APIContestController {
     }
 
     //Delete problem from contest
-    @DeleteMapping("/contest/{idContest}/problem{idProblem}")
+    @DeleteMapping("/API/v1/contest/{idContest}/problem{idProblem}")
     public ResponseEntity deleteProblemFromContest(@PathVariable String idContest, @PathVariable String idProblem){
         String salida = contestService.deleteProblemFromContest(idContest, idProblem);
         if (salida.equals("OK")){
@@ -97,7 +97,7 @@ public class APIContestController {
         }
     }
     //Get all problems from contest
-    @GetMapping("/contest/{idContest}/problems")
+    @GetMapping("/API/v1/contest/{idContest}/problems")
     public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
         Contest contest = contestService.getContest(idContest);
         if(contest ==null){
@@ -106,7 +106,6 @@ public class APIContestController {
             return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
         }
     }
-
 
 
 }

@@ -1,9 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Contest;
-import com.example.aplicacion.Entities.InNOut;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.Repository.ContestRepository;
@@ -127,6 +124,20 @@ public class ProblemService {
         List<Problem> problemas= problemRepository.findAll();
         sumatorioSubmissionProblemas(problemas);
         return problemas;
+    }
+    public List<Submission> getSubmissionFromProblem(Problem problem){
+        List<Submission> salida = new ArrayList<>();
+        salida = problem.getSubmissions();
+        return salida;
+    }
+    public List<Submission> getSubmissionsFromContestFromProblem(Contest contest, Problem problem){
+        List<Submission> salida = new ArrayList<>();
+        for(Submission submission:problem.getSubmissions()){
+            if(submission.getContest().equals(contest)){
+                salida.add(submission);
+            }
+        }
+        return salida;
     }
 
     private void sumatorioSubmissionProblemas(List<Problem> problems){

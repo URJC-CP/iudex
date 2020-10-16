@@ -220,12 +220,12 @@ public class SubmissionService {
         if(submission.isEsProblemValidator()){
             return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE, JUST DELETING DE PROBLEM";
         }
-
-
         submissionRepository.delete(submission);
 
         return "OK";
     }
+
+
     public String deleteSubmission(String submissionId, String problemId, String contestId){
         Submission submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
         if (submission==null){
