@@ -34,7 +34,8 @@ public class Submission {
     private Language language;
     @ManyToOne
     private Contest contest;
-
+    @ManyToOne
+    private Team team;
 
     private String hashStringSubmission;
     private String hashStringDelProblema;
@@ -44,8 +45,7 @@ public class Submission {
     private float execSubmissionTime;
     private float execSubmissionMemory;
 
-    @ManyToOne
-    private Team team;
+
 
     //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
     @PreRemove
@@ -74,6 +74,7 @@ public class Submission {
         for(Result result: this.results){
             resultAPIS.add(result.toResultAPISimple());
         }
+        submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
         submissionAPI.setNumeroResultCorregidos(this.numeroResultCorregidos);
@@ -83,7 +84,12 @@ public class Submission {
         submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
         return submissionAPI;
     }
-
+    public SubmissionAPI toSubmissionAPISimple() {
+        SubmissionAPI submissionAPI = new SubmissionAPI();
+        submissionAPI.setId(this.id);
+        submissionAPI.setTeam(this.team.toTeamAPISimple());
+        return submissionAPI;
+    }
     private String listaToString(List<InNOut> lista){
         String salida = new String();
         for (InNOut inout : lista ){

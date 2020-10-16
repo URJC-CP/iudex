@@ -9,11 +9,14 @@ import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +45,11 @@ public class APIController {
         }
         return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
     }
+
+    //Get page contest
+    //@GetMapping("/contests/page")
+
+
 
     //Get one Contest
     @GetMapping("/contest/{contestId}")
@@ -84,7 +92,12 @@ public class APIController {
     }
 
 
+
+
+
     //PROBLEMS
+
+    //Get all problems in DB
     @GetMapping("/problems")
     public ResponseEntity<List<ProblemAPI>> problems(){
         List<Problem> problems = problemService.getAllProblemas();
@@ -94,6 +107,18 @@ public class APIController {
         }
         return new ResponseEntity<>(salida, HttpStatus.OK);
     }
+
+    //Get all problems from contest
+    @GetMapping("/contest/{idContest}/problems")
+    public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
+        Contest contest = contestService.getContest(idContest);
+        if(contest ==null){
+            return new ResponseEntity("CONTEST NOT FOUND",HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
+        }
+    }
+
 
 
 

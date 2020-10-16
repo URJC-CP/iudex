@@ -3,6 +3,7 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ContestService {
@@ -151,7 +153,10 @@ public class ContestService {
         return "OK";
     }
 
-
+    public List<ProblemAPI> getProblemsFromConcurso(Contest contest){
+        List<ProblemAPI> problemAPIS = contest.getListaProblemas().stream().map(x->x.toProblemAPI()).collect(Collectors.toList());
+        return problemAPIS;
+    }
     public Contest getContest(String idContest){
         return contestRepository.findContestById(Long.valueOf(idContest));
     }

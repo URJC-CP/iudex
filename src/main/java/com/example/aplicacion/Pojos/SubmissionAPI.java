@@ -1,6 +1,7 @@
 package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.Language;
+import com.example.aplicacion.Entities.Team;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class SubmissionAPI {
 
     private long id;
     private List<ResultAPI> results;
+    private TeamAPI team;
 
     private boolean corregido;
     private int numeroResultCorregidos;
@@ -85,5 +87,13 @@ public class SubmissionAPI {
 
     public void setExecSubmissionMemory(float execSubmissionMemory) {
         this.execSubmissionMemory = execSubmissionMemory;
+    }
+
+    public TeamAPI getTeam() {
+        return team;
+    }
+
+    public void setTeam(TeamAPI team) {
+        this.team = team;
     }
 }
