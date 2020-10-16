@@ -14,6 +14,7 @@ public class Contest {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(unique = true)
     private String nombreContest;
 
     @ManyToOne

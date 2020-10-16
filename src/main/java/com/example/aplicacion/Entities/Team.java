@@ -13,6 +13,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @Column(unique = true)
     private String nombreEquipo;
 
     @ManyToMany (fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
