@@ -1,8 +1,10 @@
 package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.Language;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class SubmissionAPI {
 

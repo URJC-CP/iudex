@@ -2,8 +2,10 @@ package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Submission;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
+@JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class ProblemAPI {
     private long id;

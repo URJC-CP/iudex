@@ -10,6 +10,7 @@ import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,40 +33,66 @@ public class APIController {
 
     //Get all concursos
     @GetMapping("/contests")
-    public List<ContestAPI> getAllcontests(){
+    public ResponseEntity<List<ContestAPI>> getAllcontests(){
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();
 
         for (Contest contest : contestList){
             contestAPIS.add(contest.toContestAPI());
         }
-        return contestAPIS;
+        return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
     }
 
     //Get one Contest
     @GetMapping("/contest/{contestId}")
-    public ContestAPI getContest(@PathVariable String contestId){
+    public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId){
+
         ContestAPI contestAPI = new ContestAPI();
         Contest contest = contestService.getContest(contestId);
         if(contest ==null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CONTEST NOT FOUND");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         contestAPI=contest.toContestAPI();
 
-        return contestAPI;
+        ResponseEntity<ContestAPI> responseEntity = new ResponseEntity<>(contestAPI, HttpStatus.OK);
+        return responseEntity;
     }
 
+    //Delete one Contest
+    @DeleteMapping("/contest/{contestId}")
+    public ResponseEntity deleteContest(@PathVariable String contestId){
+        String salida = contestService.deleteContest(contestId);
+        if (salida.equals("OK")){
+          return new  ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    //Crea un concurso
+    @PostMapping("/addContest")
+    public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
+        String salida = contestService.creaContest(contestId, teamId);
+        if (salida.equals("OK")){
+            return new  ResponseEntity(HttpStatus.CREATED);
+        }
+        else {
+            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
 
 
     //PROBLEMS
     @GetMapping("/problems")
-    public List<ProblemAPI> problems(){
+    public ResponseEntity<List<ProblemAPI>> problems(){
         List<Problem> problems = problemService.getAllProblemas();
         List<ProblemAPI> salida = new ArrayList<>();
         for(Problem problem: problems){
             salida.add(problem.toProblemAPI());
         }
-        return salida;
+        return new ResponseEntity<>(salida, HttpStatus.OK);
     }
 
 

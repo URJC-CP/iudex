@@ -1,5 +1,9 @@
 package com.example.aplicacion.Pojos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class InNOutAPI {
     private long id;
     private String name;
