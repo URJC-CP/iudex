@@ -94,7 +94,7 @@ public class ProblemValidatorService {
         //Si es un problema sin submission validamos
         else {
             problem.setValido(true);
-            logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado");
+            logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado (NO TIENE CASOS DE PRUEBA)");
             problemRepository.save(problem);
         }
 

@@ -3,10 +3,7 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.Repository.ContestRepository;
-import com.example.aplicacion.Repository.InNOutRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.Repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +29,8 @@ public class ProblemService {
     private TeamRepository teamRepository;
     @Autowired
     private ContestRepository contestRepository;
+    @Autowired
+     private SubmissionRepository submissionRepository;
     Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
 
@@ -92,38 +91,100 @@ public class ProblemService {
 
     }
 
-    public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+        ProblemString salida = new ProblemString();
+        Problem problem = new Problem();
         ProblemString problemString = new ProblemString();
-        Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
-        if(problemOriginal == null){
-            problemString.setSalida("PROBLEM NOT FOUND");
-            return problemString;
+
+        Team team =teamRepository.findTeamById(Long.valueOf(teamId));
+        if (team == null) {
+            salida.setSalida("TEAM NOT FOUND");
+            return salida;
+        }
+        problem.setEquipoPropietario(team);
+        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        if(contest ==null){
+            salida.setSalida("CONCURSO NOT FOUND");
+            return salida;
+        }
+        //Si el usuario introduce un nombre lo metemos a cholon
+        if(!nombreProblema.equals("")){
+            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problem = problemString.getProblem();
+            problem.setNombreEjercicio(nombreProblema);
+        }
+        //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
+        else {
+            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problem = problemString.getProblem();
         }
 
-        problemString = addProblemFromZip(nombreFichero,inputStream, teamId, nombreProblema, idcontest);
+        //Verificamos si hubiera dado fallo el problema al guardarse
+        //SI FALLA NO SE GUARDA EL PROBLEMA
+        if(!(problemString.getSalida()==null)){
+            //problemRepository.deleteById(problem.getId());
+            salida.setSalida(problemString.getSalida());
+            return salida;
+        }
+
+        contest.addProblem(problem);
+        problem.getListaContestsPertenece().add(contest);
+
+
+        //problemValidatorService.validateProblem(problem);
+        //Devolvemos la version actualizada despues de los save
+        //problem =problemRepository.findProblemById(problem.getId());
+
+        salida.setProblem(problem);
+        salida.setSalida("OK");
+        return salida;
+
+    }
+
+
+
+    public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+        ProblemString problemUpdated = new ProblemString();
+        Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if(problemOriginal == null){
+            problemUpdated.setSalida("PROBLEM NOT FOUND");
+            return problemUpdated;
+        }
+        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        if(contest ==null){
+            problemUpdated.setSalida("CONCURSO NOT FOUND");
+            return problemUpdated;
+        }
+
+        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero,inputStream, teamId, nombreProblema, idcontest);
         //Si es error
-        if(!problemString.getSalida().equals("OK")){
-            return problemString;
+        if(!problemUpdated.getSalida().equals("OK")){
+            return problemUpdated;
         }
 
 
         //Tenemos que borrar el problema para poder cambiar el id
-        deleteProblem(String.valueOf(problemString.getProblem().getId()));
+        //deleteProblem(problemUpdated.getProblem());
 
         //Cambiamos el id
-        problemString.getProblem().setId(Long.valueOf(idProblema));
+        problemUpdated.getProblem().setId(Long.valueOf(idProblema));
         //Anyadimos al nuevo problema las submissions y problemvalidator de laanterior
-        problemString.getProblem().getSubmissions().addAll(problemOriginal.getSubmissions());
-        problemString.getProblem().getSubmissionProblemValidators().addAll(problemOriginal.getSubmissionProblemValidators());
+        problemUpdated.getProblem().getSubmissions().addAll(problemOriginal.getSubmissions());
 
         //Ponemos los participantes y concursos de la anterior
-        problemString.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
-        problemString.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
+        problemUpdated.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
+        problemUpdated.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
 
         //ACTIALIZAMOS EN LA BBDD
-        problemRepository.save(problemString.getProblem());
+        problemRepository.save(problemUpdated.getProblem());
+        //guardamos los inNout
+        saveAllInnNOut(problemUpdated.getProblem());
+        saveAllSubmissions(problemUpdated.getProblem());
+        contest.addProblem(problemUpdated.getProblem());
+        contestRepository.save(contest);
+        problemValidatorService.validateProblem(problemUpdated.getProblem());
 
-        return problemString;
+        return problemUpdated;
 
     }
 
@@ -209,5 +270,23 @@ public class ProblemService {
             lista.add(problemEntradaSalidaVisiblesHTML);
         }
         return lista;
+    }
+    private void saveAllInnNOut(Problem problem){
+        for(InNOut inNOut: problem.getEntradaVisible()){
+            inNOutRepository.save(inNOut);
+        }
+        for(InNOut inNOut: problem.getSalidaVisible()){
+            inNOutRepository.save(inNOut);
+        }for(InNOut inNOut: problem.getEntradaOculta()){
+            inNOutRepository.save(inNOut);
+        }
+        for(InNOut inNOut: problem.getSalidaOculta()){
+            inNOutRepository.save(inNOut);
+        }
+    }
+    private void saveAllSubmissions(Problem problem){
+        for (SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
+            submissionRepository.save(submissionProblemValidator.getSubmission());
+        }
     }
 }

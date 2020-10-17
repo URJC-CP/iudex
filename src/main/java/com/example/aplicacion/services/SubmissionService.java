@@ -151,7 +151,7 @@ public class SubmissionService {
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
         //Para que le asigne el@Id
-        submissionRepository.save(submission);
+        //SEBORRATEMPORALMENTEsubmissionRepository.save(submission);
 
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
@@ -189,8 +189,8 @@ public class SubmissionService {
         //Guardamos la submission
 
         problema.addSubmission(submission);
-        problemRepository.save(problema);
-
+        //SEBORRATEMPORALMENTEproblemRepository.save(problema);
+        //SE BORRA TEMPORALMENTE
 
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);

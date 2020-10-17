@@ -55,6 +55,7 @@ public class Submission {
 
 
     public Submission() {
+        numeroResultCorregidos =0;
     }
 
     public Submission(String codigo, Language lenguaje, String filename) {
@@ -65,6 +66,7 @@ public class Submission {
         this.results = new ArrayList<>();
         this.filename=filename;
         this.numeroResultCorregidos=0;
+
         generaHash();
     }
     public SubmissionAPI toSubmissionAPI(){

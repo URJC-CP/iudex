@@ -83,7 +83,7 @@ public class ZipHandlerService {
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
-                        inNOutRepository.save(inNOut);
+                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addSalidaVisible(inNOut);
                     }else if(extension.equals("in")){
                         //revisamos q el zip este bien
@@ -91,7 +91,7 @@ public class ZipHandlerService {
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
-                        inNOutRepository.save(inNOut);
+                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addEntradaVisible(inNOut);
                     }
                 }
@@ -104,7 +104,7 @@ public class ZipHandlerService {
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
-                        inNOutRepository.save(inNOut);
+                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addSalidaOculta(inNOut);
                     }else if(extension.equals("in")){
                         //revisamos q el zip este bien
@@ -112,7 +112,7 @@ public class ZipHandlerService {
                         String aux = convertZipToString( zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
-                        inNOutRepository.save(inNOut);
+                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
                         logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema "+ problemName);
                     }
