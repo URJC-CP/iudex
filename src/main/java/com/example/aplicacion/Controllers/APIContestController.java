@@ -26,7 +26,7 @@ public class APIContestController {
     @Autowired
     ProblemService problemService;
 
-//CONCURSOS
+    //CONCURSOS
 
     //Get all concursos
     @GetMapping("/API/v1/contests")
@@ -42,7 +42,6 @@ public class APIContestController {
 
     //Get page contest
     //@GetMapping("/contests/page")
-
 
 
     //Get one Contest
@@ -85,27 +84,7 @@ public class APIContestController {
         }
     }
 
-    //Delete problem from contest
-    @DeleteMapping("/API/v1/contest/{idContest}/problem{idProblem}")
-    public ResponseEntity deleteProblemFromContest(@PathVariable String idContest, @PathVariable String idProblem){
-        String salida = contestService.deleteProblemFromContest(idContest, idProblem);
-        if (salida.equals("OK")){
-            return new  ResponseEntity(HttpStatus.OK);
-        }
-        else {
-            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
-        }
-    }
-    //Get all problems from contest
-    @GetMapping("/API/v1/contest/{idContest}/problems")
-    public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
-        Contest contest = contestService.getContest(idContest);
-        if(contest ==null){
-            return new ResponseEntity("CONTEST NOT FOUND",HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
-        }
-    }
+
 
 
 }

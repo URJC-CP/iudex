@@ -77,14 +77,53 @@ public class ProblemService {
         }
 
         contest.addProblem(problem);
+        problem.getListaContestsPertenece().add(contest);
         problemRepository.save(problem);
 
         contestRepository.save(contest);
 
         problemValidatorService.validateProblem(problem);
+        //Devolvemos la version actualizada despues de los save
+        //problem =problemRepository.findProblemById(problem.getId());
+
         salida.setProblem(problem);
         salida.setSalida("OK");
         return salida;
+
+    }
+
+    public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+        ProblemString problemString = new ProblemString();
+        Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if(problemOriginal == null){
+            problemString.setSalida("PROBLEM NOT FOUND");
+            return problemString;
+        }
+
+        problemString = addProblemFromZip(nombreFichero,inputStream, teamId, nombreProblema, idcontest);
+        //Si es error
+        if(!problemString.getSalida().equals("OK")){
+            return problemString;
+        }
+
+
+        //Tenemos que borrar el problema para poder cambiar el id
+        deleteProblem(String.valueOf(problemString.getProblem().getId()));
+
+        //Cambiamos el id
+        problemString.getProblem().setId(Long.valueOf(idProblema));
+        //Anyadimos al nuevo problema las submissions y problemvalidator de laanterior
+        problemString.getProblem().getSubmissions().addAll(problemOriginal.getSubmissions());
+        problemString.getProblem().getSubmissionProblemValidators().addAll(problemOriginal.getSubmissionProblemValidators());
+
+        //Ponemos los participantes y concursos de la anterior
+        problemString.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
+        problemString.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
+
+        //ACTIALIZAMOS EN LA BBDD
+        problemRepository.save(problemString.getProblem());
+
+        return problemString;
 
     }
 
@@ -93,6 +132,17 @@ public class ProblemService {
         if(problem==null){
             return "PROBLEM NOT FOUND";
         }
+
+        //Quitamos los problemas del contest
+        for(Contest contestAux :problem.getListaContestsPertenece()){
+            contestAux.getListaProblemas().remove(problem);
+        }
+
+        problemRepository.delete(problem);
+        logger.info("El problema "+problem.getNombreEjercicio()+" ha sido eliminado");
+        return "OK";
+    }public String deleteProblem(Problem problem){
+
 
         //Quitamos los problemas del contest
         for(Contest contestAux :problem.getListaContestsPertenece()){

@@ -92,9 +92,9 @@ public class ProblemaController {
     }
 
     @PostMapping("/problemSubida")
-    public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile problema, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
+    public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.addProblemFromZip(problema.getOriginalFilename(), problema.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
 
         if(!salida.getSalida().equals("OK")){
             modelAndView.getModel().put("error", salida.getSalida());
@@ -106,6 +106,22 @@ public class ProblemaController {
         return modelAndView;
 
     }
+    @PostMapping("/problemUpdate")
+    public ModelAndView updateProblema(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        ProblemString salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+
+        if(!salida.getSalida().equals("OK")){
+            modelAndView.getModel().put("error", salida.getSalida());
+            modelAndView.setViewName("errorConocido");
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+
+    }
+
     @GetMapping("/deleteProblem/{problemId}")
     public ModelAndView deleteProblem(@PathVariable String problemId ){
         ModelAndView modelAndView = new ModelAndView();
