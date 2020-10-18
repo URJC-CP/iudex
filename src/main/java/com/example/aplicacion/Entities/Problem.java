@@ -34,6 +34,8 @@ public class Problem {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SubmissionProblemValidator> oldSubmissionProblemValidators;
 
     @OneToMany(cascade =  CascadeType.ALL, mappedBy = "problema")
     private List<Submission> submissions;
@@ -93,6 +95,8 @@ public class Problem {
         this.submissionProblemValidators = new ArrayList<>();
         this.submissions = new ArrayList<>();
         this.listaContestsPertenece = new ArrayList<>();
+        this.oldSubmissionProblemValidators = new ArrayList<>();
+
         //valores por defecto
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
@@ -115,6 +119,7 @@ public class Problem {
         this.submissionProblemValidators = new ArrayList<>();
         this.submissions = new ArrayList<>();
         this.listaContestsPertenece = new ArrayList<>();
+        this.oldSubmissionProblemValidators = new ArrayList<>();
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
@@ -522,4 +527,23 @@ public class Problem {
         this.listaContestsPertenece = listaContestsPertenece;
     }
 
+    public void setSalidaVisible(List<InNOut> salidaVisible) {
+        this.salidaVisible = salidaVisible;
+    }
+
+    public List<SubmissionProblemValidator> getOldSubmissionProblemValidators() {
+        return oldSubmissionProblemValidators;
+    }
+
+    public void setOldSubmissionProblemValidators(List<SubmissionProblemValidator> oldSubmissionProblemValidators) {
+        this.oldSubmissionProblemValidators = oldSubmissionProblemValidators;
+    }
+
+    public boolean isValido() {
+        return valido;
+    }
+
+    public void setValido(boolean valido) {
+        this.valido = valido;
+    }
 }

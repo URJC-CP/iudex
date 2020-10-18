@@ -171,12 +171,21 @@ public class ProblemService {
         //Anyadimos al nuevo problema las submissions y problemvalidator de laanterior
         problemUpdated.getProblem().getSubmissions().addAll(problemOriginal.getSubmissions());
 
+        //Guardams los problemvalidator viejos
+        problemUpdated.getProblem().setOldSubmissionProblemValidators(problemOriginal.getOldSubmissionProblemValidators());
+        problemUpdated.getProblem().getOldSubmissionProblemValidators().addAll(problemOriginal.getSubmissionProblemValidators());
+
+
         //Ponemos los participantes y concursos de la anterior
         problemUpdated.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
         problemUpdated.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
 
+
+
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());
+
+
         //guardamos los inNout
         //saveAllInnNOut(problemUpdated.getProblem());
         //saveAllSubmissions(problemUpdated.getProblem());
