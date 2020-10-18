@@ -127,8 +127,8 @@ public class ProblemService {
             return salida;
         }
 
-        contest.addProblem(problem);
-        problem.getListaContestsPertenece().add(contest);
+        //contest.addProblem(problem);
+        //problem.getListaContestsPertenece().add(contest);
 
 
         //problemValidatorService.validateProblem(problem);
@@ -178,10 +178,10 @@ public class ProblemService {
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());
         //guardamos los inNout
-        saveAllInnNOut(problemUpdated.getProblem());
-        saveAllSubmissions(problemUpdated.getProblem());
-        contest.addProblem(problemUpdated.getProblem());
-        contestRepository.save(contest);
+        //saveAllInnNOut(problemUpdated.getProblem());
+        //saveAllSubmissions(problemUpdated.getProblem());
+        //contest.addProblem(problemUpdated.getProblem());
+        //contestRepository.save(contest);
         problemValidatorService.validateProblem(problemUpdated.getProblem());
 
         return problemUpdated;
@@ -202,7 +202,9 @@ public class ProblemService {
         problemRepository.delete(problem);
         logger.info("El problema "+problem.getNombreEjercicio()+" ha sido eliminado");
         return "OK";
-    }public String deleteProblem(Problem problem){
+    }
+
+    public String deleteProblem(Problem problem){
 
 
         //Quitamos los problemas del contest

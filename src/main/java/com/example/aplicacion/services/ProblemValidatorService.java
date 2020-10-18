@@ -39,8 +39,9 @@ public class ProblemValidatorService {
 
     Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
 
-    public void validateProblem(Problem problem){
+    public void validateProblem(Problem problemA){
 
+        Problem problem = problemRepository.findProblemById(problemA.getId());
         //Recorremos la lista de submission y las enviamos
         if(problem.getSubmissionProblemValidators().size()!=0){
             for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
