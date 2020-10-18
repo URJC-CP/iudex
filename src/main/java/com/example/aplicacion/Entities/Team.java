@@ -18,16 +18,17 @@ public class Team {
 
     @ManyToMany (fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
     private List<User> participantes;
+    private boolean isUser;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Submission> listaDeSubmissions;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Problem> listaProblemasCreados;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Problem> listaProblemasParticipados;
     @ManyToMany(mappedBy = "listaParticipantes")
     private List<Contest> listaContestsParticipados;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Contest> listaContestsCreados;
 
     public Team(){
@@ -170,5 +171,13 @@ public class Team {
 
     public void setListaContestsCreados(List<Contest> listaContestsCreados) {
         this.listaContestsCreados = listaContestsCreados;
+    }
+
+    public boolean isUser() {
+        return isUser;
+    }
+
+    public void setUser(boolean user) {
+        isUser = user;
     }
 }

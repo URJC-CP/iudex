@@ -186,11 +186,7 @@ public class ProblemService {
         problemRepository.save(problemUpdated.getProblem());
 
 
-        //guardamos los inNout
-        //saveAllInnNOut(problemUpdated.getProblem());
-        //saveAllSubmissions(problemUpdated.getProblem());
-        //contest.addProblem(problemUpdated.getProblem());
-        //contestRepository.save(contest);
+
         problemValidatorService.validateProblem(problemUpdated.getProblem());
 
         return problemUpdated;

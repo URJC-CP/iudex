@@ -59,6 +59,20 @@ public class APIContestController {
         return responseEntity;
     }
 
+
+    //Crea un concurso
+    @PostMapping("/API/v1/contest")
+    public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
+        String salida = contestService.creaContest(contestId, teamId);
+        if (salida.equals("OK")){
+            return new  ResponseEntity(HttpStatus.CREATED);
+        }
+        else {
+            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     //Delete one Contest
     @DeleteMapping("/API/v1/contest/{contestId}")
     public ResponseEntity deleteContest(@PathVariable String contestId){
@@ -71,20 +85,6 @@ public class APIContestController {
         }
 
     }
-
-    //Crea un concurso
-    @PostMapping("/API/v1/addContest")
-    public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
-        String salida = contestService.creaContest(contestId, teamId);
-        if (salida.equals("OK")){
-            return new  ResponseEntity(HttpStatus.CREATED);
-        }
-        else {
-            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
-        }
-    }
-
-
 
 
 }

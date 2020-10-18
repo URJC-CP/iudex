@@ -96,7 +96,6 @@ public class Problem {
         this.submissions = new ArrayList<>();
         this.listaContestsPertenece = new ArrayList<>();
         this.oldSubmissionProblemValidators = new ArrayList<>();
-
         //valores por defecto
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
