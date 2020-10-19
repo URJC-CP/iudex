@@ -46,6 +46,8 @@ public class Problem {
     private List<Contest> listaContestsPertenece;
     private boolean valido;
 
+    private int numeroSubmissions;
+
     private String timeout;
     private String memoryLimit;
 
@@ -513,5 +515,13 @@ public class Problem {
 
     public void setValido(boolean valido) {
         this.valido = valido;
+    }
+
+    public int getNumeroSubmissions() {
+        return numeroSubmissions;
+    }
+
+    public void setNumeroSubmissions(int numeroSubmissions) {
+        this.numeroSubmissions = numeroSubmissions;
     }
 }

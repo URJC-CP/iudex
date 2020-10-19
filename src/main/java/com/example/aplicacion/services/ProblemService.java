@@ -212,6 +212,14 @@ public class ProblemService {
         }
 
         updateProblemInside(problemOriginal, problemUpdated.getProblem());
+
+
+        problemRepository.save(problemOriginal);
+        problemValidatorService.validateProblem(problemOriginal);
+
+        problemUpdated.setProblem(problemOriginal);
+        return problemUpdated;
+
     }
     public String deleteProblem(String problemId){
         Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
@@ -323,6 +331,11 @@ public class ProblemService {
         //Anyadimos losproblemsvalidator a la lista de viejos
         oldProblem.getOldSubmissionProblemValidators().addAll(oldProblem.getSubmissionProblemValidators());
         oldProblem.setSubmissionProblemValidators(newProblem.getSubmissionProblemValidators());
+
+        //actualizmaos el problema de submissions
+        for(Submission submission:newProblem.getSubmissions()){
+            submission.setProblema(oldProblem);
+        }
         oldProblem.getSubmissions().addAll(newProblem.getSubmissions());
 
         oldProblem.setEquipoPropietario(newProblem.getEquipoPropietario());
@@ -346,6 +359,7 @@ public class ProblemService {
         oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
         oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
         oldProblem.setColor(newProblem.getColor());
+
 
     }
 }
