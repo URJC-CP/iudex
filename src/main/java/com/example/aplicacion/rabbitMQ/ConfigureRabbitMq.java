@@ -18,7 +18,7 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @Configuration
-@EnableSwagger2WebMvc
+
 public class ConfigureRabbitMq {
 
     public static final String EXCHANGE_NAME = "dockerExchange";

@@ -35,7 +35,7 @@ public class UserService {
         else {
             userRepository.save(user);
 
-           String salidaCreaTeam = teamService.crearTeam(nickname);
+           String salidaCreaTeam = teamService.crearTeam(nickname, true);
 
            if (salidaCreaTeam.equals("OK")){
                //Sacamos el equipo creado anteriormente

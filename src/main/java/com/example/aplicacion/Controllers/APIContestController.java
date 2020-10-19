@@ -6,6 +6,8 @@ import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.SwaggerDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ public class APIContestController {
     //CONCURSOS
 
     //Get all concursos
+    @ApiOperation("HOLAAA")
     @GetMapping("/API/v1/contests")
     public ResponseEntity<List<ContestAPI>> getAllcontests(){
         List<Contest> contestList = contestService.getAllContests();
@@ -62,6 +65,7 @@ public class APIContestController {
 
     //Crea un concurso
     @PostMapping("/API/v1/contest")
+
     public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
         String salida = contestService.creaContest(contestId, teamId);
         if (salida.equals("OK")){

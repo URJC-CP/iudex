@@ -35,7 +35,7 @@ public class ProblemService {
 
 
     public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
-        problemRepository.save(new Problem(nombre, entrada, salidaCorrecta, codigoCorrecto, entradaVisible, salidaVisible));
+        problemRepository.save(new Problem(nombre, entrada, salidaCorrecta, entradaVisible, salidaVisible));
     }
 
 
@@ -192,7 +192,27 @@ public class ProblemService {
         return problemUpdated;
 
     }
+    public ProblemString updateProblem2(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+        ProblemString problemUpdated = new ProblemString();
+        Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if(problemOriginal == null){
+            problemUpdated.setSalida("PROBLEM NOT FOUND");
+            return problemUpdated;
+        }
+        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        if(contest ==null){
+            problemUpdated.setSalida("CONCURSO NOT FOUND");
+            return problemUpdated;
+        }
 
+        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero,inputStream, teamId, nombreProblema, idcontest);
+        //Si es error
+        if(!problemUpdated.getSalida().equals("OK")){
+            return problemUpdated;
+        }
+
+        updateProblemInside(problemOriginal, problemUpdated.getProblem());
+    }
     public String deleteProblem(String problemId){
         Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
         if(problem==null){
@@ -221,9 +241,6 @@ public class ProblemService {
         logger.info("El problema "+problem.getNombreEjercicio()+" ha sido eliminado");
         return "OK";
     }
-
-
-
 
     private boolean problemDuplicated(String nombre){
         return problemRepository.existsByNombreEjercicio(nombre);
@@ -295,5 +312,40 @@ public class ProblemService {
         for (SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
             submissionRepository.save(submissionProblemValidator.getSubmission());
         }
+    }
+
+    private void updateProblemInside(Problem oldProblem, Problem newProblem){
+        oldProblem.setNombreEjercicio(newProblem.getNombreEjercicio());
+        oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
+        oldProblem.setEntradaVisible(newProblem.getEntradaVisible());
+        oldProblem.setSalidaOculta(newProblem.getSalidaOculta());
+        oldProblem.setSalidaVisible(newProblem.getSalidaOculta());
+        //Anyadimos losproblemsvalidator a la lista de viejos
+        oldProblem.getOldSubmissionProblemValidators().addAll(oldProblem.getSubmissionProblemValidators());
+        oldProblem.setSubmissionProblemValidators(newProblem.getSubmissionProblemValidators());
+        oldProblem.getSubmissions().addAll(newProblem.getSubmissions());
+
+        oldProblem.setEquipoPropietario(newProblem.getEquipoPropietario());
+
+        oldProblem.setValido(newProblem.getValido());
+        oldProblem.setTimeout(newProblem.getTimeout());
+        oldProblem.setMemoryLimit(newProblem.getMemoryLimit());
+        oldProblem.setAutor(newProblem.getAutor());
+        oldProblem.setSource(newProblem.getSource());
+        oldProblem.setLicense(newProblem.getLicense());
+        oldProblem.setRights_owner(newProblem.getRights_owner());
+        oldProblem.setDocumento(newProblem.getDocumento());
+        oldProblem.setValidation(newProblem.getValidation());
+        oldProblem.setValidation_flags(newProblem.getValidation_flags());
+        oldProblem.setLimit_time_multiplier(newProblem.getLimit_time_multiplier());
+        oldProblem.setLimit_time_safety_margin(newProblem.getLimit_time_safety_margin());
+        oldProblem.setLimit_memory(newProblem.getLimit_memory());
+        oldProblem.setLimit_output(newProblem.getLimit_output());
+        oldProblem.setLimit_code(newProblem.getLimit_code());
+        oldProblem.setLimit_compilation_time(newProblem.getLimit_compilation_time());
+        oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
+        oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
+        oldProblem.setColor(newProblem.getColor());
+
     }
 }

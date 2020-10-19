@@ -2,16 +2,16 @@ package com.example.aplicacion.Pojos;
 
 import com.example.aplicacion.Entities.InNOut;
 import com.example.aplicacion.Entities.Submission;
+import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
 public class ProblemAPI {
     private long id;
 
     private String nombreEjercicio;
-
     private List<InNOutAPI> entradaVisible;
     private List<InNOutAPI>  salidaVisible;
 

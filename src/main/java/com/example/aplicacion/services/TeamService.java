@@ -1,7 +1,6 @@
 package com.example.aplicacion.services;
 
 
-import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Entities.User;
 import com.example.aplicacion.Repository.TeamRepository;
@@ -15,10 +14,11 @@ public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
 
-    public String crearTeam(String nickTeam){
+    public String crearTeam(String nickTeam, boolean isUser){
 
         Team team = new Team(nickTeam);
-        if(teamRepository.existsByNombreEquipo(nickTeam)){
+        team.setEsUser(isUser);
+       if(teamRepository.existsByNombreEquipo(nickTeam)){
             return "TEAM NAME DUPLICATED";
         }
         else {

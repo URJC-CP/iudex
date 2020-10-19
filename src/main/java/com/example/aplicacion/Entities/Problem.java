@@ -7,7 +7,6 @@ import com.google.common.hash.Hashing;
 
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +29,6 @@ public class Problem {
     private List<InNOut>  salidaVisible;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<InNOut> codigoCorrecto;
-
-    @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> oldSubmissionProblemValidators;
@@ -40,7 +36,6 @@ public class Problem {
     @OneToMany(cascade =  CascadeType.ALL, mappedBy = "problema")
     private List<Submission> submissions;
 
-    private  int numeroSubmissions;
     @ManyToOne
     private Team equipoPropietario;
 
@@ -61,8 +56,6 @@ public class Problem {
     private String rights_owner;
     //private String keywords;
     private String hashString;
-    //Marca si el problema es publico o no
-    private boolean disponible;
 
     @Lob
     private byte[] documento;
@@ -97,17 +90,19 @@ public class Problem {
         this.listaContestsPertenece = new ArrayList<>();
         this.oldSubmissionProblemValidators = new ArrayList<>();
         //valores por defecto
-        this.timeout = timeoutPropierties;
-        this.memoryLimit =memoryLimitPropierties;
-        disponible = false;
-        numeroSubmissions = 0;
+        if(timeout==null){
+            this.timeout = timeoutPropierties;
+        }
+        if (memoryLimit==null){
+            this.memoryLimit =memoryLimitPropierties;
+
+        }
     }
 
-    public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible) {
+    public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> entradaVisible, List<InNOut> salidaVisible) {
         this.nombreEjercicio = nombreEjercicio;
         this.entradaOculta = entradaOculta;
         this.salidaOculta = salidaOculta;
-        this.codigoCorrecto = codigoCorrecto;
         this.entradaVisible = entradaVisible;
         this.salidaVisible = salidaVisible;
 
@@ -122,8 +117,6 @@ public class Problem {
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;
-        this.disponible = false;
-        numeroSubmissions = 0;
         this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta)+listaToString(salidaOculta)+listaToString(entradaVisible) + listaToString(salidaVisible));
     }
     public ProblemAPI toProblemAPI(){
@@ -211,14 +204,6 @@ public class Problem {
 
     public void setEntradaOculta(List<InNOut> entradaOculta) {
         this.entradaOculta = entradaOculta;
-    }
-
-    public List<InNOut> getCodigoCorrecto() {
-        return codigoCorrecto;
-    }
-
-    public void setCodigoCorrecto(List<InNOut> codigoCorrecto) {
-        this.codigoCorrecto = codigoCorrecto;
     }
 
     public List<InNOut> getEntradaVisible() {
@@ -478,14 +463,6 @@ public class Problem {
         return memoryLimitPropierties;
     }
 
-    public boolean isDisponible() {
-        return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
-    }
-
     public Team getEquipoPropietario() {
         return equipoPropietario;
     }
@@ -508,14 +485,6 @@ public class Problem {
 
     public void setDocumento(byte[] documento) {
         this.documento = documento;
-    }
-
-    public int getNumeroSubmissions() {
-        return numeroSubmissions;
-    }
-
-    public void setNumeroSubmissions(int numeroSubmissions) {
-        this.numeroSubmissions = numeroSubmissions;
     }
 
     public List<Contest> getListaContestsPertenece() {
