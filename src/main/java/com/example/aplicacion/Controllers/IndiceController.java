@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @Controller
@@ -105,8 +106,8 @@ public class IndiceController {
         }
     }
     @PostMapping("/creaContest")
-    public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId){
-        contestService.creaContest(contestName, teamId);
+    public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion){
+        contestService.creaContest(contestName, teamId, descripcion);
 
         return "redirect:/";
 

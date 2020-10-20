@@ -55,7 +55,7 @@ public class BasicController {
         //userService.deleteUserByNickname("pavloXD");
 
 
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), "Este es el mejor concurso del mundo");
 
 
     }

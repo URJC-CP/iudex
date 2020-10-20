@@ -2,6 +2,7 @@ package com.example.aplicacion.Controllers.apiControllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Pojos.ContestAPI;
+import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
@@ -68,12 +69,12 @@ public class APIContestController {
     @ApiOperation("Create a contest")
     @PostMapping("/API/v1/contest")
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion){
-        String salida = contestService.creaContest(contestName, teamId, descripcion );
+        ContestString salida = contestService.creaContest(contestName, teamId, descripcion);
         if (salida.equals("OK")){
-            return new  ResponseEntity(HttpStatus.CREATED);
+            return new  ResponseEntity(salida.getContest().toContestAPI(),HttpStatus.CREATED);
         }
         else {
-            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return  new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -94,8 +95,14 @@ public class APIContestController {
 
     @ApiOperation("Update a contest")
     @PutMapping("/API/v1/contest/{contestId}")
-    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripccion){
-
+    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion){
+        ContestString salida = contestService.updateContest(contestId,contestName, teamId, descripcion);
+        if (salida.equals("OK")){
+            return new  ResponseEntity(salida.getContest().toContestAPI(),HttpStatus.CREATED);
+        }
+        else {
+            return  new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
     }
 
 

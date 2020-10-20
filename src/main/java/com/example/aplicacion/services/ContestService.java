@@ -11,7 +11,9 @@ import com.example.aplicacion.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +27,7 @@ public class ContestService {
     @Autowired
     private ProblemService problemService;
 
-    public ContestString creaContest(String nameContest, String teamId, String descripcion){
+    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion){
         ContestString salida = new ContestString();
         if(contestRepository.existsByNombreContest(nameContest)){
             salida.setSalida("contest NAME DUPLICATED");
@@ -34,8 +36,10 @@ public class ContestService {
 
         Contest contest = new Contest();
         contest.setNombreContest(nameContest);
-        contest.setDescripcion(descripcion);
 
+        if(descripcion.isPresent()){
+            contest.setDescripcion(descripcion.get());
+        }
         Team team =teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
             salida.setSalida("TEAM NOT FOUND");
@@ -49,7 +53,42 @@ public class ContestService {
         salida.setContest(contest);
         return salida;
     }
-    public ContestString updateContest
+
+    public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion){
+        ContestString salida = new ContestString();
+        //Buscamos el contest
+        Contest contest = contestRepository.findContestById(Long.valueOf(contestId));
+        if (contest == null){
+            salida.setSalida("CONTEST ID DOES NOT EXIST");
+            return salida;
+        }
+
+        //Si namecontest esta presente lo cambiamos
+        if(nameContest.isPresent()){
+            if(contestRepository.existsByNombreContest(nameContest.get())){
+                salida.setSalida("CONTEST NAME DUPLICATED");
+                return salida;
+            }
+            contest.setNombreContest(nameContest.get());
+        }
+
+        if (teamId.isPresent()){
+            Team team =teamRepository.findTeamById(Long.valueOf(teamId.get()));
+            if (team == null) {
+                salida.setSalida("TEAM NOT FOUND");
+                return salida;
+            }
+            contest.setTeamPropietario(team);
+        }
+        if(descripcion.isPresent()){
+            contest.setDescripcion(descripcion.get());
+        }
+        contestRepository.save(contest);
+
+        salida.setSalida("OK");
+        salida.setContest(contest);
+        return salida;
+    }
 
 
     public String deleteContest(String idcontest){
