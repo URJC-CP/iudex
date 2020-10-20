@@ -5,6 +5,7 @@ import com.example.aplicacion.Pojos.UserAPI;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +16,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name="nickname", unique = true)
+    @Column( unique = true)
     private String nickname;
 
-    @Column(name="email", unique = true)
+    @Column( unique = true)
     private String email;
 
+    private long timestamp=  Instant.now().toEpochMilli();
 
 
     @ManyToMany
@@ -44,6 +46,7 @@ public class User {
         userAPI.setId(this.id);
         userAPI.setNickname(this.nickname);
         userAPI.setEmail(this.email);
+        userAPI.setTimestamp(this.timestamp);
         return userAPI;
     }
 
@@ -90,5 +93,13 @@ public class User {
 
     public void setEquiposParticipantes(List<Team> equiposParticipantes) {
         this.equiposParticipantes = equiposParticipantes;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

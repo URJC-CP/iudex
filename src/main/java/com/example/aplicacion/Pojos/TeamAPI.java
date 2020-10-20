@@ -15,6 +15,7 @@ public class TeamAPI {
     private List<ProblemAPI> listaProblemasParticipados;
     private List<ContestAPI> listaContestsParticipados;
     private List<ContestAPI> listaContestsCreados;
+    private long timestamp;
 
     public long getId() {
         return id;
@@ -78,5 +79,13 @@ public class TeamAPI {
 
     public void setListaContestsCreados(List<ContestAPI> listaContestsCreados) {
         this.listaContestsCreados = listaContestsCreados;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

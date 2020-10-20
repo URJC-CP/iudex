@@ -17,7 +17,7 @@ public class ContestAPI {
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
-
+    private long timestamp;
 
     public long getId() {
         return id;
@@ -65,5 +65,13 @@ public class ContestAPI {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

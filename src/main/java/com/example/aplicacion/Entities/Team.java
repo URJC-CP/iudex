@@ -3,6 +3,7 @@ package com.example.aplicacion.Entities;
 import com.example.aplicacion.Pojos.*;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class Team {
     private List<Contest> listaContestsParticipados;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Contest> listaContestsCreados;
+    private long timestamp=  Instant.now().toEpochMilli();
 
     public Team(){
         this.participantes = new ArrayList<>();
@@ -63,7 +65,7 @@ public class Team {
         teamAPI.setListaProblemasParticipados(problemToProblemAPI(this.listaProblemasParticipados));
         teamAPI.setListaContestsParticipados(contestToContestAPI(this.listaContestsParticipados));
         teamAPI.setListaContestsCreados(contestToContestAPI(this.listaContestsCreados));
-
+        teamAPI.setTimestamp(this.timestamp);
         return teamAPI;
     }
 
@@ -179,5 +181,13 @@ public class Team {
 
     public void setEsUser(boolean esUser) {
         this.esUser = esUser;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

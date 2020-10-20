@@ -5,6 +5,7 @@ import com.google.common.hash.Hashing;
 
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class Submission {
 
     private float execSubmissionTime;
     private float execSubmissionMemory;
+    private long timestamp=  Instant.now().toEpochMilli();
 
 
 
@@ -84,6 +86,7 @@ public class Submission {
         submissionAPI.setLanguage(this.language.toLanguageAPI());
         submissionAPI.setExecSubmissionTime(this.execSubmissionTime);
         submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
+        submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
     public SubmissionAPI toSubmissionAPISimple() {
@@ -270,5 +273,13 @@ public class Submission {
 
     public void setEsProblemValidatorResultadoEsperado(String esProblemValidatorResultadoEsperado) {
         this.esProblemValidatorResultadoEsperado = esProblemValidatorResultadoEsperado;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

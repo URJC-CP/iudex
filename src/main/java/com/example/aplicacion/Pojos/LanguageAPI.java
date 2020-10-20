@@ -8,6 +8,7 @@ public class LanguageAPI {
 
     private long id;
     private String nombreLenguaje;
+    private long timestamp;
 
 
     public long getId() {
@@ -24,5 +25,13 @@ public class LanguageAPI {
 
     public void setNombreLenguaje(String nombreLenguaje) {
         this.nombreLenguaje = nombreLenguaje;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

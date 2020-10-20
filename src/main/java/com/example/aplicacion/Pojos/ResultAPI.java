@@ -20,6 +20,7 @@ public class ResultAPI {
     private String resultadoRevision;
 
     private LanguageAPI language;
+    private long timestamp;
 
     public Long getId() {
         return id;
@@ -91,5 +92,13 @@ public class ResultAPI {
 
     public void setLanguage(LanguageAPI language) {
         this.language = language;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

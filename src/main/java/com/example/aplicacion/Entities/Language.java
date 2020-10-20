@@ -3,6 +3,7 @@ package com.example.aplicacion.Entities;
 import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 public class Language {
@@ -13,6 +14,7 @@ public class Language {
     private String nombreLenguaje;
 
     private String imgenId;
+    private long timestamp=  Instant.now().toEpochMilli();
 
     public Language() {    }
 
@@ -23,7 +25,7 @@ public class Language {
         LanguageAPI languageAPI = new LanguageAPI();
         languageAPI.setId(this.id);
         languageAPI.setNombreLenguaje(nombreLenguaje);
-
+        languageAPI.setTimestamp(this.timestamp);
         return languageAPI;
     }
 
@@ -49,5 +51,13 @@ public class Language {
 
     public void setImgenId(String imgenId) {
         this.imgenId = imgenId;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

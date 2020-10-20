@@ -3,6 +3,7 @@ package com.example.aplicacion.Entities;
 import com.example.aplicacion.Pojos.InNOutAPI;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 //tupla q contiene el nombre y texto de una answer
 @Entity
@@ -12,6 +13,8 @@ public class InNOut {
     private long id;
 
     private String name;
+    private long timestamp=  Instant.now().toEpochMilli();
+
     //@ManyToOne
     //private Problem problem;
 
@@ -36,6 +39,7 @@ public class InNOut {
         inNOutAPI.setId(this.id);
         inNOutAPI.setName(this.name);
         inNOutAPI.setText(this.text);
+        inNOutAPI.setTimestamp(this.timestamp);
         return inNOutAPI;
     }
 
@@ -75,5 +79,11 @@ public class InNOut {
         return this.name+this.text;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

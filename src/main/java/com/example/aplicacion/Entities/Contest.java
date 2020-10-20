@@ -5,6 +5,7 @@ import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.TeamAPI;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class Contest {
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
+    private long timestamp=  Instant.now().toEpochMilli();
+
 
     public Contest() {
         this.listaProblemas = new ArrayList<>();
@@ -54,6 +57,7 @@ public class Contest {
         for(Team team: this.listaParticipantes){
             teamAPIS.add(team.toTeamAPISimple());
         }
+        contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
     public ContestAPI toContestAPIFull()  {
@@ -72,6 +76,7 @@ public class Contest {
         for(Team team: this.listaParticipantes){
             teamAPIS.add(team.toTeamAPISimple());
         }
+        contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
     public ContestAPI toContestAPISimple(){
@@ -155,5 +160,13 @@ public class Contest {
 
     public void setDescripcion(String description) {
         this.descripcion = description;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

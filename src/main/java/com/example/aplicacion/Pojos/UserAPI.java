@@ -9,6 +9,7 @@ public class UserAPI {
     private long id;
     private String nickname;
     private String email;
+    private long timestamp;
 
 
     public long getId() {
@@ -33,5 +34,13 @@ public class UserAPI {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

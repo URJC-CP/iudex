@@ -5,6 +5,7 @@ package com.example.aplicacion.Entities;
 import com.example.aplicacion.Pojos.ResultAPI;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
@@ -28,6 +29,7 @@ public class Result {
     @Lob
     private String salidaCompilador;
 
+    private long timestamp=  Instant.now().toEpochMilli();
 
     private int numeroCasoDePrueba;
 
@@ -84,7 +86,7 @@ public class Result {
         resultAPI.setRevisado(this.revisado);
         resultAPI.setResultadoRevision(this.resultadoRevision);
         resultAPI.setLanguage(this.language.toLanguageAPI());
-
+        resultAPI.setTimestamp(this.timestamp);
         return resultAPI;
     }
     public ResultAPI toResultAPISimple(){
@@ -257,5 +259,13 @@ public class Result {
 
     public void setSignalEjecutor(String signalEjecutor) {
         this.signalEjecutor = signalEjecutor;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

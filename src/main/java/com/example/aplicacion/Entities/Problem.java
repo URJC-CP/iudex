@@ -8,6 +8,7 @@ import com.google.common.hash.Hashing;
 
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class Problem {
     @ManyToMany(mappedBy = "listaProblemas")
     private List<Contest> listaContestsPertenece;
     private boolean valido;
+    private long timestamp=  Instant.now().toEpochMilli();
 
     private int numeroSubmissions;
 
@@ -142,6 +144,8 @@ public class Problem {
         problemAPI.setLicense(this.license);
         problemAPI.setRights_owner(this.rights_owner);
         problemAPI.setColor(this.color);
+        problemAPI.setTimeout(this.timeout);
+
         return problemAPI;
     }
     public ProblemAPI toProblemAPIFull(){
@@ -165,6 +169,8 @@ public class Problem {
         problemAPI.setLicense(this.license);
         problemAPI.setRights_owner(this.rights_owner);
         problemAPI.setColor(this.color);
+        problemAPI.setTimeout(this.timeout);
+
         return problemAPI;
     }
 
@@ -172,7 +178,6 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-
         return problemAPI;
     }
 
@@ -546,5 +551,13 @@ public class Problem {
 
     public void setNumeroSubmissions(int numeroSubmissions) {
         this.numeroSubmissions = numeroSubmissions;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }
