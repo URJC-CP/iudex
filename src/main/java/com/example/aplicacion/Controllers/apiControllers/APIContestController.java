@@ -42,7 +42,7 @@ public class APIContestController {
         List<ContestAPI> contestAPIS = new ArrayList<>();
 
         for (Contest contest : contestList){
-            contestAPIS.add(contest.toContestAPI());
+            contestAPIS.add(contest.toContestAPIFull());
         }
         return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
 

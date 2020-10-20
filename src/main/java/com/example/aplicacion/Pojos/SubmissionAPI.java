@@ -1,7 +1,5 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Team;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
@@ -13,8 +11,8 @@ public class SubmissionAPI {
     private List<ResultAPI> results;
     private TeamAPI team;
 
-    private boolean corregido;
-    private int numeroResultCorregidos;
+    private Boolean corregido;
+    private Integer numeroResultCorregidos;
     private String resultado;
 
     private LanguageAPI language;
@@ -49,11 +47,11 @@ public class SubmissionAPI {
         this.corregido = corregido;
     }
 
-    public int getNumeroResultCorregidos() {
+    public Integer getNumeroResultCorregidos() {
         return numeroResultCorregidos;
     }
 
-    public void setNumeroResultCorregidos(int numeroResultCorregidos) {
+    public void setNumeroResultCorregidos(Integer numeroResultCorregidos) {
         this.numeroResultCorregidos = numeroResultCorregidos;
     }
 

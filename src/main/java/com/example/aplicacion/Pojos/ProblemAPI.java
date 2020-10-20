@@ -20,7 +20,7 @@ public class ProblemAPI {
 
     private TeamAPI equipoPropietario;
 
-    private boolean valido;
+    private Boolean valido;
 
     private String timeout;
     private String memoryLimit;
@@ -68,7 +68,7 @@ public class ProblemAPI {
         this.equipoPropietario = equipoPropietario;
     }
 
-    public boolean isValido() {
+    public Boolean isValido() {
         return valido;
     }
 

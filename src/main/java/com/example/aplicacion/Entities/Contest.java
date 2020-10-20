@@ -56,6 +56,24 @@ public class Contest {
         }
         return contestAPI;
     }
+    public ContestAPI toContestAPIFull()  {
+        ContestAPI contestAPI = new ContestAPI();
+        contestAPI.setId(this.id);
+        contestAPI.setNombreContest(this.nombreContest);
+        contestAPI.setDescripcion(this.descripcion);
+        contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
+        List<ProblemAPI> listaProblemass = new ArrayList<>();
+        for(Problem problem: this.listaProblemas){
+            listaProblemass.add(problem.toProblemAPI());
+        }
+        contestAPI.setListaProblemas(listaProblemass);
+
+        List<TeamAPI> teamAPIS = new ArrayList<>();
+        for(Team team: this.listaParticipantes){
+            teamAPIS.add(team.toTeamAPISimple());
+        }
+        return contestAPI;
+    }
     public ContestAPI toContestAPISimple(){
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
