@@ -12,6 +12,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -102,6 +103,30 @@ public class APIContestController {
         }
         else {
             return  new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Add Problem to Contest")
+    @PostMapping("/contest/{contestId}/{problemId}")
+    public ResponseEntity addProblemToContest(@PathVariable String problemId, @PathVariable String contestId){
+        String salida = contestService.anyadeProblemaContest(contestId, problemId);
+        if (salida.equals("OK")){
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Delete a Problem from a Contest")
+    @DeleteMapping("/contest/{contestId}/{problemId}")
+    public ResponseEntity deleteProblemFromContest( @PathVariable String problemId, @PathVariable String contestId){
+        String salida = contestService.deleteProblemFromContest(contestId, problemId);
+        if (salida.equals("OK")){
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
     }
 
