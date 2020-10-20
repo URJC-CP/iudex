@@ -17,6 +17,9 @@ public class Contest {
     @Column(unique = true)
     private String nombreContest;
 
+    @Lob
+    private String descripcion;
+
     @ManyToOne
     private Team teamPropietario;
     @ManyToMany
@@ -39,6 +42,7 @@ public class Contest {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
+        contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for(Problem problem: this.listaProblemas){
@@ -125,5 +129,13 @@ public class Contest {
     }
     public void removeSubmission(Submission submission){
         this.listaSubmissions.remove(submission);
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String description) {
+        this.descripcion = description;
     }
 }

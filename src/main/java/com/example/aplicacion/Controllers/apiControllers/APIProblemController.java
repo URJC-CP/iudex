@@ -1,4 +1,4 @@
-package com.example.aplicacion.Controllers;
+package com.example.aplicacion.Controllers.apiControllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;

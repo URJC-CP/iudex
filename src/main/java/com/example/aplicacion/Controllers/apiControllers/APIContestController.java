@@ -1,4 +1,4 @@
-package com.example.aplicacion.Controllers;
+package com.example.aplicacion.Controllers.apiControllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Pojos.ContestAPI;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 
@@ -30,9 +31,10 @@ public class APIContestController {
 
     //CONCURSOS
 
-    //Get all concursos
-    @ApiOperation("HOLAAA")
-    @GetMapping("/API/v1/contests")
+    //Get all contest
+    @ApiOperation("Return all contests")
+    @GetMapping("/API/v1/contest")
+
     public ResponseEntity<List<ContestAPI>> getAllcontests(){
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();
@@ -41,13 +43,12 @@ public class APIContestController {
             contestAPIS.add(contest.toContestAPI());
         }
         return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
-    }
 
-    //Get page contest
-    //@GetMapping("/contests/page")
+    }
 
 
     //Get one Contest
+    @ApiOperation("Return selected contest with full Problems")
     @GetMapping("/API/v1/contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId){
 
@@ -64,10 +65,10 @@ public class APIContestController {
 
 
     //Crea un concurso
+    @ApiOperation("Create a contest")
     @PostMapping("/API/v1/contest")
-
-    public ResponseEntity addContest(@RequestParam String contestId, @RequestParam String teamId){
-        String salida = contestService.creaContest(contestId, teamId);
+    public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion){
+        String salida = contestService.creaContest(contestName, teamId, descripcion );
         if (salida.equals("OK")){
             return new  ResponseEntity(HttpStatus.CREATED);
         }
@@ -77,7 +78,9 @@ public class APIContestController {
     }
 
 
+
     //Delete one Contest
+    @ApiOperation("Delete a contest")
     @DeleteMapping("/API/v1/contest/{contestId}")
     public ResponseEntity deleteContest(@PathVariable String contestId){
         String salida = contestService.deleteContest(contestId);
@@ -87,6 +90,11 @@ public class APIContestController {
         else {
             return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation("Update a contest")
+    @PutMapping("/API/v1/contest/{contestId}")
+    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripccion){
 
     }
 

@@ -3,6 +3,7 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
@@ -24,25 +25,31 @@ public class ContestService {
     @Autowired
     private ProblemService problemService;
 
-    public String creaContest(String nameContest, String teamId){
+    public ContestString creaContest(String nameContest, String teamId, String descripcion){
+        ContestString salida = new ContestString();
         if(contestRepository.existsByNombreContest(nameContest)){
-            return "contest NAME DUPLICATED";
+            salida.setSalida("contest NAME DUPLICATED");
+            return salida;
         }
 
         Contest contest = new Contest();
         contest.setNombreContest(nameContest);
+        contest.setDescripcion(descripcion);
 
         Team team =teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
-            return "TEAM NOT FOUND";
+            salida.setSalida("TEAM NOT FOUND");
+            return salida;
         }
         contest.setTeamPropietario(team);
 
-
         contestRepository.save(contest);
 
-        return "OK";
+        salida.setSalida("OK");
+        salida.setContest(contest);
+        return salida;
     }
+    public ContestString updateContest
 
 
     public String deleteContest(String idcontest){
@@ -50,6 +57,7 @@ public class ContestService {
         if(contest ==null){
             return "contest NOT FOUND";
         }
+        /*
         //buscamos si en la lista de problemas hay alguno que solo este en este contest
         boolean borrar = false;
         Problem problemAux2 = new Problem();
@@ -63,6 +71,7 @@ public class ContestService {
         if (borrar) {
             problemService.deleteProblem(Long.toString(problemAux2.getId()));
         }
+         */
 
         //borramos el contest
         contestRepository.delete(contest);

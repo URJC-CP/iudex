@@ -12,6 +12,8 @@ public class ContestAPI {
     private long id;
 
     private String nombreContest;
+    private String descripcion;
+    
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
@@ -55,5 +57,13 @@ public class ContestAPI {
 
     public void setListaParticipantes(List<TeamAPI> listaParticipantes) {
         this.listaParticipantes = listaParticipantes;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
