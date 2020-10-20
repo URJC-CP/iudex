@@ -8,6 +8,7 @@ import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.ui.Model;
@@ -34,7 +35,8 @@ public class APIProblemController {
     //PROBLEMS
 
     //Get all problems in DB
-    @GetMapping("/API/v1/problems")
+    @ApiOperation("Return All Problems")
+    @GetMapping("/API/v1/problem")
     public ResponseEntity<List<ProblemAPI>> problems(){
         List<Problem> problems = problemService.getAllProblemas();
         List<ProblemAPI> salida = new ArrayList<>();
@@ -46,19 +48,25 @@ public class APIProblemController {
 
 
     //GetProblem
-    @GetMapping("/API/v1/problem/{idProblem}")
-    public ResponseEntity<ProblemAPI> getProblem(@PathVariable String idProblem){
-        Problem problem = problemService.getProblem(idProblem);
+    @ApiOperation("Return selected problem")
+    @GetMapping("/API/v1/problem/{problemId}")
+    public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId){
+        Problem problem = problemService.getProblem(problemId);
         if(problem == null){
             return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(problem.toProblemAPI(), HttpStatus.OK);
+        return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
     }
 
+    @PostMapping("/API/v1/problem")
+    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem){
+        throw new UnsupportedOperationException("NO implementado");
+    }
 
     //Crea problema y devuelve el problema
-    @PostMapping("/API/v1/problem")
-    public ResponseEntity<ProblemAPI> createProblem(@RequestParam MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId)  {
+    @ApiOperation("Create Problem from Zip")
+    @PostMapping("/API/v1/problem/fromZip")
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestParam MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId)  {
         ProblemString salida;
         try {
             salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemId, contestId);
@@ -72,6 +80,7 @@ public class APIProblemController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
+
     @PutMapping("/API/v1/problem")
     public ResponseEntity<ProblemAPI>updateProblem(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
 

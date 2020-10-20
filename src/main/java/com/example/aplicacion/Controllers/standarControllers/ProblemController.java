@@ -1,4 +1,4 @@
-package com.example.aplicacion.Controllers;
+package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 
 @Controller
-public class ProblemaController {
+public class ProblemController {
 
     @Autowired
     private SubmissionService submissionService;
@@ -109,7 +109,7 @@ public class ProblemaController {
     @PostMapping("/problemUpdate")
     public ModelAndView updateProblema(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.updateProblem2(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
 
         if(!salida.getSalida().equals("OK")){
             modelAndView.getModel().put("error", salida.getSalida());

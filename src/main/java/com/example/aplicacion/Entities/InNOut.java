@@ -12,8 +12,8 @@ public class InNOut {
     private long id;
 
     private String name;
-    @ManyToOne
-    private Problem problem;
+    //@ManyToOne
+    //private Problem problem;
 
     @Lob
     private String text;
@@ -63,13 +63,13 @@ public class InNOut {
         this.text = text;
     }
 
-    public Problem getProblem() {
-        return problem;
-    }
+    //public Problem getProblem() {
+    //    return problem;
+    //}
 
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
+    //public void setProblem(Problem problem) {
+    //    this.problem = problem;
+    //}
 
     public String toString(){
         return this.name+this.text;

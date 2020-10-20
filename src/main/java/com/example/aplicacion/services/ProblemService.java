@@ -212,7 +212,7 @@ public class ProblemService {
         }
 
         updateProblemInside(problemOriginal, problemUpdated.getProblem());
-
+        //saveAllInnNOut(problemOriginal);
 
         problemRepository.save(problemOriginal);
         problemValidatorService.validateProblem(problemOriginal);
@@ -359,7 +359,5 @@ public class ProblemService {
         oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
         oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
         oldProblem.setColor(newProblem.getColor());
-
-
     }
 }

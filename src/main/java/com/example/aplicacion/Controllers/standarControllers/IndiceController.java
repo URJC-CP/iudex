@@ -1,4 +1,4 @@
-package com.example.aplicacion.Controllers;
+package com.example.aplicacion.Controllers.standarControllers;
 
 
 import com.example.aplicacion.Entities.Submission;

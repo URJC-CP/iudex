@@ -19,13 +19,13 @@ public class Problem {
 
     private String nombreEjercicio;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problem")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaOculta;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "problem")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  entradaVisible;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "problem")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaOculta;
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "problem")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut>  salidaVisible;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -130,6 +130,29 @@ public class Problem {
         List<SubmissionAPI> submissionAPIS= new ArrayList<>();
         for(Submission submission: this.submissions){
             submissionAPIS.add(submission.toSubmissionAPISimple());
+        }
+        problemAPI.setSubmissions(submissionAPIS);
+        problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
+        problemAPI.setValido(this.valido);
+        problemAPI.setTimeout(this.timeout);
+        problemAPI.setMemoryLimit(this.memoryLimit);
+        problemAPI.setAutor(this.autor);
+        problemAPI.setSource(this.source);
+        problemAPI.setSource_url(this.source_url);
+        problemAPI.setLicense(this.license);
+        problemAPI.setRights_owner(this.rights_owner);
+        problemAPI.setColor(this.color);
+        return problemAPI;
+    }
+    public ProblemAPI toProblemAPIFull(){
+        ProblemAPI problemAPI = new ProblemAPI();
+        problemAPI.setId(this.id);
+        problemAPI.setNombreEjercicio(this.nombreEjercicio);
+        problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.entradaVisible));
+        problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.salidaVisible));
+        List<SubmissionAPI> submissionAPIS= new ArrayList<>();
+        for(Submission submission: this.submissions){
+            submissionAPIS.add(submission.toSubmissionAPI());
         }
         problemAPI.setSubmissions(submissionAPIS);
         problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
