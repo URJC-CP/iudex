@@ -123,4 +123,14 @@ public class APISubmissionController {
         return new ResponseEntity(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
+    @ApiOperation("Delete API")
+    @DeleteMapping("/API/v1/submission/{submissionId}")
+    public ResponseEntity deleteSubmission(@PathVariable String submissionId){
+        String salida = submissionService.deleteSubmission(submissionId);
+        if(!salida.equals("OK")){
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+        return  new ResponseEntity(HttpStatus.OK);
+    }
+
 }
