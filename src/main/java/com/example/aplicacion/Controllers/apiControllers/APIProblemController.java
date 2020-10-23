@@ -124,7 +124,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Delete problem from all contests")
-    @DeleteMapping("/API/v1/problem/{idProblem}")
+    @DeleteMapping("/API/v1/problem/{problemId}")
     public ResponseEntity deleteProblem(@PathVariable String problemId) {
         String salida = problemService.deleteProblem(problemId);
         if (salida.equals("OK")){
