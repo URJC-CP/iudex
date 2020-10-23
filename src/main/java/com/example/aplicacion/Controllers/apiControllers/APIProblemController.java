@@ -63,7 +63,7 @@ public class APIProblemController {
         throw new UnsupportedOperationException("NO implementado");
     }
 
-    //Crea problema y devuelve el problema
+    //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
     @PostMapping("/API/v1/problem/fromZip")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestParam MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId)  {
@@ -81,8 +81,9 @@ public class APIProblemController {
         }
     }
 
-    @PutMapping("/API/v1/problem")
-    public ResponseEntity<ProblemAPI>updateProblem(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
+    @ApiOperation("Update problem from ZIP")
+    @PutMapping("/API/v1/problem/{problemId}/fromZip")
+    public ResponseEntity<ProblemAPI>updateProblem(@PathVariable String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
 
         ProblemString salida = new ProblemString();
         try {
@@ -99,35 +100,17 @@ public class APIProblemController {
     }
 
 
-    @GetMapping("API/v1/contest/{idContest}/problem/{idProblem}")
-    public ResponseEntity <List<SubmissionAPI>> getSubmissionsFromConcurso(@PathVariable String idContest, @PathVariable String idProblem){
-        Problem problem = problemService.getProblem(idProblem);
-        if(problem == null){
-            return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
-        }
-        Contest contest = contestService.getContest(idContest);
-        if(contest == null){
-            return new ResponseEntity("ERROR CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
-        }
-        List<SubmissionAPI> list = problemService.getSubmissionsFromContestFromProblem(contest, problem).stream().map(submission -> submission.toSubmissionAPI()).collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
-    @GetMapping("/API/v1/contest/{idContest}/problem/{idProblem}/getPDF")
-    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem){
+    @ApiOperation("Get pdf from Problem")
+    @GetMapping("/API/v1//problem/{idProblem}/getPDF")
+    public ResponseEntity<byte[]> goToProblem2(@PathVariable String idProblem){
         Problem problem = problemService.getProblem(idProblem);
-        Contest contest = contestService.getContest(idContest);
-        if(contest ==null){
-            return  new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
-        }
+
         if(problem==null){
             return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
-        if(!contest.getListaProblemas().contains(problem)){
-            return  new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
-        }
+
 
         byte[] contents = problem.getDocumento();
         HttpHeaders headers = new HttpHeaders();
@@ -140,7 +123,7 @@ public class APIProblemController {
         return response;
     }
 
-    //DeleteProblem
+    @ApiOperation("Delete problem from all contests")
     @DeleteMapping("/API/v1/problem/{idProblem}")
     public ResponseEntity deleteProblem(@PathVariable String problemId) {
         String salida = problemService.deleteProblem(problemId);
@@ -152,27 +135,5 @@ public class APIProblemController {
         }
     }
 
-
-    //Delete problem from contest
-    @DeleteMapping("/API/v1/contest/{idContest}/problem{idProblem}")
-    public ResponseEntity deleteProblemFromContest(@PathVariable String idContest, @PathVariable String idProblem){
-        String salida = contestService.deleteProblemFromContest(idContest, idProblem);
-        if (salida.equals("OK")){
-            return new  ResponseEntity(HttpStatus.OK);
-        }
-        else {
-            return  new ResponseEntity(salida, HttpStatus.NOT_FOUND);
-        }
-    }
-    //Get all problems from contest
-    @GetMapping("/API/v1/contest/{idContest}/problems")
-    public ResponseEntity<List<ProblemAPI>> problemsFromContest(@PathVariable String idContest){
-        Contest contest = contestService.getContest(idContest);
-        if(contest ==null){
-            return new ResponseEntity("CONTEST NOT FOUND",HttpStatus.NOT_FOUND);
-        }else {
-            return new ResponseEntity<>(contestService.getProblemsFromConcurso(contest), HttpStatus.OK);
-        }
-    }
 
 }
