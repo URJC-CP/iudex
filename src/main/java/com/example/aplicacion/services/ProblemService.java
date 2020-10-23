@@ -321,13 +321,26 @@ public class ProblemService {
             submissionRepository.save(submissionProblemValidator.getSubmission());
         }
     }
+    private void deleteInNOut(Problem problem){
+        for(InNOut inNOut: problem.getEntradaVisible()){
+            inNOutRepository.delete(inNOut);
+        }
+        for(InNOut inNOut: problem.getSalidaVisible()){
+            inNOutRepository.delete(inNOut);
+        }for(InNOut inNOut: problem.getEntradaOculta()){
+            inNOutRepository.delete(inNOut);
+        }
+        for(InNOut inNOut: problem.getSalidaOculta()){
+            inNOutRepository.delete(inNOut);
+        }
+    }
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem){
         oldProblem.setNombreEjercicio(newProblem.getNombreEjercicio());
         oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
         oldProblem.setEntradaVisible(newProblem.getEntradaVisible());
         oldProblem.setSalidaOculta(newProblem.getSalidaOculta());
-        oldProblem.setSalidaVisible(newProblem.getSalidaOculta());
+        oldProblem.setSalidaVisible(newProblem.getSalidaVisible());
         //Anyadimos losproblemsvalidator a la lista de viejos
         oldProblem.getOldSubmissionProblemValidators().addAll(oldProblem.getSubmissionProblemValidators());
         oldProblem.setSubmissionProblemValidators(newProblem.getSubmissionProblemValidators());
