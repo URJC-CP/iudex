@@ -1,6 +1,8 @@
   package com.example.aplicacion.Repository;
 
 
+  import com.example.aplicacion.Entities.Contest;
+  import com.example.aplicacion.Entities.Problem;
   import com.example.aplicacion.Entities.Result;
   import com.example.aplicacion.Entities.Submission;
   import org.springframework.data.domain.PageRequest;
@@ -14,5 +16,6 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 	Submission findSubmissionById(long id);
 
 	Submission findSubmissionByResults(Result res);
+	List<Submission> findSubmissionsByProblemaAndContest(Problem problem, Contest contest);
 
 }

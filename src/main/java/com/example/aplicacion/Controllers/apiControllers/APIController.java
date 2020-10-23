@@ -39,16 +39,6 @@ public class APIController {
 
 
 
-    @GetMapping("/API/v1/problem/{idProblem}/Submissions")
-    public ResponseEntity<List<SubmissionAPI>> getAllSubmissionsFromProblem(@PathVariable String idProblem){
-        Problem problem = problemService.getProblem(idProblem);
-        if(problem == null){
-            return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
-        }
-
-        List<SubmissionAPI> list = problemService.getSubmissionFromProblem(problem).stream().map(submission -> submission.toSubmissionAPI()).collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
 
 
 }

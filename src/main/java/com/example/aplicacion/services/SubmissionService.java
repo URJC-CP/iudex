@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //This class Sends the propeer information to the rabbitqueu
@@ -257,4 +258,13 @@ public class SubmissionService {
         return submissionRepository.findAll();
     }
 
+    public List<Submission> getSubmissionsFromContest(Contest contest){
+        return contest.getListaSubmissions();
+    }
+    public List<Submission> getSubmissionFromProblem(Problem problem){
+        return problem.getSubmissions();
+    }
+    public List<Submission> getSubmissionFromProblemAndContest(Problem problem, Contest contest){
+        return submissionRepository.findSubmissionsByProblemaAndContest(problem, contest);
+    }
 }
