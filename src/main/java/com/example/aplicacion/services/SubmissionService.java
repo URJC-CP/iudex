@@ -37,15 +37,17 @@ public class SubmissionService {
     @Autowired
     private RabbitResultExecutionSender sender;
 
-    public String creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest , String idEquipo){
+    public SubmissionStringResult creaYejecutaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest , String idEquipo){
+        SubmissionStringResult submissionStringResult;
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
+        submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
         if(!submissionStringResult.getSalida().equals("OK")){
-            return submissionStringResult.getSalida();
+            return submissionStringResult;
         }
         //ejecutamos
         ejecutaSubmission(submissionStringResult.getSubmission());
-        return "OK";
+
+        return submissionStringResult;
     }
 
     public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest , String idEquipo){
@@ -266,5 +268,8 @@ public class SubmissionService {
     }
     public List<Submission> getSubmissionFromProblemAndContest(Problem problem, Contest contest){
         return submissionRepository.findSubmissionsByProblemaAndContest(problem, contest);
+    }
+    public Submission getSubmission(String submissionId){
+        return submissionRepository.findSubmissionById(Long.valueOf(submissionId));
     }
 }

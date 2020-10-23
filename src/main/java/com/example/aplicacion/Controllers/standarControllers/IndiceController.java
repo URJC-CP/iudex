@@ -2,6 +2,7 @@ package com.example.aplicacion.Controllers.standarControllers;
 
 
 import com.example.aplicacion.Entities.Submission;
+import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -65,13 +66,13 @@ public class IndiceController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
+        SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (salida.equals("OK")){
             return "redirect:/";
         }
         else {
-            model.addAttribute("error", salida);
+            model.addAttribute("error", salida.getSalida());
             return "errorConocido";
         }
     }

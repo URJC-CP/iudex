@@ -3,6 +3,7 @@ package com.example.aplicacion.Controllers.standarControllers;
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Pojos.ProblemString;
+import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,10 +147,10 @@ public class ProblemController {
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
         //Crea la submission
-        String salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
+        SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if(!salida.equals("OK")){
-            modelAndView.getModel().put("error", salida);
+            modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }

@@ -4,18 +4,20 @@ import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Submission;
 import com.example.aplicacion.Pojos.SubmissionAPI;
+import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -89,17 +91,36 @@ public class APISubmissionController {
     }
 
 
+    @ApiOperation("Get submission with results")
+    @GetMapping("/API/v1/submission/{submissionId}")
+    public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId){
+        Submission submission = submissionService.getSubmission(submissionId);
+        if (submission == null){
+            return  new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(submission.toSubmissionAPIFull(), HttpStatus.OK);
+    }
 
+    @ApiOperation("Create a submission to a problem and contest")
+    @PostMapping("/API/v1/submission")
+    public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId){
 
-    @GetMapping("/API/v1/problem/{idProblem}/Submissions")
-    public ResponseEntity<List<SubmissionAPI>> getAllSubmissionsFromProblem(@PathVariable String idProblem){
-        Problem problem = problemService.getProblem(idProblem);
-        if(problem == null){
-            return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
+        String fileNameaux = codigo.getOriginalFilename();
+        String fileName = FilenameUtils.removeExtension(fileNameaux);
+        String cod = null;
+        try {
+            cod = new String(codigo.getBytes());
+        } catch (IOException e) {
+            return new ResponseEntity("ERROR IN FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
-        List<SubmissionAPI> list = problemService.getSubmissionFromProblem(problem).stream().map(submission -> submission.toSubmissionAPI()).collect(Collectors.toList());
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
+
+        if(!salida.getSalida().equals("OK")){
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
 }

@@ -89,6 +89,24 @@ public class Submission {
         submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
+    public SubmissionAPI toSubmissionAPIFull(){
+        SubmissionAPI submissionAPI = new SubmissionAPI();
+        submissionAPI.setId(this.id);
+        List<ResultAPI> resultAPIS = new ArrayList<>();
+        for(Result result: this.results){
+            resultAPIS.add(result.toResultAPI());
+        }
+        submissionAPI.setTeam(this.team.toTeamAPISimple());
+        submissionAPI.setResults(resultAPIS);
+        submissionAPI.setCorregido(this.corregido);
+        submissionAPI.setNumeroResultCorregidos(this.numeroResultCorregidos);
+        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setLanguage(this.language.toLanguageAPI());
+        submissionAPI.setExecSubmissionTime(this.execSubmissionTime);
+        submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
+        submissionAPI.setTimestamp(this.timestamp);
+        return submissionAPI;
+    }
     public SubmissionAPI toSubmissionAPISimple() {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
