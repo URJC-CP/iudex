@@ -84,6 +84,15 @@ public class APITeamController {
     @PutMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName){
 
+        TeamString salida = teamService.updateTeam(teamId, teamName);
+
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+
     }
 
 

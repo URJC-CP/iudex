@@ -8,7 +8,9 @@ import com.example.aplicacion.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeamService {
@@ -111,5 +113,57 @@ public class TeamService {
         salida.setSalida("OK");
         salida.setTeam(team);
         return salida;
+    }
+
+    public String deleteUserFromTeam(String teamId, String userId){
+        TeamString salida = new TeamString();
+        Team team = getTeamFromId(teamId);
+        if(team == null){
+            salida.setSalida("TEAM NOT FOUND");
+            return "TEAM NOT FOUND";
+        }
+
+        User user = userService.getUserById(Long.valueOf(userId));
+        if (user == null){
+            salida.setSalida("USER NOT FOUND");
+            return "USER NOT FOUND";
+        }
+
+        if(!team.getParticipantes().contains(user)){
+            salida.setSalida("USER ALREADY IN TEAM");
+            return "USER IS NOT IN TEAM";
+        }
+
+        team.getParticipantes().remove(user);
+        teamRepository.save(team);
+
+        return "OK";
+    }
+
+    public TeamString updateTeam(String teamId, Optional<String> teamName){
+        TeamString salida = new TeamString();
+        Team team = getTeamFromId(teamId);
+        if(team == null){
+            salida.setSalida("TEAM NOT FOUND");
+            return salida;
+        }
+
+        if (teamName.isPresent()){
+            if(teamRepository.existsByNombreEquipo(teamName.get())){
+                salida.setSalida("TEAM NAME DUPLICATED");
+                return salida;
+            }
+            else {
+                team.setNombreEquipo(teamName.get());
+                teamRepository.save(team);
+            }
+        }
+
+
+        teamRepository.save(team);
+        salida.setSalida("OK");
+        salida.setTeam(team);
+        return salida;
+
     }
 }
