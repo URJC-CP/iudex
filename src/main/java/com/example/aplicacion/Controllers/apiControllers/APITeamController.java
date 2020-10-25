@@ -12,13 +12,12 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.DELETE;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class APITeamController {
     @Autowired
@@ -81,8 +80,16 @@ public class APITeamController {
         }
     }
 
+    @ApiOperation("Update a Team")
+    @PutMapping("/API/v1/team/{teamId}")
+    public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName){
+
+    }
+
+
+
     @ApiOperation("Add user to Team")
-    @GetMapping("/API/v1/team/{teamId}/{userId}")
+    @PutMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId){
         TeamString salida = teamService.addUserToTeamUssingIds(teamId, userId);
 
@@ -93,4 +100,20 @@ public class APITeamController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @ApiOperation("Delete user from team")
+    @DeleteMapping("/API/v1/team/{teamId}/{userId}")
+    public ResponseEntity deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId){
+        String salida = teamService.deleteUserFromTeam(teamId, userId);
+
+        if(salida.equals("OK")){
+            return new ResponseEntity<>( HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
