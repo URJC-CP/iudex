@@ -93,6 +93,7 @@ public class Problem {
         this.submissions = new ArrayList<>();
         this.listaContestsPertenece = new ArrayList<>();
         this.oldSubmissionProblemValidators = new ArrayList<>();
+        this.listaEquiposIntentados = new ArrayList<>();
         //valores por defecto
         if(timeout==null){
             this.timeout = timeoutPropierties;
@@ -110,14 +111,12 @@ public class Problem {
         this.entradaVisible = entradaVisible;
         this.salidaVisible = salidaVisible;
 
-        this.entradaVisible = new ArrayList<>();
-        this.salidaVisible = new ArrayList<>();
-        this.entradaOculta = new ArrayList<>();
-        this.salidaOculta = new ArrayList<>();
+
         this.submissionProblemValidators = new ArrayList<>();
         this.submissions = new ArrayList<>();
         this.listaContestsPertenece = new ArrayList<>();
         this.oldSubmissionProblemValidators = new ArrayList<>();
+        this.listaEquiposIntentados = new ArrayList<>();
 
         this.timeout = timeoutPropierties;
         this.memoryLimit =memoryLimitPropierties;

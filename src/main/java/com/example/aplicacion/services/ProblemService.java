@@ -34,8 +34,24 @@ public class ProblemService {
     Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
 
-    public void addProblem(String nombre, List<InNOut> entrada, List<InNOut>  salidaCorrecta, List<InNOut> codigoCorrecto, List<InNOut>  entradaVisible, List<InNOut>  salidaVisible ){
-        problemRepository.save(new Problem(nombre, entrada, salidaCorrecta, entradaVisible, salidaVisible));
+    public ProblemString addProblem(Problem createdProblem){
+        ProblemString problemString = new ProblemString();
+        Problem newProblem = new Problem();
+
+        updateProblemInside(newProblem, createdProblem);
+
+        newProblem.getListaContestsPertenece().addAll(createdProblem.getListaContestsPertenece());
+        newProblem.setEquipoPropietario(createdProblem.getEquipoPropietario());
+        newProblem.getListaEquiposIntentados().addAll(createdProblem.getListaEquiposIntentados());
+
+
+        problemRepository.save(newProblem);
+        problemValidatorService.validateProblem(newProblem);
+
+        problemString.setSalida("OK");
+        problemString.setProblem(newProblem);
+
+        return problemString;
     }
 
 
@@ -221,6 +237,7 @@ public class ProblemService {
         return problemUpdated;
 
     }
+
     public String deleteProblem(String problemId){
         Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
         if(problem==null){
@@ -372,5 +389,41 @@ public class ProblemService {
         oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
         oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
         oldProblem.setColor(newProblem.getColor());
+    }
+
+    public ProblemString updateProblemMultipleOptionalParams(String idproblem, Optional<String> nombreProblema, Optional<String> teamId, Optional<byte[]> pdf, Optional<String> timeout){
+        ProblemString salida = new ProblemString();
+        Problem problem = getProblem(idproblem);
+        if (problem == null){
+            salida.setSalida("ERROR PROBLEMID NOT FOUND");
+            return salida;
+        }
+
+
+        if(nombreProblema.isPresent()){
+            problem.setNombreEjercicio(nombreProblema.get());
+        }
+
+        if(teamId.isPresent()){
+            Team team = teamRepository.findTeamById(Long.valueOf(teamId.get()));
+            if (team == null){
+                salida.setSalida("ERROR TEAMID NOT FOUND");
+                return salida;
+            }
+            problem.setEquipoPropietario(team);
+        }
+
+        if (pdf.isPresent()){
+            problem.setDocumento(pdf.get());
+        }
+
+        if(timeout.isPresent()){
+            problem.setTimeout(timeout.get());
+        }
+        problemRepository.save(problem);
+
+        salida.setSalida("OK");
+        salida.setProblem(problem);
+        return salida;
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -58,10 +59,20 @@ public class APIProblemController {
         return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
     }
 
+    //Crea problema desde objeto Problem
+    @ApiOperation("Create problem Using a Problem Object")
     @PostMapping("/API/v1/problem")
     public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem){
-        throw new UnsupportedOperationException("NO implementado");
+
+        ProblemString salida = problemService.addProblem(problem);
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
     }
+
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
@@ -83,9 +94,9 @@ public class APIProblemController {
 
     @ApiOperation("Update problem from ZIP")
     @PutMapping("/API/v1/problem/{problemId}/fromZip")
-    public ResponseEntity<ProblemAPI>updateProblem(@PathVariable String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
+    public ResponseEntity<ProblemAPI>updateProblemFromZip(@PathVariable String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
 
-        ProblemString salida = new ProblemString();
+        ProblemString salida;
         try {
             salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
         } catch (Exception e) {
@@ -99,13 +110,28 @@ public class APIProblemController {
         return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
     }
 
+    @ApiOperation("Update a problem with Request Param")
+    @PutMapping("/API/v1/problem{idProblem}")
+    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf){
+
+        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName,teamId, pdf,timeout);
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+
+
+
+    }
 
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @ApiOperation("Get pdf from Problem")
-    @GetMapping("/API/v1//problem/{idProblem}/getPDF")
-    public ResponseEntity<byte[]> goToProblem2(@PathVariable String idProblem){
-        Problem problem = problemService.getProblem(idProblem);
+    @GetMapping("/API/v1//problem/{problemId}/getPDF")
+    public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId){
+        Problem problem = problemService.getProblem(problemId);
 
         if(problem==null){
             return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
