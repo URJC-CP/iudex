@@ -24,15 +24,17 @@ public class UserService {
 
 
     //Cuando se crea un usuario tambien se creara un equipo con el mismo nombre que el usuario
-    public String crearUsuario(String nickname, String mail){
-
+    public UserString crearUsuario(String nickname, String mail){
+        UserString userString = new UserString();
         User user = new User(nickname, mail);
         //Comprobamos que el usuario sea unico
         if(userRepository.existsByNickname(nickname)){
-            return "USER NICKNAME DUPLICATED";
+            userString.setSalida("USER NICKNAME DUPLICATED");
+            return userString;
         }
         else if(userRepository.existsByEmail(mail)){
-            return "USER MAIL DUPLICATED";
+            userString.setSalida("USER MAIL DUPLICATED");
+            return userString;
         }
         else {
             userRepository.save(user);
@@ -50,10 +52,13 @@ public class UserService {
                userRepository.save(user);
            }
            else{
-               return salidaCreaTeam;
+               userString.setSalida(salidaCreaTeam);
+               return userString;
            }
         }
-        return "OK";
+        userString.setSalida("OK");
+        userString.setUser(user);
+        return userString;
     }
 
 

@@ -97,7 +97,7 @@ public class IndiceController {
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail){
-        String salida = userService.crearUsuario(userNickname, userMail);
+        String salida = userService.crearUsuario(userNickname, userMail).getSalida();
         if (salida.equals("OK")){
             return "redirect:/";
         }
