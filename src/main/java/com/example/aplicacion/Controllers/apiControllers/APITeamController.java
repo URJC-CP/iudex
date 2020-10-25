@@ -1,0 +1,86 @@
+package com.example.aplicacion.Controllers.apiControllers;
+
+import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Pojos.TeamAPI;
+import com.example.aplicacion.Pojos.TeamString;
+import com.example.aplicacion.services.ContestService;
+import com.example.aplicacion.services.ProblemService;
+import com.example.aplicacion.services.SubmissionService;
+import com.example.aplicacion.services.TeamService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class APITeamController {
+    @Autowired
+    SubmissionService submissionService;
+    @Autowired
+    ContestService contestService;
+    @Autowired
+    ProblemService problemService;
+    @Autowired
+    TeamService teamService;
+
+
+    @ApiOperation("Return all Teams")
+    @GetMapping("/API/v1/team")
+    public ResponseEntity<List<TeamAPI>> getteams(){
+        List<TeamAPI> teamAPIS = new ArrayList<>();
+        for (Team team : teamService.getAllTeams()){
+            teamAPIS.add(team.toTeamAPISimple());
+        }
+        return new ResponseEntity(teamAPIS, HttpStatus.OK);
+    }
+
+    @ApiOperation("Return Team")
+    @GetMapping("/API/v1/team/{teamId}")
+    public ResponseEntity<TeamAPI> getTeam(@PathVariable String teamId){
+        Team team = teamService.getTeamFromId(teamId);
+        if(team == null){
+            return new ResponseEntity("ERROR, TEAM NOT FOUND", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(team.toTeamAPI(), HttpStatus.OK);
+    }
+
+    @ApiOperation("Creates a Team")
+    @PostMapping("/API/v1/team")
+    public ResponseEntity<TeamAPI> createTeam(@RequestParam String nombreEquipo){
+
+        //false pq no es un usuario
+        TeamString salida = teamService.crearTeam(nombreEquipo, false);
+
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @ApiOperation("Delete a Team")
+    @GetMapping("/API/v1/team/{teamId}")
+    public ResponseEntity deleteTeam(@PathVariable String teamId){
+
+        String salida = teamService.deleteTeamByTeamId(teamId);
+        if(salida.equals("OK")){
+            return new ResponseEntity<>( HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Add user to Team")
+
+}
