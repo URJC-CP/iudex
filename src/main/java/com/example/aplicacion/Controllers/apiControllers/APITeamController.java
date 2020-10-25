@@ -82,5 +82,15 @@ public class APITeamController {
     }
 
     @ApiOperation("Add user to Team")
+    @GetMapping("/API/v1/team/{teamId}/{userId}")
+    public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId){
+        TeamString salida = teamService.addUserToTeamUssingIds(teamId, userId);
 
+        if(salida.getSalida().equals("OK")){
+            return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+        }
+    }
 }

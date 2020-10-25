@@ -21,15 +21,15 @@ public class Team {
     private List<User> participantes;
     private boolean esUser;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany//(cascade = CascadeType.ALL)
     private List<Submission> listaDeSubmissions;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany//(cascade = CascadeType.ALL)
     private List<Problem> listaProblemasCreados;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany//(cascade = CascadeType.ALL)
     private List<Problem> listaProblemasParticipados;
-    @ManyToMany(mappedBy = "listaParticipantes")
+    @ManyToMany//(mappedBy = "listaParticipantes")
     private List<Contest> listaContestsParticipados;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany//(cascade = CascadeType.ALL)
     private List<Contest> listaContestsCreados;
     private long timestamp=  Instant.now().toEpochMilli();
 
