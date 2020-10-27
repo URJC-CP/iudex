@@ -78,6 +78,7 @@ public class DockerContainerPython3 extends DockerContainer {
         String salidaCompilador=null;
         salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
         //System.out.println(salidaCompilador);
+
         result.setSalidaCompilador(salidaCompilador);
 
         String time= null;

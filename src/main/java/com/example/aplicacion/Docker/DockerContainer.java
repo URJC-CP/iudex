@@ -6,6 +6,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +21,7 @@ public class DockerContainer {
     private String defaultTimeout;
     private String defaultCPU;
     private String defaultStorageLimit;
+    Logger logger = LoggerFactory.getLogger(DockerContainer.class);
 
     public DockerContainer(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU , String defaultStorageLimit){
         this.result = result;
@@ -33,16 +36,17 @@ public class DockerContainer {
     }
 
     //sacado de aqui https://github.com/docker-java/docker-java/issues/991
-    static String copiarArchivoDeContenedor(String contAux, String pathOrigen) throws IOException {
+    String copiarArchivoDeContenedor(String contAux, String pathOrigen) throws IOException {
 
         InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
         TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
+        //System.out.println(""+tarArchivo.getRecordSize());
         return convertirTarFile(tarArchivo);                                                        //Lo traducimos
 
     }
 
     //Funcion que convierte un tar, lo guarda en fichero y devuelve un String
-    private static String convertirTarFile(TarArchiveInputStream tarIn) throws IOException {
+    private String convertirTarFile(TarArchiveInputStream tarIn) throws IOException {
         TarArchiveEntry tarAux = null;
         String salida=null;
 
@@ -60,6 +64,13 @@ public class DockerContainer {
                 //IOUtils.copy(tarIn, fileOutput);
                 //fileOutput.close();
             }
+        }
+
+
+        //Comprobamos el tamano del String para evitar petar por tamano excesivo, si esta por encima enviamos un "" y notificamos
+        if(salida.length()>100000000){
+            this.logger.warn("Se ha detectado un archivo de "+ salida.length()+" y se ha modificado por uno vacio");
+            salida="";
         }
 
         tarIn.close();
