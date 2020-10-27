@@ -79,6 +79,7 @@ public class Problem {
     private String limit_validation_output;
     private String color;
 
+    //DEFAULT VALUES
     public final String timeoutPropierties = "10";
     public final String memoryLimitPropierties="1000";
 

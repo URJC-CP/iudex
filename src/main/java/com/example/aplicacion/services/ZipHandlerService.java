@@ -1,9 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.InNOut;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.SubmissionProblemValidator;
+import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.Repository.InNOutRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
@@ -318,7 +315,13 @@ public class ZipHandlerService {
                     problem.setNombreEjercicio(valor);
                 }
                 else if(propiedad.equals("timelimit")){
+                    //Si entra a timelimit actualizamos los valores de los results
                     problem.setTimeout(valor);
+                    for (Submission submission: problem.getSubmissions()){
+                        for (Result result: submission.getResults()){
+                            result.setMaxTimeout(valor);
+                        }
+                    }
                 }
                 else if(propiedad.equals("color")){
                     problem.setColor(valor);
