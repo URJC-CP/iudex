@@ -54,7 +54,6 @@ public class APIProblemController {
     @GetMapping("/API/v1/problem/page")
     public ResponseEntity<Page<ProblemAPI>> getAllProblemPage(Pageable pageable){
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
-
     }
 
 

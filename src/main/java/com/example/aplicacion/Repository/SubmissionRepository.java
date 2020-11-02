@@ -5,6 +5,7 @@
   import com.example.aplicacion.Entities.Problem;
   import com.example.aplicacion.Entities.Result;
   import com.example.aplicacion.Entities.Submission;
+  import org.springframework.data.domain.Page;
   import org.springframework.data.domain.PageRequest;
   import org.springframework.data.domain.Pageable;
   import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +18,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
 	Submission findSubmissionByResults(Result res);
 	List<Submission> findSubmissionsByProblemaAndContest(Problem problem, Contest contest);
+	Page<Submission> findAll(Pageable pageable);
+
 
 }

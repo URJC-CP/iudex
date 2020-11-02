@@ -272,4 +272,7 @@ public class SubmissionService {
     public Submission getSubmission(String submissionId){
         return submissionRepository.findSubmissionById(Long.valueOf(submissionId));
     }
+    public Page<Submission> getSubmissionsPage(Pageable pageable){
+        return submissionRepository.findAll(pageable);
+    }
 }

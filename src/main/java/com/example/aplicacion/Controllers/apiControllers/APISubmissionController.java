@@ -11,6 +11,8 @@ import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,6 +90,12 @@ public class APISubmissionController {
             }
             return new ResponseEntity(submissionAPIS, HttpStatus.OK);
         }
+    }
+
+    @ApiOperation("Return Page of all submissions")
+    @GetMapping("/API/v1/submission/page")
+    public ResponseEntity<Page<SubmissionAPI>> getAllSubmisionPage(Pageable pageable){
+        return new ResponseEntity<>(submissionService.getSubmissionsPage(pageable).map(Submission::toSubmissionAPI), HttpStatus.OK);
     }
 
 
