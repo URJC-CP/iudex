@@ -9,6 +9,8 @@ import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -210,6 +212,10 @@ public class ContestService {
     }
     public List<Contest> getAllContests(){
         return contestRepository.findAll();
+    }
+
+    public Page<Contest> getContestPage(Pageable pageable){
+        return contestRepository.findAll(pageable);
     }
 
 }

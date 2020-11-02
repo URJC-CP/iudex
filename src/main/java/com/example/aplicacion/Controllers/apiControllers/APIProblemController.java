@@ -2,6 +2,7 @@ package com.example.aplicacion.Controllers.apiControllers;
 
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.Pojos.SubmissionAPI;
@@ -10,6 +11,8 @@ import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +48,13 @@ public class APIProblemController {
             salida.add(problem.toProblemAPI());
         }
         return new ResponseEntity<>(salida, HttpStatus.OK);
+    }
+
+    @ApiOperation("Return Page of all Problems")
+    @GetMapping("/API/v1/problem/page")
+    public ResponseEntity<Page<ProblemAPI>> getAllProblemPage(Pageable pageable){
+        return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
+
     }
 
 
