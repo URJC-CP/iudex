@@ -38,23 +38,17 @@ public class DockerContainer {
 
     //sacado de aqui https://github.com/docker-java/docker-java/issues/991
     String copiarArchivoDeContenedor(String contAux, String pathOrigen) throws IOException {
-
-        InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
-        TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
-        //System.out.println(""+tarArchivo.getRecordSize());
-        return convertirTarFile(tarArchivo);
-
-        //try{
-        //    InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
-         //   TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
+        try{
+            InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
+           TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
             //System.out.println(""+tarArchivo.getRecordSize());
-        //    return convertirTarFile(tarArchivo);                                                        //Lo traducimos
+            return convertirTarFile(tarArchivo);                                                        //Lo traducimos
 
-        //}
-        //catch (InternalServerErrorException exception){
-            //logger.error("El contenedor tiene problemas : "+exception.getMessage());
-        //}
-        //return "";
+        }
+        catch (InternalServerErrorException exception){
+            logger.error("El contenedor tiene problemas : "+exception.getMessage());
+        }
+        return "";
 
     }
 
