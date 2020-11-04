@@ -115,7 +115,7 @@ public class ZipHandlerService {
                     }
                 }
                 //Buscamos ahora las submission
-                else if ("submissions".equals(path1)){
+                if ("submissions".equals(path1)){
                     String resultadoEsperado ="";
 
                     if( path2.equals("accepted")){
@@ -153,9 +153,8 @@ public class ZipHandlerService {
 
 
                 }
-
-
             }
+
             //Si no es de esa carpeta siginfica q esta en la carpeta base
             else {
                 Matcher m2 =p2.matcher(nombreZip);
@@ -184,6 +183,12 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
+
+        //Creamos los RESULTs
+        for(Submission submission:problem.getSubmissions()){
+            submissionService.creaResults(submission, problem, submission.getCodigo(),submission.getLanguage());
+
+        }
         //generamos el hash
         String hash = problem.generaHash();
         rellenaSubmissionConProblemHash(problem);
@@ -196,9 +201,12 @@ public class ZipHandlerService {
         }
 
 
+
+
         problemString.setProblem(problem);
         return problemString;
     }
+
 
     public String selectLenguaje(String lenguaje){
         if(lenguaje.equals("java")){

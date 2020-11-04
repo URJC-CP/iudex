@@ -52,8 +52,7 @@ public class DockerContainerJava extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU)//.withStorageOpt(Map.ofEntries(Map.entry("size", "1G")))
-                .withDiskQuota(defaultStorageLimit);
+        hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU).withStorageOpt(Map.ofEntries(Map.entry("size", "200M")));
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeout,"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
 
         logger.info("DOCKERJAVA: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());

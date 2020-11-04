@@ -164,6 +164,9 @@ public class SubmissionService {
 
         int numeroDeResult =0;
 
+
+        //Lo movemos de aqui por problemas y ejecuta por separado
+        /*
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
@@ -186,7 +189,7 @@ public class SubmissionService {
             //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
-
+         */
 
         submission.setEsProblemValidator(true);
         //Guardamos la submission
@@ -198,6 +201,33 @@ public class SubmissionService {
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
         return submissionStringResult;
+    }
+
+    public void creaResults(Submission submission, Problem problema, String codigo, Language language){
+        int numeroDeResult =0;
+
+        //Creamos los result que tienen que ir con la submission y anadimos a submision
+        List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
+        List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
+        int numeroEntradasVisible = entradasProblemaVisible.size();
+        for(int i =0; i<numeroEntradasVisible; i++){
+            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
+            numeroDeResult++;
+            //resultRepository.save(resAux);
+            submission.addResult(resAux);
+        }
+
+        List<InNOut> entradasProblema = problema.getEntradaOculta();
+        List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
+        int numeroEntradas = entradasProblema.size();
+        for(int i =0; i<numeroEntradas; i++){
+            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            resAux.setNumeroCasoDePrueba(numeroDeResult);
+            numeroDeResult++;
+            //resultRepository.save(resAux);
+            submission.addResult(resAux);
+        }
     }
     public void ejecutaSubmission(Submission submission){
         //Envio de mensaje a la cola

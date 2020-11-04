@@ -2,6 +2,7 @@ package com.example.aplicacion.Docker;
 
 import com.example.aplicacion.Entities.Result;
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.exception.InternalServerErrorException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -41,7 +42,19 @@ public class DockerContainer {
         InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
         TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
         //System.out.println(""+tarArchivo.getRecordSize());
-        return convertirTarFile(tarArchivo);                                                        //Lo traducimos
+        return convertirTarFile(tarArchivo);
+
+        //try{
+        //    InputStream isSalida=dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
+         //   TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
+            //System.out.println(""+tarArchivo.getRecordSize());
+        //    return convertirTarFile(tarArchivo);                                                        //Lo traducimos
+
+        //}
+        //catch (InternalServerErrorException exception){
+            //logger.error("El contenedor tiene problemas : "+exception.getMessage());
+        //}
+        //return "";
 
     }
 
