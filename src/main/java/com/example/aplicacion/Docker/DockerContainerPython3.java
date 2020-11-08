@@ -26,9 +26,9 @@ public class DockerContainerPython3 extends DockerContainer {
 
 
     public Result ejecutar(String imagenId) throws IOException {
-        Long defaultCPU = Long.parseLong(this.getDefaultCPU());
+        String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
-        Long defaultStorageLimit = Long.parseLong(this.getDefaultStorageLimit());
+        String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
@@ -38,7 +38,7 @@ public class DockerContainerPython3 extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(defaultMemoryLimit).withCpuCount(defaultCPU).withStorageOpt(Map.ofEntries(Map.entry("size", "200M")));
+        hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(), "FILENAME2="+nombreClase+".py" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
 
         logger.info("DOCKERPYTHON: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
