@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.DELETE;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@RestController
 public class APITeamController {
     @Autowired
     SubmissionService submissionService;

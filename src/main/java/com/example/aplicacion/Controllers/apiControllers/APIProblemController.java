@@ -120,7 +120,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Update a problem with Request Param")
-    @PutMapping("/API/v1/problem{idProblem}")
+    @PutMapping("/API/v1/problem/{idProblem}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf){
 
         ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName,teamId, pdf,timeout);

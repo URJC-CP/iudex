@@ -112,7 +112,7 @@ public class APIContestController {
     }
 
     @ApiOperation("Add Problem to Contest")
-    @PostMapping("/contest/{contestId}/{problemId}")
+    @PostMapping("/API/v1/contest/{contestId}/{problemId}")
     public ResponseEntity addProblemToContest(@PathVariable String problemId, @PathVariable String contestId){
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
         if (salida.equals("OK")){

@@ -14,6 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeoutException;
+import java.util.function.BooleanSupplier;
 
 public class DockerContainer {
     private Result result;
@@ -104,6 +106,17 @@ public class DockerContainer {
 
         return salida;
     }
+    
+    //Sacado de aqui https://stackoverflow.com/questions/25325442/wait-x-seconds-or-until-a-condition-becomes-true/25325830#comment85873450_25325830
+    static void waitUntil(BooleanSupplier condition, long timeoutms) throws TimeoutException{
+        long start = System.currentTimeMillis();
+        while (!condition.getAsBoolean()){
+            if (System.currentTimeMillis() - start > timeoutms ){
+                throw new TimeoutException(String.format("Condition not meet within %s ms",timeoutms));
+            }
+        }
+    }
+
 
     public Result getResult() {
         return result;
