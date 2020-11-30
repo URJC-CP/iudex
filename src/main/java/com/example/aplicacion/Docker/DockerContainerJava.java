@@ -72,7 +72,11 @@ public class DockerContainerJava extends DockerContainer {
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
         //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-
+        InspectContainerResponse inspectContainerResponse=null;
+        do {
+            inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
+        }while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+        /*
         InspectContainerResponse inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
 
         InspectContainerResponse finalInspectContainerResponse = inspectContainerResponse;
@@ -83,6 +87,7 @@ public class DockerContainerJava extends DockerContainer {
             //Aqui lo pararemos manualmente
             logger.error("El contenedor del result "+ result.getId() + " ha finalizado abruptamente su ejeccucion ");
         }
+         */
 
         //Buscamos la salida Estandar
         String salidaEstandar=null;
