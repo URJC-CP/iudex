@@ -68,7 +68,7 @@ public class APITeamController {
     }
 
     @ApiOperation("Delete a Team")
-    @GetMapping("/API/v1/team/{teamId}")
+    @DeleteMapping("/API/v1/team/{teamId}")
     public ResponseEntity deleteTeam(@PathVariable String teamId){
 
         String salida = teamService.deleteTeamByTeamId(teamId);

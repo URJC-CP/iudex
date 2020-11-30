@@ -28,6 +28,8 @@ public class Submission {
 
     private boolean corregido;
     private int numeroResultCorregidos;
+
+    @Lob
     private String resultado;
 
 
