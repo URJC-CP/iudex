@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -36,7 +37,11 @@ public class ResultHandler {
     public ResultHandler(){
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
-        dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
+
+        //TODO cambiar ruta según la maquina, DONE
+        //linux dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
+        //windows dockerClient = DockerClientBuilder.getInstance("tcp://localhost:2375").build();
+        dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
 
         //Creamos las imagenes
         /*
@@ -94,5 +99,21 @@ public class ResultHandler {
 
     public void setDockerClient(DockerClient dockerClient) {
         this.dockerClient = dockerClient;
+    }
+
+    // returns the correct url to connect to the docker
+    private String getDockerURL(){
+        String osName = System.getProperty("os.name").toLowerCase();
+        String dockerUrl = "";
+        if(osName.startsWith("windows")) { // windows
+            dockerUrl = "tcp://localhost:2375";
+        }
+        else if(osName.startsWith("linux") || osName.startsWith("unix")) { // linux, mac or unix
+            dockerUrl = "unix:///var/run/docker.sock";
+        }
+        else { // default url
+            dockerUrl = "unix:///var/run/docker.sock";
+        }
+        return dockerUrl;
     }
 }
