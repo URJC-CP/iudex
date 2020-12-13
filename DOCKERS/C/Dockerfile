@@ -1,6 +1,5 @@
 FROM gcc
 WORKDIR /root
-
 #RUN /bin/sh
 
 RUN apk add --no-cache bash
@@ -18,4 +17,4 @@ RUN touch salidaCompilador.ans
 #ENTRYPOINT  javac $FILENAME1.java 2>salidaCompilador.ans; echo $? >>signalCompilador.txt;  [ -f $FILENAME2.class ] && timeout -s SIGTERM  $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%U %M" java $MEMORYLIMIT $FILENAME2 <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt
 #ENTRYPOINT javac $FILENAME1.java > salidaCompilador.ans 2>&1; echo $? >>signalCompilador.txt;  [ -f $FILENAME2.class ] && timeout -s SIGTERM  $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%U %M" java $MEMORYLIMIT $FILENAME2 <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt
 #ENTRYPOINT timeout -s SIGTERM  $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%U %M" python3  $FILENAME2 <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >>signal.txt
-ENTRYPOINT gcc $FILENAME1.c -o $FILENAME2 > salidaCompilador.ans; echo $? >> signalCompilador.txt; timeout -s SIGTERM  $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%U %M" ./$FILENAME <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt
+ENTRYPOINT gcc $FILENAME1.c -o $FILENAME2 > salidaCompilador.ans; echo $? >> signalCompilador.txt; timeout -s SIGTERM  $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%U %M" $MEMORYLIMIT ./$FILENAME <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt

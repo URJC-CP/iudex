@@ -47,17 +47,18 @@ public class BasicController {
         Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);
 
-
-        
+        //Creamos el lenguaje C
+        File dckfl3 = new File("DOCKERS/C/Dockerfile");
+        String imageId3 = resultHandler.buildImage(dckfl3);
+        Language lenguaje3 = new Language("c", imageId3);
+        languageRepository.save(lenguaje3);
 
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-
         contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of( "Este es el mejor concurso del mundo"));
-
 
     }
 }
