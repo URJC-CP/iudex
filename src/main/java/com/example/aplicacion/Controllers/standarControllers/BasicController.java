@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.Optional;
 
-
 @Controller
 public class BasicController {
     @Autowired
@@ -32,9 +31,9 @@ public class BasicController {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
+
     @PostConstruct
     public void init() {
-
         //Creamos el lenguaje JAVA
         File dckfl = new File("DOCKERS/Java/Dockerfile");
         String imageId = resultHandler.buildImage(dckfl);
@@ -48,16 +47,19 @@ public class BasicController {
         languageRepository.save(lenguaje2);
 
 
-        
+
+        //Creamos el lenguaje CPP
+        File dckfl4 = new File("DOCKERS/CPP/Dockerfile");
+        String imageId4 = resultHandler.buildImage(dckfl4);
+        Language lenguaje4 = new Language("cpp", imageId4);
+        languageRepository.save(lenguaje4);
 
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-
         contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of( "Este es el mejor concurso del mundo"));
-
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.aplicacion.services;
 
+import com.example.aplicacion.Docker.DockerContainerCPP;
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
 import com.example.aplicacion.Entities.Language;
@@ -61,9 +62,8 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
+    
     public void ejecutor(Result res) throws IOException {
-
-
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()){
             case "java":
@@ -75,7 +75,9 @@ public class ResultHandler {
                 break;
 
 
-
+            case "cpp":
+                new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
+                break;
         }
 
         //System.out.println("Conenedor terminado");
