@@ -1,5 +1,6 @@
 package com.example.aplicacion.services;
 
+import com.example.aplicacion.Docker.DockerContainerC;
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
 import com.example.aplicacion.Entities.Language;
@@ -66,8 +67,8 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
-    public void ejecutor(Result res) throws IOException {
 
+    public void ejecutor(Result res) throws IOException {
 
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()){
@@ -76,10 +77,12 @@ public class ResultHandler {
                 break;
 
             case"python3":
-                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
+                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
-
+            case "c":
+                new DockerContainerC(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
+                break;
 
         }
 
