@@ -1,4 +1,4 @@
-FROM gcc
+FROM alpine
 WORKDIR /root
 #RUN /bin/sh
 
