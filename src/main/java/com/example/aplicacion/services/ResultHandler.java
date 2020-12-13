@@ -37,7 +37,7 @@ public class ResultHandler {
     public ResultHandler(){
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
-        dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
+        dockerClient = DockerClientBuilder.getInstance("tcp://localhost:2375").build();
 
         //Creamos las imagenes
         /*
@@ -62,7 +62,7 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
-    
+
     public void ejecutor(Result res) throws IOException {
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()){
