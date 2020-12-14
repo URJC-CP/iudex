@@ -41,7 +41,7 @@ public class DockerContainerCPP extends DockerContainer{
         //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(), "FILENAME2="+nombreClase+".cpp" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(),"FILENAME1="+nombreClase, "FILENAME2="+nombreClase+".cpp" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
         logger.info("DOCKERCPP: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
 
         //Copiamos el codigo
