@@ -18,9 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-
 
 
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
@@ -32,16 +30,13 @@ public class ResultHandler {
 
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
 
-
     private DockerClient dockerClient;
     private Map<String, String> imagenes;
-    public ResultHandler(){
+
+    public ResultHandler() {
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
 
-        //TODO cambiar ruta según la maquina, DONE
-        //linux dockerClient = DockerClientBuilder.getInstance("unix:///var/run/docker.sock").build();
-        //windows dockerClient = DockerClientBuilder.getInstance("tcp://localhost:2375").build();
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
 
         //Creamos las imagenes
@@ -71,12 +66,12 @@ public class ResultHandler {
     public void ejecutor(Result res) throws IOException {
 
         Language lenguaje = res.getLanguage();
-        switch (lenguaje.getNombreLenguaje()){
+        switch (lenguaje.getNombreLenguaje()) {
             case "java":
                 new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
-            case"python3":
+            case "python3":
                 new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
@@ -89,7 +84,8 @@ public class ResultHandler {
         //System.out.println("Conenedor terminado");
 
     }
-    public String buildImage(File file){
+
+    public String buildImage(File file) {
         String salida = dockerClient.buildImageCmd().withDockerfile(file)
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
@@ -105,16 +101,14 @@ public class ResultHandler {
     }
 
     // returns the correct url to connect to the docker
-    private String getDockerURL(){
+    private String getDockerURL() {
         String osName = System.getProperty("os.name").toLowerCase();
         String dockerUrl = "";
-        if(osName.startsWith("windows")) { // windows
+        if (osName.startsWith("windows")) { // windows
             dockerUrl = "tcp://localhost:2375";
-        }
-        else if(osName.startsWith("linux") || osName.startsWith("unix")) { // linux, mac or unix
+        } else if (osName.startsWith("linux") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
-        }
-        else { // default url
+        } else { // default url
             dockerUrl = "unix:///var/run/docker.sock";
         }
         return dockerUrl;

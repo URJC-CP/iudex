@@ -1,7 +1,10 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.Repository.InNOutRepository;
+import com.example.aplicacion.Repository.LanguageRepository;
+import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.TeamService;
@@ -32,6 +35,7 @@ public class BasicController {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
+
     @PostConstruct
     public void init() {
 
@@ -58,7 +62,7 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of( "Este es el mejor concurso del mundo"));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of("Este es el mejor concurso del mundo"));
 
     }
 }

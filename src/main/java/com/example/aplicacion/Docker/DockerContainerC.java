@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class DockerContainerC extends DockerContainer{
+public class DockerContainerC extends DockerContainer {
     Logger logger = LoggerFactory.getLogger(DockerContainerJava.class);
 
-    public DockerContainerC(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit){
+    public DockerContainerC(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
     }
 
@@ -24,14 +24,13 @@ public class DockerContainerC extends DockerContainer{
 
         Result result = getResult();
         String nombreClase = result.getFileName();
-        String nombreDocker = "a"+Long.toString(result.getId())+"_"+java.time.LocalDateTime.now();
-        nombreDocker =nombreDocker.replace(":", "");
+        String nombreDocker = "a" + Long.toString(result.getId()) + "_" + java.time.LocalDateTime.now();
+        nombreDocker = nombreDocker.replace(":", "");
 
         String timeout;
-        if(result.getMaxTimeout()!=null){
-            timeout= result.getMaxTimeout();
-        }
-        else {
+        if (result.getMaxTimeout() != null) {
+            timeout = result.getMaxTimeout();
+        } else {
             timeout = this.getDefaultTimeout();
         }
 
@@ -41,11 +40,11 @@ public class DockerContainerC extends DockerContainer{
         //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+result.getMaxTimeout(), "FILENAME1="+nombreClase, "FILENAME2="+nombreClase+".c" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.info("DOCKERC: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de "+ result.getMaxMemory());
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".c").withHostConfig(hostConfig).withName(nombreDocker).exec();
+        logger.info("DOCKERC: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de " + result.getMaxMemory());
 
         //Copiamos el codigo
-        copiarArchivoAContenedor(container.getId(), nombreClase+".c", result.getCodigo(),  "/root");
+        copiarArchivoAContenedor(container.getId(), nombreClase + ".c", result.getCodigo(), "/root");
 
         //Copiamos la entrada
         copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
@@ -53,39 +52,35 @@ public class DockerContainerC extends DockerContainer{
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
         //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-        InspectContainerResponse inspectContainerResponse=null;
+        InspectContainerResponse inspectContainerResponse = null;
         do {
             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        }while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+        } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
-        String salidaEstandar=null;
+        String salidaEstandar = null;
         salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
-        //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
-        String salidaError=null;
+        String salidaError = null;
         salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
-        //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
-        String salidaCompilador=null;
+        String salidaCompilador = null;
         salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
-        //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
-        String time= null;
+        String time = null;
         time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
-        //System.out.println(time);
         result.setSalidaTime(time);
 
-        String signalEjecutor=null;
+        String signalEjecutor = null;
         signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);
 
-        String signalCompilador=null;
+        String signalCompilador = null;
         signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
@@ -93,7 +88,7 @@ public class DockerContainerC extends DockerContainer{
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERPC: Se termina el result "+ result.getId() + " ");
+        logger.info("DOCKERC: Se termina el result " + result.getId() + " ");
         return result;
     }
 }
