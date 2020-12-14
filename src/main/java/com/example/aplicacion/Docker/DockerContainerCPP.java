@@ -11,10 +11,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class DockerContainerCPP extends DockerContainer{
-    Logger logger = LoggerFactory.getLogger(DockerContainerJava.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     public DockerContainerCPP(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
+        System.out.println(getClass());
     }
 
     public Result ejecutar(String imagenId) throws IOException {
@@ -61,24 +62,20 @@ public class DockerContainerCPP extends DockerContainer{
         //Buscamos la salida Estandar
         String salidaEstandar=null;
         salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
-        //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
         String salidaError=null;
         salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
-        //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
         String salidaCompilador=null;
         salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
-        //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
         String time= null;
         time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
-        //System.out.println(time);
         result.setSalidaTime(time);
 
         String signalEjecutor=null;
@@ -89,7 +86,7 @@ public class DockerContainerCPP extends DockerContainer{
         signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
-        //logger.info("DOCKERC: EL result "+result.getId() + " ha terminado con senyal "+ signal);
+        //logger.info("DOCKERCPP: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
