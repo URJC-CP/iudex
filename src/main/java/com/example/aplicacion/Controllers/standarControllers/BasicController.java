@@ -1,7 +1,10 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.Repository.InNOutRepository;
+import com.example.aplicacion.Repository.LanguageRepository;
+import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.TeamService;
