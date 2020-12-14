@@ -110,7 +110,7 @@ public class ResultHandler {
         String dockerUrl = "";
         if (osName.startsWith("windows")) { // windows
             dockerUrl = "tcp://localhost:2375";
-        } else if (osName.startsWith("linux") || osName.startsWith("unix")) { // linux, mac or unix
+        } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
         } else { // default url
             dockerUrl = "unix:///var/run/docker.sock";
