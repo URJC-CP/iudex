@@ -114,7 +114,7 @@ public class ResultHandler {
             dockerUrl = "unix:///var/run/docker.sock";
         } else {
             // default: throw error
-            throw new RuntimeException("Unknown Operating System! There is no url specified for "+osName);
+            throw new RuntimeException("Unknown Operating System! There is no url for "+osName);
         }
         return dockerUrl;
     }
