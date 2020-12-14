@@ -50,7 +50,6 @@ public class BasicController {
         languageRepository.save(lenguaje2);
 
 
-
         //Creamos el lenguaje CPP
         File dckfl4 = new File("DOCKERS/CPP/Dockerfile");
         String imageId4 = resultHandler.buildImage(dckfl4);
@@ -62,7 +61,7 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of( "Este es el mejor concurso del mundo"));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of("Este es el mejor concurso del mundo"));
 
     }
 }
