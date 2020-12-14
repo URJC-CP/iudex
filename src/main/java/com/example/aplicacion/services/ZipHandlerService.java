@@ -215,6 +215,9 @@ public class ZipHandlerService {
         else if(lenguaje.equals("py")){
             return "python3";
         }
+        else if(lenguaje.equals("c")) {
+            return "c";
+        }
         else if(lenguaje.equals("cpp") || lenguaje.equals("c++")){
             return "cpp";
         }

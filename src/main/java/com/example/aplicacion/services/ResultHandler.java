@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Docker.DockerContainerCPP;
+import com.example.aplicacion.Docker.DockerContainerC;
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
 import com.example.aplicacion.Entities.Language;
@@ -21,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
 @Service
 public class ResultHandler {
@@ -31,13 +31,14 @@ public class ResultHandler {
 
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
 
-
     private DockerClient dockerClient;
     private Map<String, String> imagenes;
-    public ResultHandler(){
+
+    public ResultHandler() {
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
-        dockerClient = DockerClientBuilder.getInstance("tcp://localhost:2375").build();
+        
+        dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
 
         //Creamos las imagenes
         /*
@@ -62,28 +63,33 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
-
+    
     public void ejecutor(Result res) throws IOException {
         Language lenguaje = res.getLanguage();
-        switch (lenguaje.getNombreLenguaje()){
+        switch (lenguaje.getNombreLenguaje()) {
             case "java":
                 new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
-            case"python3":
-                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
+            case "python3":
+                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
+            case "c":
+                new DockerContainerC(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
+                break;
 
             case "cpp":
                 new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
                 break;
+            
         }
 
         //System.out.println("Conenedor terminado");
 
     }
-    public String buildImage(File file){
+
+    public String buildImage(File file) {
         String salida = dockerClient.buildImageCmd().withDockerfile(file)
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
@@ -96,5 +102,19 @@ public class ResultHandler {
 
     public void setDockerClient(DockerClient dockerClient) {
         this.dockerClient = dockerClient;
+    }
+
+    // returns the correct url to connect to the docker
+    private String getDockerURL() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        String dockerUrl = "";
+        if (osName.startsWith("windows")) { // windows
+            dockerUrl = "tcp://localhost:2375";
+        } else if (osName.startsWith("linux") || osName.startsWith("unix")) { // linux, mac or unix
+            dockerUrl = "unix:///var/run/docker.sock";
+        } else { // default url
+            dockerUrl = "unix:///var/run/docker.sock";
+        }
+        return dockerUrl;
     }
 }

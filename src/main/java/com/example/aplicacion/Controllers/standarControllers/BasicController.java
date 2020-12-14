@@ -49,6 +49,11 @@ public class BasicController {
         Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);
 
+        //Creamos el lenguaje C
+        File dckfl3 = new File("DOCKERS/C/Dockerfile");
+        String imageId3 = resultHandler.buildImage(dckfl3);
+        Language lenguaje3 = new Language("c", imageId3);
+        languageRepository.save(lenguaje3);
 
         //Creamos el lenguaje CPP
         File dckfl4 = new File("DOCKERS/CPP/Dockerfile");
