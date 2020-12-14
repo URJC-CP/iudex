@@ -15,7 +15,6 @@ public class DockerContainerCPP extends DockerContainer {
 
     public DockerContainerCPP(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
-        System.out.println(getClass());
     }
 
     public Result ejecutar(String imagenId) throws IOException {
