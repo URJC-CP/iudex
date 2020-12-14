@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-gxx
+FROM frolvlad/alpine-gcc
 WORKDIR /root
 #RUN !/bin/bash
 
