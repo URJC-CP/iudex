@@ -218,6 +218,9 @@ public class ZipHandlerService {
         else if(lenguaje.equals("c")) {
             return "c";
         }
+        else if(lenguaje.equals("cpp") || lenguaje.equals("c++")){
+            return "cpp";
+        }
         else {
             return null;
         }

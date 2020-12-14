@@ -1,5 +1,6 @@
 package com.example.aplicacion.services;
 
+import com.example.aplicacion.Docker.DockerContainerCPP;
 import com.example.aplicacion.Docker.DockerContainerC;
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
@@ -36,7 +37,7 @@ public class ResultHandler {
     public ResultHandler() {
         //arrancamos la conexion docker
         this.imagenes = new HashMap<>();
-
+        
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
 
         //Creamos las imagenes
@@ -62,9 +63,8 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
-
+    
     public void ejecutor(Result res) throws IOException {
-
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()) {
             case "java":
@@ -79,6 +79,10 @@ public class ResultHandler {
                 new DockerContainerC(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
+            case "cpp":
+                new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
+                break;
+            
         }
 
         //System.out.println("Conenedor terminado");

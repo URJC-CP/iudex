@@ -30,8 +30,6 @@ public class DockerContainerJava extends DockerContainer {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
     }
 
-
-
     public Result ejecutar(String imagenId) throws IOException {
 
         String defaultCPU = (this.getDefaultCPU());
@@ -54,7 +52,8 @@ public class DockerContainerJava extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        //hostConfig.withMemory(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))>>>>>>>>>>>>>>>>>>>>>>>>>>>>>).withCpusetCpus(defaultCPU);
+
+        //hostConfig.withMemory(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT="+timeout,"FILENAME1="+nombreClase, "FILENAME2="+getClassName(), "MEMORYLIMIT="+"-Xmx"+result.getMaxMemory()+"m" ).withHostConfig(hostConfig).withName(nombreDocker).exec();
@@ -131,6 +130,7 @@ public class DockerContainerJava extends DockerContainer {
         logger.info("DOCKERJAVA: Se termina el result "+ result.getId() + " ");
         return result;
     }
+  
     private String getClassName(){
         String salida="";
         //Primero buscamos si existe una classe tipo "public class.."
