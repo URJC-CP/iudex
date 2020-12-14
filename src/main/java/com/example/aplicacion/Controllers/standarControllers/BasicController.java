@@ -1,7 +1,10 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.Repository.InNOutRepository;
+import com.example.aplicacion.Repository.LanguageRepository;
+import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
 import com.example.aplicacion.services.TeamService;
@@ -32,6 +35,7 @@ public class BasicController {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
+
     @PostConstruct
     public void init() {
 
@@ -47,17 +51,18 @@ public class BasicController {
         Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);
 
-
-        
+        //Creamos el lenguaje C
+        File dckfl3 = new File("DOCKERS/C/Dockerfile");
+        String imageId3 = resultHandler.buildImage(dckfl3);
+        Language lenguaje3 = new Language("c", imageId3);
+        languageRepository.save(lenguaje3);
 
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of( "Este es el mejor concurso del mundo"));
-
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of("Este es el mejor concurso del mundo"));
 
     }
 }

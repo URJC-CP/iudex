@@ -211,12 +211,13 @@ public class ZipHandlerService {
     public String selectLenguaje(String lenguaje){
         if(lenguaje.equals("java")){
             return "java";
-        }else  if (lenguaje.equals("py")){
+        }
+        else if(lenguaje.equals("py")){
             return "python3";
         }
-
-
-
+        else if(lenguaje.equals("c")) {
+            return "c";
+        }
         else {
             return null;
         }
