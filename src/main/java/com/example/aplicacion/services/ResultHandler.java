@@ -112,8 +112,9 @@ public class ResultHandler {
             dockerUrl = "tcp://localhost:2375";
         } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
-        } else { // default url
-            dockerUrl = "unix:///var/run/docker.sock";
+        } else {
+            // default: throw error
+            throw new RuntimeException("Unknown Operating System! There is no url specified for "+osName);
         }
         return dockerUrl;
     }
