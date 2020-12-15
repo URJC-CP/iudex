@@ -35,7 +35,7 @@ public class ResultHandler {
     private Map<String, String> imagenes;
 
     public ResultHandler() {
-        //arrancamos la conexion docker
+        logger.info("Starting connection with docker");
         this.imagenes = new HashMap<>();
         
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
@@ -47,11 +47,13 @@ public class ResultHandler {
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
         this.imagenes.put("java", imageId);
+        logger.info("Building image: "+imageId);
         System.out.println("\nhemos creado la imagen \n " + imageId);
 
 
          */
         //logger.info("hemos creado la imagen " + imageId);
+        logger.info("Connection established with docker");
 
     }
 
@@ -82,10 +84,8 @@ public class ResultHandler {
             case "cpp":
                 new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
                 break;
-            
-        }
 
-        //System.out.println("Conenedor terminado");
+        }
 
     }
 
@@ -113,9 +113,10 @@ public class ResultHandler {
         } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
         } else {
-            // default: throw error
+            logger.error("running docker in unknown OS");
             throw new RuntimeException("Unknown Operating System! There is no url for "+osName);
         }
+        logger.info("OS: "+osName+"\nURL: "+dockerUrl);
         return dockerUrl;
     }
 }
