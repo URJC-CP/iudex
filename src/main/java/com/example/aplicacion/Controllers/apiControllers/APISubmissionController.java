@@ -102,11 +102,11 @@ public class APISubmissionController {
     @ApiOperation("Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId){
-        Submission submission = submissionService.getSubmission(submissionId);
-        if (submission == null){
+        Optional<Submission> submission = submissionService.getSubmission(submissionId);
+        if (submission.isEmpty()){
             return  new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(submission.toSubmissionAPIFull(), HttpStatus.OK);
+        return new ResponseEntity(submission.get().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
     @ApiOperation("Create a submission to a problem and contest")
