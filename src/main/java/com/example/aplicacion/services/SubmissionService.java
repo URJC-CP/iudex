@@ -87,7 +87,7 @@ public class SubmissionService {
         //Para que le asigne el@Id
         submissionRepository.save(submission);
         //Comprobamos q el problema pertenezca al contest
-        if(!contest.get().getListaProblemas().contains(problema)){
+        if(!contest.get().getListaProblemas().contains(problema.get())){
             submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
             return submissionStringResult;
         }
