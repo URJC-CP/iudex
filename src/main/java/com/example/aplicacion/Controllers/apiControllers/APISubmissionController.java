@@ -42,16 +42,16 @@ public class APISubmissionController {
 
         //Si tiene los dos devolvemos lo que corresponde
         if(contestId.isPresent()&&problemId.isPresent()){
-            Contest contest = contestService.getContest(contestId.get());
+            Optional<Contest> contest = contestService.getContest(contestId.get());
             Problem problem = problemService.getProblem(problemId.get());
-            if (problem == null || contest == null){
+            if (problem == null || contest.isEmpty()){
                 return  new ResponseEntity("Problem or contest not found", HttpStatus.NOT_FOUND);
             }
-            if (!contest.getListaProblemas().contains(problem)){
+            if (!contest.get().getListaProblemas().contains(problem)){
                 return new ResponseEntity("PROBLEM NOT IN THE CONTEST", HttpStatus.NOT_FOUND);
             }
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-            for (Submission submission: submissionService.getSubmissionFromProblemAndContest(problem,contest)){
+            for (Submission submission: submissionService.getSubmissionFromProblemAndContest(problem,contest.get())){
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
             return new ResponseEntity(submissionAPIS, HttpStatus.OK);
@@ -70,13 +70,13 @@ public class APISubmissionController {
             }
         }
         else if (contestId.isPresent()){
-            Contest contest = contestService.getContest(contestId.get());
-            if (contest == null) {
+            Optional<Contest> contest = contestService.getContest(contestId.get());
+            if (contest.isEmpty()) {
                 return  new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
             }
             else {
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-                for (Submission submission : submissionService.getSubmissionsFromContest(contest)){
+                for (Submission submission : submissionService.getSubmissionsFromContest(contest.get())){
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
                 return new ResponseEntity(submissionAPIS, HttpStatus.OK);

@@ -60,11 +60,11 @@ public class APIContestController {
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId){
 
         ContestAPI contestAPI = new ContestAPI();
-        Contest contest = contestService.getContest(contestId);
-        if(contest ==null){
+        Optional<Contest> contest = contestService.getContest(contestId);
+        if(contest.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        contestAPI=contest.toContestAPI();
+        contestAPI=contest.get().toContestAPI();
 
         ResponseEntity<ContestAPI> responseEntity = new ResponseEntity<>(contestAPI, HttpStatus.OK);
         return responseEntity;
