@@ -1,16 +1,15 @@
-  package com.example.aplicacion.Repository;
+package com.example.aplicacion.Repository;
 
+import com.example.aplicacion.Entities.Result;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-  import com.example.aplicacion.Entities.Result;
-  import com.example.aplicacion.Entities.Submission;
-  import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
 
-  import java.util.List;
+public interface ResultRepository extends JpaRepository<Result, Long> {
+    @Override
+    Optional<Result> findById(Long aLong);
+    Optional<Result> findResultById(long id);
 
-  public interface ResultRepository extends JpaRepository<Result, Long> {
-
-
-      Result findResultById(long id);
-      List<Result> findAll();
-
-  }
+    List<Result> findAll();
+}
