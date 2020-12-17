@@ -24,6 +24,7 @@ public class BasicController {
     public SubmissionRepository submissionRepository;
     @Autowired
     public ProblemRepository problemRepository;
+    Logger logger = LoggerFactory.getLogger(BasicController.class);
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
@@ -36,8 +37,6 @@ public class BasicController {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
-
-    Logger logger = LoggerFactory.getLogger(BasicController.class);
 
     @PostConstruct
     public void init() {
@@ -79,8 +78,9 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
+        logger.warn("Might cause NoSuchElementException if team is not saved in database");
         logger.info("Empezando creacion del concurso");
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of("Este es el mejor concurso del mundo"));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
         logger.info("Creacion del concurso terminado");
     }
 }
