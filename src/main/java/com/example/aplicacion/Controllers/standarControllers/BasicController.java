@@ -24,6 +24,7 @@ public class BasicController {
     public SubmissionRepository submissionRepository;
     @Autowired
     public ProblemRepository problemRepository;
+    Logger logger = LoggerFactory.getLogger(BasicController.class);
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
@@ -37,8 +38,6 @@ public class BasicController {
     @Autowired
     private TeamService teamService;
 
-    Logger logger = LoggerFactory.getLogger(BasicController.class);
-
     @PostConstruct
     public void init() {
         logger.info("Building Java language image ");
@@ -46,7 +45,7 @@ public class BasicController {
         String imageId = resultHandler.buildImage(dckfl);
         Language lenguaje = new Language("java", imageId);
         languageRepository.save(lenguaje);
-        logger.info("Built Java language image "+imageId+" from "+dckfl.getName());
+        logger.info("Built Java language image " + imageId + " from " + dckfl.getName());
 
         //Creamos el lenguaje Python
         logger.info("Building Python language image");
@@ -54,7 +53,7 @@ public class BasicController {
         String imageId2 = resultHandler.buildImage(dckfl2);
         Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);
-        logger.info("Built Python language image "+imageId2+" from "+dckfl2.getName());
+        logger.info("Built Python language image " + imageId2 + " from " + dckfl2.getName());
 
         //Creamos el lenguaje C
         logger.info("Building C language image");
@@ -62,7 +61,7 @@ public class BasicController {
         String imageId3 = resultHandler.buildImage(dckfl3);
         Language lenguaje3 = new Language("c", imageId3);
         languageRepository.save(lenguaje3);
-        logger.info("Built C language image "+imageId3+" from "+dckfl3.getName());
+        logger.info("Built C language image " + imageId3 + " from " + dckfl3.getName());
 
         //Creamos el lenguaje CPP
         logger.info("Building C++ language image");
@@ -70,7 +69,7 @@ public class BasicController {
         String imageId4 = resultHandler.buildImage(dckfl4);
         Language lenguaje4 = new Language("cpp", imageId4);
         languageRepository.save(lenguaje4);
-        logger.info("Built C++ language image "+imageId4+" from "+dckfl4.getName());
+        logger.info("Built C++ language image " + imageId4 + " from " + dckfl4.getName());
 
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");

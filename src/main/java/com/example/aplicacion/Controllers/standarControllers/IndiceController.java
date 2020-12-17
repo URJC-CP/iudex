@@ -24,7 +24,7 @@ import java.util.Optional;
 public class IndiceController {
 
     private final RabbitTemplate rabbitTemplate;
-
+    Logger logger = LoggerFactory.getLogger(RabbitTemplate.class);
     @Autowired
     private SubmissionService submissionService;
     @Autowired
@@ -37,8 +37,6 @@ public class IndiceController {
     private UserService userService;
     @Autowired
     private TeamService teamService;
-
-    Logger logger = LoggerFactory.getLogger(RabbitTemplate.class);
 
     //Inicio del rabbittemplate
     public IndiceController(RabbitTemplate rabbitTemplate) {
@@ -62,18 +60,18 @@ public class IndiceController {
 
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
-        logger.debug("Answer has been submitted\nProblem: "+problemaAsignado+", Language: "+lenguaje
-                +"\nTeam: "+teamId+", Contest: "+contestId);
+        logger.debug("Answer has been submitted\nProblem: " + problemaAsignado + ", Language: " + lenguaje
+                + "\nTeam: " + teamId + ", Contest: " + contestId);
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
 
-        logger.debug("Running Submission...\nProblem: "+problemaAsignado+", Language: "+lenguaje
-                +"\nTeam: "+teamId+", Contest: "+contestId);
+        logger.debug("Running Submission...\nProblem: " + problemaAsignado + ", Language: " + lenguaje
+                + "\nTeam: " + teamId + ", Contest: " + contestId);
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
-        logger.debug("Submission "+salida.getSubmission().getId()+" finished running with "+salida.getSalida());
+        logger.debug("Submission " + salida.getSubmission().getId() + " finished running with " + salida.getSalida());
 
         if (salida.equals("OK")) {
             return "redirect:/";
@@ -94,30 +92,29 @@ public class IndiceController {
         return "redirect:/";
     }
 
-
     @PostMapping("/asignaProblemaAContest")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String contestId) {
-        logger.debug("Adding problem "+problemId+" to contest "+contestId);
+        logger.debug("Adding problem " + problemId + " to contest " + contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
         if (salida.equals("OK")) {
-            logger.debug("Add problem "+problemId+" to contest "+contestId+" success");
+            logger.debug("Add problem " + problemId + " to contest " + contestId + " success");
         } else {
-            logger.error("Add problem "+problemId+" to contest "+contestId+" failed with "+salida);
+            logger.error("Add problem " + problemId + " to contest " + contestId + " failed with " + salida);
         }
         return "indexOriginal";
     }
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail) {
-        logger.debug("Create user "+userNickname+" "+userMail+" request received");
+        logger.debug("Create user with " + userNickname + " and " + userMail + " request received");
         String salida = userService.crearUsuario(userNickname, userMail).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create user "+userNickname+", "+userMail+" success");
+            logger.debug("Create user " + userNickname + " and " + userMail + " success");
             return "redirect:/";
         } else {
-            logger.error("Create user "+userNickname+", "+userMail+" failed with "+salida);
+            logger.error("Create user " + userNickname + " and " + userMail + " failed with " + salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -125,13 +122,13 @@ public class IndiceController {
 
     @PostMapping("/creaContest")
     public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion) {
-        logger.debug("Create contest "+contestName+" request received for team "+teamId);
+        logger.debug("Create contest " + contestName + " request received for team " + teamId);
         String salida = contestService.creaContest(contestName, teamId, descripcion).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create contest "+contestName+" success for team "+teamId);
+            logger.debug("Create contest " + contestName + " success for team " + teamId);
         } else {
-            logger.error("Create contest "+contestName+" failed with "+salida);
+            logger.error("Create contest " + contestName + " for team " + teamId + " failed with " + salida);
         }
         return "redirect:/";
     }
