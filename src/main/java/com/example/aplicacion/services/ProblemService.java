@@ -403,7 +403,7 @@ public class ProblemService {
 
         if(teamId.isPresent()){
             Optional<Team> team = teamRepository.findTeamById(Long.valueOf(teamId.get()));
-            if (team == null){
+            if (team.isEmpty()){
                 salida.setSalida("ERROR TEAMID NOT FOUND");
                 return salida;
             }
