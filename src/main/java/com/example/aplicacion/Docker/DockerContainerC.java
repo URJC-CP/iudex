@@ -18,13 +18,14 @@ public class DockerContainerC extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
+        logger.debug("Building container for image " + imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
-        String nombreDocker = "a" + Long.toString(result.getId()) + "_" + java.time.LocalDateTime.now();
+        String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
         nombreDocker = nombreDocker.replace(":", "");
 
         String timeout;
@@ -41,7 +42,7 @@ public class DockerContainerC extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".c").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.info("DOCKERC: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de " + result.getMaxMemory());
+        logger.info("DOCKERC: Building container for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".c", result.getCodigo(), "/root");
@@ -88,7 +89,7 @@ public class DockerContainerC extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERC: Se termina el result " + result.getId() + " ");
+        logger.info("DOCKERC: Finished running container for result " + result.getId() + " ");
         return result;
     }
 }
