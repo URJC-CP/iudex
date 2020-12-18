@@ -58,7 +58,7 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest);
-        logger.debug("Finish build contest " + nameContest + "\nId: " + contest.getId());
+        logger.info("Finish build contest " + nameContest + "\nId: " + contest.getId());
         return salida;
     }
 
@@ -99,7 +99,7 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest);
-        logger.debug("Finish update contest " + contestId);
+        logger.info("Finish update contest " + contestId);
         return salida;
     }
 
@@ -129,7 +129,7 @@ public class ContestService {
 
         //borramos el contest
         contestRepository.delete(contest);
-        logger.debug("Finish delete contest " + idcontest);
+        logger.info("Finish delete contest " + idcontest);
         return "OK";
     }
 
@@ -151,7 +151,7 @@ public class ContestService {
         }
         contest.addProblem(problema);
         contestRepository.save(contest);
-        logger.debug("Finish add problem " + idProblema + " to contest " + idContest);
+        logger.info("Finish add problem " + idProblema + " to contest " + idContest);
         return "OK";
     }
 
@@ -174,7 +174,7 @@ public class ContestService {
         contest.deleteProblem(problema);
         contestRepository.save(contest);
 
-        logger.debug("Finish delete problem " + idProblema + " from contest " + idContest);
+        logger.info("Finish delete problem " + idProblema + " from contest " + idContest);
         return "OK";
     }
 
@@ -198,7 +198,7 @@ public class ContestService {
                 return "YA ESTA EN EL CONCURSO";
             }
         }
-        logger.debug("Finish add team/user " + idTeam + " to contest " + idcontest);
+        logger.info("Finish add team/user " + idTeam + " to contest " + idcontest);
         return "OK";
     }
 
@@ -223,7 +223,7 @@ public class ContestService {
                 contestRepository.save(contest);
             }
         }
-        logger.debug("Finish delete team/user " + idTeam + " from contest " + idcontest);
+        logger.info("Finish delete team/user " + idTeam + " from contest " + idcontest);
         return "OK";
     }
 
