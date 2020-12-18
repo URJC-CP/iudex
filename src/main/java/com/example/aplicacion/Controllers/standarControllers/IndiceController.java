@@ -45,7 +45,7 @@ public class IndiceController {
 
     @GetMapping("/")
     public ModelAndView index() {
-        logger.debug("Get request received for Rabbit");
+        logger.debug("Get request received for main page");
         ModelAndView model = new ModelAndView();
         //Pruebas de rabbit
         model.getModel().put("exercices", problemService.getAllProblemas());
@@ -54,14 +54,14 @@ public class IndiceController {
         model.getModel().put("teams", teamService.getAllTeams());
         model.setViewName("indexOriginal");
         //return new RedirectView()
-        logger.debug("Showing Rabbit's main page");
+        logger.debug("Show main page");
         return model;
     }
 
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
-        logger.debug("Answer has been submitted\nProblem: " + problemaAsignado + ", Language: " + lenguaje
-                + "\nTeam: " + teamId + ", Contest: " + contestId);
+        logger.debug(" Submit answer\nProblem: " + problemaAsignado + ", Language: " + lenguaje
+                + "\nTeam/user: " + teamId + ", Contest: " + contestId);
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
@@ -83,11 +83,11 @@ public class IndiceController {
 
     @GetMapping("/scoreboard")
     public String subida(Model model) {
-
+        logger.debug("Get request received for scoreboard");
         //Cargamos la BBDD de answer en el scoreboard
         Page<Submission> listSubmiss = submissionService.getNSubmissions(10);
         model.addAttribute("submissions", listSubmiss);
-
+        logger.debug("Show submissions");
 
         return "redirect:/";
     }
