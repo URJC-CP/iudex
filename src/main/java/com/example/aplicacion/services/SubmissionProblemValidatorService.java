@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +28,20 @@ public class SubmissionProblemValidatorService {
     @Autowired
     private SubmissionService submissionService;
 
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName , String expectedResult, String idContest, String idEquipo){
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName, String expectedResult, String idContest, String idEquipo) {
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();
         submissionProblemValidator.setExpectedSolution(expectedResult);
 
         //Creamos la submission
         SubmissionStringResult submissionStringResult = submissionService.creaSubmissionProblemValidator(codigo, problema, lenguaje, fileName, idContest, idEquipo);
-        if(!submissionStringResult.getSalida().equals("OK")){
+        if (!submissionStringResult.getSalida().equals("OK")) {
             //REVISAR
             return null;
         }
         submissionProblemValidator.setSubmission(submissionStringResult.getSubmission());
 
         return submissionProblemValidator;
-
     }
-
 
     /*
     //clase que crea los results y los services dentro de un submission
@@ -97,6 +96,5 @@ public class SubmissionProblemValidatorService {
 
         return submissionProblemValidator;
     }
-
      */
 }
