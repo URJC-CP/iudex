@@ -92,6 +92,7 @@ public class ProblemService {
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
         if (!(problemString.getSalida() == null)) {
+            logger.error("Problem " + problem.getId() + " couldn't be saved");
             //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
             return salida;
@@ -100,7 +101,6 @@ public class ProblemService {
         contest.addProblem(problem);
         problem.getListaContestsPertenece().add(contest);
         problemRepository.save(problem);
-
         contestRepository.save(contest);
 
         problemValidatorService.validateProblem(problem);
@@ -111,7 +111,6 @@ public class ProblemService {
         salida.setSalida("OK");
         logger.info("Finish build problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return salida;
-
     }
 
     public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
@@ -148,7 +147,7 @@ public class ProblemService {
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
         if (!(problemString.getSalida() == null)) {
-            logger.error("Couldn't save problem " + problem.getId());
+            logger.error("Problem " + problem.getId() + " couldn't be saved");
             //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
             return salida;
@@ -156,7 +155,6 @@ public class ProblemService {
 
         //contest.addProblem(problem);
         //problem.getListaContestsPertenece().add(contest);
-
 
         //problemValidatorService.validateProblem(problem);
         //Devolvemos la version actualizada despues de los save
