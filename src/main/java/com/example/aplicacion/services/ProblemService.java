@@ -76,8 +76,9 @@ public class ProblemService {
 
         //obtener nombre del problema
         String exerciseName = nombreProblema;
-        if (nombreProblema == null || nombreProblema.trim().equals(""))
+        if (nombreProblema == null || nombreProblema.trim().equals("")) {
             exerciseName = nombreFichero.split("\\.")[0];
+        }
         if (exerciseName.equals("")) {
             logger.error("Problem name is missing");
             salida.setSalida("Nombre del problema vacio");
