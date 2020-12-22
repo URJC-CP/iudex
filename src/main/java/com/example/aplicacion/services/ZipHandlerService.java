@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-
 //Clase que lee el zip y genera el problema adecuado
 @Service
 public class ZipHandlerService {
@@ -181,7 +180,6 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
-
         //Creamos los RESULTs
         for (Submission submission : problem.getSubmissions()) {
             submissionService.creaResults(submission, problem, submission.getCodigo(), submission.getLanguage());
@@ -276,8 +274,6 @@ public class ZipHandlerService {
     //clase que coge un zipInput y lo convierte en string a traves del zipentry
     private String convertZipToString(ZipInputStream zipFile) throws IOException {
         StringBuilder salida = new StringBuilder();
-
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile));
 
         String linea;
@@ -398,7 +394,5 @@ public class ZipHandlerService {
         if ((aux = mapa.get("validator_flags")) != null) {
             problem.setValidation_flags(aux.toString());
         }
-
-
     }
 }
