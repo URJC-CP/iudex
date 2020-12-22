@@ -24,6 +24,7 @@ public class BasicController {
     public SubmissionRepository submissionRepository;
     @Autowired
     public ProblemRepository problemRepository;
+    Logger logger = LoggerFactory.getLogger(BasicController.class);
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
@@ -36,8 +37,6 @@ public class BasicController {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
-
-    Logger logger = LoggerFactory.getLogger(BasicController.class);
 
     @PostConstruct
     public void init() {
@@ -65,7 +64,6 @@ public class BasicController {
         languageRepository.save(lenguaje3);
         logger.info("Creacion de la imagen del lenguaje c terminado");
 
-
         //Creamos el lenguaje CPP
         logger.info("Empezando creacion de la imagen del lenguaje c++");
         File dckfl4 = new File("DOCKERS/CPP/Dockerfile");
@@ -80,7 +78,7 @@ public class BasicController {
         //userService.deleteUserByNickname("pavloXD");
 
         logger.info("Empezando creacion del concurso");
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").getId()), Optional.of("Este es el mejor concurso del mundo"));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
         logger.info("Creacion del concurso terminado");
     }
 }

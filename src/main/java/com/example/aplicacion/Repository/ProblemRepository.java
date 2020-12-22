@@ -1,26 +1,18 @@
-  package com.example.aplicacion.Repository;
+package com.example.aplicacion.Repository;
 
+import com.example.aplicacion.Entities.Problem;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-  import com.example.aplicacion.Entities.Problem;
-  import com.example.aplicacion.Entities.Submission;
-  import org.springframework.data.domain.Page;
-  import org.springframework.data.domain.Pageable;
-  import org.springframework.data.jpa.repository.JpaRepository;
-  import org.springframework.data.jpa.repository.Query;
-  import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-  import java.util.List;
+public interface ProblemRepository extends JpaRepository<Problem, Long> {
+    boolean existsByNombreEjercicio(String nombre);
 
-  public interface ProblemRepository extends JpaRepository<Problem, Long> {
+    Optional<Problem> findProblemById(long id);
+    Optional<Problem> findProblemByNombreEjercicio(String nombreEjercicio);
+    Optional<Problem> findById(long id);
 
-
-      Problem findProblemById(long id);
-      Problem findProblemByNombreEjercicio(String nombreEjercicio);
-      Problem findById(long id);
-      boolean existsByNombreEjercicio(String nombre);
-
-
-      Page<Problem> findAll(Pageable pageable);
-
-
-  }
+    Page<Problem> findAll(Pageable pageable);
+}

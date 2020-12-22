@@ -28,9 +28,9 @@ public class ContestService {
     @Autowired
     private ProblemService problemService;
 
-    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion){
+    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion) {
         ContestString salida = new ContestString();
-        if(contestRepository.existsByNombreContest(nameContest)){
+        if (contestRepository.existsByNombreContest(nameContest)) {
             salida.setSalida("contest NAME DUPLICATED");
             return salida;
         }
@@ -38,15 +38,15 @@ public class ContestService {
         Contest contest = new Contest();
         contest.setNombreContest(nameContest);
 
-        if(descripcion.isPresent()){
+        if (descripcion.isPresent()) {
             contest.setDescripcion(descripcion.get());
         }
-        Team team =teamRepository.findTeamById(Long.valueOf(teamId));
-        if (team == null) {
+        Optional<Team> team = teamRepository.findTeamById(Long.valueOf(teamId));
+        if (team.isEmpty()) {
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
-        contest.setTeamPropietario(team);
+        contest.setTeamPropietario(team.get());
 
         contestRepository.save(contest);
 
@@ -55,46 +55,46 @@ public class ContestService {
         return salida;
     }
 
-    public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion){
+    public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion) {
         ContestString salida = new ContestString();
         //Buscamos el contest
-        Contest contest = contestRepository.findContestById(Long.valueOf(contestId));
-        if (contest == null){
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(contestId));
+        if (contest.isEmpty()) {
             salida.setSalida("CONTEST ID DOES NOT EXIST");
             return salida;
         }
 
         //Si namecontest esta presente lo cambiamos
-        if(nameContest.isPresent()){
-            if(contestRepository.existsByNombreContest(nameContest.get())){
+        if (nameContest.isPresent()) {
+            if (contestRepository.existsByNombreContest(nameContest.get())) {
                 salida.setSalida("CONTEST NAME DUPLICATED");
                 return salida;
             }
-            contest.setNombreContest(nameContest.get());
+            contest.get().setNombreContest(nameContest.get());
         }
 
-        if (teamId.isPresent()){
-            Team team =teamRepository.findTeamById(Long.valueOf(teamId.get()));
-            if (team == null) {
+        if (teamId.isPresent()) {
+            Optional<Team> team = teamRepository.findTeamById(Long.valueOf(teamId.get()));
+            if (team.isEmpty()) {
                 salida.setSalida("TEAM NOT FOUND");
                 return salida;
             }
-            contest.setTeamPropietario(team);
+            contest.get().setTeamPropietario(team.get());
         }
-        if(descripcion.isPresent()){
-            contest.setDescripcion(descripcion.get());
+        if (descripcion.isPresent()) {
+            contest.get().setDescripcion(descripcion.get());
         }
-        contestRepository.save(contest);
+        contestRepository.save(contest.get());
 
         salida.setSalida("OK");
-        salida.setContest(contest);
+        salida.setContest(contest.get());
         return salida;
     }
 
 
-    public String deleteContest(String idcontest){
-        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
-        if(contest ==null){
+    public String deleteContest(String idcontest) {
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        if (contest.isEmpty()) {
             return "contest NOT FOUND";
         }
         /*
@@ -114,106 +114,100 @@ public class ContestService {
          */
 
         //borramos el contest
-        contestRepository.delete(contest);
+        contestRepository.delete(contest.get());
 
         return "OK";
     }
 
-    public String anyadeProblemaContest(String idContest, String idProblema){
+    public String anyadeProblemaContest(String idContest, String idProblema) {
 
-        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
-        Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
-        if(contest ==null){
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
+        Optional<Problem> problema = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if (contest.isEmpty()) {
             return "contest NOT FOUND";
         }
-        if (problema==null){
+        if (problema.isEmpty()) {
             return "USER NOT FOUND";
         }
-        if(contest.getListaProblemas().contains(problema)){
+        if (contest.get().getListaProblemas().contains(problema.get())) {
             return "PROBLEM DUPLICATED";
         }
-        contest.addProblem(problema);
-        contestRepository.save(contest);
+        contest.get().addProblem(problema.get());
+        contestRepository.save(contest.get());
 
         return "OK";
     }
 
-    public String deleteProblemFromContest(String idContest, String idProblema){
-
-        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
-        Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
-        if(contest ==null){
+    public String deleteProblemFromContest(String idContest, String idProblema) {
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
+        Optional<Problem> problema = problemRepository.findProblemById(Long.valueOf(idProblema));
+        if (contest.isEmpty()) {
             return "contest NOT FOUND";
         }
-        if (problema==null){
+        if (problema.isEmpty()) {
             return "USER NOT FOUND";
         }
-        if(!contest.getListaProblemas().contains(problema)){
+        if (!contest.get().getListaProblemas().contains(problema.get())) {
             return "PROBLEM NOT IN CONCURSO";
         }
-        contest.deleteProblem(problema);
-        contestRepository.save(contest);
-
+        contest.get().deleteProblem(problema.get());
+        contestRepository.save(contest.get());
 
         return "OK";
     }
 
-    public String addTeamTocontest(String idTeam, String idcontest){
-        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
-        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
-        if(contest ==null){
+    public String addTeamTocontest(String idTeam, String idcontest) {
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        Optional<Team> team = teamRepository.findTeamById(Long.valueOf(idTeam));
+        if (contest.isEmpty()) {
             return "contest NOT FOUND";
         }
-        if (team==null){
+        if (team.isEmpty()) {
             return "USER NOT FOUND";
-        }
-        else {
-            if(!contest.getListaParticipantes().contains(team)){
-                contest.addTeam(team);
-                contestRepository.save(contest);
-
-            }
-            else {
+        } else {
+            if (!contest.get().getListaParticipantes().contains(team.get())) {
+                contest.get().addTeam(team.get());
+                contestRepository.save(contest.get());
+            } else {
                 return "YA ESTA EN EL CONCURSO";
             }
         }
         return "OK";
     }
 
-
-    public String deleteTeamFromcontest(String idcontest, String idTeam){
-        Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
-        Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
-        if(contest ==null){
+    public String deleteTeamFromcontest(String idcontest, String idTeam) {
+        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idcontest));
+        Optional<Team> team = teamRepository.findTeamById(Long.valueOf(idTeam));
+        if (contest.isEmpty()) {
             return "contest NOT FOUND";
         }
-        if (team==null){
+        if (team.isEmpty()) {
             return "USER NOT FOUND";
-        }
-        else {
-            if(!contest.getListaParticipantes().contains(team)){
+        } else {
+            if (!contest.get().getListaParticipantes().contains(team.get())) {
                 return "NO ESTA EN EL CONCURSO";
-            }
-            else {
-                contest.deleteTeam(team);
-                contestRepository.save(contest);
+            } else {
+                contest.get().deleteTeam(team.get());
+                contestRepository.save(contest.get());
             }
         }
         return "OK";
     }
 
-    public List<ProblemAPI> getProblemsFromConcurso(Contest contest){
-        List<ProblemAPI> problemAPIS = contest.getListaProblemas().stream().map(x->x.toProblemAPI()).collect(Collectors.toList());
+    public List<ProblemAPI> getProblemsFromConcurso(Contest contest) {
+        List<ProblemAPI> problemAPIS = contest.getListaProblemas().stream().map(x -> x.toProblemAPI()).collect(Collectors.toList());
         return problemAPIS;
     }
-    public Contest getContest(String idContest){
+
+    public Optional<Contest> getContest(String idContest) {
         return contestRepository.findContestById(Long.valueOf(idContest));
     }
-    public List<Contest> getAllContests(){
+
+    public List<Contest> getAllContests() {
         return contestRepository.findAll();
     }
 
-    public Page<Contest> getContestPage(Pageable pageable){
+    public Page<Contest> getContestPage(Pageable pageable) {
         return contestRepository.findAll(pageable);
     }
 

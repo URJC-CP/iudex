@@ -1,8 +1,10 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Entities.Problem;
+import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.Entities.Submission;
+import com.example.aplicacion.Entities.SubmissionProblemValidator;
 import com.example.aplicacion.Repository.*;
-import com.example.aplicacion.TheJudgeApplication;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +15,16 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
+import java.util.Optional;
 
 //Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
 @Service
 
 public class ProblemValidatorService {
 
+    Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
     @Autowired
     private RabbitTemplate rabbitTemplate;
-
     @Autowired
     private SubmissionRepository submissionRepository;
     @Autowired
@@ -33,21 +35,18 @@ public class ProblemValidatorService {
     private LanguageRepository languageRepository;
     @Autowired
     private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
-
     @Autowired
     private RabbitResultExecutionSender sender;
 
-    Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
+    public void validateProblem(Problem problemA) {
+        Optional<Problem> problem = problemRepository.findProblemById(problemA.getId());
 
-    public void validateProblem(Problem problemA){
-
-        Problem problem = problemRepository.findProblemById(problemA.getId());
         //Recorremos la lista de submission y las enviamos
-        if(problem.getSubmissionProblemValidators().size()!=0){
-            for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
+        if (problem.get().getSubmissionProblemValidators().size() != 0) {
+            for (SubmissionProblemValidator submissionProblemValidator : problem.get().getSubmissionProblemValidators()) {
 
-                Submission submission= submissionProblemValidator.getSubmission();
-                logger.info("La submision "+ submission.getId()+" del problema "+ problem.getId()+" se empieza a recorrer");
+                Submission submission = submissionProblemValidator.getSubmission();
+                logger.info("La submision " + submission.getId() + " del problema " + problem.get().getId() + " se empieza a recorrer");
 
                 //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
@@ -78,14 +77,13 @@ public class ProblemValidatorService {
              */
 
                 //Ejecutamos
-                if(submission.getLanguage()!=null){
+                if (submission.getLanguage() != null) {
 
-                    for (Result res : submission.getResults()  ) {
-                        logger.info(" El result " + res.getId()+" de la submission "+submission.getId() +" se manda a ejecutar");
+                    for (Result res : submission.getResults()) {
+                        logger.info(" El result " + res.getId() + " de la submission " + submission.getId() + " se manda a ejecutar");
                         sender.sendMessage(res);
                     }
-                }
-                else {
+                } else {
                     logger.error(" El lenguaje no esta soportado");
 
                 }
@@ -94,25 +92,25 @@ public class ProblemValidatorService {
         }
         //Si es un problema sin submission validamos
         else {
-            problem.setValido(true);
-            logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado (NO TIENE CASOS DE PRUEBA)");
-            problemRepository.save(problem);
+            problem.get().setValido(true);
+            logger.info("El problema " + problem.get().getNombreEjercicio() + " ha sido validado (NO TIENE CASOS DE PRUEBA)");
+            problemRepository.save(problem.get());
         }
 
     }
 
 
-    public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator){
+    public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator) {
+        long problemId = submissionProblemValidator.getSubmission().getProblema().getId();
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
-        Problem problem = problemRepository.findById(submissionProblemValidator.getSubmission().getProblema().getId());
+        Optional<Problem> problem = problemRepository.findById(problemId);
+        logger.info("COMPROBANDO PROBLEMA: La comprobacion del problema " + problem.get().getNombreEjercicio() + " se ha comenzado");
 
-        logger.info("COMPROBANDO PROBLEMA: La comprobacion del problema " + problem.getNombreEjercicio()+ " se ha comenzado");
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
         Boolean estaTerminado = true;
-        for(SubmissionProblemValidator submissionProblemValidator1:problem.getSubmissionProblemValidators()){
-            if(submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()){
-            }
-            else {  //Aun no ha terminado
+        for (SubmissionProblemValidator submissionProblemValidator1 : problem.get().getSubmissionProblemValidators()) {
+            if (submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()) {
+            } else {  //Aun no ha terminado
                 estaTerminado = false;
                 break;
             }
@@ -120,29 +118,25 @@ public class ProblemValidatorService {
 
 
         //Si esta terminado ejecutaremos que el resultado correspondiente de cada submission es el q tiene q ser, q los accepted sean aceepted etcetc
-        if(estaTerminado){
+        if (estaTerminado) {
             //En caso de que sea valido lo apuntamos
-            if(checkSubmissionResultIsValide(problem)){
-                problem.setValido(true);
-                logger.info("El problema "+ problem.getNombreEjercicio() + " ha sido validado");
-
-            }else
-            {
-                problem.setValido(false);
-                logger.info("El problema "+ problem.getNombreEjercicio() + " NO es valido");
-
-
+            if (checkSubmissionResultIsValide(problem.get())) {
+                problem.get().setValido(true);
+                logger.info("El problema " + problem.get().getNombreEjercicio() + " ha sido validado");
+            } else {
+                problem.get().setValido(false);
+                logger.info("El problema " + problem.get().getNombreEjercicio() + " NO es valido");
             }
-            problemRepository.save(problem);
+            problemRepository.save(problem.get());
         }
 
     }
 
     //checkea que la submission del problema den el resultado q tienen que dar
-    private boolean checkSubmissionResultIsValide(Problem problem){
+    private boolean checkSubmissionResultIsValide(Problem problem) {
         boolean salida = true;
 
-        for(SubmissionProblemValidator submissionProblemValidator: problem.getSubmissionProblemValidators()){
+        for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
             Submission submission = submissionProblemValidator.getSubmission();
 
             //Obtenemos la primera linea del resultado del Submission
@@ -154,13 +148,12 @@ public class ProblemValidatorService {
             }
 
             //Si el resultado esperado es igual al obtenido devolvemos true si no false
-            if(submissionProblemValidator.getExpectedSolution().equals(aux)){
+            if (submissionProblemValidator.getExpectedSolution().equals(aux)) {
 
-            }
-            else {
-                salida= false;
-                logger.warn("COMPROBANDO PROBLEMA: La submission "+submissionProblemValidator.getSubmission().getId()+" NO da el resultado esperado");
-                logger.warn("COMPROBANDO PROBLEMA: Se espera " +submissionProblemValidator.getExpectedSolution()+ " se obtiene " + aux);
+            } else {
+                salida = false;
+                logger.warn("COMPROBANDO PROBLEMA: La submission " + submissionProblemValidator.getSubmission().getId() + " NO da el resultado esperado");
+                logger.warn("COMPROBANDO PROBLEMA: Se espera " + submissionProblemValidator.getExpectedSolution() + " se obtiene " + aux);
 
             }
 
@@ -184,7 +177,6 @@ public class ProblemValidatorService {
     }
 
      */
-
 
 
 }
