@@ -290,11 +290,11 @@ public class SubmissionService {
             return "CONCURSO NOT CONTAINS PROBLEM";
         }
         if (submission.getProblema().equals(problem)) {
-            logger.error("Submission " + submissionId + " not from problem " + problemId);
+            logger.error("Submission " + submissionId + " not in problem " + problemId);
             return "SUBMISSION NO PERTENECE A ESTE PROBLEMA";
         }
         if (submission.getContest().equals(contest)) {
-            logger.error("Submission " + submissionId + " not from contest " + contestId);
+            logger.error("Submission " + submissionId + " not in contest " + contestId);
             return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
         }
         logger.info("Finish delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
