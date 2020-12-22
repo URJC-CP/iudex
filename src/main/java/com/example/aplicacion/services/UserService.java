@@ -43,7 +43,6 @@ public class UserService {
             if (salidaCreaTeam.equals("OK")) {
                 //Sacamos el equipo creado anteriormente
                 Optional<Team> team = teamRepository.findByNombreEquipo(nickname);
-                logger.warn("Might cause if team " + nickname + " is not saved in database");
                 user.addTeam(team.get());
 
                 //Anyadimos el user al equipo
@@ -70,7 +69,6 @@ public class UserService {
             userRepository.delete(user.get());
             //borramos el equipo del usuario
             Optional<Team> team = teamRepository.findByNombreEquipo(nickname);
-            logger.warn("Might cause if team " + nickname + " is not saved in database");
             teamRepository.delete(team.get());
             return "OK";
         }

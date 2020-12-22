@@ -38,7 +38,6 @@ public class RabbitResultRevieserReceiver {
         resultRepository.save(res);
 
         Optional<Submission> submission = submissionRepository.findSubmissionByResults(res);
-        logger.warn("Might cause NoSuchElementException if submission of result " + res.getId() + " is not saved in database");
         submission.get().sumarResultCorregido();
 
         //en caso de que ya se hayan corregido todos mandaremos una senal para que se valide el submission

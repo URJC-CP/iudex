@@ -64,7 +64,6 @@ public class BasicController {
         languageRepository.save(lenguaje3);
         logger.info("Creacion de la imagen del lenguaje c terminado");
 
-
         //Creamos el lenguaje CPP
         logger.info("Empezando creacion de la imagen del lenguaje c++");
         File dckfl4 = new File("DOCKERS/CPP/Dockerfile");
@@ -78,7 +77,6 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        logger.warn("Might cause NoSuchElementException if team is not saved in database");
         logger.info("Empezando creacion del concurso");
         contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
         logger.info("Creacion del concurso terminado");

@@ -40,7 +40,6 @@ public class ProblemValidatorService {
 
     public void validateProblem(Problem problemA) {
         Optional<Problem> problem = problemRepository.findProblemById(problemA.getId());
-        logger.warn("Might cause NoSuchElementException if problem " + problemA.getId() + " is not in database");
 
         //Recorremos la lista de submission y las enviamos
         if (problem.get().getSubmissionProblemValidators().size() != 0) {
@@ -105,8 +104,6 @@ public class ProblemValidatorService {
         long problemId = submissionProblemValidator.getSubmission().getProblema().getId();
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Optional<Problem> problem = problemRepository.findById(problemId);
-
-        logger.warn("Might cause NoSuchElementException if problem " + problemId + " is not in database");
         logger.info("COMPROBANDO PROBLEMA: La comprobacion del problema " + problem.get().getNombreEjercicio() + " se ha comenzado");
 
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
