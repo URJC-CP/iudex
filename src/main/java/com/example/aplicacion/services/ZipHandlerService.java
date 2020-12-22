@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,10 +42,16 @@ public class ZipHandlerService {
         Map<String, List<String>> mapaRevisionEntradas = new HashMap<>();
 
         //Guardamos el nombre del problema
-        if(problem.getNombreEjercicio()==null){
-            problem.setNombreEjercicio(problemName.split("\\.")[0]);
+        if (problem.getNombreEjercicio() == null) {
+            problem.setNombreEjercicio(problemName.trim().split("\\.")[0]);
+            if (problem.getNombreEjercicio().trim().equals("")) {
+                logger.error("Problem name is missing");
+                problemString.setSalida("Nombre del problema vacio");
+                return problemString;
+            }
         }
-        logger.info("ZIPUNCOMRESS: Se ha anyadido un nuevo zip para descomprimir con el nombre: "+ problem.getNombreEjercicio());
+
+        logger.info("ZIPUNCOMRESS: Se ha anyadido un nuevo zip para descomprimir con el nombre: " + problem.getNombreEjercicio());
 
         //Empezamos a descomprimir
         ZipInputStream zipFile = new ZipInputStream(inputStream);
@@ -60,7 +69,7 @@ public class ZipHandlerService {
             //ER para gestionar los path
             Matcher m = p.matcher(nombreZip);
             //Si entra significa q es de la categoria /algo/algo/fichero
-            if (m.find()){
+            if (m.find()) {
                 //Objetemos el primer gruo data
                 //String path = m.group(1);
                 String path1 = m.group(1);
@@ -72,20 +81,20 @@ public class ZipHandlerService {
                 path1 = path1.replaceAll(".+/", "");
 
                 //Si es ES de ejemplo
-                if(path1.equals("data") && path2.equals("sample")){
-                    if(extension.equals("ans")){
+                if (path1.equals("data") && path2.equals("sample")) {
+                    if (extension.equals("ans")) {
                         //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
-                        addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
+                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
-                        String aux = convertZipToString( zipFile);
+                        String aux = convertZipToString(zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addSalidaVisible(inNOut);
-                    }else if(extension.equals("in")){
+                    } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
-                        addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
-                        String aux = convertZipToString( zipFile);
+                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                        String aux = convertZipToString(zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
@@ -93,62 +102,58 @@ public class ZipHandlerService {
                     }
                 }
                 //Si es ES secreta
-                else if(path1.equals("data") && path2.equals("secret")){
-                    if(extension.equals("ans")){
+                else if (path1.equals("data") && path2.equals("secret")) {
+                    if (extension.equals("ans")) {
                         //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
-                        addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
+                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
-                        String aux = convertZipToString( zipFile);
+                        String aux = convertZipToString(zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addSalidaOculta(inNOut);
-                    }else if(extension.equals("in")){
+                    } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
-                        addStringToMap(mapaRevisionEntradas, path2+"/"+filename, extension);
-                        String aux = convertZipToString( zipFile);
+                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                        String aux = convertZipToString(zipFile);
                         InNOut inNOut = new InNOut(filename, aux);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addEntradaOculta(inNOut);
-                        logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema "+ problemName);
+                        logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema " + problemName);
                     }
                 }
                 //Buscamos ahora las submission
-                if ("submissions".equals(path1)){
-                    String resultadoEsperado ="";
+                if ("submissions".equals(path1)) {
+                    String resultadoEsperado = "";
 
-                    if( path2.equals("accepted")){
+                    if (path2.equals("accepted")) {
                         resultadoEsperado = "accepted";
 
-                    }
-                    else if (path2.equals("wrong_answer")){
+                    } else if (path2.equals("wrong_answer")) {
                         resultadoEsperado = "wrong_answer";
-                    }
-                    else if (path2.equals("run_time_error")){
+                    } else if (path2.equals("run_time_error")) {
                         resultadoEsperado = "run_time_error";
-                    }
-                    else {
+                    } else {
                         logger.warn("ZIPHANDLER: Se ha introducido una carpeta dentro de submissions con un nombre no compatible");
                         break;
                     }
 
                     //Buscamos el lenguaje que es analizando la extension
                     String lenguaje = selectLenguaje(extension);
-                    if(lenguaje==null){
+                    if (lenguaje == null) {
                         //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
-                        logger.error("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
+                        logger.error("ZIPHANDLER: " + extension + "NO es un lenguaje soportado");
 
-                    }
-                    else {
-                        logger.info("ZIPCOMPRESS: Detectado el lenguaje "+lenguaje);
+                    } else {
+                        logger.info("ZIPCOMPRESS: Detectado el lenguaje " + lenguaje);
                         //obtenemos el string del codigo
-                        String aux = convertZipToString( zipFile);
+                        String aux = convertZipToString(zipFile);
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename,  resultadoEsperado, contestId, teamId);
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, contestId, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.getSubmissionProblemValidators().add(submissionProblemValidator);
-                        logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema "+ problemName);
+                        logger.info("ZIPCOMPRESS: Anyadido una nueva submission para el problema " + problemName);
                     }
 
 
@@ -157,22 +162,22 @@ public class ZipHandlerService {
 
             //Si no es de esa carpeta siginfica q esta en la carpeta base
             else {
-                Matcher m2 =p2.matcher(nombreZip);
-                if(m2.matches()){
+                Matcher m2 = p2.matcher(nombreZip);
+                if (m2.matches()) {
                     String name = m2.group(1);
                     String extension = m2.group(2);
                     //SI es el archivo de configuracion jaml
-                    if(extension.equals("yaml")&&name.equals("problem")){
+                    if (extension.equals("yaml") && name.equals("problem")) {
                         Yaml yaml = new Yaml();
                         String aux = convertZipToString(zipFile);
                         Map<String, Object> obj = yaml.load(aux);
                         rellenaElYuml(obj, problem);
                     }
-                    if(extension.equals("ini")){
+                    if (extension.equals("ini")) {
                         String aux = convertZipToString(zipFile);
                         rellenaElYumlConIni(aux, problem);
                     }
-                    if (extension.equals("pdf")){
+                    if (extension.equals("pdf")) {
                         problem.setDocumento(convertZipToByte(zipFile));
                     }
                 }
@@ -185,8 +190,8 @@ public class ZipHandlerService {
 
 
         //Creamos los RESULTs
-        for(Submission submission:problem.getSubmissions()){
-            submissionService.creaResults(submission, problem, submission.getCodigo(),submission.getLanguage());
+        for (Submission submission : problem.getSubmissions()) {
+            submissionService.creaResults(submission, problem, submission.getCodigo(), submission.getLanguage());
 
         }
         //generamos el hash
@@ -194,13 +199,11 @@ public class ZipHandlerService {
         rellenaSubmissionConProblemHash(problem);
         //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
         String checkMap = checkMap(mapaRevisionEntradas);
-        if (!checkMap.equals("OK")){
+        if (!checkMap.equals("OK")) {
             //Si hay algun fallo borramos todos los inNOut que hemos creado
             //borraInNOut(problem);
             problemString.setSalida(checkMap);
         }
-
-
 
 
         problemString.setProblem(problem);
@@ -208,20 +211,16 @@ public class ZipHandlerService {
     }
 
 
-    public String selectLenguaje(String lenguaje){
-        if(lenguaje.equals("java")){
+    public String selectLenguaje(String lenguaje) {
+        if (lenguaje.equals("java")) {
             return "java";
-        }
-        else if(lenguaje.equals("py")){
+        } else if (lenguaje.equals("py")) {
             return "python3";
-        }
-        else if(lenguaje.equals("c")) {
+        } else if (lenguaje.equals("c")) {
             return "c";
-        }
-        else if(lenguaje.equals("cpp") || lenguaje.equals("c++")){
+        } else if (lenguaje.equals("cpp") || lenguaje.equals("c++")) {
             return "cpp";
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -233,14 +232,14 @@ public class ZipHandlerService {
         return generateProblemFromZIP(problem, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
     }
      */
-    private void addStringToMap(Map<String, List<String>> mapa, String nombre, String extension){
-        if (mapa.containsKey(nombre)){
+    private void addStringToMap(Map<String, List<String>> mapa, String nombre, String extension) {
+        if (mapa.containsKey(nombre)) {
             List<String> laux = mapa.get(nombre);
-            laux.add(nombre+"."+extension);
+            laux.add(nombre + "." + extension);
             mapa.put(nombre, laux);
-        }else {
+        } else {
             List<String> laux = new ArrayList<>();
-            laux.add(nombre+"."+extension);
+            laux.add(nombre + "." + extension);
             mapa.put(nombre, laux);
         }
     }
@@ -264,20 +263,20 @@ public class ZipHandlerService {
         return "OK";
     }
 
-    private void borraInNOut(Problem problem){
-        for(InNOut aux:problem.getEntradaVisible()){
+    private void borraInNOut(Problem problem) {
+        for (InNOut aux : problem.getEntradaVisible()) {
             inNOutRepository.delete(aux);
             //problem.removeEntradaVisible(aux);
         }
-        for(InNOut aux:problem.getSalidaVisible()){
+        for (InNOut aux : problem.getSalidaVisible()) {
             //problem.removeSalidaVisible(aux);
             inNOutRepository.delete(aux);
         }
-        for(InNOut aux:problem.getEntradaOculta()){
+        for (InNOut aux : problem.getEntradaOculta()) {
             //problem.removeEntradaOculta(aux);
             inNOutRepository.delete(aux);
         }
-        for(InNOut aux:problem.getSalidaOculta()){
+        for (InNOut aux : problem.getSalidaOculta()) {
             //problem.removeSalidaOculta(aux);
             inNOutRepository.delete(aux);
         }
@@ -285,127 +284,128 @@ public class ZipHandlerService {
     }
 
     //clase que coge un zipInput y lo convierte en string a traves del zipentry
-    private String convertZipToString( ZipInputStream zipFile) throws IOException {
+    private String convertZipToString(ZipInputStream zipFile) throws IOException {
         StringBuilder salida = new StringBuilder();
 
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile));
 
         String linea;
-        while ((linea = reader.readLine())!=null){
-            salida.append(linea+"\n");
+        while ((linea = reader.readLine()) != null) {
+            salida.append(linea + "\n");
         }
         //borramos el ultimo salto de linea
-        if(salida.length()>=1){
-            salida.deleteCharAt(salida.length()-1);
+        if (salida.length() >= 1) {
+            salida.deleteCharAt(salida.length() - 1);
         }
         return salida.toString();
     }
+
     private byte[] convertZipToByte(ZipInputStream zipInputStream) throws IOException {
         byte[] bits = zipInputStream.readAllBytes();
         return bits;
     }
-    private void rellenaSubmissionConProblemHash(Problem problem){
-        for(Submission submission: problem.getSubmissions()){
+
+    private void rellenaSubmissionConProblemHash(Problem problem) {
+        for (Submission submission : problem.getSubmissions()) {
             submission.generaHashProblema();
         }
     }
 
-    private  void rellenaElYumlConIni(String configuracion, Problem problem){
-        String split[] = configuracion.split("\\r?\\n");
+    private void rellenaElYumlConIni(String configuracion, Problem problem) {
+        String[] split = configuracion.split("\\r?\\n");
         Pattern pattern = Pattern.compile("(.+)=(.+)");
         String propiedad, valor;
-        for(String aux :split){
+        for (String aux : split) {
             Matcher m = pattern.matcher(aux);
-            if(m.find()){
+            if (m.find()) {
                 propiedad = m.group(1);
                 valor = m.group(2);
-                valor = valor.replace("\'", ""); //quitamos las comillas
+                valor = valor.replace("'", ""); //quitamos las comillas
                 valor = valor.replace("\"", "");
 
-                if(propiedad.equals("name")){
+                if (propiedad.equals("name")) {
                     problem.setNombreEjercicio(valor);
-                }
-                else if(propiedad.equals("timelimit")){
+                } else if (propiedad.equals("timelimit")) {
                     //Si entra a timelimit actualizamos los valores de los results
                     problem.setTimeout(valor);
-                    for (Submission submission: problem.getSubmissions()){
-                        for (Result result: submission.getResults()){
+                    for (Submission submission : problem.getSubmissions()) {
+                        for (Result result : submission.getResults()) {
                             result.setMaxTimeout(valor);
                         }
                     }
-                }
-                else if(propiedad.equals("color")){
+                } else if (propiedad.equals("color")) {
                     problem.setColor(valor);
                 }
 
             }
         }
     }
-    private  void rellenaElYuml(Map<String, Object> mapa, Problem problem){
+
+    private void rellenaElYuml(Map<String, Object> mapa, Problem problem) {
         Object aux;
         //Anyadido extra
-        if((aux =mapa.get("name")) !=null){
+        if ((aux = mapa.get("name")) != null) {
             problem.setNombreEjercicio((aux.toString()));
         }
 
-        if((aux =mapa.get("uuid")) !=null){
+        if ((aux = mapa.get("uuid")) != null) {
             problem.setId(Long.parseLong(aux.toString()));
         }
 
-        if((aux =mapa.get("author")) !=null){
+        if ((aux = mapa.get("author")) != null) {
             problem.setAutor(aux.toString());
         }
-        if((aux =mapa.get("source")) !=null){
+        if ((aux = mapa.get("source")) != null) {
             problem.setSource(aux.toString());
         }
-        if((aux =mapa.get("source_url")) !=null){
+        if ((aux = mapa.get("source_url")) != null) {
             problem.setSource_url(aux.toString());
         }
-        if((aux =mapa.get("license")) !=null){
+        if ((aux = mapa.get("license")) != null) {
             problem.setLicense(aux.toString());
         }
-        if((aux =mapa.get("rights_owner")) !=null){
+        if ((aux = mapa.get("rights_owner")) != null) {
             problem.setRights_owner(aux.toString());
         }
         //Es un map
-        if((aux =mapa.get("limits")) !=null){
+        if ((aux = mapa.get("limits")) != null) {
             Map<String, Object> limitsMap = (LinkedHashMap<String, Object>) aux;
-            if((aux= limitsMap.get("time_multiplier"))!=null){
+            if ((aux = limitsMap.get("time_multiplier")) != null) {
                 problem.setLimit_time_multiplier(aux.toString());
             }
-            if((aux= limitsMap.get("time_safety_margin"))!=null){
+            if ((aux = limitsMap.get("time_safety_margin")) != null) {
                 problem.setLimit_time_safety_margin(aux.toString());
             }
-            if((aux= limitsMap.get("memory"))!=null){
+            if ((aux = limitsMap.get("memory")) != null) {
                 problem.setLimit_memory(aux.toString());
             }
-            if((aux= limitsMap.get("output"))!=null){
+            if ((aux = limitsMap.get("output")) != null) {
                 problem.setLimit_output(aux.toString());
             }
-            if((aux= limitsMap.get("code"))!=null){
+            if ((aux = limitsMap.get("code")) != null) {
                 problem.setLimit_code(aux.toString());
             }
-            if((aux= limitsMap.get("compilation_time"))!=null){
+            if ((aux = limitsMap.get("compilation_time")) != null) {
                 problem.setLimit_compilation_time(aux.toString());
             }
-            if((aux= limitsMap.get("compilation_memory"))!=null){
+            if ((aux = limitsMap.get("compilation_memory")) != null) {
                 problem.setLimit_compilation_memory(aux.toString());
             }
-            if((aux= limitsMap.get("validation_time"))!=null){
+            if ((aux = limitsMap.get("validation_time")) != null) {
                 problem.setLimit_validation_time(aux.toString());
             }
-            if((aux= limitsMap.get("validation_memory"))!=null){
+            if ((aux = limitsMap.get("validation_memory")) != null) {
                 problem.setLimit_validation_memory(aux.toString());
             }
-            if((aux= limitsMap.get("validation_output"))!=null){
+            if ((aux = limitsMap.get("validation_output")) != null) {
                 problem.setLimit_validation_output(aux.toString());
             }
         }
-        if((aux =mapa.get("validation")) !=null){
+        if ((aux = mapa.get("validation")) != null) {
             problem.setValidation(aux.toString());
         }
-        if((aux =mapa.get("validator_flags")) !=null){
+        if ((aux = mapa.get("validator_flags")) != null) {
             problem.setValidation_flags(aux.toString());
         }
 
