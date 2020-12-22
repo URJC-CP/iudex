@@ -2,7 +2,6 @@
 
 
   import com.example.aplicacion.Entities.Result;
-  import com.example.aplicacion.Entities.Submission;
   import org.springframework.data.jpa.repository.JpaRepository;
 
   import java.util.List;

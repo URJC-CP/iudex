@@ -238,11 +238,11 @@ public class SubmissionService {
     public void ejecutaSubmission(Submission submission) {
         //Envio de mensaje a la cola
         //Envio de mensaje a la cola
-        logger.debug("Send submission "+submission.getId());
+        logger.debug("Send submission " + submission.getId());
         for (Result res : submission.getResults()) {
             sender.sendMessage(res);
         }
-        logger.debug("Finish send submission "+submission.getId());
+        logger.debug("Finish send submission " + submission.getId());
     }
 
     public Page<Submission> getNSubmissions(int n) {
