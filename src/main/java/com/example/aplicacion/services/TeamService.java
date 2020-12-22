@@ -22,7 +22,7 @@ public class TeamService {
     private UserService userService;
 
     public TeamString crearTeam(String nickTeam, boolean isUser) {
-        logger.info("Create team/user " + nickTeam);
+        logger.debug("Create team/user " + nickTeam);
         TeamString salida = new TeamString();
 
         Team team = new Team(nickTeam);
@@ -35,26 +35,26 @@ public class TeamService {
             teamRepository.save(team);
             salida.setSalida("OK");
             salida.setTeam(team);
-            logger.info("Finish create team/user " + nickTeam + " id: " + team.getId());
+            logger.debug("Finish create team/user " + nickTeam + " id: " + team.getId());
             return salida;
         }
     }
 
     public String addUserToTeam(Team team, User user) {
-        logger.info("Add user " + user.getId() + " to team " + team.getId());
+        logger.debug("Add user " + user.getId() + " to team " + team.getId());
         if (teamRepository.existsTeamByParticipantesContains(user)) {
             logger.error("User " + user.getId() + " already in team " + team.getId());
             return "USUARIO YA APUNTADO";
         } else {
             team.addUserToTeam(user);
             teamRepository.save(team);
-            logger.info("Finish add user " + user.getId() + " to team " + team.getId());
+            logger.debug("Finish add user " + user.getId() + " to team " + team.getId());
             return "OK";
         }
     }
 
     public String deleteTeamByName(String name) {
-        logger.info("Delete team " + name);
+        logger.debug("Delete team " + name);
         Team team = teamRepository.findByNombreEquipo(name);
         if (team == null) {
             logger.error("Team/user " + name + " not found");
@@ -65,13 +65,13 @@ public class TeamService {
                 userService.deleteUserByNickname(team.getNombreEquipo());
             }
             teamRepository.delete(team);
-            logger.info("Finish delete team/user " + name + "\nTeam/user id: " + team.getId());
+            logger.debug("Finish delete team/user " + name + "\nTeam/user id: " + team.getId());
             return "OK";
         }
     }
 
     public String deleteTeamByTeamId(String teamId) {
-        logger.info("Delete team/user " + teamId);
+        logger.debug("Delete team/user " + teamId);
         Team team = teamRepository.findTeamById(Long.valueOf(teamId));
         if (team == null) {
             logger.error("Team/user " + teamId + " not found");
@@ -82,7 +82,7 @@ public class TeamService {
                 userService.deleteUserByNickname(team.getNombreEquipo());
             }
             teamRepository.delete(team);
-            logger.info("Finish delete team/user " + teamId);
+            logger.debug("Finish delete team/user " + teamId);
             return "OK";
         }
     }
@@ -100,7 +100,7 @@ public class TeamService {
     }
 
     public TeamString addUserToTeamUssingIds(String teamId, String userId) {
-        logger.info("Add user " + userId + " to team " + teamId);
+        logger.debug("Add user " + userId + " to team " + teamId);
         TeamString salida = new TeamString();
         Team team = getTeamFromId(teamId);
         if (team == null) {
@@ -111,7 +111,7 @@ public class TeamService {
 
         User user = userService.getUserById(Long.valueOf(userId));
         if (user == null) {
-            logger.info("User " + userId + " not found");
+            logger.error("User " + userId + " not found");
             salida.setSalida("USER NOT FOUND");
             return salida;
         }
@@ -127,12 +127,12 @@ public class TeamService {
 
         salida.setSalida("OK");
         salida.setTeam(team);
-        logger.info("Finish add user " + userId + " to team " + teamId);
+        logger.debug("Finish add user " + userId + " to team " + teamId);
         return salida;
     }
 
     public String deleteUserFromTeam(String teamId, String userId) {
-        logger.info("Delete user " + userId + " from team " + teamId);
+        logger.debug("Delete user " + userId + " from team " + teamId);
         TeamString salida = new TeamString();
         Team team = getTeamFromId(teamId);
         if (team == null) {
@@ -156,12 +156,12 @@ public class TeamService {
 
         team.getParticipantes().remove(user);
         teamRepository.save(team);
-        logger.info("Finish delete user " + userId + " from team " + teamId);
+        logger.debug("Finish delete user " + userId + " from team " + teamId);
         return "OK";
     }
 
     public TeamString updateTeam(String teamId, Optional<String> teamName) {
-        logger.info("Update team " + teamId);
+        logger.debug("Update team " + teamId);
         TeamString salida = new TeamString();
         Team team = getTeamFromId(teamId);
         if (team == null) {
@@ -184,7 +184,7 @@ public class TeamService {
         teamRepository.save(team);
         salida.setSalida("OK");
         salida.setTeam(team);
-        logger.info("Finish update team " + teamId);
+        logger.debug("Finish update team " + teamId);
         return salida;
     }
 }

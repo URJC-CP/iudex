@@ -32,7 +32,7 @@ public class ContestService {
     private ProblemService problemService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion) {
-        logger.info("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
+        logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
         ContestString salida = new ContestString();
         if (contestRepository.existsByNombreContest(nameContest)) {
             logger.error("Contest name duplicated " + nameContest);
@@ -58,12 +58,12 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest);
-        logger.info("Finish build contest " + nameContest + "\nId: " + contest.getId());
+        logger.debug("Finish build contest " + nameContest + "\nId: " + contest.getId());
         return salida;
     }
 
     public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion) {
-        logger.info("Update contest " + contestId);
+        logger.debug("Update contest " + contestId);
         ContestString salida = new ContestString();
         //Buscamos el contest
         Contest contest = contestRepository.findContestById(Long.valueOf(contestId));
@@ -99,13 +99,13 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest);
-        logger.info("Finish update contest " + contestId);
+        logger.debug("Finish update contest " + contestId);
         return salida;
     }
 
 
     public String deleteContest(String idcontest) {
-        logger.info("Delete contest " + idcontest);
+        logger.debug("Delete contest " + idcontest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
         if (contest == null) {
             logger.error("Contest " + idcontest + " not found");
@@ -129,12 +129,12 @@ public class ContestService {
 
         //borramos el contest
         contestRepository.delete(contest);
-        logger.info("Finish delete contest " + idcontest);
+        logger.debug("Finish delete contest " + idcontest);
         return "OK";
     }
 
     public String anyadeProblemaContest(String idContest, String idProblema) {
-        logger.info("Add problem " + idProblema + " to contest " + idContest);
+        logger.debug("Add problem " + idProblema + " to contest " + idContest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
         Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
         if (contest == null) {
@@ -151,12 +151,12 @@ public class ContestService {
         }
         contest.addProblem(problema);
         contestRepository.save(contest);
-        logger.info("Finish add problem " + idProblema + " to contest " + idContest);
+        logger.debug("Finish add problem " + idProblema + " to contest " + idContest);
         return "OK";
     }
 
     public String deleteProblemFromContest(String idContest, String idProblema) {
-        logger.info("Delete problem " + idProblema + " from contest " + idContest);
+        logger.debug("Delete problem " + idProblema + " from contest " + idContest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
         Problem problema = problemRepository.findProblemById(Long.valueOf(idProblema));
         if (contest == null) {
@@ -174,12 +174,12 @@ public class ContestService {
         contest.deleteProblem(problema);
         contestRepository.save(contest);
 
-        logger.info("Finish delete problem " + idProblema + " from contest " + idContest);
+        logger.debug("Finish delete problem " + idProblema + " from contest " + idContest);
         return "OK";
     }
 
     public String addTeamTocontest(String idTeam, String idcontest) {
-        logger.info("Add team/user " + idTeam + " to contest " + idcontest);
+        logger.debug("Add team/user " + idTeam + " to contest " + idcontest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
         Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
         if (contest == null) {
@@ -198,13 +198,13 @@ public class ContestService {
                 return "YA ESTA EN EL CONCURSO";
             }
         }
-        logger.info("Finish add team/user " + idTeam + " to contest " + idcontest);
+        logger.debug("Finish add team/user " + idTeam + " to contest " + idcontest);
         return "OK";
     }
 
 
     public String deleteTeamFromcontest(String idcontest, String idTeam) {
-        logger.info("Delete team/user " + idTeam + " from contest " + idcontest);
+        logger.debug("Delete team/user " + idTeam + " from contest " + idcontest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idcontest));
         Team team = teamRepository.findTeamById(Long.valueOf(idTeam));
         if (contest == null) {
@@ -223,7 +223,7 @@ public class ContestService {
                 contestRepository.save(contest);
             }
         }
-        logger.info("Finish delete team/user " + idTeam + " from contest " + idcontest);
+        logger.debug("Finish delete team/user " + idTeam + " from contest " + idcontest);
         return "OK";
     }
 

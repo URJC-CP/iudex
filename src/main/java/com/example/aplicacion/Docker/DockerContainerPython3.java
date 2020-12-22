@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-//Clase que se encarga de lanzar los docker de tipo JAVA
+//Clase que se encarga de lanzar los docker de tipo Python
 public class DockerContainerPython3 extends DockerContainer {
     Logger logger = LoggerFactory.getLogger(DockerContainerPython3.class);
 
@@ -40,7 +40,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME2=" + nombreClase + ".py").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.info("DOCKERPYTHON: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.info("DOCKER PYTHON3: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -92,11 +92,11 @@ public class DockerContainerPython3 extends DockerContainer {
         //System.out.println(signal);
         result.setSignalEjecutor(signal);
 
-        //logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
+        //logger.info("DOCKER PYTHON3: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERPYTHON3: Finished running container for result " + result.getId() + " ");
+        logger.info("DOCKER PYTHON3: Finished running container for result " + result.getId() + " ");
         return result;
     }
 

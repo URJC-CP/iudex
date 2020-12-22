@@ -54,7 +54,7 @@ public class SubmissionService {
 
     public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest, String idEquipo) {
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
-        logger.info("Create submission " + fileName + "\nProblem: " + problem + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
+        logger.debug("Create submission " + fileName + "\nProblem: " + problem + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
         Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
         if (contest == null) {
             logger.error("Contest " + idContest + " no found");
@@ -128,7 +128,7 @@ public class SubmissionService {
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
 
-        logger.info("Finish create submission " + fileName + "\nSubmission id: " + submission.getId() + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
+        logger.debug("Finish create submission " + fileName + "\nSubmission id: " + submission.getId() + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
         return submissionStringResult;
     }
 
@@ -209,7 +209,7 @@ public class SubmissionService {
 
     public void creaResults(Submission submission, Problem problema, String codigo, Language language) {
         int numeroDeResult = 0;
-        logger.info("Create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
+        logger.debug("Create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
         List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
@@ -232,15 +232,17 @@ public class SubmissionService {
             //resultRepository.save(resAux);
             submission.addResult(resAux);
         }
-        logger.info("Finish create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
+        logger.debug("Finish create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
     }
 
     public void ejecutaSubmission(Submission submission) {
         //Envio de mensaje a la cola
         //Envio de mensaje a la cola
+        logger.debug("Send submission "+submission.getId());
         for (Result res : submission.getResults()) {
             sender.sendMessage(res);
         }
+        logger.debug("Finish send submission "+submission.getId());
     }
 
     public Page<Submission> getNSubmissions(int n) {
@@ -249,7 +251,7 @@ public class SubmissionService {
     }
 
     public String deleteSubmission(String submissionId) {
-        logger.info("Delete submission " + submissionId);
+        logger.debug("Delete submission " + submissionId);
         Submission submission = submissionRepository.findSubmissionById(Long.valueOf(submissionId));
         if (submission == null) {
             logger.error("Submission " + submissionId + " not found");
@@ -262,13 +264,13 @@ public class SubmissionService {
             return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE, JUST DELETING DE PROBLEM";
         }
         submissionRepository.delete(submission);
-        logger.info("Finish delete submission " + submissionId);
+        logger.debug("Finish delete submission " + submissionId);
         return "OK";
     }
 
 
     public String deleteSubmission(String submissionId, String problemId, String contestId) {
-        logger.info("Delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
+        logger.debug("Delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
         Submission submission = submissionRepository.findSubmissionById(Long.valueOf(submissionId));
         if (submission == null) {
             logger.error("Submission " + submissionId + " not found\nProblem: " + problemId + "\nContest: " + contestId);
@@ -297,7 +299,7 @@ public class SubmissionService {
             logger.error("Submission " + submissionId + " not in contest " + contestId);
             return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
         }
-        logger.info("Finish delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
+        logger.debug("Finish delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
         return deleteSubmission(submissionId);
     }
 

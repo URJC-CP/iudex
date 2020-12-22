@@ -48,7 +48,7 @@ public class DockerContainerJava extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=" + nombreClase, "FILENAME2=" + getClassName(), "MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.info("DOCKERJAVA: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.info("DOCKER JAVA: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -113,11 +113,11 @@ public class DockerContainerJava extends DockerContainer {
         signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
-        //logger.info("DOCKERJAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
+        //logger.info("DOCKER JAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERJAVA: Finished running container for result " + result.getId() + " ");
+        logger.info("DOCKER JAVA: Finished running container for result " + result.getId() + " ");
         return result;
     }
 

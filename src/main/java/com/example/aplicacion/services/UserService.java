@@ -25,7 +25,7 @@ public class UserService {
 
     //Cuando se crea un usuario tambien se creara un equipo con el mismo nombre que el usuario
     public UserString crearUsuario(String nickname, String mail) {
-        logger.info("Create user with name " + nickname + " and mail " + mail);
+        logger.debug("Create user with name " + nickname + " and mail " + mail);
         UserString userString = new UserString();
         User user = new User(nickname, mail);
         //Comprobamos que el usuario sea unico
@@ -58,13 +58,13 @@ public class UserService {
         }
         userString.setSalida("OK");
         userString.setUser(user);
-        logger.info("Finish create user with name " + nickname + " and mail " + mail);
+        logger.debug("Finish create user with name " + nickname + " and mail " + mail);
         return userString;
     }
 
 
     public String deleteUserByNickname(String nickname) {
-        logger.info("Delete user " + nickname);
+        logger.debug("Delete user " + nickname);
         User user = userRepository.findByNickname(nickname);
         if (user == null) {
             logger.error("User " + nickname + " not found");
@@ -75,13 +75,13 @@ public class UserService {
             //borramos el equipo del usuario
             Team team = teamRepository.findByNombreEquipo(nickname);
             teamRepository.delete(team);
-            logger.info("Finish delete user " + nickname + ", user id " + user.getId());
+            logger.debug("Finish delete user " + nickname + ", user id " + user.getId());
             return "OK";
         }
     }
 
     public UserString updateUser(String userId, Optional<String> nickname, Optional<String> mail) {
-        logger.info("Update user " + userId);
+        logger.debug("Update user " + userId);
         UserString userString = new UserString();
         User user = userRepository.findUserById(Long.valueOf(userId));
         if (user == null) {
@@ -107,7 +107,7 @@ public class UserService {
         userRepository.save(user);
         userString.setSalida("OK");
         userString.setUser(user);
-        logger.info("Finish update user " + userId);
+        logger.debug("Finish update user " + userId);
         return userString;
     }
 

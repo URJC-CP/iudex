@@ -253,7 +253,7 @@ public class ZipHandlerService {
     }
 
     private void borraInNOut(Problem problem) {
-        logger.info("Delete input/output files from problem " + problem.getId());
+        logger.debug("Delete input/output files from problem " + problem.getId());
         for (InNOut aux : problem.getEntradaVisible()) {
             inNOutRepository.delete(aux);
             //problem.removeEntradaVisible(aux);
@@ -270,7 +270,7 @@ public class ZipHandlerService {
             //problem.removeSalidaOculta(aux);
             inNOutRepository.delete(aux);
         }
-        logger.info("Finish delete input/output files from problem " + problem.getId());
+        logger.debug("Finish delete input/output files from problem " + problem.getId());
     }
 
     //clase que coge un zipInput y lo convierte en string a traves del zipentry

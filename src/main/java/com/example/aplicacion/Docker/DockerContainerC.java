@@ -42,7 +42,7 @@ public class DockerContainerC extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".c").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.info("DOCKERC: Building container for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.info("DOCKER C: Building container for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".c", result.getCodigo(), "/root");
@@ -85,11 +85,11 @@ public class DockerContainerC extends DockerContainer {
         signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
-        //logger.info("DOCKERC: EL result "+result.getId() + " ha terminado con senyal "+ signal);
+        //logger.info("DOCKER C: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERC: Finished running container for result " + result.getId() + " ");
+        logger.info("DOCKER C: Finished running container for result " + result.getId() + " ");
         return result;
     }
 }

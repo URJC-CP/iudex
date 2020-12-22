@@ -87,14 +87,14 @@ public class IndiceController {
         //Cargamos la BBDD de answer en el scoreboard
         Page<Submission> listSubmiss = submissionService.getNSubmissions(10);
         model.addAttribute("submissions", listSubmiss);
-        logger.debug("Show submissions");
+        logger.debug("Show submission list");
 
         return "redirect:/";
     }
 
     @PostMapping("/asignaProblemaAContest")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String contestId) {
-        logger.debug("Adding problem " + problemId + " to contest " + contestId);
+        logger.debug("Add problem " + problemId + " to contest " + contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
         if (salida.equals("OK")) {

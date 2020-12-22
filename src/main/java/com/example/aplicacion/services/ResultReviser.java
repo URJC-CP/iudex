@@ -12,7 +12,7 @@ public class ResultReviser {
     public void revisar(Result res) {
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion
         //String signalAux[] = res.getSignalFile().split("\n");
-
+        logger.debug("Review result "+res.getId());
         //si hay errores en compilacion no miramos mas
         if (!compareIgnoreExpressions(res.getSignalCompilador(), "0")) {
             logger.warn("Failed in compiler with " + res.getSalidaCompilador());
@@ -48,7 +48,7 @@ public class ResultReviser {
             res.setExecMemory(Float.parseFloat(time[1]));
         }
 
-        logger.info("Result " + res.getId() + " finished with " + res.getResultadoRevision());
+        logger.debug("Finish review result " + res.getId() + " \nResult output is " + res.getResultadoRevision());
         res.setRevisado(true);
 
     }

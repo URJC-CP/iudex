@@ -37,7 +37,7 @@ public class ProblemService {
     private SubmissionRepository submissionRepository;
 
     public ProblemString addProblem(Problem createdProblem) {
-        logger.info("Build new problem from problem " + createdProblem.getId());
+        logger.debug("Build new problem from problem " + createdProblem.getId());
         ProblemString problemString = new ProblemString();
         Problem newProblem = new Problem();
 
@@ -53,13 +53,13 @@ public class ProblemService {
         problemString.setSalida("OK");
         problemString.setProblem(newProblem);
 
-        logger.info("Finish build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
+        logger.debug("Finish build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
         return problemString;
     }
 
 
     public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.info("Build problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Build problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
         ProblemString problemString = new ProblemString();
@@ -109,12 +109,12 @@ public class ProblemService {
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.info("Finish build problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish build problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return salida;
     }
 
     public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.info("Build problem " + nombreProblema + " from zip " + nombreFichero + " without validate\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Build problem " + nombreProblema + " from zip " + nombreFichero + " without validate\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
         ProblemString problemString = new ProblemString();
@@ -162,12 +162,12 @@ public class ProblemService {
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.info("Finish build problem from zip " + nombreFichero + " without validate\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish build problem from zip " + nombreFichero + " without validate\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return salida;
     }
 
     public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.info("Update problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nContest: " + idcontest);
+        logger.debug("Update problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nContest: " + idcontest);
         ProblemString problemUpdated = new ProblemString();
         Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
         if (problemOriginal == null) {
@@ -209,12 +209,12 @@ public class ProblemService {
         problemRepository.save(problemUpdated.getProblem());
 
         problemValidatorService.validateProblem(problemUpdated.getProblem());
-        logger.info("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return problemUpdated;
     }
 
     public ProblemString updateProblem2(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.info("Update(v2) problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Update(v2) problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString problemUpdated = new ProblemString();
         Problem problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
         if (problemOriginal == null) {
@@ -243,13 +243,13 @@ public class ProblemService {
         problemValidatorService.validateProblem(problemOriginal);
 
         problemUpdated.setProblem(problemOriginal);
-        logger.info("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return problemUpdated;
 
     }
 
     public String deleteProblem(String problemId) {
-        logger.info("Delete problem " + problemId);
+        logger.debug("Delete problem " + problemId);
         Problem problem = problemRepository.findProblemById(Long.valueOf(problemId));
         if (problem == null) {
             logger.error("Problem " + problemId + " not found");
@@ -265,13 +265,13 @@ public class ProblemService {
         }
 
         problemRepository.delete(problem);
-        logger.info("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
+        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
         return "OK";
     }
 
     public String deleteProblem(Problem problem) {
         logger.warn("Might cause error, parameter has not been verified");
-        logger.info("Delete problem " + problem.getId());
+        logger.debug("Delete problem " + problem.getId());
         //Quitamos los problemas del contest
         for (Contest contestAux : problem.getListaContestsPertenece()) {
             logger.debug("Remove problem " + problem.getId() + " from contest " + contestAux.getId());
@@ -281,7 +281,7 @@ public class ProblemService {
         }
 
         problemRepository.delete(problem);
-        logger.info("Finish delete problem " + problem.getId() + "\nProblem name: " + problem.getNombreEjercicio());
+        logger.debug("Finish delete problem " + problem.getId() + "\nProblem name: " + problem.getNombreEjercicio());
         return "OK";
     }
 
