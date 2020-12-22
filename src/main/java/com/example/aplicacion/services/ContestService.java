@@ -68,7 +68,7 @@ public class ContestService {
         //Buscamos el contest
         Contest contest = contestRepository.findContestById(Long.valueOf(contestId));
         if (contest == null) {
-            logger.error("Contest " + contestId + " with name " + nameContest + " doesn't exist");
+            logger.error("Contest " + contestId + " not found");
             salida.setSalida("CONTEST ID DOES NOT EXIST");
             return salida;
         }

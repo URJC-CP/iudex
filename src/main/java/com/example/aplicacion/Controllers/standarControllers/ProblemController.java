@@ -173,7 +173,7 @@ public class ProblemController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.error("Submission failed with " + salida.getSalida() + "\nContest: " + contestId + "\nProblem: " + problemaAsignado + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
+            logger.warn("Submission failed with " + salida.getSalida() + "\nContest: " + contestId + "\nProblem: " + problemaAsignado + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;

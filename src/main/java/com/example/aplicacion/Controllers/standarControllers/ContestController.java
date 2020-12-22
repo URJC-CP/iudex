@@ -33,7 +33,7 @@ public class ContestController {
         logger.debug("Get request received for contest " + contestId);
         Contest contest = contestService.getContest(contestId);
         if (contest == null) {
-            logger.error("Could not find contest " + contestId);
+            logger.error("Contest " + contestId+" not found");
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }

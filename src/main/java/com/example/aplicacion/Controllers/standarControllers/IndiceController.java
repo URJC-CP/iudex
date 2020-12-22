@@ -107,14 +107,14 @@ public class IndiceController {
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail) {
-        logger.debug("Create user with " + userNickname + " and " + userMail + " request received");
+        logger.debug("Create user with " + userNickname + " with " + userMail + " request received");
         String salida = userService.crearUsuario(userNickname, userMail).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create user " + userNickname + " and " + userMail + " success");
+            logger.debug("Create user " + userNickname + " with " + userMail + " success");
             return "redirect:/";
         } else {
-            logger.error("Create user " + userNickname + " and " + userMail + " failed with " + salida);
+            logger.error("Create user " + userNickname + " with " + userMail + " failed with " + salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
