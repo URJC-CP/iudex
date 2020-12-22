@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
-    @Override
-    Optional<Submission> findById(Long aLong);
+
+
     Optional<Submission> findSubmissionById(long id);
     Optional<Submission> findSubmissionByResults(Result res);
 
     List<Submission> findSubmissionsByProblemaAndContest(Problem problem, Contest contest);
+
     Page<Submission> findAll(Pageable pageable);
 
 }

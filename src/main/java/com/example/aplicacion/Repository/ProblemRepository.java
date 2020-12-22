@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
     boolean existsByNombreEjercicio(String nombre);
 
-    @Override
-    Optional<Problem> findById(Long aLong);
     Optional<Problem> findProblemById(long id);
     Optional<Problem> findProblemByNombreEjercicio(String nombreEjercicio);
     Optional<Problem> findById(long id);

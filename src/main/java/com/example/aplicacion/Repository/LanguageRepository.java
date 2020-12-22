@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LanguageRepository extends JpaRepository<Language, Long> {
-    @Override
-    Optional<Language> findById(Long aLong);
+
+
     Optional<Language> findLanguageByNombreLenguaje(String id);
     Optional<Language> findLanguageById(Long id);
 
