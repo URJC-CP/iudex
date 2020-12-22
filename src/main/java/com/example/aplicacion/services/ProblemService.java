@@ -86,11 +86,11 @@ public class ProblemService {
         }
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
-        Problem aux = problemRepository.findProblemByNombreEjercicio(exerciseName);
-        if (aux != null) {
-            problem = aux;
+        Optional<Problem> aux = problemRepository.findProblemByNombreEjercicio(exerciseName);
+        if (aux.isPresent()) {
+            problem = aux.get();
             //si el problema esta almacendo en el concurso
-            if (contest.getListaProblemas().contains(aux)) {
+            if (contest.get().getListaProblemas().contains(aux)) {
                 return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
             }
         }
