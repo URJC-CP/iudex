@@ -76,8 +76,13 @@ public class ProblemService {
 
         //obtener nombre del problema
         String exerciseName = nombreProblema;
-        if(nombreProblema == null || nombreProblema.equals(""))
+        if (nombreProblema == null || nombreProblema.trim().equals(""))
             exerciseName = nombreFichero.split("\\.")[0];
+        if (exerciseName.equals("")) {
+            logger.error("Problem name is missing");
+            salida.setSalida("Nombre del problema vacio");
+            return salida;
+        }
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
         Problem aux = problemRepository.findProblemByNombreEjercicio(exerciseName);
