@@ -7,13 +7,13 @@ import java.time.Instant;
 
 //tupla q contiene el nombre y texto de una answer
 @Entity
-public class InNOut {
+public class InNOut implements ProblemData {
+    private ProblemDataType type;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
     private String name;
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
     //@ManyToOne
     //private Problem problem;
@@ -24,17 +24,20 @@ public class InNOut {
     public InNOut() {
     }
 
-    public InNOut(String name, String text) {
+    public InNOut(String name, String text, ProblemDataType type) {
         this.name = name;
         this.text = text;
+        this.type = type;
     }
 
-    public InNOut(long id, String name, String text) {
+    public InNOut(long id, String name, String text, ProblemDataType type) {
         this.id = id;
         this.name = name;
         this.text = text;
+        this.type = type;
     }
-    public InNOutAPI toInNOutAPI(){
+
+    public InNOutAPI toInNOutAPI() {
         InNOutAPI inNOutAPI = new InNOutAPI();
         inNOutAPI.setId(this.id);
         inNOutAPI.setName(this.name);
@@ -75,8 +78,8 @@ public class InNOut {
     //    this.problem = problem;
     //}
 
-    public String toString(){
-        return this.name+this.text;
+    public String toString() {
+        return this.name + this.text;
     }
 
     public long getTimestamp() {
@@ -85,5 +88,20 @@ public class InNOut {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public ProblemDataType getType() {
+        return type;
+    }
+
+    @Override
+    public int getTypeNumber() {
+        return type.ordinal();
+    }
+
+    @Override
+    public String getTypeString() {
+        return type.name();
     }
 }

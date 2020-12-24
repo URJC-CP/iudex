@@ -63,6 +63,7 @@ public class ZipHandlerService {
         //Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
         Pattern p2 = Pattern.compile("(.+)\\.(.+)$");
 
+        label:
         while (zipEntry != null) {
             String nombreZip = zipEntry.getName();
 
@@ -87,18 +88,18 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addSalidaVisible(inNOut);
+                        problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addEntradaVisible(inNOut);
+                        problem.addData(inNOut);
                     }
                 }
                 //Si es ES secreta
@@ -108,18 +109,18 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addSalidaOculta(inNOut);
+                        problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addEntradaOculta(inNOut);
+                        problem.addData(inNOut);
                         logger.info("ZIPUNCOMRESS: anyadido una nueva entrada de datos de prueba para el problema " + problemName);
                     }
                 }
@@ -127,16 +128,19 @@ public class ZipHandlerService {
                 if ("submissions".equals(path1)) {
                     String resultadoEsperado = "";
 
-                    if (path2.equals("accepted")) {
-                        resultadoEsperado = "accepted";
-
-                    } else if (path2.equals("wrong_answer")) {
-                        resultadoEsperado = "wrong_answer";
-                    } else if (path2.equals("run_time_error")) {
-                        resultadoEsperado = "run_time_error";
-                    } else {
-                        logger.warn("ZIPHANDLER: Se ha introducido una carpeta dentro de submissions con un nombre no compatible");
-                        break;
+                    switch (path2) {
+                        case "accepted":
+                            resultadoEsperado = "accepted";
+                            break;
+                        case "wrong_answer":
+                            resultadoEsperado = "wrong_answer";
+                            break;
+                        case "run_time_error":
+                            resultadoEsperado = "run_time_error";
+                            break;
+                        default:
+                            logger.warn("ZIPHANDLER: Se ha introducido una carpeta dentro de submissions con un nombre no compatible");
+                            break label;
                     }
 
                     //Buscamos el lenguaje que es analizando la extension
@@ -212,16 +216,18 @@ public class ZipHandlerService {
 
 
     public String selectLenguaje(String lenguaje) {
-        if (lenguaje.equals("java")) {
-            return "java";
-        } else if (lenguaje.equals("py")) {
-            return "python3";
-        } else if (lenguaje.equals("c")) {
-            return "c";
-        } else if (lenguaje.equals("cpp") || lenguaje.equals("c++")) {
-            return "cpp";
-        } else {
-            return null;
+        switch (lenguaje) {
+            case "java":
+                return "java";
+            case "py":
+                return "python3";
+            case "c":
+                return "c";
+            case "cpp":
+            case "c++":
+                return "cpp";
+            default:
+                return null;
         }
     }
 
@@ -324,20 +330,23 @@ public class ZipHandlerService {
                 valor = valor.replace("'", ""); //quitamos las comillas
                 valor = valor.replace("\"", "");
 
-                if (propiedad.equals("name")) {
-                    problem.setNombreEjercicio(valor);
-                } else if (propiedad.equals("timelimit")) {
-                    //Si entra a timelimit actualizamos los valores de los results
-                    problem.setTimeout(valor);
-                    for (Submission submission : problem.getSubmissions()) {
-                        for (Result result : submission.getResults()) {
-                            result.setMaxTimeout(valor);
+                switch (propiedad) {
+                    case "name":
+                        problem.setNombreEjercicio(valor);
+                        break;
+                    case "timelimit":
+                        //Si entra a timelimit actualizamos los valores de los results
+                        problem.setTimeout(valor);
+                        for (Submission submission : problem.getSubmissions()) {
+                            for (Result result : submission.getResults()) {
+                                result.setMaxTimeout(valor);
+                            }
                         }
-                    }
-                } else if (propiedad.equals("color")) {
-                    problem.setColor(valor);
+                        break;
+                    case "color":
+                        problem.setColor(valor);
+                        break;
                 }
-
             }
         }
     }
