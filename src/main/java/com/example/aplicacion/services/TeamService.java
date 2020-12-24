@@ -66,7 +66,7 @@ public class TeamService {
             }
             teamRepository.delete(team.get());
             
-            logger.debug("Finish delete team/user " + name + "\nTeam/user id: " + team.getId());
+            logger.debug("Finish delete team/user " + name + "\nTeam/user id: " + team.get().getId());
             return "OK";
         }
     }

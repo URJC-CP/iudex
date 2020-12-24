@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
@@ -78,7 +77,7 @@ public class UserService {
             Optional<Team> team = teamRepository.findByNombreEquipo(nickname);
             teamRepository.delete(team.get());
 
-            logger.debug("Finish delete user " + nickname + ", user id " + user.getId());
+            logger.debug("Finish delete user " + nickname + ", user id " + user.get().getId());
             return "OK";
         }
     }

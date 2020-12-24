@@ -79,7 +79,7 @@ public class SubmissionService {
         }
         Optional<Language> language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
         if(language.isEmpty()){
-            logger.error("Unsupported language " + language.getNombreLenguaje());
+            logger.error("Unsupported language " + language.get().getNombreLenguaje());
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
         }

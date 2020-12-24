@@ -213,7 +213,7 @@ public class ProblemService {
         problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
-            logger.error("Couldn't update problem " + problemOriginal.getNombreEjercicio() + "\nProblem id: " + problemOriginal.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+            logger.error("Couldn't update problem " + problemOriginal.get().getNombreEjercicio() + "\nProblem id: " + problemOriginal.get().getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
             return problemUpdated;
         }
 
@@ -238,7 +238,7 @@ public class ProblemService {
          
         problemValidatorService.validateProblem(problemUpdated.getProblem());      
       
-        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.get().getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return problemUpdated;
     }
 
@@ -263,7 +263,7 @@ public class ProblemService {
         problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
-            logger.error("Couldn't update(v2) problem " + problemOriginal.getNombreEjercicio() + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+            logger.error("Couldn't update(v2) problem " + problemOriginal.get().getNombreEjercicio() + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
             return problemUpdated;
         }
 
@@ -274,7 +274,7 @@ public class ProblemService {
         problemValidatorService.validateProblem(problemOriginal.get());
         problemUpdated.setProblem(problemOriginal.get());
 
-        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.get().getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return problemUpdated;
 
     }
@@ -297,7 +297,7 @@ public class ProblemService {
 
         problemRepository.delete(problem.get());
       
-        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
+        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.get().getNombreEjercicio());
         return "OK";
     }
 
@@ -474,11 +474,11 @@ public class ProblemService {
         }
 
         if (pdf.isPresent()) {
-            problem.setDocumento(pdf.get());
+            problem.get().setDocumento(pdf.get());
         }
 
         if (timeout.isPresent()) {
-            problem.setTimeout(timeout.get());
+            problem.get().setTimeout(timeout.get());
         }
         problemRepository.save(problem.get());
 

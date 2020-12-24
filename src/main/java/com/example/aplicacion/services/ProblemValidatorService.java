@@ -47,7 +47,7 @@ public class ProblemValidatorService {
             for (SubmissionProblemValidator submissionProblemValidator : problem.get().getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
-                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.getId() + ", " + problem.getNombreEjercicio());
+                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.get().getId() + ", " + problem.get().getNombreEjercicio());
                 //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
             List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
@@ -90,9 +90,9 @@ public class ProblemValidatorService {
         }
         //Si es un problema sin submission validamos
         else {
-            problem.setValido(true);
-            logger.debug("Finish validate problem " + problem.getNombreEjercicio() + " without test case");
-            problemRepository.save(problem);
+            problem.get().setValido(true);
+            logger.debug("Finish validate problem " + problem.get().getNombreEjercicio() + " without test case");
+            problemRepository.save(problem.get());
         }
     }
 
@@ -101,7 +101,7 @@ public class ProblemValidatorService {
         
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Optional<Problem> problem = problemRepository.findById(problemId);
-        logger.debug("Check problem " + problem.getNombreEjercicio());
+        logger.debug("Check problem " + problem.get().getNombreEjercicio());
       
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
         Boolean estaTerminado = true;
@@ -118,10 +118,10 @@ public class ProblemValidatorService {
             //En caso de que sea valido lo apuntamos
             if (checkSubmissionResultIsValide(problem.get())) {
                 problem.get().setValido(true);
-                logger.debug("Finish validate problem " + problem.getNombreEjercicio());
+                logger.debug("Finish validate problem " + problem.get().getNombreEjercicio());
             } else {
                 problem.get().setValido(false);
-                logger.warn("Invalid problem " + problem.getNombreEjercicio());
+                logger.warn("Invalid problem " + problem.get().getNombreEjercicio());
             }
             problemRepository.save(problem.get());
         }
