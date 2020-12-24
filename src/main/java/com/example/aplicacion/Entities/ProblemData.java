@@ -1,7 +1,7 @@
 package com.example.aplicacion.Entities;
 
 public interface ProblemData {
-    public ProblemDataType getType();
-    public int getTypeNumber();
-    public String getTypeString();
+    ProblemDataType getType();
+    int getTypeNumber();
+    String getTypeString();
 }
