@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Problem {
@@ -214,7 +215,7 @@ public class Problem {
     }
 
     private List<InNOut> getData(ProblemDataType type) {
-        HashSet<InNOut> rep = new HashSet<>();
+        Set<InNOut> rep = new HashSet<>();
         for (InNOut data : datos) {
             if (data.getType() == ProblemDataType.EntradaOculta) {
                 rep.add(data);
