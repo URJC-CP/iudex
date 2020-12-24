@@ -47,8 +47,7 @@ public class ProblemValidatorService {
             for (SubmissionProblemValidator submissionProblemValidator : problem.get().getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
-                logger.info("La submision " + submission.getId() + " del problema " + problem.get().getId() + " se empieza a recorrer");
-
+                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.getId() + ", " + problem.getNombreEjercicio());
                 //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
             List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
