@@ -217,7 +217,7 @@ public class Problem {
     private List<InNOut> getData(ProblemDataType type) {
         Set<InNOut> rep = new HashSet<>();
         for (InNOut data : datos) {
-            if (data.getType() == ProblemDataType.EntradaOculta) {
+            if (data.getType() == type) {
                 rep.add(data);
             }
         }
