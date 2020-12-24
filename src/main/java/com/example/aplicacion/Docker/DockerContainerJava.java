@@ -48,7 +48,7 @@ public class DockerContainerJava extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=" + nombreClase, "FILENAME2=" + getClassName(), "MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.info("DOCKER JAVA: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.debug("DOCKER JAVA: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -117,7 +117,7 @@ public class DockerContainerJava extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKER JAVA: Finished running container for result " + result.getId() + " ");
+        logger.debug("DOCKER JAVA: Finished running container for result " + result.getId() + " ");
         return result;
     }
 

@@ -31,7 +31,7 @@ public class SubmissionReviserService {
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission) {
-        logger.debug("Review submission " + submission.getId());
+        logger.info("Review submission " + submission.getId());
         if (checkAccepted(submission)) {
             submission.setResultado("accepted");
         } else {
@@ -49,7 +49,7 @@ public class SubmissionReviserService {
             //Se valide el problema y pueda usarse en la aplicacion
             problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator);
         }
-        logger.debug("Finish review submission " + submission.getId());
+        logger.info("Finish review submission " + submission.getId()+" with "+submission.getResultado());
     }
 
     //Chekea si esta aceptado

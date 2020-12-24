@@ -37,7 +37,7 @@ public class ProblemService {
     private SubmissionRepository submissionRepository;
 
     public ProblemString addProblem(Problem createdProblem) {
-        logger.debug("Build new problem from problem " + createdProblem.getId());
+        logger.debug("Create new problem from problem " + createdProblem.getId());
         ProblemString problemString = new ProblemString();
         Problem newProblem = new Problem();
 
@@ -53,13 +53,13 @@ public class ProblemService {
         problemString.setSalida("OK");
         problemString.setProblem(newProblem);
 
-        logger.debug("Finish build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
+        logger.debug("Create build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
         return problemString;
     }
 
 
     public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Build problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Create problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
         ProblemString problemString = new ProblemString();
@@ -109,12 +109,12 @@ public class ProblemService {
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.debug("Finish build problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish create problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return salida;
     }
 
     public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Build problem " + nombreProblema + " from zip " + nombreFichero + " without validate\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Create problem " + nombreProblema + " from zip " + nombreFichero + " without validate\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
         ProblemString problemString = new ProblemString();
@@ -162,7 +162,7 @@ public class ProblemService {
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.debug("Finish build problem from zip " + nombreFichero + " without validate\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish create problem from zip " + nombreFichero + " without validate\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         return salida;
     }
 
@@ -270,7 +270,6 @@ public class ProblemService {
     }
 
     public String deleteProblem(Problem problem) {
-        logger.warn("Might cause error, parameter has not been verified");
         logger.debug("Delete problem " + problem.getId());
         //Quitamos los problemas del contest
         for (Contest contestAux : problem.getListaContestsPertenece()) {

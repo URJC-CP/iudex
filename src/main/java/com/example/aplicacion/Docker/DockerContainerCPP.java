@@ -42,7 +42,7 @@ public class DockerContainerCPP extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".cpp").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.info("DOCKERCPP: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.debug("DOCKERCPP: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".cpp", result.getCodigo(), "/root");
@@ -89,7 +89,7 @@ public class DockerContainerCPP extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERPCPP: Finished running container for result " + result.getId() + " ");
+        logger.debug("DOCKERPCPP: Finished running container for result " + result.getId() + " ");
         return result;
     }
 }

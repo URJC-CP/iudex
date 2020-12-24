@@ -78,11 +78,12 @@ public class ProblemValidatorService {
                 //Ejecutamos
                 if (submission.getLanguage() != null) {
                     for (Result res : submission.getResults()) {
-                        logger.debug("Running result " + res.getId() + " of submission " + submission.getId());
+                        logger.debug("Send result " + res.getId() + " of submission " + submission.getId());
                         sender.sendMessage(res);
+                        logger.debug("Finish send result " + res.getId() + " of submission " + submission.getId());
                     }
                 } else {
-                    logger.error("Non supported language " + submission.getLanguage());
+                    logger.error("Unsupported language " + submission.getLanguage());
                 }
             }
         }
@@ -144,8 +145,8 @@ public class ProblemValidatorService {
 
             } else {
                 salida = false;
-                logger.warn("Unexpected result in submission " + submissionProblemValidator.getSubmission().getId());
-                logger.warn("Expected result: " + submissionProblemValidator.getExpectedSolution() + "\nGiven result: " + aux);
+                logger.info("Unexpected result in submission " + submissionProblemValidator.getSubmission().getId());
+                logger.info("Expected result: " + submissionProblemValidator.getExpectedSolution() + "\nGiven result: " + aux);
             }
         }
 

@@ -40,7 +40,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME2=" + nombreClase + ".py").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.info("DOCKER PYTHON3: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.debug("DOCKER PYTHON3: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -96,7 +96,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKER PYTHON3: Finished running container for result " + result.getId() + " ");
+        logger.debug("DOCKER PYTHON3: Finished running container for result " + result.getId() + " ");
         return result;
     }
 
