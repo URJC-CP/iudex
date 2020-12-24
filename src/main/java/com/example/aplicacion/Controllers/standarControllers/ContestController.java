@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 public class ContestController {
     Logger logger = LoggerFactory.getLogger(ContestController.class);
@@ -37,7 +39,7 @@ public class ContestController {
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }
-        model.addAttribute("contest", contest);
+        model.addAttribute("contest", contest.get());
         model.addAttribute("teams", teamService.getAllTeams());
         model.addAttribute("problems", problemService.getAllProblemas());
 

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 //Clase que se encarga de comprobar el resultado de una submission cuando esta ha finalizado
 @Service
 public class SubmissionReviserService {
@@ -32,22 +34,24 @@ public class SubmissionReviserService {
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission) {
         logger.info("Review submission " + submission.getId());
+
         if (checkAccepted(submission)) {
             submission.setResultado("accepted");
         } else {
             submission.setResultado(checkSubmission(submission));
         }
+
         //HAY QUE HACERLO CON EL RESTO DE OPCIONES WRONG ANSWER ETCETC
 
         submission.setCorregido(true);
         submissionRepository.save(submission);
 
         //Ahora buscamos si pudiera ser una submission de problema entrado desde ZIP
-        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorRepository.findSubmissionProblemValidatorBySubmission(submission);
-        if (submissionProblemValidator != null) {
+        Optional<SubmissionProblemValidator> submissionProblemValidator = submissionProblemValidatorRepository.findSubmissionProblemValidatorBySubmission(submission);
+        if (submissionProblemValidator.isPresent()) {
             //En caso de que sea una submission de la entrada de un problema ejecutaremos el metodo que controlara que cuando todas las submission de dicho probelma ha terminado
             //Se valide el problema y pueda usarse en la aplicacion
-            problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator);
+            problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator.get());
         }
         logger.info("Finish review submission " + submission.getId()+" with "+submission.getResultado());
     }
@@ -86,6 +90,7 @@ public class SubmissionReviserService {
                 break;
             }
         }
+
         return salida;
     }
 }

@@ -17,13 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class APISubmissionController {
@@ -38,45 +36,41 @@ public class APISubmissionController {
 
     @ApiOperation("Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
-    public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId){
+    public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
 
         //Si tiene los dos devolvemos lo que corresponde
-        if(contestId.isPresent()&&problemId.isPresent()){
-            Contest contest = contestService.getContest(contestId.get());
-            Problem problem = problemService.getProblem(problemId.get());
-            if (problem == null || contest == null){
-                return  new ResponseEntity("Problem or contest not found", HttpStatus.NOT_FOUND);
+        if (contestId.isPresent() && problemId.isPresent()) {
+            Optional<Contest> contest = contestService.getContest(contestId.get());
+            Optional<Problem> problem = problemService.getProblem(problemId.get());
+            if (problem.isEmpty() || contest.isEmpty()) {
+                return new ResponseEntity("Problem or contest not found", HttpStatus.NOT_FOUND);
             }
-            if (!contest.getListaProblemas().contains(problem)){
+            if (!contest.get().getListaProblemas().contains(problem.get())) {
                 return new ResponseEntity("PROBLEM NOT IN THE CONTEST", HttpStatus.NOT_FOUND);
             }
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-            for (Submission submission: submissionService.getSubmissionFromProblemAndContest(problem,contest)){
+            for (Submission submission : submissionService.getSubmissionFromProblemAndContest(problem.get(), contest.get())) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
             return new ResponseEntity(submissionAPIS, HttpStatus.OK);
-        }
-        else if(problemId.isPresent()){
-            Problem problem = problemService.getProblem(problemId.get());
-            if (problem == null){
-                return  new ResponseEntity("Problem not found",HttpStatus.NOT_FOUND);
-            }
-            else {
+        } else if (problemId.isPresent()) {
+            Optional<Problem> problem = problemService.getProblem(problemId.get());
+            if (problem.isEmpty()) {
+                return new ResponseEntity("Problem not found", HttpStatus.NOT_FOUND);
+            } else {
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-                for (Submission submission : submissionService.getSubmissionFromProblem(problem)){
+                for (Submission submission : submissionService.getSubmissionFromProblem(problem.get())) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
                 return new ResponseEntity(submissionAPIS, HttpStatus.OK);
             }
-        }
-        else if (contestId.isPresent()){
-            Contest contest = contestService.getContest(contestId.get());
-            if (contest == null) {
-                return  new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
-            }
-            else {
+        } else if (contestId.isPresent()) {
+            Optional<Contest> contest = contestService.getContest(contestId.get());
+            if (contest.isEmpty()) {
+                return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
+            } else {
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-                for (Submission submission : submissionService.getSubmissionsFromContest(contest)){
+                for (Submission submission : submissionService.getSubmissionsFromContest(contest.get())) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
                 return new ResponseEntity(submissionAPIS, HttpStatus.OK);
@@ -85,7 +79,7 @@ public class APISubmissionController {
         //SI NO CONTIENE NINGUNO devolvemos todo
         else {
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();
-            for (Submission submission: submissionService.getAllSubmissions()){
+            for (Submission submission : submissionService.getAllSubmissions()) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
             return new ResponseEntity(submissionAPIS, HttpStatus.OK);
@@ -94,24 +88,24 @@ public class APISubmissionController {
 
     @ApiOperation("Return Page of all submissions")
     @GetMapping("/API/v1/submission/page")
-    public ResponseEntity<Page<SubmissionAPI>> getAllSubmisionPage(Pageable pageable){
+    public ResponseEntity<Page<SubmissionAPI>> getAllSubmisionPage(Pageable pageable) {
         return new ResponseEntity<>(submissionService.getSubmissionsPage(pageable).map(Submission::toSubmissionAPI), HttpStatus.OK);
     }
 
 
     @ApiOperation("Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
-    public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId){
-        Submission submission = submissionService.getSubmission(submissionId);
-        if (submission == null){
-            return  new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
+    public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId) {
+        Optional<Submission> submission = submissionService.getSubmission(submissionId);
+        if (submission.isEmpty()) {
+            return new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(submission.toSubmissionAPIFull(), HttpStatus.OK);
+        return new ResponseEntity(submission.get().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
     @ApiOperation("Create a submission to a problem and contest")
     @PostMapping("/API/v1/submission")
-    public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId){
+    public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId) {
 
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
@@ -124,7 +118,7 @@ public class APISubmissionController {
 
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
 
-        if(!salida.getSalida().equals("OK")){
+        if (!salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
 
@@ -133,12 +127,12 @@ public class APISubmissionController {
 
     @ApiOperation("Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
-    public ResponseEntity deleteSubmission(@PathVariable String submissionId){
+    public ResponseEntity deleteSubmission(@PathVariable String submissionId) {
         String salida = submissionService.deleteSubmission(submissionId);
-        if(!salida.equals("OK")){
+        if (!salida.equals("OK")) {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
-        return  new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

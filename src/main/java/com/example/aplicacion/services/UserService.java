@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
     @Autowired
@@ -33,25 +34,25 @@ public class UserService {
             logger.error("User " + nickname + " duplicated");
             userString.setSalida("USER NICKNAME DUPLICATED");
             return userString;
-        } else if (userRepository.existsByEmail(mail)) {
+        } 
+        else if (userRepository.existsByEmail(mail)) {
             logger.error("User mail " + mail + " duplicated");
             userString.setSalida("USER MAIL DUPLICATED");
             return userString;
-        } else {
+        }
+        else {
             userRepository.save(user);
-
             String salidaCreaTeam = teamService.crearTeam(nickname, true).getSalida();
 
             if (salidaCreaTeam.equals("OK")) {
                 //Sacamos el equipo creado anteriormente
-                Team team = teamRepository.findByNombreEquipo(nickname);
-                user.addTeam(team);
-
+                Optional<Team> team = teamRepository.findByNombreEquipo(nickname);
+                user.addTeam(team.get());
                 //Anyadimos el user al equipo
-                teamService.addUserToTeam(team, user);
-
+                teamService.addUserToTeam(team.get(), user);
                 userRepository.save(user);
-            } else {
+            } 
+            else {
                 userString.setSalida(salidaCreaTeam);
                 return userString;
             }
@@ -65,16 +66,18 @@ public class UserService {
 
     public String deleteUserByNickname(String nickname) {
         logger.debug("Delete user " + nickname);
-        User user = userRepository.findByNickname(nickname);
-        if (user == null) {
+        Optional<User> user = userRepository.findByNickname(nickname);
+        if (user.isEmpty()) {
             logger.error("User " + nickname + " not found");
             return "USER NOT FOUND";
-        } else {
+        } 
+        else {
             //borramos el usuario
-            userRepository.delete(user);
+            userRepository.delete(user.get());
             //borramos el equipo del usuario
-            Team team = teamRepository.findByNombreEquipo(nickname);
-            teamRepository.delete(team);
+            Optional<Team> team = teamRepository.findByNombreEquipo(nickname);
+            teamRepository.delete(team.get());
+
             logger.debug("Finish delete user " + nickname + ", user id " + user.getId());
             return "OK";
         }
@@ -83,8 +86,9 @@ public class UserService {
     public UserString updateUser(String userId, Optional<String> nickname, Optional<String> mail) {
         logger.debug("Update user " + userId);
         UserString userString = new UserString();
-        User user = userRepository.findUserById(Long.valueOf(userId));
-        if (user == null) {
+       
+        Optional<User> user = userRepository.findUserById(Long.valueOf(userId));
+        if (user.isEmpty()) {
             logger.error("User " + userId + " not found");
             userString.setSalida("USER NOT FOUND");
             return userString;
@@ -95,23 +99,26 @@ public class UserService {
                 logger.error("User nickname " + nickname + " already in use");
                 userString.setSalida("USER ALREADY IN USE");
                 return userString;
-            } else {
-                user.setNickname(nickname.get());
-                userRepository.save(user);
+            } 
+            else {
+                user.get().setNickname(nickname.get());
+                userRepository.save(user.get());
             }
         }
+        
         if (mail.isPresent()) {
-            user.setEmail(mail.get());
+            user.get().setEmail(mail.get());
         }
 
-        userRepository.save(user);
+        userRepository.save(user.get());
         userString.setSalida("OK");
-        userString.setUser(user);
+        userString.setUser(user.get());
+        
         logger.debug("Finish update user " + userId);
         return userString;
     }
 
-    public User getUserById(long userId) {
+    public Optional<User> getUserById(long userId) {
         return userRepository.findUserById(userId);
     }
 }

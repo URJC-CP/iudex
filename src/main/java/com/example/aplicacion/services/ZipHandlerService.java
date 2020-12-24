@@ -43,8 +43,14 @@ public class ZipHandlerService {
 
         //Guardamos el nombre del problema
         if (problem.getNombreEjercicio() == null) {
-            problem.setNombreEjercicio(problemName.split("\\.")[0]);
+            problem.setNombreEjercicio(problemName.trim().split("\\.")[0]);
+            if (problem.getNombreEjercicio().trim().equals("")) {
+                logger.error("Problem name is empty");
+                problemString.setSalida("Nombre del problema vacio");
+                return problemString;
+            }
         }
+
         logger.info("ZIP DECOMPRESS: New zip folder received to decompress with name: " + problem.getNombreEjercicio());
 
         //Empezamos a descomprimir
@@ -137,8 +143,8 @@ public class ZipHandlerService {
                     if (lenguaje == null) {
                         //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
                         logger.error("ZIP HANDLER: Unsupported language " + extension);
-
-                    } else {
+                    } 
+                    else {
                         logger.info("ZIP COMPRESS: " + lenguaje + " detected");
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
@@ -254,6 +260,7 @@ public class ZipHandlerService {
 
     private void borraInNOut(Problem problem) {
         logger.debug("Delete input/output files from problem " + problem.getId());
+
         for (InNOut aux : problem.getEntradaVisible()) {
             inNOutRepository.delete(aux);
             //problem.removeEntradaVisible(aux);

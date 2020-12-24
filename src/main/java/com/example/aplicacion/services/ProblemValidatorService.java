@@ -16,6 +16,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import java.util.Optional;
+
 //Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
 @Service
 
@@ -38,14 +40,14 @@ public class ProblemValidatorService {
     private RabbitResultExecutionSender sender;
 
     public void validateProblem(Problem problemA) {
+        Optional<Problem> problem = problemRepository.findProblemById(problemA.getId());
 
-        Problem problem = problemRepository.findProblemById(problemA.getId());
         //Recorremos la lista de submission y las enviamos
-        if (problem.getSubmissionProblemValidators().size() != 0) {
-            for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
+        if (problem.get().getSubmissionProblemValidators().size() != 0) {
+            for (SubmissionProblemValidator submissionProblemValidator : problem.get().getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
-                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.getId() + ", " + problem.getNombreEjercicio());
+                logger.info("La submision " + submission.getId() + " del problema " + problem.get().getId() + " se empieza a recorrer");
 
                 //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
             /*
@@ -96,15 +98,17 @@ public class ProblemValidatorService {
     }
 
     public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator) {
+        long problemId = submissionProblemValidator.getSubmission().getProblema().getId();
+        
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
-        Problem problem = problemRepository.findById(submissionProblemValidator.getSubmission().getProblema().getId());
-
+        Optional<Problem> problem = problemRepository.findById(problemId);
         logger.debug("Check problem " + problem.getNombreEjercicio());
+      
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
         Boolean estaTerminado = true;
-        for (SubmissionProblemValidator submissionProblemValidator1 : problem.getSubmissionProblemValidators()) {
+        for (SubmissionProblemValidator submissionProblemValidator1 : problem.get().getSubmissionProblemValidators()) {
             if (submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()) {
-            } else {  //Aun no ha terminado
+            }else {  //Aun no ha terminado
                 estaTerminado = false;
                 break;
             }
@@ -113,15 +117,14 @@ public class ProblemValidatorService {
         //Si esta terminado ejecutaremos que el resultado correspondiente de cada submission es el q tiene q ser, q los accepted sean aceepted etcetc
         if (estaTerminado) {
             //En caso de que sea valido lo apuntamos
-            if (checkSubmissionResultIsValide(problem)) {
-                problem.setValido(true);
+            if (checkSubmissionResultIsValide(problem.get())) {
+                problem.get().setValido(true);
                 logger.debug("Finish validate problem " + problem.getNombreEjercicio());
-
             } else {
-                problem.setValido(false);
+                problem.get().setValido(false);
                 logger.warn("Invalid problem " + problem.getNombreEjercicio());
             }
-            problemRepository.save(problem);
+            problemRepository.save(problem.get());
         }
     }
 

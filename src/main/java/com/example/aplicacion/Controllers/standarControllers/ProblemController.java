@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 public class ProblemController {
@@ -41,34 +42,36 @@ public class ProblemController {
     @GetMapping("/contest/{idContest}/problema/{idProblem}")
     public ModelAndView goToProblem(@PathVariable String idContest, @PathVariable String idProblem) {
         ModelAndView modelAndView = new ModelAndView();
-
+        
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
-        Problem problem = problemService.getProblem(idProblem);
-        Contest contest = contestService.getContest(idContest);
-        if (contest == null) {
+        Optional<Problem> problem = problemService.getProblem(idProblem);
+        Optional<Contest> contest = contestService.getContest(idContest);
+        if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        if (problem == null) {
+
+        if (problem.isEmpty()) {
             logger.error("Problem " + idProblem + " not found");
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        if (!contest.getListaProblemas().contains(problem)) {
+
+        if (!contest.get().getListaProblemas().contains(problem.get())) {
             logger.error("Problem " + idProblem + " not found in contest " + idContest);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        modelAndView.getModel().put("problem", problem);
-        modelAndView.getModel().put("contest", contest);
+        modelAndView.getModel().put("problem", problem.get());
+        modelAndView.getModel().put("contest", contest.get());
         modelAndView.getModel().put("languages", languageService.getNLanguages());
         modelAndView.getModel().put("teams", teamService.getAllTeams());
-        modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
+        modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem.get()));
 
         logger.debug("Show problem " + idProblem + " from contest " + idContest);
         modelAndView.setViewName("problem");
@@ -80,25 +83,28 @@ public class ProblemController {
     @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
-        Problem problem = problemService.getProblem(idProblem);
-        Contest contest = contestService.getContest(idContest);
-        if (contest == null) {
+        Optional<Problem> problem = problemService.getProblem(idProblem);
+        Optional<Contest> contest = contestService.getContest(idContest);
+
+        if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             return new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
         }
-        if (problem == null) {
+        if (problem.isEmpty()) {
             logger.error("Problem " + idProblem + " not found");
             return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
-        if (!contest.getListaProblemas().contains(problem)) {
+        if (!contest.get().getListaProblemas().contains(problem.get())) {
             logger.error("Problem " + idProblem + " is not in contest " + idContest);
             return new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
         }
 
-        byte[] contents = problem.getDocumento();
+        byte[] contents = problem.get().getDocumento();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        String filename = problem.getNombreEjercicio() + ".pdf";
+        
+        String filename = problem.get().getNombreEjercicio() + ".pdf";
+        
         //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
@@ -178,6 +184,7 @@ public class ProblemController {
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
+        
         logger.debug("Add submission success for problem " + problemaAsignado + " in contest " + contestId + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
         modelAndView.setViewName("redirect:/contest/" + contestId + "/problema/" + problemaAsignado);
         return modelAndView;
@@ -189,7 +196,6 @@ public class ProblemController {
         ModelAndView modelAndView = new ModelAndView();
 
         String salida = submissionService.deleteSubmission(submissionId);
-
         if (!salida.equals("OK")) {
             logger.debug("Delete request failed for submission " + submissionId + " with " + salida);
             modelAndView.getModel().put("error", salida);

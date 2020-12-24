@@ -61,11 +61,11 @@ public class APIProblemController {
     @ApiOperation("Return selected problem")
     @GetMapping("/API/v1/problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId){
-        Problem problem = problemService.getProblem(problemId);
-        if(problem == null){
+        Optional<Problem> problem = problemService.getProblem(problemId);
+        if(problem.isEmpty()){
             return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
+        return new ResponseEntity<>(problem.get().toProblemAPIFull(), HttpStatus.OK);
     }
 
     //Crea problema desde objeto Problem
@@ -140,17 +140,16 @@ public class APIProblemController {
     @ApiOperation("Get pdf from Problem")
     @GetMapping("/API/v1//problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId){
-        Problem problem = problemService.getProblem(problemId);
+        Optional<Problem> problem = problemService.getProblem(problemId);
 
-        if(problem==null){
+        if(problem.isEmpty()){
             return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
 
-
-        byte[] contents = problem.getDocumento();
+        byte[] contents = problem.get().getDocumento();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        String filename = problem.getNombreEjercicio()+".pdf";
+        String filename = problem.get().getNombreEjercicio()+".pdf";
         //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
