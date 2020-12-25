@@ -13,7 +13,7 @@ public class LanguageService {
     @Autowired
     private LanguageRepository languageRepository;
 
-    public List<Language> getNLanguages(){
+    public List<Language> getNLanguages() {
         return languageRepository.findAll();
     }
 }

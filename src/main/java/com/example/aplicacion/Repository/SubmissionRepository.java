@@ -13,7 +13,6 @@ import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
-
     Optional<Submission> findSubmissionById(long id);
     Optional<Submission> findSubmissionByResults(Result res);
 
