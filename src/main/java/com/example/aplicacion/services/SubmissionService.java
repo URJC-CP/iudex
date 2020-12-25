@@ -264,7 +264,7 @@ public class SubmissionService {
         //Comprobamos que no se este intentando borrar una SUBMISSIOn pertenciente a un SubmissionProblemValidator
         if(submission.get().isEsProblemValidator()){
             logger.error("Submission " + submissionId + " is from problem validator, cannot be deleted from here");
-            return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE, JUST DELETING DE PROBLEM";
+            return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
         }
         submissionRepository.delete(submission.get());
         

@@ -96,26 +96,27 @@ public class ProblemService {
             problem = aux.get();
             //si el problema esta almacendo en el concurso
             if (contest.get().getListaProblemas().contains(aux)) {
-                return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
+                return updateProblem(String.valueOf(problem.getId()), exerciseName, inputStream, teamId, nombreProblema, idcontest);
             }
         }
 
         //Si el usuario introduce un nombre lo metemos a cholon
         if (!nombreProblema.equals("")) {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
             problem = problemString.getProblem();
-            problem.setNombreEjercicio(nombreProblema);
+            //problem.setNombreEjercicio(nombreProblema);
         }
         //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
         else {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
+            problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
             problem = problemString.getProblem();
         }
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
         if (!(problemString.getSalida() == null)) {
-            logger.error("Problem " + problem.getId() + " couldn't be saved");
+            if(problem != null) logger.error("Problem " + problem.getId() + " couldn't be saved");
+            else logger.error("Couldn't create problem "+exerciseName);
             //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
             return salida;

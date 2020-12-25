@@ -227,6 +227,10 @@ public class Problem {
         this.nombreEjercicio = nombreEjercicio;
     }
 
+    public boolean hasTestCaseFiles(){
+        // cuando se haga merge hay que utilizar el atributo datos
+        return entradaVisible.size() > 0 || salidaVisible.size() > 0 || entradaOculta.size() > 0 || salidaOculta.size() > 0;
+    }
 
     public List<InNOut> getEntradaOculta() {
         return entradaOculta;
