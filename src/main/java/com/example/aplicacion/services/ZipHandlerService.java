@@ -143,8 +143,7 @@ public class ZipHandlerService {
                     if (lenguaje == null) {
                         //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
                         logger.error("ZIP HANDLER: Unsupported language " + extension);
-                    } 
-                    else {
+                    } else {
                         logger.info("ZIP COMPRESS: " + lenguaje + " detected");
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
@@ -185,7 +184,7 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
-        if(!problem.hasTestCaseFiles()){
+        if (!problem.hasTestCaseFiles()) {
             logger.warn("TestCase files not found");
             problemString.setSalida("No hay casos de prueba");
             return problemString;
