@@ -1,7 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.DockerContainerCPP;
 import com.example.aplicacion.Docker.DockerContainerC;
+import com.example.aplicacion.Docker.DockerContainerCPP;
 import com.example.aplicacion.Docker.DockerContainerJava;
 import com.example.aplicacion.Docker.DockerContainerPython3;
 import com.example.aplicacion.Entities.Language;
@@ -32,12 +32,12 @@ public class ResultHandler {
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
 
     private DockerClient dockerClient;
-    private Map<String, String> imagenes;
+    private final Map<String, String> imagenes;
 
     public ResultHandler() {
-        //arrancamos la conexion docker
+        logger.info("Starting connection with docker");
         this.imagenes = new HashMap<>();
-        
+
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
 
         //Creamos las imagenes
@@ -47,11 +47,13 @@ public class ResultHandler {
                 .exec(new BuildImageResultCallback())
                 .awaitImageId();
         this.imagenes.put("java", imageId);
+        logger.info("Building image: "+imageId);
         System.out.println("\nhemos creado la imagen \n " + imageId);
 
 
          */
         //logger.info("hemos creado la imagen " + imageId);
+        logger.info("Connection established with docker");
 
     }
 
@@ -63,7 +65,7 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
-    
+
     public void ejecutor(Result res) throws IOException {
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()) {
@@ -80,12 +82,10 @@ public class ResultHandler {
                 break;
 
             case "cpp":
-                new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage ).ejecutar(res.getLanguage().getImgenId());
+                new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
-            
-        }
 
-        //System.out.println("Conenedor terminado");
+        }
 
     }
 
@@ -113,9 +113,10 @@ public class ResultHandler {
         } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
         } else {
-            // default: throw error
-            throw new RuntimeException("Unknown Operating System! There is no url for "+osName);
+            logger.error("Unsupported Operating System. There is no url for " + osName);
+            throw new RuntimeException("Unsupported Operating System: " + osName);
         }
+        logger.info("Running docker on: " + osName + "\nURL: " + dockerUrl);
         return dockerUrl;
     }
 }

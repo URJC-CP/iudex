@@ -18,13 +18,14 @@ public class DockerContainerCPP extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
+        logger.debug("Building container for image " + imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
-        String nombreDocker = "a" + Long.toString(result.getId()) + "_" + java.time.LocalDateTime.now();
+        String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
         nombreDocker = nombreDocker.replace(":", "");
 
         String timeout;
@@ -41,7 +42,7 @@ public class DockerContainerCPP extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".cpp").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.info("DOCKERCPP: Se crea el container para el result" + result.getId() + " con un timeout de " + result.getMaxTimeout() + " Y un memorylimit de " + result.getMaxMemory());
+        logger.debug("DOCKERCPP: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".cpp", result.getCodigo(), "/root");
@@ -88,7 +89,7 @@ public class DockerContainerCPP extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.info("DOCKERPCPP: Se termina el result " + result.getId() + " ");
+        logger.debug("DOCKERPCPP: Finished running container for result " + result.getId() + " ");
         return result;
     }
 }
