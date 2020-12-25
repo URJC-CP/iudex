@@ -231,6 +231,7 @@ public class Problem {
     }
 
     public void setEntradaOculta(List<InNOut> entradaOculta) {
+        this.datos.removeAll(getEntradaOculta());
         this.datos.addAll(entradaOculta);
     }
 
@@ -239,6 +240,7 @@ public class Problem {
     }
 
     public void setEntradaVisible(List<InNOut> entradaVisible) {
+        this.datos.removeAll(getEntradaVisible());
         this.datos.addAll(entradaVisible);
     }
 
@@ -247,6 +249,7 @@ public class Problem {
     }
 
     public void setSalidaOculta(List<InNOut> salidaOculta) {
+        this.datos.removeAll(getSalidaOculta());
         this.datos.addAll(salidaOculta);
     }
 
@@ -255,6 +258,7 @@ public class Problem {
     }
 
     public void setSalidaVisible(List<InNOut> salidaVisible) {
+        this.datos.removeAll(getSalidaVisible());
         this.datos.addAll(salidaVisible);
     }
 
