@@ -226,12 +226,21 @@ public class Problem {
         return dataFiles;
     }
 
+    private void removeData(ProblemDataType type) {
+        for (int i = 0; i < datos.size(); i++) {
+            ProblemData data = datos.get(i);
+            if (data.getType() == type) {
+                datos.remove(i);
+            }
+        }
+    }
+
     public List<InNOut> getEntradaOculta() {
         return getData(ProblemDataType.EntradaOculta);
     }
 
     public void setEntradaOculta(List<InNOut> entradaOculta) {
-        this.datos.removeAll(getEntradaOculta());
+        removeData(ProblemDataType.EntradaOculta);
         this.datos.addAll(entradaOculta);
     }
 
@@ -240,7 +249,7 @@ public class Problem {
     }
 
     public void setEntradaVisible(List<InNOut> entradaVisible) {
-        this.datos.removeAll(getEntradaVisible());
+        removeData(ProblemDataType.EntradaVisible);
         this.datos.addAll(entradaVisible);
     }
 
@@ -249,7 +258,7 @@ public class Problem {
     }
 
     public void setSalidaOculta(List<InNOut> salidaOculta) {
-        this.datos.removeAll(getSalidaOculta());
+        removeData(ProblemDataType.SalidaOculta);
         this.datos.addAll(salidaOculta);
     }
 
@@ -258,7 +267,7 @@ public class Problem {
     }
 
     public void setSalidaVisible(List<InNOut> salidaVisible) {
-        this.datos.removeAll(getSalidaVisible());
+        removeData(ProblemDataType.SalidaVisible);
         this.datos.addAll(salidaVisible);
     }
 
