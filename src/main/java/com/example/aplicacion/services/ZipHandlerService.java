@@ -34,6 +34,7 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
+
     public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
         logger.info("Generate problem " + problemName + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
         ProblemString problemString = new ProblemString();
@@ -118,7 +119,6 @@ public class ZipHandlerService {
                         InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        
                         problem.addData(inNOut);
                         logger.info("ZIP DECOMPRESS: Add new testcase input for problem " + problem.getNombreEjercicio());
                     }
@@ -129,6 +129,7 @@ public class ZipHandlerService {
 
                     if (path2.equals("accepted")) {
                         resultadoEsperado = "accepted";
+
                     } else if (path2.equals("wrong_answer")) {
                         resultadoEsperado = "wrong_answer";
                     } else if (path2.equals("run_time_error")) {
@@ -136,14 +137,14 @@ public class ZipHandlerService {
                     } else {
                         logger.warn("ZIP HANDLER: folder with incompatible name found in submissions");
                         break;
+                    }
 
                     //Buscamos el lenguaje que es analizando la extension
                     String lenguaje = selectLenguaje(extension);
                     if (lenguaje == null) {
                         //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
                         logger.error("ZIP HANDLER: Unsupported language " + extension);
-                    } 
-                    else {
+                    } else {
                         logger.info("ZIP COMPRESS: " + lenguaje + " detected");
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
@@ -206,19 +207,17 @@ public class ZipHandlerService {
     }
 
     public String selectLenguaje(String lenguaje) {
-        switch (lenguaje) {
-            case "java":
-                return "java";
-            case "py":
-                return "python3";
-            case "c":
-                return "c";
-            case "cpp":
-            case "c++":
-                return "cpp";
-            default:
-                logger.warn("Unsupported language detected: " + lenguaje);
-                return null;
+        if (lenguaje.equals("java")) {
+            return "java";
+        } else if (lenguaje.equals("py")) {
+            return "python3";
+        } else if (lenguaje.equals("c")) {
+            return "c";
+        } else if (lenguaje.equals("cpp") || lenguaje.equals("c++")) {
+            return "cpp";
+        } else {
+            logger.warn("Unsupported language detected: " + lenguaje);
+            return null;
         }
     }
 
@@ -320,23 +319,20 @@ public class ZipHandlerService {
                 valor = valor.replace("'", ""); //quitamos las comillas
                 valor = valor.replace("\"", "");
 
-                switch (propiedad) {
-                    case "name":
-                        problem.setNombreEjercicio(valor);
-                        break;
-                    case "timelimit":
-                        //Si entra a timelimit actualizamos los valores de los results
-                        problem.setTimeout(valor);
-                        for (Submission submission : problem.getSubmissions()) {
-                            for (Result result : submission.getResults()) {
-                                result.setMaxTimeout(valor);
-                            }
+                if (propiedad.equals("name")) {
+                    problem.setNombreEjercicio(valor);
+                } else if (propiedad.equals("timelimit")) {
+                    //Si entra a timelimit actualizamos los valores de los results
+                    problem.setTimeout(valor);
+                    for (Submission submission : problem.getSubmissions()) {
+                        for (Result result : submission.getResults()) {
+                            result.setMaxTimeout(valor);
                         }
-                        break;
-                    case "color":
-                        problem.setColor(valor);
-                        break;
+                    }
+                } else if (propiedad.equals("color")) {
+                    problem.setColor(valor);
                 }
+
             }
         }
     }
