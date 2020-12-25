@@ -202,7 +202,7 @@ public class ZipHandlerService {
         }
 
         problemString.setProblem(problem);
-        logger.info("Finish generate problem " + problemName + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
+        logger.info("Finish generate problem " + problem.getNombreEjercicio() + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
         return problemString;
     }
 

@@ -95,7 +95,7 @@ public class ProblemService {
         if (aux.isPresent()) {
             problem = aux.get();
             //si el problema esta almacendo en el concurso
-            if (contest.get().getListaProblemas().contains(aux)) {
+            if (contest.get().getListaProblemas().contains(aux.get())) {
                 return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
             }
         }
@@ -122,8 +122,9 @@ public class ProblemService {
         }
 
         contest.get().addProblem(problem);
-        problem.getListaContestsPertenece().add(contest.get());
-        
+        if(!contest.get().getListaProblemas().contains(problem)) {
+            problem.getListaContestsPertenece().add(contest.get());
+        }
         problemRepository.save(problem);
         contestRepository.save(contest.get());
 
