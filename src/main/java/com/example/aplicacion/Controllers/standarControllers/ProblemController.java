@@ -42,7 +42,7 @@ public class ProblemController {
     @GetMapping("/contest/{idContest}/problema/{idProblem}")
     public ModelAndView goToProblem(@PathVariable String idContest, @PathVariable String idProblem) {
         ModelAndView modelAndView = new ModelAndView();
-        
+
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
         Optional<Problem> problem = problemService.getProblem(idProblem);
         Optional<Contest> contest = contestService.getContest(idContest);
@@ -100,11 +100,15 @@ public class ProblemController {
         }
 
         byte[] contents = problem.get().getDocumento();
+        if (contents == null || contents.length == 0) {
+            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        
+
         String filename = problem.get().getNombreEjercicio() + ".pdf";
-        
+
         //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
@@ -184,7 +188,7 @@ public class ProblemController {
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        
+
         logger.debug("Add submission success for problem " + problemaAsignado + " in contest " + contestId + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
         modelAndView.setViewName("redirect:/contest/" + contestId + "/problema/" + problemaAsignado);
         return modelAndView;
