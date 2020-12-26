@@ -1,7 +1,7 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.InNOutRepository;
+import com.example.aplicacion.Repository.ProblemDataRepository;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
@@ -30,7 +30,7 @@ public class BasicController {
     @Autowired
     private ResultHandler resultHandler;
     @Autowired
-    private InNOutRepository inNOutRepository;
+    private ProblemDataRepository inNOutRepository;
     @Autowired
     private UserService userService;
     @Autowired

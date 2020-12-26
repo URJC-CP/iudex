@@ -1,8 +1,9 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Pojos.ProblemDataType;
 import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.Repository.InNOutRepository;
+import com.example.aplicacion.Repository.ProblemDataRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class ZipHandlerService {
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private InNOutRepository inNOutRepository;
+    private ProblemDataRepository inNOutRepository;
     @Autowired
     private SubmissionService submissionService;
     @Autowired
@@ -87,7 +88,7 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaVisible);
+                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
@@ -95,7 +96,7 @@ public class ZipHandlerService {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaVisible);
+                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
@@ -108,7 +109,7 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaOculta);
+                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
@@ -116,7 +117,7 @@ public class ZipHandlerService {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaOculta);
+                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
@@ -267,19 +268,19 @@ public class ZipHandlerService {
     private void borraInNOut(Problem problem) {
         logger.debug("Delete input/output files from problem " + problem.getId());
 
-        for (InNOut aux : problem.getEntradaVisible()) {
+        for (ProblemData aux : problem.getEntradaVisible()) {
             inNOutRepository.delete(aux);
             //problem.removeEntradaVisible(aux);
         }
-        for (InNOut aux : problem.getSalidaVisible()) {
+        for (ProblemData aux : problem.getSalidaVisible()) {
             //problem.removeSalidaVisible(aux);
             inNOutRepository.delete(aux);
         }
-        for (InNOut aux : problem.getEntradaOculta()) {
+        for (ProblemData aux : problem.getEntradaOculta()) {
             //problem.removeEntradaOculta(aux);
             inNOutRepository.delete(aux);
         }
-        for (InNOut aux : problem.getSalidaOculta()) {
+        for (ProblemData aux : problem.getSalidaOculta()) {
             //problem.removeSalidaOculta(aux);
             inNOutRepository.delete(aux);
         }
