@@ -227,8 +227,7 @@ public class Problem {
     }
 
     private void removeData(ProblemDataType type) {
-        ArrayList<Integer> itemsToDelete = new ArrayList<>();
-        for (ProblemData data: datos) {
+        for (ProblemData data : datos) {
             if (data.getType() == type) {
                 datos.remove(data);
             }
