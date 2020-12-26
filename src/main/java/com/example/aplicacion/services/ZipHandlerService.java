@@ -185,6 +185,12 @@ public class ZipHandlerService {
         zipFile.closeEntry();
         zipFile.close();
 
+        if (!problem.hasTestCaseFiles()) {
+            logger.warn("TestCase files not found");
+            problemString.setSalida("No hay casos de prueba");
+            return problemString;
+        }
+
         //Creamos los RESULTs
         for (Submission submission : problem.getSubmissions()) {
             submissionService.creaResults(submission, problem, submission.getCodigo(), submission.getLanguage());

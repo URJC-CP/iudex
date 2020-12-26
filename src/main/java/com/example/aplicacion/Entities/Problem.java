@@ -22,8 +22,10 @@ public class Problem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String nombreEjercicio;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<InNOut> datos;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL)
@@ -105,6 +107,7 @@ public class Problem {
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
         problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.getEntradaVisible()));
         problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.getSalidaVisible()));
+
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
             submissionAPIS.add(submission.toSubmissionAPISimple());
@@ -131,6 +134,7 @@ public class Problem {
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
         problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.getEntradaVisible()));
         problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.getSalidaVisible()));
+        
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
             submissionAPIS.add(submission.toSubmissionAPI());
@@ -205,6 +209,9 @@ public class Problem {
     public void setNombreEjercicio(String nombreEjercicio) {
         this.nombreEjercicio = nombreEjercicio;
     }
+
+    public boolean hasTestCaseFiles() {
+        return datos.size() > 0;
 
     public List<InNOut> getData() {
         return datos;
