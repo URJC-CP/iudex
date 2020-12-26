@@ -134,7 +134,7 @@ public class Problem {
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
         problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.getEntradaVisible()));
         problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.getSalidaVisible()));
-        
+
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
             submissionAPIS.add(submission.toSubmissionAPI());
@@ -212,6 +212,7 @@ public class Problem {
 
     public boolean hasTestCaseFiles() {
         return datos.size() > 0;
+    }
 
     public List<InNOut> getData() {
         return datos;
