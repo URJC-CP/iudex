@@ -34,6 +34,7 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
+
     public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
         logger.info("Generate problem " + problemName + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
         ProblemString problemString = new ProblemString();
@@ -86,18 +87,18 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addSalidaVisible(inNOut);
+                        problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaVisible);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addEntradaVisible(inNOut);
+                        problem.addData(inNOut);
                     }
                 }
                 //Si es ES secreta
@@ -107,18 +108,18 @@ public class ZipHandlerService {
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.SalidaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addSalidaOculta(inNOut);
+                        problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
-                        InNOut inNOut = new InNOut(filename, aux);
+                        InNOut inNOut = new InNOut(filename, aux, ProblemDataType.EntradaOculta);
                         //inNOut.setProblem(problem);
                         //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addEntradaOculta(inNOut);
+                        problem.addData(inNOut);
                         logger.info("ZIP DECOMPRESS: Add new testcase input for problem " + problem.getNombreEjercicio());
                     }
                 }
@@ -207,7 +208,7 @@ public class ZipHandlerService {
         }
 
         problemString.setProblem(problem);
-        logger.info("Finish generate problem " + problemName + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
+        logger.info("Finish generate problem " + problem.getNombreEjercicio() + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
         return problemString;
     }
 

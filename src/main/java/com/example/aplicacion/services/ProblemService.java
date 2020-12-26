@@ -95,8 +95,8 @@ public class ProblemService {
         if (aux.isPresent()) {
             problem = aux.get();
             //si el problema esta almacendo en el concurso
-            if (contest.get().getListaProblemas().contains(aux)) {
-                return updateProblem(String.valueOf(problem.getId()), exerciseName, inputStream, teamId, nombreProblema, idcontest);
+            if (contest.get().getListaProblemas().contains(aux.get())) {
+                return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
             }
         }
 
@@ -127,7 +127,7 @@ public class ProblemService {
 
         contest.get().addProblem(problem);
         problem.getListaContestsPertenece().add(contest.get());
-
+        
         problemRepository.save(problem);
         contestRepository.save(contest.get());
 
@@ -417,10 +417,12 @@ public class ProblemService {
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {
         oldProblem.setNombreEjercicio(newProblem.getNombreEjercicio());
-        oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
+        /*oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
         oldProblem.setEntradaVisible(newProblem.getEntradaVisible());
         oldProblem.setSalidaOculta(newProblem.getSalidaOculta());
-        oldProblem.setSalidaVisible(newProblem.getSalidaVisible());
+        oldProblem.setSalidaVisible(newProblem.getSalidaVisible());*/
+        oldProblem.setData(newProblem.getData());
+
         //Anyadimos losproblemsvalidator a la lista de viejos
         oldProblem.getOldSubmissionProblemValidators().addAll(oldProblem.getSubmissionProblemValidators());
         oldProblem.setSubmissionProblemValidators(newProblem.getSubmissionProblemValidators());
