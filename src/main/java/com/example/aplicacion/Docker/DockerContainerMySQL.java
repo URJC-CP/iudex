@@ -36,17 +36,13 @@ public class DockerContainerMySQL extends DockerContainer{
             timeout = this.getDefaultTimeout();
         }
 
-        String database = "test";
-        String username = "root";
-        String password = "password";
-
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "DATABASE= "+database, "USER=" + username, "PASSWORD= "+password).withHostConfig(hostConfig).withName(nombreDocker).exec();
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase).withHostConfig(hostConfig).withName(nombreDocker).exec();
         logger.debug("DOCKER MySQL: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
