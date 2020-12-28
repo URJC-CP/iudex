@@ -1,9 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.DockerContainerC;
-import com.example.aplicacion.Docker.DockerContainerCPP;
-import com.example.aplicacion.Docker.DockerContainerJava;
-import com.example.aplicacion.Docker.DockerContainerPython3;
+import com.example.aplicacion.Docker.*;
 import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Repository.LanguageRepository;
@@ -85,6 +82,9 @@ public class ResultHandler {
                 new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
+            case "sql":
+                new DockerContainerMySQL(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
+                break;
         }
 
     }
