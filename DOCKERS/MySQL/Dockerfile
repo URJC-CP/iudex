@@ -10,4 +10,4 @@ RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 #RUN touch salidaCompilador.ans
 
-ENTRYPOINT mysql -u $USER -p $PASSWORD $DATABASE < $FILENAME1.sql > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
+ENTRYPOINT mysql -e MYSQL_USER=$USER -e MYSQL_USER_PWD=$PASSWORD -e MYSQL_USER_DB=$DATABASE -p 3306:3306 < $FILENAME1.sql > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
