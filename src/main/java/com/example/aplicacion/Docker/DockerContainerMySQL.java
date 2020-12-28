@@ -5,10 +5,11 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
+import org.apache.catalina.webresources.FileResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
 
 public class DockerContainerMySQL extends DockerContainer{
 
@@ -42,15 +43,21 @@ public class DockerContainerMySQL extends DockerContainer{
         //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase).withHostConfig(hostConfig).withName(nombreDocker).exec();
+        //Preparamos el script
+        FileWriter fr = new FileWriter(new File("entrada.sql"));
+        //generar script parar preparar el estado inicial de la bbdd
+        String sqlScript = generarScriptSQL();
+        fr.write(sqlScript);
+        fr.close();
+
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=entrada").withHostConfig(hostConfig).withName(nombreDocker).exec();
         logger.debug("DOCKER MySQL: Container built for result" + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".sql", result.getCodigo(), "/root");
 
-        //preparar entrada
-
-
+        //Copiamos la entrada
+        copiarArchivoAContenedor(container.getId(), "entrada.sql", result.getEntrada(), "/root");
 
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
@@ -80,5 +87,65 @@ public class DockerContainerMySQL extends DockerContainer{
 
         logger.debug("DOCKER MySQL: Finished running container for result " + result.getId() + " ");
         return result;
+    }
+
+    private String generarScriptSQL() throws IOException {
+        StringBuilder sqlInstructions = new StringBuilder();
+
+        //crear tabla vacia
+        sqlInstructions.append("CREATE DATABASE test IF NOT EXISTS;\n");
+        sqlInstructions.append("USE test;\n");
+        sqlInstructions.append("CREATE TABLE ").append(getResult().getFileName()).append(" IF NOT EXISTS\n");
+        sqlInstructions.append("TRUNCATE TABLE ").append(getResult().getFileName());
+
+        // leer entrada.in
+        FileWriter fwr = new FileWriter("entrada.sql");
+        BufferedReader br = new BufferedReader(new FileReader("entrada.in"));
+        String[] columns = null;
+        String[] values = null;
+
+        int row = 0;
+
+        String line = br.readLine();
+        // obtener el nombre de las columnas, la primera linea de entrada.in
+        if(line != null){
+            row++;
+            columns = line.split("\\s+");
+            line = br.readLine();
+        }
+
+        if(columns == null || columns.length == 0){
+            logger.warn("Couldn't create tables, first line is empty");
+        }
+
+        while(line != null){
+            row++;
+            // generar script sql para las tablas
+            values = line.split("\\s+");
+            if(values == null || values.length == 0){
+                logger.warn("Couldn't create row, empty line "+row);
+            }
+            else if(columns.length != values.length){
+                logger.warn("Couldn't create row, number of columns and values don't match in line "+row);
+            }
+            else{
+                // añadir valores
+                sqlInstructions.append("INSERT INTO ").append(getResult().getFileName()).append(" (");
+                for (int i = 0; i < columns.length; i++){
+                    if(i > 0) sqlInstructions.append(", ");
+                    sqlInstructions.append("'"+columns[i]+"'");
+                }
+                sqlInstructions.append(")\nVALUES ( ");
+                for (int i = 0; i < values.length; i++){
+                    if(i > 0) sqlInstructions.append(", ");
+                    sqlInstructions.append("'"+values[i]+"'");
+                }
+                sqlInstructions.append(");\n");
+            }
+            line = br.readLine();
+        }
+
+        br.close();
+        return sqlInstructions.toString();
     }
 }
