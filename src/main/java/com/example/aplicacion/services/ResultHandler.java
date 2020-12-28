@@ -23,14 +23,19 @@ import java.util.Map;
 @Service
 public class ResultHandler {
 
+    private final Map<String, String> imagenes;
     @Autowired
     LanguageRepository languageRepository;
-
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
-
     private DockerClient dockerClient;
-    private final Map<String, String> imagenes;
-
+    @Value("${problem.default.timeout}")
+    private String timeoutTime;
+    @Value("${problem.default.memory}")
+    private String memoryLimit;
+    @Value("${problem.default.cores}")
+    private String defaultCPU;
+    @Value("${problem.default.storage}")
+    private String defaultStorage;
     public ResultHandler() {
         logger.info("Starting connection with docker");
         this.imagenes = new HashMap<>();
@@ -53,15 +58,6 @@ public class ResultHandler {
         logger.info("Connection established with docker");
 
     }
-
-    @Value("${problem.default.timeout}")
-    private String timeoutTime;
-    @Value("${problem.default.memory}")
-    private String memoryLimit;
-    @Value("${problem.default.cores}")
-    private String defaultCPU;
-    @Value("${problem.default.storage}")
-    private String defaultStorage;
 
     public void ejecutor(Result res) throws IOException {
         Language lenguaje = res.getLanguage();

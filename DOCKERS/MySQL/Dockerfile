@@ -1,12 +1,12 @@
 FROM woahbase/alpine-mysql
 WORKDIR /root
 
+RUN apk add --no-cache bash
+
 # variables del entorno
 ENV MYSQL_USER=root
 ENV MYSQL_USER_PWD=password
 ENV MYSQL_USER_DB=test
-
-RUN apk add --no-cache bash
 
 #Creamos el archivo de salida del tiempo
 #RUN touch signalCompilador.txt

@@ -5,13 +5,12 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
-import org.apache.catalina.webresources.FileResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
-public class DockerContainerMySQL extends DockerContainer{
+public class DockerContainerMySQL extends DockerContainer {
 
     Logger logger = LoggerFactory.getLogger(DockerContainerMySQL.class);
 
@@ -99,7 +98,6 @@ public class DockerContainerMySQL extends DockerContainer{
         sqlInstructions.append("TRUNCATE TABLE ").append(getResult().getFileName());
 
         // leer entrada.in
-        FileWriter fwr = new FileWriter("entrada.sql");
         BufferedReader br = new BufferedReader(new FileReader("entrada.in"));
         String[] columns = null;
         String[] values = null;
@@ -108,37 +106,35 @@ public class DockerContainerMySQL extends DockerContainer{
 
         String line = br.readLine();
         // obtener el nombre de las columnas, la primera linea de entrada.in
-        if(line != null){
+        if (line != null) {
             row++;
             columns = line.split("\\s+");
             line = br.readLine();
         }
 
-        if(columns == null || columns.length == 0){
+        if (columns == null || columns.length == 0) {
             logger.warn("Couldn't create tables, first line is empty");
         }
 
-        while(line != null){
+        while (line != null) {
             row++;
             // generar script sql para las tablas
             values = line.split("\\s+");
-            if(values == null || values.length == 0){
-                logger.warn("Couldn't create row, empty line "+row);
-            }
-            else if(columns.length != values.length){
-                logger.warn("Couldn't create row, number of columns and values don't match in line "+row);
-            }
-            else{
+            if (values == null || values.length == 0) {
+                logger.warn("Couldn't create row, empty line " + row);
+            } else if (columns.length != values.length) {
+                logger.warn("Couldn't create row, number of columns and values don't match in line " + row);
+            } else {
                 // añadir valores
                 sqlInstructions.append("INSERT INTO ").append(getResult().getFileName()).append(" (");
-                for (int i = 0; i < columns.length; i++){
-                    if(i > 0) sqlInstructions.append(", ");
-                    sqlInstructions.append("'"+columns[i]+"'");
+                for (int i = 0; i < columns.length; i++) {
+                    if (i > 0) sqlInstructions.append(", ");
+                    sqlInstructions.append("'" + columns[i] + "'");
                 }
                 sqlInstructions.append(")\nVALUES ( ");
-                for (int i = 0; i < values.length; i++){
-                    if(i > 0) sqlInstructions.append(", ");
-                    sqlInstructions.append("'"+values[i]+"'");
+                for (int i = 0; i < values.length; i++) {
+                    if (i > 0) sqlInstructions.append(", ");
+                    sqlInstructions.append("'" + values[i] + "'");
                 }
                 sqlInstructions.append(");\n");
             }
