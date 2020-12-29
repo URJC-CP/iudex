@@ -69,6 +69,13 @@ public class DockerContainerMySQL extends DockerContainer {
         salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
         result.setSalidaError(salidaError);
 
+        String time = null;
+        time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+        result.setSalidaTime(time);
+
+        //para que no de fallo de compilador
+        result.setSignalCompilador("0");
+
         String signalEjecutor = null;
         signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);

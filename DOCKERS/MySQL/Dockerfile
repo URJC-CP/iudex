@@ -11,7 +11,7 @@ ENV MYSQL_USER_DB=test
 #Creamos el archivo de salida del tiempo
 #RUN touch signalCompilador.txt
 RUN touch signalEjecutor.txt
-#RUN touch time.txt
+RUN touch time.txt
 RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 #RUN touch salidaCompilador.ans
