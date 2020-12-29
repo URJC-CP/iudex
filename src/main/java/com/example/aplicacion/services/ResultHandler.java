@@ -36,6 +36,7 @@ public class ResultHandler {
     private String defaultCPU;
     @Value("${problem.default.storage}")
     private String defaultStorage;
+
     public ResultHandler() {
         logger.info("Starting connection with docker");
         this.imagenes = new HashMap<>();
@@ -78,6 +79,7 @@ public class ResultHandler {
                 new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
+            case "in":
             case "sql":
                 new DockerContainerMySQL(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;

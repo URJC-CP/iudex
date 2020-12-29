@@ -16,4 +16,4 @@ RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 #RUN touch salidaCompilador.ans
 
-ENTRYPOINT mysql -p 3306:3306 < $FILENAME2.sql; mysql < $FILENAME1.sql > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
+ENTRYPOINT mysql -p 3306:3306 < $FILENAME2.in; mysql < $FILENAME1.in > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
