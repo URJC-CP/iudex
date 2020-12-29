@@ -1,6 +1,6 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.InNOutAPI;
+import com.example.aplicacion.Pojos.ProblemDataAPI;
 import com.example.aplicacion.Pojos.ProblemDataType;
 
 import javax.persistence.*;
@@ -38,8 +38,8 @@ public class ProblemData {
         this.type = type;
     }
 
-    public InNOutAPI toInNOutAPI() {
-        InNOutAPI inNOutAPI = new InNOutAPI();
+    public ProblemDataAPI toInNOutAPI() {
+        ProblemDataAPI inNOutAPI = new ProblemDataAPI();
         inNOutAPI.setId(this.id);
         inNOutAPI.setName(this.name);
         inNOutAPI.setText(this.text);

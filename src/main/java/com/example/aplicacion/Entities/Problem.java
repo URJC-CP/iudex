@@ -1,6 +1,6 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.InNOutAPI;
+import com.example.aplicacion.Pojos.ProblemDataAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.ProblemDataType;
 import com.example.aplicacion.Pojos.SubmissionAPI;
@@ -171,8 +171,8 @@ public class Problem {
         return salida;
     }
 
-    private List<InNOutAPI> convertInNOuttoInNOUTAPI(List<ProblemData> inNOuts) {
-        List<InNOutAPI> salida = new ArrayList<>();
+    private List<ProblemDataAPI> convertInNOuttoInNOUTAPI(List<ProblemData> inNOuts) {
+        List<ProblemDataAPI> salida = new ArrayList<>();
         for (ProblemData inNOut : inNOuts) {
             salida.add(inNOut.toInNOutAPI());
         }
