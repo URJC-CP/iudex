@@ -8,6 +8,7 @@ import com.example.aplicacion.Controllers.standarControllers.BasicController;
 import com.example.aplicacion.Controllers.standarControllers.ContestController;
 import com.example.aplicacion.Controllers.standarControllers.IndiceController;
 import com.example.aplicacion.Controllers.standarControllers.ProblemController;
+import com.example.aplicacion.Entities.Result;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
@@ -17,6 +18,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class SmokeTest {
@@ -135,4 +139,5 @@ public class SmokeTest {
     }
 
     //
+
 }
