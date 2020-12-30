@@ -1,7 +1,7 @@
-FROM woahbase/alpine-mysql
+FROM mysql
 WORKDIR /root
 
-RUN apk add --no-cache bash
+#RUN apk add --no-cache bash
 
 # variables del entorno
 ENV MYSQL_USER=root
@@ -15,4 +15,4 @@ RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 #RUN touch salidaCompilador.ans
 
-ENTRYPOINT mysql -p 3309:3306 < $FILENAME2.in; mysql < $FILENAME1 > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
+ENTRYPOINT mysql -h localhost -u root test < $FILENAME1.in > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
