@@ -221,7 +221,7 @@ public class ZipHandlerService {
             return "c";
         } else if (lenguaje.equals("cpp") || lenguaje.equals("c++")) {
             return "cpp";
-        } else if (lenguaje.equals("in") || lenguaje.equals("sql")) {
+        } else if (lenguaje.equals("sql")) {
             return "sql";
         } else {
             logger.warn("Unsupported language detected: " + lenguaje);

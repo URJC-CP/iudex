@@ -15,4 +15,4 @@ RUN touch salidaEstandar.ans
 RUN touch salidaError.ans
 #RUN touch salidaCompilador.ans
 
-ENTRYPOINT mysql -h localhost -u root test < $FILENAME1.in > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
+ENTRYPOINT mysql -h localhost -u root test < $FILENAME1.sql > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt
