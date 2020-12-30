@@ -101,8 +101,8 @@ public class SubmissionService {
 
         int numeroDeResult = 0;
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<InNOut> entradasProblemaVisible = problema.get().getEntradaVisible();
-        List<InNOut> salidaCorrectaProblemaVisible = problema.get().getSalidaVisible();
+        List<ProblemData> entradasProblemaVisible = problema.get().getEntradaVisible();
+        List<ProblemData> salidaCorrectaProblemaVisible = problema.get().getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
 
         for(int i =0; i<numeroEntradasVisible; i++){
@@ -113,8 +113,8 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        List<InNOut> entradasProblema = problema.get().getEntradaOculta();
-        List<InNOut> salidaCorrectaProblema = problema.get().getSalidaOculta();
+        List<ProblemData> entradasProblema = problema.get().getEntradaOculta();
+        List<ProblemData> salidaCorrectaProblema = problema.get().getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         
         for(int i =0; i<numeroEntradas; i++){
@@ -214,8 +214,8 @@ public class SubmissionService {
         int numeroDeResult = 0;
         logger.debug("Create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
-        List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
+        List<ProblemData> entradasProblemaVisible = problema.getEntradaVisible();
+        List<ProblemData> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for (int i = 0; i < numeroEntradasVisible; i++) {
             Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
@@ -225,8 +225,8 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        List<InNOut> entradasProblema = problema.getEntradaOculta();
-        List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
+        List<ProblemData> entradasProblema = problema.getEntradaOculta();
+        List<ProblemData> salidaCorrectaProblema = problema.getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
         for (int i = 0; i < numeroEntradas; i++) {
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());

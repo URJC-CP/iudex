@@ -1,7 +1,8 @@
 package com.example.aplicacion.Entities;
 
-import com.example.aplicacion.Pojos.InNOutAPI;
+import com.example.aplicacion.Pojos.ProblemDataAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.ProblemDataType;
 import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
@@ -24,7 +25,7 @@ public class Problem {
     private String nombreEjercicio;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<InNOut> datos;
+    private List<ProblemData> datos;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
@@ -83,7 +84,7 @@ public class Problem {
         }
     }
 
-    public Problem(String nombreEjercicio, List<InNOut> entradaOculta, List<InNOut> salidaOculta, List<InNOut> entradaVisible, List<InNOut> salidaVisible) {
+    public Problem(String nombreEjercicio, List<ProblemData> entradaOculta, List<ProblemData> salidaOculta, List<ProblemData> entradaVisible, List<ProblemData> salidaVisible) {
         this.nombreEjercicio = nombreEjercicio;
         datos.addAll(entradaOculta);
         datos.addAll(salidaOculta);
@@ -162,25 +163,25 @@ public class Problem {
         return problemAPI;
     }
 
-    private String listaToString(List<InNOut> lista) {
+    private String listaToString(List<ProblemData> lista) {
         String salida = "";
-        for (InNOut inout : lista) {
+        for (ProblemData inout : lista) {
             salida.concat(inout.toString());
         }
         return salida;
     }
 
-    private List<InNOutAPI> convertInNOuttoInNOUTAPI(List<InNOut> inNOuts) {
-        List<InNOutAPI> salida = new ArrayList<>();
-        for (InNOut inNOut : inNOuts) {
+    private List<ProblemDataAPI> convertInNOuttoInNOUTAPI(List<ProblemData> inNOuts) {
+        List<ProblemDataAPI> salida = new ArrayList<>();
+        for (ProblemData inNOut : inNOuts) {
             salida.add(inNOut.toInNOutAPI());
         }
         return salida;
     }
 
-    private List<String> convertListINOtoListString(List<InNOut> inNOuts) {
+    private List<String> convertListINOtoListString(List<ProblemData> inNOuts) {
         List<String> salida = new ArrayList<>();
-        for (InNOut inNOut : inNOuts) {
+        for (ProblemData inNOut : inNOuts) {
             salida.add(inNOut.getText());
         }
         return salida;
@@ -214,22 +215,22 @@ public class Problem {
         return datos.size() > 0;
     }
 
-    public List<InNOut> getData() {
+    public List<ProblemData> getData() {
         return datos;
     }
 
-    public void setData(List<InNOut> datos) {
+    public void setData(List<ProblemData> datos) {
         this.datos = datos;
     }
 
-    private List<InNOut> getData(ProblemDataType type) {
-        Set<InNOut> rep = new HashSet<>();
-        for (InNOut data : datos) {
+    private List<ProblemData> getData(ProblemDataType type) {
+        Set<ProblemData> rep = new HashSet<>();
+        for (ProblemData data : datos) {
             if (data.getType() == type) {
                 rep.add(data);
             }
         }
-        ArrayList<InNOut> dataFiles = new ArrayList<>();
+        ArrayList<ProblemData> dataFiles = new ArrayList<>();
         dataFiles.addAll(rep);
         return dataFiles;
     }
@@ -242,47 +243,47 @@ public class Problem {
         }
     }
 
-    public List<InNOut> getEntradaOculta() {
+    public List<ProblemData> getEntradaOculta() {
         return getData(ProblemDataType.EntradaOculta);
     }
 
-    public void setEntradaOculta(List<InNOut> entradaOculta) {
+    public void setEntradaOculta(List<ProblemData> entradaOculta) {
         removeData(ProblemDataType.EntradaOculta);
         this.datos.addAll(entradaOculta);
     }
 
-    public List<InNOut> getEntradaVisible() {
+    public List<ProblemData> getEntradaVisible() {
         return getData(ProblemDataType.EntradaVisible);
     }
 
-    public void setEntradaVisible(List<InNOut> entradaVisible) {
+    public void setEntradaVisible(List<ProblemData> entradaVisible) {
         removeData(ProblemDataType.EntradaVisible);
         this.datos.addAll(entradaVisible);
     }
 
-    public List<InNOut> getSalidaOculta() {
+    public List<ProblemData> getSalidaOculta() {
         return getData(ProblemDataType.SalidaOculta);
     }
 
-    public void setSalidaOculta(List<InNOut> salidaOculta) {
+    public void setSalidaOculta(List<ProblemData> salidaOculta) {
         removeData(ProblemDataType.SalidaOculta);
         this.datos.addAll(salidaOculta);
     }
 
-    public List<InNOut> getSalidaVisible() {
+    public List<ProblemData> getSalidaVisible() {
         return getData(ProblemDataType.SalidaVisible);
     }
 
-    public void setSalidaVisible(List<InNOut> salidaVisible) {
+    public void setSalidaVisible(List<ProblemData> salidaVisible) {
         removeData(ProblemDataType.SalidaVisible);
         this.datos.addAll(salidaVisible);
     }
 
-    public void addData(InNOut data) {
+    public void addData(ProblemData data) {
         datos.add(data);
     }
 
-    public void removeData(InNOut data) {
+    public void removeData(ProblemData data) {
         datos.remove(data);
     }
 
