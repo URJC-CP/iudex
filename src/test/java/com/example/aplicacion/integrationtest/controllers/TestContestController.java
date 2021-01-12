@@ -1,26 +1,15 @@
 package com.example.aplicacion.integrationtest.controllers;
 
 import com.example.aplicacion.Controllers.standarControllers.ContestController;
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Repository.ContestRepository;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.management.modelmbean.ModelMBean;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -69,9 +58,9 @@ public class TestContestController {
 
     @Test
     public void testGoToContest() throws Exception {
-        assertThat(mockMvc.perform(get("/goToContest/"+523+"/"))
+        assertThat(mockMvc.perform(get("/goToContest/" + 523 + "/"))
                 .andReturn().getResponse().getStatus(), equalTo(404));
-        assertThat(mockMvc.perform(get("/goToContest/"+contest.getId()+"/"))
+        assertThat(mockMvc.perform(get("/goToContest/" + contest.getId() + "/"))
                 .andReturn().getResponse().getStatus(), equalTo(200));
     }
 
