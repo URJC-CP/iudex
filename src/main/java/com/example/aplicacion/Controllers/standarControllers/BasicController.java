@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.Optional;
 
 @Controller
 public class BasicController {
@@ -75,6 +76,6 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        //contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
     }
 }
