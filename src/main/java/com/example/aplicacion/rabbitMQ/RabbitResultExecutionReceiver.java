@@ -29,12 +29,7 @@ public class RabbitResultExecutionReceiver {
 
     @Autowired
     private RabbitResultReviserSender rabbitResultReviserSender;
-
-
-
-    @Autowired
-    private ResultRepository resultRepository;
-
+    
 
 
     //LIstener que recibe el objeto resultado desde la cola
@@ -47,7 +42,6 @@ public class RabbitResultExecutionReceiver {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        resultRepository.save(res);
 
         //Enviamos el res a la cola de reviser
         rabbitResultReviserSender.sendMenssage(res);

@@ -25,8 +25,6 @@ import java.util.Map;
 @Service
 public class ResultHandler {
 
-    @Autowired
-    LanguageRepository languageRepository;
 
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
 
