@@ -1,0 +1,6 @@
+javac codigotimeout.java 2>salidaCompilador.ans; timeout -t 100 /usr/bin/time -o time.txt -f "%e %M" java -Xmx100m codigotimeout <entrada.in >salidaEstandar.ans 2>salidaError.ans || echo TIMEOUT >timeout.txt;
+timeout -t 100 /usr/bin/time -o time.txt -f "%e %M" java -Xmx100m codigotimeout <entrada.in >salidaEstandar.ans 2>salidaError.ans |& tee timeout.txt;
+timeout -s SIGTERM -t 1 /usr/bin/time -o time.txt -f "%e %M" java -Xmx1000m codigotimeout <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >timeout.txt
+[ -f $FILENAME2.class ] && timeout -s SIGTERM -t 1 /usr/bin/time -o time.txt -f "%e %M" java -Xmx100m codigotimeout <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >timeout.txt
+
+ javac $FILENAME1.java 2>salidaCompilador.ans; [ -f $FILENAME2.class ] && timeout -s SIGTERM -t $EXECUTION_TIMEOUT /usr/bin/time -o time.txt -f "%e %M" java $MEMORYLIMIT $FILENAME2 <entrada.in >salidaEstandar.ans 2>salidaError.ans; echo $? >timeout.txt
