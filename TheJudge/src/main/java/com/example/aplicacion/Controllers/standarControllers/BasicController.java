@@ -36,13 +36,13 @@ public class BasicController {
     public void init() {
 
         //Creamos el lenguaje JAVA
-        File dckfl = new File("DOCKERS/Java/Dockerfile");
+        File dckfl = new File("TheJudge/DOCKERS/Java/Dockerfile");
         String imageId = resultHandler.buildImage(dckfl);
         Language lenguaje = new Language("java", imageId);
         languageRepository.save(lenguaje);
 
         //Creamos el lenguaje Python
-        File dckfl2 = new File("DOCKERS/Python3/Dockerfile");
+        File dckfl2 = new File("TheJudge/DOCKERS/Python3/Dockerfile");
         String imageId2 = resultHandler.buildImage(dckfl2);
         Language lenguaje2 = new Language("python3", imageId2);
         languageRepository.save(lenguaje2);

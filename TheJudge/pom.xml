@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>the-judge-judge</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>TheJudge</name>
     <description>Judge for competitive programming</description>

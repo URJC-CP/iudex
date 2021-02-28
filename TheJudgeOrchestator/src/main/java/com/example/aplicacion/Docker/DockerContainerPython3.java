@@ -1,7 +1,6 @@
 package com.example.aplicacion.Docker;
 
 import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.TheJudgeApplication;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -11,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerPython3 extends DockerContainer {
