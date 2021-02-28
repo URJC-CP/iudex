@@ -33,7 +33,13 @@ public class ProblemAPI {
 
 
 
+
     private String color;
+
+
+    public String getProblemURLpdf(){
+        return String.format("/getPDF/contest/1/problema/%s", id);
+    }
 
     public long getId() {
         return id;

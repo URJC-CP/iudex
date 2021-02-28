@@ -70,16 +70,16 @@ public class ProblemController {
     @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem){
         Problem problem = problemService.getProblem(idProblem);
-        Contest contest = contestService.getContest(idContest);
-        if(contest ==null){
-            return  new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
-        }
+//        Contest contest = contestService.getContest(idContest);
+//        if(contest ==null){
+//            return  new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
+//        }
         if(problem==null){
             return  new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
-        if(!contest.getListaProblemas().contains(problem)){
-            return  new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
-        }
+//        if(!contest.getListaProblemas().contains(problem)){
+//            return  new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
+//        }
 
         byte[] contents = problem.getDocumento();
         HttpHeaders headers = new HttpHeaders();
