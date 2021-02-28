@@ -10,6 +10,7 @@ import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.ws.rs.Consumes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -83,27 +85,36 @@ public class APIProblemController {
     }
 
 
-    //Crea problema y devuelve el problema. Necesita team y contest
+//    //Crea problema y devuelve el problema. Necesita team y contest
+//    @ApiOperation("Create Problem from Zip")
+//    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+//    @PostMapping(value = "/API/v1/problem/fromZip")
+//    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestParam("file") MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId)  {
+//        ProblemString salida;
+//        try {
+//            salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemId, contestId);
+//        } catch (Exception e) {
+//            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+//        }
+//        if(salida.getSalida().equals("OK")){
+//            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+//        }
+//        else {
+//            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+//        }
+//    }
+
     @ApiOperation("Create Problem from Zip")
-    @PostMapping("/API/v1/problem/fromZip")
-    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestParam MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId)  {
-        ProblemString salida;
-        try {
-            salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemId, contestId);
-        } catch (Exception e) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/API/v1/problem/fromZip")
+
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@ApiParam(name = "file", type = "__file") @RequestParam MultipartFile file)  {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
-        }
-        if(salida.getSalida().equals("OK")){
-            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
-        }
     }
 
     @ApiOperation("Update problem from ZIP")
-    @PutMapping("/API/v1/problem/{problemId}/fromZip")
-    public ResponseEntity<ProblemAPI>updateProblemFromZip(@PathVariable String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
+    @PutMapping(value = "/API/v1/problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProblemAPI>updateProblemFromZip(@PathVariable String problemId, @RequestParam("file") MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId){
 
         ProblemString salida;
         try {
