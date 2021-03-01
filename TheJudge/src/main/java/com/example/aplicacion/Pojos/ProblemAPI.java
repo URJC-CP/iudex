@@ -38,7 +38,7 @@ public class ProblemAPI {
 
 
     public String getProblemURLpdf(){
-        return String.format("/getPDF/contest/1/problema/%s", id);
+        return String.format("/API/v1/problem/%s/getPDF", id);
     }
 
     public long getId() {

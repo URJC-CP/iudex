@@ -105,12 +105,6 @@ public class APIProblemController {
         }
     }
 
-//    @ApiOperation("Create Problem from Zip")
-//    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
-//    @PostMapping(value = "/API/v1/problem/fromZip")
-//    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file)  {
-//            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
-//    }
 
     @ApiOperation("Update problem from ZIP")
     @PutMapping(value = "/API/v1/problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -149,7 +143,7 @@ public class APIProblemController {
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @ApiOperation("Get pdf from Problem")
-    @GetMapping("/API/v1//problem/{problemId}/getPDF")
+    @GetMapping("/API/v1/problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId){
         Problem problem = problemService.getProblem(problemId);
 
