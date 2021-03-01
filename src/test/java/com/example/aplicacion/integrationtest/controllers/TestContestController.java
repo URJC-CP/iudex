@@ -81,7 +81,7 @@ public class TestContestController {
 				.characterEncoding("utf8")
 				.param("contestId", goodValue)
 		).andDo(print()).andReturn().getResponse().getStatus();
-		assertEquals(302, status); // devuelve 302 --> redirección
+		assertEquals(302, status); // request success and redirection
 	}
 
 	@Test
