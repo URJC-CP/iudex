@@ -17,12 +17,12 @@ public class SubmissionAPI {
 
     private LanguageAPI language;
 
-    private float execSubmissionTime;
-    private float execSubmissionMemory;
-    private long timestamp;
+    private Float execSubmissionTime;
+    private Float execSubmissionMemory;
+    private Long timestamp ;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -72,7 +72,7 @@ public class SubmissionAPI {
         this.language = language;
     }
 
-    public float getExecSubmissionTime() {
+    public Float getExecSubmissionTime() {
         return execSubmissionTime;
     }
 
@@ -80,7 +80,7 @@ public class SubmissionAPI {
         this.execSubmissionTime = execSubmissionTime;
     }
 
-    public float getExecSubmissionMemory() {
+    public Float getExecSubmissionMemory() {
         return execSubmissionMemory;
     }
 
@@ -104,7 +104,7 @@ public class SubmissionAPI {
         this.corregido = corregido;
     }
 
-    public long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 

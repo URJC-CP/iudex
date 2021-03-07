@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class APIAdminController {
     @Autowired
@@ -23,6 +25,15 @@ public class APIAdminController {
             return  new ResponseEntity("RESULT NOT FOUND", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(result, HttpStatus.OK);
+    }
+    @ApiOperation("Get all Results")
+    @GetMapping("/API/v1/result/")
+    public ResponseEntity<List<Result>> getAllResult(){
+        List<Result> resultList = resultService.getAllResults();
+        if (resultList == null){
+            return  new ResponseEntity("RESULT NOT FOUND", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(resultList, HttpStatus.OK);
     }
 
 }

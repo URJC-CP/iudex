@@ -113,6 +113,8 @@ public class Submission {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         submissionAPI.setTeam(this.team.toTeamAPISimple());
+        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
     private String listaToString(List<InNOut> lista){
