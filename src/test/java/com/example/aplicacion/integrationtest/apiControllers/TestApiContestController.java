@@ -56,8 +56,11 @@ public class TestApiContestController {
 		owner = new Team();
 		owner.setId(201);
 		owner.setNombreEquipo("propietario");
-
 		contest.setTeamPropietario(owner);
+
+		problem = new Problem();
+		problem.setId(244);
+		problem.setNombreEjercicio("Ejercicio de prueba");
 
 		when(contestService.getContest(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
 		when(contestService.getAllContests()).thenReturn(List.of(contest));
@@ -80,7 +83,7 @@ public class TestApiContestController {
 	}
 
 	@Test
-	//TODO: averiguar como probar paginación
+	//TODO: probar paginación
 	public void testAPIGetAllContestsWithPagination() throws Exception {
 		String url = "/API/v1/contest/1";
 		fail("In process!");
@@ -257,9 +260,97 @@ public class TestApiContestController {
 	}
 
 	// add problem to contest
+	@Test
+	public void testAPIAddProblemToContest() throws Exception {
+		String badURL = "/API/v1/contest/532/756";
+		String badURL2 = "/API/v1/contest/532/" + problem.getId();
+		String badURL3 = "/API/v1/contest/" + contest.getId() + "/756";
+		String goodURL = "/API/v1/contest/" + contest.getId() + "/" + problem.getId();
 
+		String badContest = "532";
+		String goodContest = String.valueOf(contest.getId());
+		String badProblem = "756";
+		String goodProblem = String.valueOf(problem.getId());
 
-	// delete problem from contest
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		String salida = "contest NOT FOUND";
+		when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
+		testAddProblem(badURL, badContest, badProblem, status, salida);
+		when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
+		testAddProblem(badURL2, badContest, goodProblem, status, salida);
+
+		salida = "PROBLEM NOT FOUND";
+		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+		testAddProblem(badURL3, goodContest, badProblem, status, salida);
+
+		salida = "PROBLEM DUPLICATED";
+		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+		testAddProblem(badURL3, goodContest, badProblem, status, salida);
+
+		status = HttpStatus.OK;
+		salida = "OK";
+		when(contestService.anyadeProblemaContest(goodContest, goodProblem)).thenReturn(salida);
+		salida = "";
+		testAddProblem(goodURL, goodContest, goodProblem, status, salida);
+	}
+
+	private void testAddProblem(String url, String contest, String problem, HttpStatus status, String salida) throws Exception {
+		String result;
+		result = mockMvc.perform(
+			post(url).characterEncoding("utf8")
+		).andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	public void testAPIDeleteProblemFromContest() throws Exception {
+		String badURL = "/contest/531/764";
+		String badURL2 = "/contest/531/" + problem.getId();
+		String badURL3 = "/contest/" + contest.getId() + "/764";
+		String goodURL = "/contest/" + contest.getId() + "/" + problem.getId();
+
+		String badContest = "531";
+		String goodContest = String.valueOf(contest.getId());
+		String badProblem = "764";
+		String goodProblem = String.valueOf(problem.getId());
+
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		String salida = "contest NOT FOUND";
+		when(contestService.deleteProblemFromContest(badContest, badProblem)).thenReturn(salida);
+		testDeleteContest(badURL, status, salida);
+		when(contestService.deleteProblemFromContest(badContest, goodProblem)).thenReturn(salida);
+		testDeleteContest(badURL2, status, salida);
+
+		salida = "PROBLEM NOT FOUND";
+		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
+		testDeleteContest(badURL3, status, salida);
+
+		salida = "PROBLEM NOT IN CONCURSO";
+		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
+		testDeleteContest(badURL3, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		when(contestService.deleteProblemFromContest(goodContest, goodProblem)).thenReturn(salida);
+		salida = "";
+		testDeleteContest(goodURL, status, salida);
+	}
+
+	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
+		String result;
+		result = mockMvc.perform(
+			delete(url)
+				.characterEncoding("utf8")
+		).andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+
+		assertEquals(salida, result);
+	}
 
 	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
 		if (obj == null) {
