@@ -165,6 +165,7 @@ public class TestApiContestController {
 		assertEquals(cs.getSalida(), result);
 
 		cs.setSalida("OK");
+		cs.setContest(contest);
 		when(contestService.creaContest(goodContest, goodTeam, Optional.of(description))).thenReturn(cs);
 		result = mockMvc.perform(
 			post(url)
@@ -176,7 +177,7 @@ public class TestApiContestController {
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
-		assertEquals(cs.getSalida(), result);
+		assertEquals(convertObjectToJSON(contest.toContestAPI()), result);
 	}
 
 	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
