@@ -100,7 +100,7 @@ public class APIContestController {
 	@PutMapping("/API/v1/contest/{contestId}")
 	public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion) {
 		ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion);
-		if (salida.equals("OK")) {
+		if (salida.getSalida().equals("OK")) {
 			return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
