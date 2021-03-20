@@ -4,8 +4,6 @@ import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.services.ContestService;
-import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,13 +20,8 @@ import java.util.Optional;
 
 public class APIContestController {
 
-
-	@Autowired
-	SubmissionService submissionService;
 	@Autowired
 	ContestService contestService;
-	@Autowired
-	ProblemService problemService;
 
 	//CONCURSOS
 

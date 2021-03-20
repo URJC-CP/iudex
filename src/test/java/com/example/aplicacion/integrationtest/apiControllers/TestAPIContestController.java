@@ -7,8 +7,6 @@ import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.services.ContestService;
-import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.SubmissionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,16 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APIContestController.class)
-public class TestApiContestController {
+public class TestAPIContestController {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	@MockBean
 	private ContestService contestService;
-	@MockBean
-	private SubmissionService submissionService;
-	@MockBean
-	private ProblemService problemService;
+
 	private Contest contest;
 	private Team owner;
 	private Problem problem;
