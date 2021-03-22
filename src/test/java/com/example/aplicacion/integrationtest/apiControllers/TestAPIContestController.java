@@ -113,7 +113,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
-	public void testAPIAddContest() throws Exception {
+	public void testAPICreateContest() throws Exception {
 		String url = "/API/v1/contest";
 
 		String badContest = "521";

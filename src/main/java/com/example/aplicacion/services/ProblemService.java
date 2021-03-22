@@ -417,10 +417,6 @@ public class ProblemService {
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {
         oldProblem.setNombreEjercicio(newProblem.getNombreEjercicio());
-        /*oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
-        oldProblem.setEntradaVisible(newProblem.getEntradaVisible());
-        oldProblem.setSalidaOculta(newProblem.getSalidaOculta());
-        oldProblem.setSalidaVisible(newProblem.getSalidaVisible());*/
         oldProblem.setData(newProblem.getData());
 
         //Anyadimos losproblemsvalidator a la lista de viejos
