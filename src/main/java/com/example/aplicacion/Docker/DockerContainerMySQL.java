@@ -5,6 +5,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.core.command.ExecStartResultCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,25 @@ public class DockerContainerMySQL extends DockerContainer {
 
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
+        //ejecutar instrucciones de la entrega
+        //dockerClient.execStartCmd(container.getId()).withTty(true).exec("mysql -h localhost -u root test <entrada.in && mysql -h localhost -u root test <$FILENAME1 > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt");
+
+        var executionID = dockerClient
+            .execCreateCmd(container.getId())
+            .withCmd("/bin/bash -c 'mysql -h localhost -u root -p$MYSQL_ROOT_PASSWORD test <entrada.in && mysql -h localhost -u root -p$MYSQL_ROOT_PASSWORD test <$FILENAME2 > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt'")
+            .exec()
+            .getId();
+        // Starting the execution
+        try {
+            dockerClient
+                .execStartCmd(executionID)
+                .withTty(true)
+                .exec(new ExecStartResultCallback(System.out, System.err))
+                .awaitCompletion();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
         InspectContainerResponse inspectContainerResponse = null;
         do {
@@ -82,7 +102,8 @@ public class DockerContainerMySQL extends DockerContainer {
 
         //logger.info("DOCKER MySQL: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
-        dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+        //TODO:descomentar
+        //dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         logger.debug("DOCKER MySQL: Finished running container for result " + result.getId() + " ");
         return result;
