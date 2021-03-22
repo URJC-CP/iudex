@@ -9,8 +9,9 @@ import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.services.ProblemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.lang.annotation.DeclareError;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,15 +20,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,6 +64,7 @@ public class TestAPIProblemController {
 	}
 
 	@Test
+	@DisplayName("Get All Problems")
 	public void testAPIGetProblems() throws Exception {
 		String url = "/API/v1/problem";
 		String result = mockMvc.perform(
@@ -79,12 +80,14 @@ public class TestAPIProblemController {
 	}
 
 	@Test
-	//TODO: averiguar como probar la paginación
+	@DisplayName("Get All Problems With Pagination")
+	@Disabled("Hay que averiguar como probar la paginación")
 	public void testAPIGetProblemsWithPagination() {
-		fail("Not implemented yet!");
+		//"Not implemented yet!
 	}
 
 	@Test
+	@DisplayName("Get Selected Problem")
 	public void testAPIGetProblem() throws Exception {
 		String goodProblem = String.valueOf(problem.getId());
 		String badProblem = "745";
@@ -101,6 +104,7 @@ public class TestAPIProblemController {
 		testGetProblem(goodURL, status, salida);
 	}
 
+	@Test
 	private void testGetProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result = mockMvc.perform(
 			get(url)
@@ -112,15 +116,23 @@ public class TestAPIProblemController {
 	}
 
 	@Test
-	//TODO: averiguar como probar esta parte
+	/*
+	 * TODO:
+	 *  - CreateProblem using a problem object
+	 *  - Create Problem from Zip
+	 *  - Update problem from ZIP
+	 *  - Update a problem with Request Param
+	 *  - Get pdf from Problem
+	 * */
 	/*
 	  WARNING:
 		no hay ningun metodo para pasar un objeto como parametro en MockMvc
 		y el controlador no acepta JSON
 	*/
+	@DisplayName("Create problem Using a Problem Object")
+	@Disabled("Hay que averiguar como realizar esta prueba")
 	public void testAPICreateProblem() throws Exception {
 		String url = "/API/v1/problem";
-		fail("Averiguar como realizar esta prueba");
 		ProblemString ps = new ProblemString();
 		ps.setProblem(problem);
 		// new problem with same values as the other one but different id
@@ -141,11 +153,71 @@ public class TestAPIProblemController {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(convertObjectToJSON(problem))
 				.accept(MediaType.APPLICATION_JSON)
-		).andExpect(status().isOk())
+		).andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
 		assertEquals(convertObjectToJSON(problem.toProblemAPI()), result);
+	}
+
+	@Test
+	@DisplayName("Get PDF from Problem")
+	public void testAPIGetPdfFromProblem() throws Exception {
+		String goodProblem = String.valueOf(problem.getId());
+		String badProblem = "543";
+		String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
+		String badURL = "/API/v1//problem/" + badProblem + "/getPDF";
+
+		String salida = "ERROR PROBLEMA NO ECONTRADO";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		testGoToProblem(badURL, status, salida);
+
+		salida = "";
+		testGoToProblem(goodURL, status, salida);
+
+		//TODO:probar con un pdf
+		File pdf = new File("");
+	}
+
+	private void testGoToProblem(String url, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			get(url).characterEncoding("utf8")
+		).andExpect(status().isNotFound())
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	@DisplayName("Delete problem from all contests")
+	public void testAPIDeleteProblemFromALLContests() throws Exception {
+		String badProblem = "546";
+		String goodProblem = String.valueOf(problem.getId());
+
+		String badURL = "/API/v1/problem/" + badProblem;
+		String goodURL = "/API/v1/problem/" + goodProblem;
+
+		String salida = "PROBLEM NOT FOUND";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		when(problemService.deleteProblem(badProblem)).thenReturn(salida);
+		testDeleteProblem(badURL, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		when(problemService.deleteProblem(goodProblem)).thenReturn(salida);
+		salida = "";
+		testDeleteProblem(goodURL, status, salida);
+	}
+
+	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			delete(url)
+		).andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
 	}
 
 	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
