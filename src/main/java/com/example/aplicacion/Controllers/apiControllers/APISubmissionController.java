@@ -119,7 +119,7 @@ public class APISubmissionController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);

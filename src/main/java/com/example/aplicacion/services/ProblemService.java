@@ -24,7 +24,7 @@ public class ProblemService {
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private InNOutRepository inNOutRepository;
+    private ProblemDataRepository inNOutRepository;
     @Autowired
     private ZipHandlerService zipHandlerService;
     @Autowired
@@ -366,8 +366,8 @@ public class ProblemService {
     public List<ProblemEntradaSalidaVisiblesHTML> getProblemEntradaSalidaVisiblesHTML(Problem problem) {
         List<ProblemEntradaSalidaVisiblesHTML> lista = new ArrayList<>();
 
-        List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
-        List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
+        List<ProblemData> entradasProblemaVisible = problem.getEntradaVisible();
+        List<ProblemData> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
         for (int i = 0; i < numeroEntradasVisible; i++) {
             ProblemEntradaSalidaVisiblesHTML problemEntradaSalidaVisiblesHTML = new ProblemEntradaSalidaVisiblesHTML();
@@ -380,16 +380,16 @@ public class ProblemService {
     }
 
     private void saveAllInnNOut(Problem problem) {
-        for (InNOut inNOut : problem.getEntradaVisible()) {
+        for (ProblemData inNOut : problem.getEntradaVisible()) {
             inNOutRepository.save(inNOut);
         }
-        for (InNOut inNOut : problem.getSalidaVisible()) {
+        for (ProblemData inNOut : problem.getSalidaVisible()) {
             inNOutRepository.save(inNOut);
         }
-        for (InNOut inNOut : problem.getEntradaOculta()) {
+        for (ProblemData inNOut : problem.getEntradaOculta()) {
             inNOutRepository.save(inNOut);
         }
-        for (InNOut inNOut : problem.getSalidaOculta()) {
+        for (ProblemData inNOut : problem.getSalidaOculta()) {
             inNOutRepository.save(inNOut);
         }
     }
@@ -401,16 +401,16 @@ public class ProblemService {
     }
 
     private void deleteInNOut(Problem problem) {
-        for (InNOut inNOut : problem.getEntradaVisible()) {
+        for (ProblemData inNOut : problem.getEntradaVisible()) {
             inNOutRepository.delete(inNOut);
         }
-        for (InNOut inNOut : problem.getSalidaVisible()) {
+        for (ProblemData inNOut : problem.getSalidaVisible()) {
             inNOutRepository.delete(inNOut);
         }
-        for (InNOut inNOut : problem.getEntradaOculta()) {
+        for (ProblemData inNOut : problem.getEntradaOculta()) {
             inNOutRepository.delete(inNOut);
         }
-        for (InNOut inNOut : problem.getSalidaOculta()) {
+        for (ProblemData inNOut : problem.getSalidaOculta()) {
             inNOutRepository.delete(inNOut);
         }
     }

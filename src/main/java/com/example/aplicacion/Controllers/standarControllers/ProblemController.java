@@ -84,20 +84,12 @@ public class ProblemController {
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
         Optional<Problem> problem = problemService.getProblem(idProblem);
-        Optional<Contest> contest = contestService.getContest(idContest);
 
-        if (contest.isEmpty()) {
-            logger.error("Contest " + idContest + " not found");
-            return new ResponseEntity("ERROR CONCURSO NO ENCONTRADO", HttpStatus.NOT_FOUND);
-        }
         if (problem.isEmpty()) {
             logger.error("Problem " + idProblem + " not found");
             return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
-        if (!contest.get().getListaProblemas().contains(problem.get())) {
-            logger.error("Problem " + idProblem + " is not in contest " + idContest);
-            return new ResponseEntity("ERROR PROBLEMA NO PERTENCE A CONCURSO", HttpStatus.NOT_FOUND);
-        }
+
 
         byte[] contents = problem.get().getDocumento();
         if (contents == null || contents.length == 0) {
