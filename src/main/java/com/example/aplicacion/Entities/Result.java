@@ -1,7 +1,6 @@
 package com.example.aplicacion.Entities;
 
 
-
 import com.example.aplicacion.Pojos.ResultAPI;
 
 import javax.persistence.*;
@@ -18,9 +17,9 @@ public class Result {
     private String codigo;
 
     @OneToOne
-    private InNOut entradaInO;
+    private ProblemData entradaInO;
     @OneToOne
-    private InNOut  salidaEstandarCorrectaInO;
+    private ProblemData salidaEstandarCorrectaInO;
 
     @Lob
     private String salidaEstandar;
@@ -29,7 +28,7 @@ public class Result {
     @Lob
     private String salidaCompilador;
 
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
     private int numeroCasoDePrueba;
 
@@ -53,30 +52,30 @@ public class Result {
 
     public Result() {
 
-        this.maxMemory="100";
-        this.maxTimeout="10";
-        this.signalCompilador="0";
+        this.maxMemory = "100";
+        this.maxTimeout = "10";
+        this.signalCompilador = "0";
 
     }
 
 
-    public Result(InNOut entrada, String codigo, InNOut salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory ) {
-        this.codigo=codigo;
+    public Result(ProblemData entrada, String codigo, ProblemData salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory) {
+        this.codigo = codigo;
         this.entradaInO = entrada;
-        this.salidaEstandar="";
-        this.salidaError="";
-        this.salidaCompilador="";
-        this.signalCompilador="0";
-        this.signalEjecutor="";
+        this.salidaEstandar = "";
+        this.salidaError = "";
+        this.salidaCompilador = "";
+        this.signalCompilador = "0";
+        this.signalEjecutor = "";
         this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
-        this.resultadoRevision="";
-        this.language=language;
-        this.fileName=fileName;
+        this.resultadoRevision = "";
+        this.language = language;
+        this.fileName = fileName;
         this.maxTimeout = maxtimeout;
-        this.maxMemory =maxMemory;
+        this.maxMemory = maxMemory;
     }
 
-    public ResultAPI toResultAPI(){
+    public ResultAPI toResultAPI() {
         ResultAPI resultAPI = new ResultAPI();
         resultAPI.setId(this.id);
         resultAPI.setCodigo(this.codigo);
@@ -89,7 +88,8 @@ public class Result {
         resultAPI.setTimestamp(this.timestamp);
         return resultAPI;
     }
-    public ResultAPI toResultAPISimple(){
+
+    public ResultAPI toResultAPISimple() {
         ResultAPI resultAPI = new ResultAPI();
         resultAPI.setId(this.id);
 
@@ -121,12 +121,13 @@ public class Result {
     public String getEntrada() {
         return entradaInO.getText();
     }
-    public InNOut getEntradaInO() {
+
+    public ProblemData getEntradaInO() {
         return entradaInO;
     }
 
 
-    public void setEntradaInO(InNOut entrada) {
+    public void setEntradaInO(ProblemData entrada) {
         this.entradaInO = entrada;
     }
 
@@ -181,11 +182,12 @@ public class Result {
     public String getSalidaEstandarCorrecta() {
         return salidaEstandarCorrectaInO.getText();
     }
-    public InNOut getSalidaEstandarCorrectaInO() {
+
+    public ProblemData getSalidaEstandarCorrectaInO() {
         return salidaEstandarCorrectaInO;
     }
 
-    public void setSalidaEstandarCorrectaInO(InNOut salidaEstandarCorrectaInO) {
+    public void setSalidaEstandarCorrectaInO(ProblemData salidaEstandarCorrectaInO) {
         this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
     }
 

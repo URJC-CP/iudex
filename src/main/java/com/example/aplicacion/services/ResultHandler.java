@@ -3,13 +3,11 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.Docker.*;
 import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Repository.LanguageRepository;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +21,10 @@ import java.util.Map;
 @Service
 public class ResultHandler {
 
-    private final Map<String, String> imagenes;
-    @Autowired
-    LanguageRepository languageRepository;
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
     private DockerClient dockerClient;
+    private final Map<String, String> imagenes;
+
     @Value("${problem.default.timeout}")
     private String timeoutTime;
     @Value("${problem.default.memory}")
@@ -88,8 +85,8 @@ public class ResultHandler {
 
     public String buildImage(File file) {
         String salida = dockerClient.buildImageCmd().withDockerfile(file)
-                .exec(new BuildImageResultCallback())
-                .awaitImageId();
+            .exec(new BuildImageResultCallback())
+            .awaitImageId();
         return salida;
     }
 

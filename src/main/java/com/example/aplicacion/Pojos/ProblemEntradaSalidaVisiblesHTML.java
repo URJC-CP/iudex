@@ -1,24 +1,24 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.InNOut;
+import com.example.aplicacion.Entities.ProblemData;
 
 public class ProblemEntradaSalidaVisiblesHTML {
-    InNOut entrada;
-    InNOut salida;
+    ProblemData entrada;
+    ProblemData salida;
 
-    public InNOut getEntrada() {
+    public ProblemData getEntrada() {
         return entrada;
     }
 
-    public void setEntrada(InNOut entrada) {
+    public void setEntrada(ProblemData entrada) {
         this.entrada = entrada;
     }
 
-    public InNOut getSalida() {
+    public ProblemData getSalida() {
         return salida;
     }
 
-    public void setSalida(InNOut salida) {
+    public void setSalida(ProblemData salida) {
         this.salida = salida;
     }
 }

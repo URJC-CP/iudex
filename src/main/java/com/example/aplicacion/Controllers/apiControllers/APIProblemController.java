@@ -14,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.ws.rs.Consumes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,11 +78,12 @@ public class APIProblemController {
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
-    @PostMapping("/API/v1/problem/fromZip")
-    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestParam MultipartFile file, @RequestParam String problemId, @RequestParam String teamId, @RequestParam String contestId) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/API/v1/problem/fromZip")
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         ProblemString salida;
         try {
-            salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemId, contestId);
+            salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemName, contestId);
         } catch (Exception e) {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -93,12 +95,12 @@ public class APIProblemController {
     }
 
     @ApiOperation("Update problem from ZIP")
-    @PutMapping("/API/v1/problem/{problemId}/fromZip")
-    public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) {
+    @PutMapping(value = "/API/v1/problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
 
         ProblemString salida;
         try {
-            salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+            salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemName, contestId);
         } catch (Exception e) {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -111,7 +113,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Update a problem with Request Param")
-    @PutMapping("/API/v1/problem/{idProblem}")
+    @PutMapping("/API/v1/problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
 
         ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
@@ -127,7 +129,7 @@ public class APIProblemController {
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @ApiOperation("Get pdf from Problem")
-    @GetMapping("/API/v1//problem/{problemId}/getPDF")
+    @GetMapping("/API/v1/problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
         Optional<Problem> problem = problemService.getProblem(problemId);
 

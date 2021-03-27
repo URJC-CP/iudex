@@ -1,4 +1,5 @@
 package com.example.aplicacion.Entities;
+
 import com.example.aplicacion.Pojos.ResultAPI;
 import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
@@ -47,37 +48,37 @@ public class Submission {
 
     private float execSubmissionTime;
     private float execSubmissionMemory;
-    private long timestamp=  Instant.now().toEpochMilli();
-
-
-
-    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
-    @PreRemove
-    private void removeContestFromProblemValidator(){
-
-    }
+    private long timestamp = Instant.now().toEpochMilli();
 
 
     public Submission() {
-        numeroResultCorregidos =0;
+        numeroResultCorregidos = 0;
     }
+
 
     public Submission(String codigo, Language lenguaje, String filename) {
         this.codigo = codigo;
-        this.language =lenguaje;
-        this.corregido=false;
-        this.resultado ="";
+        this.language = lenguaje;
+        this.corregido = false;
+        this.resultado = "";
         this.results = new ArrayList<>();
-        this.filename=filename;
-        this.numeroResultCorregidos=0;
+        this.filename = filename;
+        this.numeroResultCorregidos = 0;
 
         generaHash();
     }
-    public SubmissionAPI toSubmissionAPI(){
+
+    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
+    @PreRemove
+    private void removeContestFromProblemValidator() {
+
+    }
+
+    public SubmissionAPI toSubmissionAPI() {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         List<ResultAPI> resultAPIS = new ArrayList<>();
-        for(Result result: this.results){
+        for (Result result : this.results) {
             resultAPIS.add(result.toResultAPISimple());
         }
         submissionAPI.setTeam(this.team.toTeamAPISimple());
@@ -91,11 +92,12 @@ public class Submission {
         submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
-    public SubmissionAPI toSubmissionAPIFull(){
+
+    public SubmissionAPI toSubmissionAPIFull() {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         List<ResultAPI> resultAPIS = new ArrayList<>();
-        for(Result result: this.results){
+        for (Result result : this.results) {
             resultAPIS.add(result.toResultAPI());
         }
         submissionAPI.setTeam(this.team.toTeamAPISimple());
@@ -109,30 +111,35 @@ public class Submission {
         submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
+
     public SubmissionAPI toSubmissionAPISimple() {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         submissionAPI.setTeam(this.team.toTeamAPISimple());
+        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
-    private String listaToString(List<InNOut> lista){
-        String salida = new String();
-        for (InNOut inout : lista ){
+
+    private String listaToString(List<ProblemData> lista) {
+        String salida = "";
+        for (ProblemData inout : lista) {
             salida.concat(inout.toString());
         }
         return salida;
     }
-    public String generaHash(){
-        return  this.hashStringSubmission = hasheaElString(codigo);
+
+    public String generaHash() {
+        return this.hashStringSubmission = hasheaElString(codigo);
     }
 
-    public String hasheaElString(String string){
+    public String hasheaElString(String string) {
         return Hashing.sha256().hashString(string, StandardCharsets.UTF_8).toString();
     }
 
     @Override
     public String toString() {
-        return  codigo + language.getNombreLenguaje();
+        return codigo + language.getNombreLenguaje();
     }
 
     public long getId() {
@@ -142,7 +149,6 @@ public class Submission {
     public void setId(long id) {
         this.id = id;
     }
-
 
 
     public String getCodigo() {
@@ -187,12 +193,13 @@ public class Submission {
         this.hashStringDelProblema = problema.getHashString();
         this.problema = problema;
     }
-    public void generaHashProblema(){
+
+    public void generaHashProblema() {
         this.hashStringDelProblema = problema.getHashString();
 
     }
 
-    public void addResult(Result res){
+    public void addResult(Result res) {
         this.results.add(res);
     }
 
@@ -240,10 +247,11 @@ public class Submission {
         this.hashStringDelProblema = hashStringDelProblema;
     }
 
-    public void sumarResultCorregido(){
+    public void sumarResultCorregido() {
         this.numeroResultCorregidos++;
     }
-    public boolean isTerminadoDeEjecutarResults(){
+
+    public boolean isTerminadoDeEjecutarResults() {
         return this.numeroResultCorregidos == results.size();
     }
 
