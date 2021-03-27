@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>The Judge - Contest</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <p>Lista de problemas del contest: {{contest.nombreContest}}</p>
+        <table class="table table-striped table-bordered table-sm">
+            <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Numero Submissions</th>
+                <th scope="col">Validado</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {{#contest.listaProblemas}}
+
+            <tr >
+
+                    <th>{{id}}</option></a></th>
+                    <th><a id="enlace" href="/contest/{{contest.id}}/problema/{{id}}"><option>{{nombreEjercicio}}</option></th>
+                    <th><option>{{numeroSubmissions}}</option></th>
+                    <th><option>{{valido}}</option></th>
+
+            </tr>
+
+            {{/contest.listaProblemas}}
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <form method="post" action="/problemSubida" enctype="multipart/form-data">
+            <div class="row">
+                <p>Crea Problema desde ZIP</p>
+                <input type="file"  name="file"  required>
+            </div>
+            <div class="row">
+                <input type="text"  name="problemaName" > Nombre del problema (si no esta en archivos de configuracion)
+            </div>
+            <div class="row">
+                <select class="form-control" name="teamId">
+                    {{#teams}}
+                    <option value="{{id}}">{{nombreEquipo}}</option>
+                    {{/teams}}
+                </select>
+
+                <input type="hidden" name="contestId" value="{{contest.id}}">
+
+            </div>
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <form method="post" action="/problemUpdate" enctype="multipart/form-data">
+            <p>ACTUALIZA Problema desde ZIP</p>
+            <div class="row">
+                <input type="text"  name="problemId" required> ID del problema a actualizar
+            </div>
+            <div class="row">
+                <input type="file"  name="file"  required>
+            </div>
+            <div class="row">
+                <input type="text"  name="problemaName" > Nombre del problema (si no esta en archivos de configuracion)
+            </div>
+            <div class="row">
+                <select class="form-control" name="teamId">
+                    {{#teams}}
+                    <option value="{{id}}">{{nombreEquipo}}</option>
+                    {{/teams}}
+                </select>
+
+                <input type="hidden" name="contestId" value="{{contest.id}}">
+
+            </div>
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Add Problem to contest</p>
+        <form method="post" action="/addProblemToContest" >
+            <select class="form-control" name="problemId">
+                {{#problems}}
+                <option value="{{id}}">{{nombreEjercicio}}</option>
+                {{/problems}}
+            </select>
+            <input type="hidden" name="contestId" value="{{contest.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Add Team to contest</p>
+        <form method="post" action="/addUserToContest" >
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+            <input type="hidden" name="contestId" value="{{contest.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Delete Contest</p>
+        <form method="post" action="/deleteContest" >
+
+            <input type="hidden" name="contestId" value="{{contest.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Delete Team from contest</p>
+        <form method="post" action="/deleteTeamFromContest" >
+            <select class="form-control" name="teamId">
+                {{#teams}}
+                <option value="{{id}}">{{nombreEquipo}}</option>
+                {{/teams}}
+            </select>
+            <input type="hidden" name="contestId" value="{{contest.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Delete Problem from contest</p>
+        <form method="post" action="/deleteProblemFromContest" >
+            <select class="form-control" name="problemId">
+                {{#contest.listaProblemas}}
+                <option value="{{id}}">{{nombreEjercicio}}</option>
+                {{/contest.listaProblemas}}
+            </select>
+            <input type="hidden" name="contestId" value="{{contest.id}}">
+            <div class="siguiente">
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </form>
+    </div>
+
+
+</body>
+
+
