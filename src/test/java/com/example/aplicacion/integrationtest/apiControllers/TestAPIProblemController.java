@@ -21,7 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,14 +119,6 @@ public class TestAPIProblemController {
 
 	@Test
 	/*
-	 * TODO:
-	 *  - CreateProblem using a problem object
-	 *  - Create Problem from Zip
-	 *  - Update problem from ZIP
-	 *  - Update a problem with Request Param
-	 *  - Get pdf from Problem
-	 * */
-	/*
 	  WARNING:
 		no hay ningun metodo para pasar un objeto como parametro en MockMvc
 		y el controlador no acepta JSON
@@ -134,7 +128,6 @@ public class TestAPIProblemController {
 	public void testAPICreateProblem() throws Exception {
 		String url = "/API/v1/problem";
 		ProblemString ps = new ProblemString();
-		ps.setProblem(problem);
 		// new problem with same values as the other one but different id
 		/*
 		Problem newProblem = new Problem();
@@ -144,8 +137,9 @@ public class TestAPIProblemController {
 		ps.setProblem(newProblem);
 		*/
 		String salida = "OK";
-		ps.setSalida(salida);
 		HttpStatus status = HttpStatus.OK;
+		ps.setSalida(salida);
+		ps.setProblem(problem);
 
 		when(problemService.addProblem(problem)).thenReturn(ps);
 		String result = mockMvc.perform(
@@ -161,7 +155,127 @@ public class TestAPIProblemController {
 	}
 
 	@Test
+	@DisplayName("Create Problem From Zip")
+	@Disabled("Investigar como pasar multipartfile y comprobar que se actualiza el problema la segunda vez")
+	public void testAPICreateProblemFromZip() throws Exception {
+		File goodFile = new File("prueba2.zip");
+		File badFile = new File("vacio.zip");
+		goodFile.createNewFile();
+		badFile.createNewFile();
+		InputStream goodInputStream = new FileInputStream(goodFile);
+		InputStream badInputStream = new FileInputStream(badFile);
+
+		String url = "/API/v1/problem/fromZip";
+		String badTeam = "756";
+		String goodTeam = String.valueOf(owner.getId());
+		String badContest = "532";
+		String goodContest = String.valueOf(contest.getId());
+		String badProblem = "";
+		String goodProblem = problem.getNombreEjercicio();
+		String badFilename = badFile.getName();
+		String goodFilename = goodFile.getName();
+
+		ProblemString ps = new ProblemString();
+		String salida = "TEAM NOT FOUND";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, badProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, badProblem, goodContest, status, salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, goodProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, goodProblem, goodContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, goodContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, goodProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, goodContest, status, salida);
+
+		salida = "CONCURSO NOT FOUND";
+		ps.setSalida(salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, badProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, goodProblem, badContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, goodProblem, badContest, status, salida);
+
+		salida = "Nombre del problema vacio";
+		ps.setSalida(salida);
+
+		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, badProblem, goodContest, status, salida);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
+		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, badProblem, goodContest, status, salida);
+
+		//TODO:investigar que sucede en este caso
+		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		ps.setProblem(problem);
+
+		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
+		salida = convertObjectToJSON(problem.toProblemAPI());
+		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, goodProblem, goodContest, status, salida);
+
+		//verificar que se actualiza la segunda vez --> que llama a update
+
+
+		//eliminar ficheros creados
+		badFile.deleteOnExit();
+		goodFile.deleteOnExit();
+		badInputStream.close();
+		goodInputStream.close();
+	}
+
+	private void testAddProblemFromZip(String url, String filename, InputStream is, String team, String problem, String contest, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			post(url).characterEncoding("utf8")
+				.accept(MediaType.MULTIPART_FORM_DATA_VALUE)
+				.param("problemName", problem)
+				.param("teamId", team)
+				.param("contestId", contest)
+		).andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	@DisplayName("Update Problem")
+	@Disabled("Update Problem Not implemented yet!")
+	public void testAPIUpdateProblem() {
+
+	}
+
+	@Test
+	@DisplayName("Update Problem From Zip")
+	@Disabled("Update Problem From Zip Not implemented yet!")
+	public void testAPIUpdateProblemFromZip() {
+
+	}
+
+	@Test
 	@DisplayName("Get PDF from Problem")
+	@Disabled("Falta realizar prueba con un pdf")
 	public void testAPIGetPdfFromProblem() throws Exception {
 		String goodProblem = String.valueOf(problem.getId());
 		String badProblem = "543";
