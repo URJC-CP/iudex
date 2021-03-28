@@ -9,7 +9,6 @@ import com.example.aplicacion.Controllers.standarControllers.ContestController;
 import com.example.aplicacion.Controllers.standarControllers.IndiceController;
 import com.example.aplicacion.Controllers.standarControllers.ProblemController;
 import com.example.aplicacion.Repository.*;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;
@@ -46,7 +45,7 @@ public class SmokeTest {
     @Autowired
     ContestRepository contestRepository;
     @Autowired
-    InNOutRepository problemDataRepository;
+    ProblemDataRepository problemDataRepository;
     @Autowired
     LanguageRepository languageRepository;
     @Autowired
@@ -67,15 +66,12 @@ public class SmokeTest {
     RabbitResultExecutionSender sender;
     @Autowired
     RabbitResultRevieserReceiver reviserReceiver;
-    @Autowired
-    RabbitResultExecutionReceiver receiver;
 
     // verificar que la app este desplegada
     @Test
     public void contextLoads() {
         //check rabbit
         assertNotNull(reviserReceiver);
-        assertNotNull(receiver);
         assertNotNull(sender);
         assertNotNull(reviserSender);
 
