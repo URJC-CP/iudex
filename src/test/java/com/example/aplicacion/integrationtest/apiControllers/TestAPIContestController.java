@@ -10,6 +10,8 @@ import com.example.aplicacion.services.ContestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -62,6 +64,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Get All Contests")
 	public void testAPIGetAllContests() throws Exception {
 		String url = "/API/v1/contest/";
 		String result = mockMvc.perform(
@@ -78,6 +81,8 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Get All Contests with Pagination")
+	@Disabled("Get All Contests with Pagination - Averiguar como probar con paginación")
 	//TODO: probar paginación
 	public void testAPIGetAllContestsWithPagination() throws Exception {
 		String url = "/API/v1/contest/1";
@@ -85,6 +90,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Get One Contest")
 	public void testAPIGetContest() throws Exception {
 		String badURL = "/API/v1/contest/523";
 		String goodURL = "/API/v1/contest/" + contest.getId();
@@ -113,6 +119,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Create Contest")
 	public void testAPICreateContest() throws Exception {
 		String url = "/API/v1/contest";
 
@@ -161,6 +168,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Delete Contest")
 	public void testAPIDeleteContest() throws Exception {
 		String badURL = "/API/v1/contest/521";
 		String goodURL = "/API/v1/contest/" + contest.getId();
@@ -192,6 +200,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Update Contest")
 	public void testAPIUpdateContest() throws Exception {
 		String badURL = "/API/v1/contest/521";
 		String goodURL = "/API/v1/contest/" + contest.getId();
@@ -254,8 +263,8 @@ public class TestAPIContestController {
 		assertEquals(salida, result);
 	}
 
-	// add problem to contest
 	@Test
+	@DisplayName("Add Problem to Contest")
 	public void testAPIAddProblemToContest() throws Exception {
 		String badURL = "/API/v1/contest/532/756";
 		String badURL2 = "/API/v1/contest/532/" + problem.getId();
@@ -301,6 +310,7 @@ public class TestAPIContestController {
 	}
 
 	@Test
+	@DisplayName("Delete Problem From Contest")
 	public void testAPIDeleteProblemFromContest() throws Exception {
 		String badURL = "/contest/531/764";
 		String badURL2 = "/contest/531/" + problem.getId();

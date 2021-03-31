@@ -84,7 +84,7 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Get All Problems With Pagination")
-	@Disabled("Hay que averiguar como probar la paginación")
+	@Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
 	public void testAPIGetProblemsWithPagination() {
 		fail("Not implemented yet!");
 	}
@@ -125,7 +125,7 @@ public class TestAPIProblemController {
 		y el controlador no acepta JSON
 	*/
 	@DisplayName("Create problem Using a Problem Object")
-	@Disabled("Solo se puede utilizar String como param de mockMvc")
+	@Disabled("Create problem Using a Problem Object - Solo se puede utilizar String como param de mockMvc")
 	public void testAPICreateProblem() throws Exception {
 		String url = "/API/v1/problem";
 		ProblemString ps = new ProblemString();
@@ -155,7 +155,7 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Create Problem From Zip")
-	@Disabled("Investigar como pasar multipartfile y comprobar que se actualiza el problema la segunda vez")
+	@Disabled("Create Problem From Zip - Investigar como pasar multipartfile y comprobar que se actualiza el problema la segunda vez")
 	public void testAPICreateProblemFromZip() throws Exception {
 		File goodFile = new File("prueba2.zip");
 		File badFile = new File("vacio.zip");
@@ -259,7 +259,7 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Update Problem with Multiple Optional Params")
-	@Disabled("Averiguar como pasar bytes[] del pdf como param")
+	@Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
 	public void testAPIUpdateProblem() throws Exception {
 		String badProblem = "534";
 		String goodProblem = String.valueOf(problem.getId());
@@ -326,7 +326,7 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Update Problem From Zip")
-	@Disabled("Update Problem From Zip Not implemented yet!")
+	@Disabled("Update Problem From Zip - Not implemented yet!")
 	public void testAPIUpdateProblemFromZip() {
 		fail("Not implemented yet!");
 	}
