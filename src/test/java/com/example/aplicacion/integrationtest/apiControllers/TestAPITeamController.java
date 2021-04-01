@@ -7,6 +7,7 @@ import com.example.aplicacion.Pojos.TeamString;
 import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -45,6 +45,12 @@ public class TestAPITeamController {
 		when(teamService.getTeamFromId(String.valueOf(team.getId()))).thenReturn(Optional.of(team));
 		when(teamService.getTeamByNick(team.getNombreEquipo())).thenReturn(Optional.of(team));
 		when(teamService.getAllTeams()).thenReturn(List.of(team));
+
+		user = new User();
+		user.setId(307);
+		user.setNickname("usuario de prueba");
+		user.setEmail("prueba@prueba.com");
+		team.addUserToTeam(user);
 	}
 
 	@Test
@@ -122,11 +128,177 @@ public class TestAPITeamController {
 		assertEquals(salida, result);
 	}
 
-	public void testAPIDeleteTeam(){
+	@Test
+	@DisplayName("Delete Team")
+	public void testAPIDeleteTeam() throws Exception {
+		String badTeam = "856";
+		String goodTeam = String.valueOf(team.getId());
+		String badURL = "/API/v1/team/" + badTeam;
+		String goodURL = "/API/v1/team/" + goodTeam;
 
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		String salida = "TEAM NOT FOUND";
+		status = HttpStatus.NOT_FOUND;
+		when(teamService.deleteTeamByTeamId(badTeam)).thenReturn(salida);
+		testDeleteTeam(badURL, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		when(teamService.deleteTeamByTeamId(goodTeam)).thenReturn(salida);
+		salida = "";
+		testDeleteTeam(goodURL, status, salida);
 	}
 
-	//updateTeam
-	//addUserToTeam
-	//deleteUserFromTeam
+	private void testDeleteTeam(String url, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			delete(url).characterEncoding("utf8"))
+			.andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	@DisplayName("Update Team")
+	public void testAPIUpdateTeam() throws Exception {
+		String badTeam = "834";
+		String goodTeam = String.valueOf(team.getId());
+		String badURL = "/API/v1/team/" + badTeam;
+		String goodURL = "/API/v1/team/" + goodTeam;
+
+		String badTeamName = "nombreFalso";
+		String goodTeamName = team.getNombreEquipo();
+		TeamString ts = new TeamString();
+
+		String salida = "TEAM NOT FOUND";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		ts.setSalida(salida);
+		when(teamService.updateTeam(badTeam, Optional.of(badTeamName))).thenReturn(ts);
+		testUpdateTeam(badURL, badTeamName, status, salida);
+
+		when(teamService.updateTeam(badTeam, Optional.of(goodTeamName))).thenReturn(ts);
+		testUpdateTeam(badURL, goodTeamName, status, salida);
+
+		salida = "TEAM NAME DUPLICATED";
+		ts.setSalida(salida);
+		when(teamService.updateTeam(goodTeam, Optional.of(badTeamName))).thenReturn(ts);
+		testUpdateTeam(goodURL, badTeamName, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		ts.setSalida(salida);
+		ts.setTeam(team);
+		when(teamService.updateTeam(goodTeam, Optional.of(goodTeamName))).thenReturn(ts);
+		salida = jsonConverter.convertObjectToJSON(team.toTeamAPI());
+		testUpdateTeam(goodURL, goodTeamName, status, salida);
+	}
+
+	private void testUpdateTeam(String url, String team, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			put(url).characterEncoding("utf8")
+				.param("teamName", team))
+			.andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	@DisplayName("Add User to Team")
+	public void testAPIAddUser() throws Exception {
+		String badUser = "872";
+		String goodUser = String.valueOf(user.getId());
+		String badTeam = "667";
+		String goodTeam = String.valueOf(team.getId());
+
+		String badURL = "/API/v1/team/" + badTeam + "/" + badUser;
+		String badURL2 = "/API/v1/team/" + badTeam + "/" + goodUser;
+		String badURL3 = "/API/v1/team/" + goodTeam + "/" + badUser;
+		String goodURL = "/API/v1/team/" + goodTeam + "/" + goodUser;
+		TeamString ts = new TeamString();
+
+		String salida = "TEAM NOT FOUND";
+		ts.setSalida(salida);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		when(teamService.addUserToTeamUssingIds(badTeam, badUser)).thenReturn(ts);
+		testAddUser(badURL, status, salida);
+
+		when(teamService.addUserToTeamUssingIds(badTeam, goodUser)).thenReturn(ts);
+		testAddUser(badURL2, status, salida);
+
+		salida = "USER NOT FOUND";
+		ts.setSalida(salida);
+		when(teamService.addUserToTeamUssingIds(goodTeam, badUser)).thenReturn(ts);
+		testAddUser(badURL3, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		ts.setSalida(salida);
+		ts.setTeam(team);
+		when(teamService.addUserToTeamUssingIds(goodTeam, goodUser)).thenReturn(ts);
+		salida = jsonConverter.convertObjectToJSON(team.toTeamAPI());
+		testAddUser(goodURL, status, salida);
+
+		salida = "USER ALREADY IN TEAM";
+		status = HttpStatus.NOT_FOUND;
+		ts.setSalida(salida);
+		when(teamService.addUserToTeamUssingIds(goodTeam, goodUser)).thenReturn(ts);
+		testAddUser(goodURL, status, salida);
+	}
+
+	private void testAddUser(String url, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			put(url).characterEncoding("utf8"))
+			.andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
+
+	@Test
+	@DisplayName("Delete User from Team")
+	@Disabled("Delete User from Team - Not implemented yet!")
+	public void testAPIDeleteUser() throws Exception {
+		String badUser = "872";
+		String goodUser = String.valueOf(user.getId());
+		String badTeam = "667";
+		String goodTeam = String.valueOf(team.getId());
+
+		String badURL = "/API/v1/team/" + badTeam + "/" + badUser;
+		String badURL2 = "/API/v1/team/" + badTeam + "/" + goodUser;
+		String badURL3 = "/API/v1/team/" + goodTeam + "/" + badUser;
+		String goodURL = "/API/v1/team/" + goodTeam + "/" + goodUser;
+
+		String salida = "TEAM NOT FOUND";
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		salida = "USER NOT FOUND";
+		when(teamService.deleteUserFromTeam(badTeam, badUser)).thenReturn(salida);
+		testDeleteUser(badURL, status, salida);
+
+		when(teamService.deleteUserFromTeam(badTeam, goodUser)).thenReturn(salida);
+		testDeleteUser(badURL2, status, salida);
+
+		salida = "USER IS NOT IN TEAM";
+		when(teamService.deleteUserFromTeam(goodTeam, badUser)).thenReturn(salida);
+		testDeleteUser(badURL3, status, salida);
+
+		salida = "OK";
+		status = HttpStatus.OK;
+		when(teamService.deleteUserFromTeam(goodTeam, goodUser)).thenReturn(salida);
+		testDeleteUser(goodURL, status, salida);
+	}
+
+	private void testDeleteUser(String url, HttpStatus status, String salida) throws Exception {
+		String result = mockMvc.perform(
+			put(url).characterEncoding("utf8"))
+			.andExpect(status().is(status.value()))
+			.andDo(print())
+			.andReturn().getResponse()
+			.getContentAsString();
+		assertEquals(salida, result);
+	}
 }
