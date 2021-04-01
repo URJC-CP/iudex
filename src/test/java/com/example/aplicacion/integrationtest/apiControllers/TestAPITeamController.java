@@ -7,7 +7,6 @@ import com.example.aplicacion.Pojos.TeamString;
 import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,7 +260,6 @@ public class TestAPITeamController {
 
 	@Test
 	@DisplayName("Delete User from Team")
-	@Disabled("Delete User from Team - Not implemented yet!")
 	public void testAPIDeleteUser() throws Exception {
 		String badUser = "872";
 		String goodUser = String.valueOf(user.getId());
@@ -272,29 +270,39 @@ public class TestAPITeamController {
 		String badURL2 = "/API/v1/team/" + badTeam + "/" + goodUser;
 		String badURL3 = "/API/v1/team/" + goodTeam + "/" + badUser;
 		String goodURL = "/API/v1/team/" + goodTeam + "/" + goodUser;
+		TeamString ts = new TeamString();
 
 		String salida = "TEAM NOT FOUND";
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		salida = "USER NOT FOUND";
-		when(teamService.deleteUserFromTeam(badTeam, badUser)).thenReturn(salida);
+		ts.setSalida(salida);
+
+		when(teamService.deleteUserFromTeam(badTeam, badUser)).thenReturn(ts);
 		testDeleteUser(badURL, status, salida);
 
-		when(teamService.deleteUserFromTeam(badTeam, goodUser)).thenReturn(salida);
+		when(teamService.deleteUserFromTeam(badTeam, goodUser)).thenReturn(ts);
 		testDeleteUser(badURL2, status, salida);
 
-		salida = "USER IS NOT IN TEAM";
-		when(teamService.deleteUserFromTeam(goodTeam, badUser)).thenReturn(salida);
+		salida = "USER NOT FOUND";
+		ts.setSalida(salida);
+		when(teamService.deleteUserFromTeam(goodTeam, badUser)).thenReturn(ts);
 		testDeleteUser(badURL3, status, salida);
+
+		salida = "USER IS NOT IN TEAM";
+		ts.setSalida(salida);
+		when(teamService.deleteUserFromTeam(goodTeam, goodUser)).thenReturn(ts);
+		testDeleteUser(goodURL, status, salida);
 
 		salida = "OK";
 		status = HttpStatus.OK;
-		when(teamService.deleteUserFromTeam(goodTeam, goodUser)).thenReturn(salida);
+		ts.setSalida(salida);
+		when(teamService.deleteUserFromTeam(goodTeam, goodUser)).thenReturn(ts);
+		salida = "";
 		testDeleteUser(goodURL, status, salida);
 	}
 
 	private void testDeleteUser(String url, HttpStatus status, String salida) throws Exception {
 		String result = mockMvc.perform(
-			put(url).characterEncoding("utf8"))
+			delete(url).characterEncoding("utf8"))
 			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
