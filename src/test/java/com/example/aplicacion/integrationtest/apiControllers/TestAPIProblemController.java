@@ -7,8 +7,7 @@ import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.ProblemString;
 import com.example.aplicacion.services.ProblemService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
@@ -36,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(APIProblemController.class)
 public class TestAPIProblemController {
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final JSONConverter jsonConverter = new JSONConverter();
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -79,7 +77,7 @@ public class TestAPIProblemController {
 
 		ProblemAPI problemAPI = problem.toProblemAPI();
 		List<ProblemAPI> problems = List.of(problemAPI);
-		assertEquals(convertObjectToJSON(problems), result);
+		assertEquals(jsonConverter.convertObjectToJSON(problems), result);
 	}
 
 	@Test
@@ -103,7 +101,7 @@ public class TestAPIProblemController {
 		testGetProblem(badURL, status, salida);
 
 		status = HttpStatus.OK;
-		salida = convertObjectToJSON(problem.toProblemAPI());
+		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
 		testGetProblem(goodURL, status, salida);
 	}
 
@@ -145,12 +143,12 @@ public class TestAPIProblemController {
 		String result = mockMvc.perform(
 			post(url).characterEncoding("utf8")
 				//TODO: how to pass problem as param
-				.param("problem", convertObjectToJSON(problem))
+				.param("problem", jsonConverter.convertObjectToJSON(problem))
 		).andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
-		assertEquals(convertObjectToJSON(problem.toProblemAPI()), result);
+		assertEquals(jsonConverter.convertObjectToJSON(problem.toProblemAPI()), result);
 	}
 
 	@Test
@@ -231,7 +229,7 @@ public class TestAPIProblemController {
 		ps.setProblem(problem);
 
 		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
-		salida = convertObjectToJSON(problem.toProblemAPI());
+		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
 		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, goodProblem, goodContest, status, salida);
 
 		//TODO: verificar que se actualiza la segunda vez --> que llama a update
@@ -306,7 +304,7 @@ public class TestAPIProblemController {
 		when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
 		testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
 
-		salida = convertObjectToJSON(problem.toProblemAPI());
+		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
 	}
 
 	private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
@@ -393,16 +391,5 @@ public class TestAPIProblemController {
 			.andReturn().getResponse()
 			.getContentAsString();
 		assertEquals(salida, result);
-	}
-
-	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
-		if (obj == null) {
-			throw new RuntimeException("Invalid object!");
-		}
-		return objectMapper.writeValueAsString(obj);
-	}
-
-	private Object convertJSONToObject(String json, Class cls) throws IOException {
-		return objectMapper.readValue(json, cls);
 	}
 }

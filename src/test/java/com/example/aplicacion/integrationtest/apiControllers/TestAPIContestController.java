@@ -7,8 +7,7 @@ import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.services.ContestService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(APIContestController.class)
 public class TestAPIContestController {
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final JSONConverter jsonConverter = new JSONConverter();
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
 	private ContestService contestService;
-
 	private Contest contest;
 	private Team owner;
 	private Problem problem;
@@ -77,7 +74,7 @@ public class TestAPIContestController {
 
 		ContestAPI[] contestArray = new ContestAPI[1];
 		contestArray[0] = contest.toContestAPI();
-		assertEquals(convertObjectToJSON(contestArray), result);
+		assertEquals(jsonConverter.convertObjectToJSON(contestArray), result);
 	}
 
 	@Test
@@ -103,7 +100,7 @@ public class TestAPIContestController {
 		testGetContest(badURL, status, salida);
 
 		status = HttpStatus.OK;
-		salida = convertObjectToJSON(contest.toContestAPI());
+		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
 		testGetContest(goodURL, status, salida);
 	}
 
@@ -146,7 +143,7 @@ public class TestAPIContestController {
 
 		cs.setSalida("OK");
 		status = HttpStatus.CREATED;
-		salida = convertObjectToJSON(contest.toContestAPI());
+		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
 		cs.setContest(contest);
 		when(contestService.creaContest(goodContest, goodTeam, Optional.of(description))).thenReturn(cs);
 		testAddContest(url, goodContest, goodTeam, description, status, salida);
@@ -241,7 +238,7 @@ public class TestAPIContestController {
 		when(contestService.updateContest(goodContest, goodName, badTeam, description)).thenReturn(cs);
 		testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), status, salida);
 
-		salida = convertObjectToJSON(contest.toContestAPI());
+		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
 		status = HttpStatus.CREATED;
 		cs.setSalida("OK");
 		cs.setContest(contest);
@@ -355,16 +352,5 @@ public class TestAPIContestController {
 			.getContentAsString();
 
 		assertEquals(salida, result);
-	}
-
-	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
-		if (obj == null) {
-			throw new RuntimeException("Invalid object!");
-		}
-		return objectMapper.writeValueAsString(obj);
-	}
-
-	private Object convertJSONToObject(String json, Class cls) throws IOException {
-		return objectMapper.readValue(json, cls);
 	}
 }

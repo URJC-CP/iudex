@@ -5,8 +5,7 @@ import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(APISubmissionController.class)
 public class TestAPISubmissionController {
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private final JSONConverter jsonConverter = new JSONConverter();
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -109,7 +107,7 @@ public class TestAPISubmissionController {
 
 		salida = "OK";
 		status = HttpStatus.OK;
-		salida = convertObjectToJSON(List.of(submission.toSubmissionAPI()));
+		salida = jsonConverter.convertObjectToJSON(List.of(submission.toSubmissionAPI()));
 		testGetSubmissionsWithProblemId(url, goodProblem, status, salida);
 		testGetSubmissionsWithContestId(url, goodContest, status, salida);
 
@@ -180,7 +178,7 @@ public class TestAPISubmissionController {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		testGetSubmission(badURL, status, salida);
 
-		salida = convertObjectToJSON(submission.toSubmissionAPIFull());
+		salida = jsonConverter.convertObjectToJSON(submission.toSubmissionAPIFull());
 		status = HttpStatus.OK;
 		testGetSubmission(goodURL, status, salida);
 	}
@@ -235,16 +233,5 @@ public class TestAPISubmissionController {
 			.andReturn().getResponse()
 			.getContentAsString();
 		assertEquals(salida, result);
-	}
-
-	private String convertObjectToJSON(Object obj) throws JsonProcessingException {
-		if (obj == null) {
-			throw new RuntimeException("Invalid object!");
-		}
-		return objectMapper.writeValueAsString(obj);
-	}
-
-	private Object convertJSONToObject(String json, Class cls) throws IOException {
-		return objectMapper.readValue(json, cls);
 	}
 }
