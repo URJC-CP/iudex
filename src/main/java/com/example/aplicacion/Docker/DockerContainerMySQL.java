@@ -57,18 +57,34 @@ public class DockerContainerMySQL extends DockerContainer {
 		//ejecutar instrucciones de la entrega
 		//dockerClient.execStartCmd(container.getId()).withTty(true).exec("mysql -h localhost -u root test <entrada.in && mysql -h localhost -u root test <$FILENAME1 > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt");
 
+		// TODO chapucero, hardcodeado esperar 10 segundos a que este la bbdd lista, deberia ser cuando este el puerto 3306 ok
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		var executionID = dockerClient
 			.execCreateCmd(container.getId())
-			.withCmd("/bin/bash -c 'mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME1 && mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME2 >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt'")
-			.exec()
+				.withAttachStdout(true)
+			.withCmd("bash", "-c", "mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME1 >salidaError.ans 2>&1 && mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME2 >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt")
+				.exec()
 			.getId();
 		// Starting the execution
 		try {
 			dockerClient
 				.execStartCmd(executionID)
-				.withTty(true)
 				.exec(new ExecStartResultCallback(System.out, System.err))
 				.awaitCompletion();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		// TODO fuerzo a esperar 5 segundos, y luego paro el contenedor. Este tiempo deberia ir en funcion del timeout o cuando acabe el comando, por implementar
+		try {
+			Thread.sleep(5000);
+			dockerClient
+					.stopContainerCmd(container.getId()).exec();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
