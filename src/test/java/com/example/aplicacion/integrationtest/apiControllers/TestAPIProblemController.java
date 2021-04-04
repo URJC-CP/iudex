@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,8 +72,8 @@ public class TestAPIProblemController {
 	public void testAPIGetProblems() throws Exception {
 		String url = "/API/v1/problem";
 		String result = mockMvc.perform(
-			get(url)
-		).andExpect(status().isOk())
+			get(url))
+			.andExpect(status().isOk())
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
@@ -108,8 +111,8 @@ public class TestAPIProblemController {
 	@Test
 	private void testGetProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result = mockMvc.perform(
-			get(url)
-		).andExpect(status().is(status.value()))
+			get(url))
+			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
@@ -142,9 +145,9 @@ public class TestAPIProblemController {
 		when(problemService.addProblem(problem)).thenReturn(ps);
 		String result = mockMvc.perform(
 			post(url).characterEncoding("utf8")
-				//TODO: how to pass problem as param
-				.param("problem", jsonConverter.convertObjectToJSON(problem))
-		).andExpect(status().is(status.value()))
+				//TODO: pass problem as param
+				.param("problem", jsonConverter.convertObjectToJSON(problem)))
+			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
@@ -153,10 +156,12 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Create Problem From Zip")
-	@Disabled("Create Problem From Zip - Investigar como pasar multipartfile y comprobar que se actualiza el problema la segunda vez")
+	@Disabled("Create Problem From Zip - Tiene algun fallo")
 	public void testAPICreateProblemFromZip() throws Exception {
 		File goodFile = new File("prueba2.zip");
 		File badFile = new File("vacio.zip");
+		//crear ficheros nuevos para realizar la prueba
+		//si se utilizan ficheros reales, hay que comentar las lineas 249 y 250
 		goodFile.createNewFile();
 		badFile.createNewFile();
 		InputStream goodInputStream = new FileInputStream(goodFile);
@@ -174,81 +179,92 @@ public class TestAPIProblemController {
 
 		ProblemString ps = new ProblemString();
 		String salida = "TEAM NOT FOUND";
+		ps.setSalida(salida);
 		HttpStatus status = HttpStatus.NOT_FOUND;
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, badProblem, badContest, status, salida);
+		try {
+			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, badTeam, badProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, badProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, badTeam, badProblem, goodContest, status, salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, goodProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, badTeam, goodProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, badTeam, goodProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, badTeam, goodProblem, goodContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, goodContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, goodProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, goodProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, badTeam, badProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, goodContest, status, salida);
 
-		salida = "CONCURSO NOT FOUND";
-		ps.setSalida(salida);
+			salida = "CONCURSO NOT FOUND";
+			ps.setSalida(salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, badProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, badProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, goodProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, goodProblem, badContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, goodProblem, badContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, goodProblem, badContest, status, salida);
 
-		salida = "Nombre del problema vacio";
-		ps.setSalida(salida);
+			salida = "Nombre del problema vacio";
+			ps.setSalida(salida);
 
-		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, badFilename, badInputStream, goodTeam, badProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, badProblem, goodContest, status, salida);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
-		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, badProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
+			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, badProblem, goodContest, status, salida);
 
-		//TODO:investigar que sucede en este caso
-		when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
+			//TODO: investigar que sucede en este caso
+			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
 
-		salida = "OK";
-		status = HttpStatus.OK;
-		ps.setProblem(problem);
+			salida = "OK";
+			ps.setSalida(salida);
+			status = HttpStatus.OK;
+			ps.setProblem(problem);
 
-		when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
-		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
-		testAddProblemFromZip(url, goodFilename, goodInputStream, goodTeam, goodProblem, goodContest, status, salida);
+			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
+			salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
+			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, goodProblem, goodContest, status, salida);
 
-		//TODO: verificar que se actualiza la segunda vez --> que llama a update
+			//TODO: verificar que se actualiza la segunda vez --> que llama a update
 
-		//eliminar ficheros creados
-		badFile.deleteOnExit();
-		goodFile.deleteOnExit();
-		badInputStream.close();
-		goodInputStream.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			//eliminar ficheros creados
+			goodFile.deleteOnExit();
+			badFile.deleteOnExit();
+			badInputStream.close();
+			goodInputStream.close();
+		}
 	}
 
-	private void testAddProblemFromZip(String url, String filename, InputStream is, String team, String problem, String contest, HttpStatus status, String salida) throws Exception {
+	private void testAddProblemFromZip(String url, File file, InputStream is, String team, String problem, String contest, HttpStatus status, String salida) throws Exception {
+		String filename = file.getName();
+		MockMultipartFile filePart = new MockMultipartFile("file", filename, MediaType.MULTIPART_FORM_DATA_VALUE, is);
+
 		String result = mockMvc.perform(
-			post(url).characterEncoding("utf8")
-				//TODO: how to pass multipartfile
+			MockMvcRequestBuilders.multipart(url)
+				.file(filePart)
 				.param("problemName", problem)
 				.param("teamId", team)
 				.param("contestId", contest)
-		).andExpect(status().is(status.value()))
+				.characterEncoding("utf-8"))
+			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
@@ -312,7 +328,7 @@ public class TestAPIProblemController {
 			put(url).characterEncoding("utf8")
 				.param("nombreProblema", problemName)
 				.param("teamId", team)
-				//TODO: how to pass byte[]
+				//TODO: pass byte[]
 				.param("pdf", String.valueOf(pdf))
 				.param("timeout", timeout))
 			.andExpect(status().is(status.value()))
@@ -354,8 +370,8 @@ public class TestAPIProblemController {
 
 	private void testGoToProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result = mockMvc.perform(
-			get(url).characterEncoding("utf8")
-		).andExpect(status().is(status.value()))
+			get(url).characterEncoding("utf8"))
+			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
@@ -385,8 +401,8 @@ public class TestAPIProblemController {
 
 	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result = mockMvc.perform(
-			delete(url)
-		).andExpect(status().is(status.value()))
+			delete(url))
+			.andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
