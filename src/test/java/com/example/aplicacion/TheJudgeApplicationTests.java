@@ -1,6 +1,5 @@
 package com.example.aplicacion;
 
-import com.example.aplicacion.utils.JSONConverter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.parser.ParseException;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -19,22 +19,21 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 public class TheJudgeApplicationTests {
 	private final String baseURL = "http://localhost:8080/API/v1";
-	private JSONConverter jsonConverter;
 	private RestTemplate restTemplate;
 	private ObjectMapper mapper;
 
 	@BeforeEach
 	public void init() {
-		jsonConverter = new JSONConverter();
 		restTemplate = new RestTemplate();
 		mapper = new ObjectMapper();
 	}
 
-	// verificar estado inicial
 	@Test
 	@DisplayName("Verificar estado inicial de la aplicación")
 	public void testInitialState() throws IOException, JSONException, ParseException {
@@ -54,9 +53,8 @@ public class TheJudgeApplicationTests {
 		assertThat(team.get("nombreEquipo").asText(), equalTo("pavloXd"));
 	}
 
-	//crear concurso
 	@Test
-	@DisplayName("Crear Concurso desde Cero")
+	@DisplayName("Crear concurso desde cero")
 	public void testCreateContestFromZero() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -123,6 +121,41 @@ public class TheJudgeApplicationTests {
 		assertThat(contest.get("teamPropietario").asText(), equalTo(team.asText()));
 		System.out.println(contest);
 	}
+
+	@Test
+	@DisplayName("Crear usuario con datos repetidos")
+	public void testCreateDuplicateUser(){
+		String nickname = "pruebas001";
+		String email = "prueba@pruebas001.com";
+		String salida = "404 : [USER NICKNAME DUPLICATED]";
+		testCreateDuplicateUser(nickname, email, salida);
+
+		nickname = "pruebas001-duplicado";
+		salida = "404 : [USER MAIL DUPLICATED]";
+		testCreateDuplicateUser(nickname, email, salida);
+	}
+
+	private void testCreateDuplicateUser(String nickname, String email, String salida){
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		// crear usuario y equipo
+		String createUserURL = baseURL + "/user";
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("nickname", nickname);
+		params.add("email", email);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+		Exception exception = assertThrows(HttpClientErrorException.class, () -> {
+			ResponseEntity<String> response = restTemplate.postForEntity(createUserURL, request, String.class);
+			assertThat(response.getStatusCode(), is(HttpStatus.OK));
+			fail("Success on create duplicate user: "+response.getBody());
+		});
+		assertThat(exception.getMessage(), equalTo(salida));
+	}
+
+	//crear equipos con datos repetidos
 
 	//crear problemas
 	//crear usuarios
