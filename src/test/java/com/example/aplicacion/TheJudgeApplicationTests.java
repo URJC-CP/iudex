@@ -8,23 +8,25 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 public class TheJudgeApplicationTests {
 	private final String baseURL = "http://localhost:8080/API/v1";
+	private final String basePathTestFiles = "/src/main/resources/testfiles";
+	private final String teamId = "6";
 	private RestTemplate restTemplate;
 	private ObjectMapper mapper;
 
@@ -47,10 +49,10 @@ public class TheJudgeApplicationTests {
 		assertThat(contest.get("id").asLong(), equalTo(7L));
 		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
 
-		JsonNode team = contest.get("teamPropietario");
-		System.out.println(team);
-		assertThat(team.get("id").asLong(), equalTo(6L));
-		assertThat(team.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		JsonNode teamNode = contest.get("teamPropietario");
+		System.out.println(teamNode);
+		assertThat(teamNode.get("id").asLong(), equalTo(6L));
+		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
 	}
 
 	@Test
@@ -59,50 +61,24 @@ public class TheJudgeApplicationTests {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		// crear usuario y equipo
-		String createUserURL = baseURL + "/user";
-		String nickname = "pruebas001";
-		String email = "prueba@pruebas001.com";
+		MultiValueMap<String, String> params = null;
+		HttpEntity<MultiValueMap<String, String>> request = null;
+		ResponseEntity<String> response = null;
 
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("nickname", nickname);
-		params.add("email", email);
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-		ResponseEntity<String> response = restTemplate.postForEntity(createUserURL, request, String.class);
-		assertThat(response.getStatusCode(), is(HttpStatus.OK));
-		System.out.println(response.getBody());
-
-		JsonNode user = mapper.readTree(response.getBody());
-		Long userId = user.get("id").asLong();
-		assertThat(user.get("nickname").asText(), equalTo(nickname));
-		assertThat(user.get("email").asText(), equalTo(email));
-
-		// verificar que se ha creado el usuario y el equipo
+		//buscar equipo
 		String getAllTeamsUrl = baseURL + "/team";
 		response = restTemplate.getForEntity(getAllTeamsUrl, String.class);
 		assertThat(response.getStatusCode(), is(HttpStatus.OK));
 
-		JsonNode mainPage = mapper.readTree(response.getBody());
-		long teamId = -1;
-		JsonNode team = null;
-
-		//buscar equipo
-		boolean foundTeam = false;
-		for (int i = 0; i < mainPage.size() && !foundTeam; i++) {
-			String teamName = mainPage.get(i).get("nombreEquipo").asText();
-			if (teamName.equals(nickname)) {
-				foundTeam = true;
-				team = mainPage.get(i);
-			}
-		}
-		//obtener id del equipo
-		//assertThat(team.get("nombreEquipo"), equalTo(nickname));
-		teamId = team.get("id").asLong();
+		JsonNode teams = mapper.readTree(response.getBody());
+		JsonNode team = teams.get(0);
 		System.out.println(team);
 
+		//obtener id del equipo
+		long teamId = team.get("id").asLong();
+
 		String contestName = "concurso prueba 001";
-		String contestDescription = "concurso de prueba creado por el usuario prueba001";
+		String contestDescription = "concurso de prueba";
 
 		//crear concurso
 		String contestURL = baseURL + "/contest";
@@ -122,53 +98,94 @@ public class TheJudgeApplicationTests {
 		System.out.println(contest);
 	}
 
-	@Test
-	@DisplayName("Crear usuario con datos repetidos")
-	public void testCreateDuplicateUser(){
-		String nickname = "pruebas001";
-		String email = "prueba@pruebas001.com";
-		String salida = "404 : [USER NICKNAME DUPLICATED]";
-		testCreateDuplicateUser(nickname, email, salida);
-
-		nickname = "pruebas001-duplicado";
-		salida = "404 : [USER MAIL DUPLICATED]";
-		testCreateDuplicateUser(nickname, email, salida);
-	}
-
-	private void testCreateDuplicateUser(String nickname, String email, String salida){
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		// crear usuario y equipo
-		String createUserURL = baseURL + "/user";
-
-		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		params.add("nickname", nickname);
-		params.add("email", email);
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-		Exception exception = assertThrows(HttpClientErrorException.class, () -> {
-			ResponseEntity<String> response = restTemplate.postForEntity(createUserURL, request, String.class);
-			assertThat(response.getStatusCode(), is(HttpStatus.OK));
-			fail("Success on create duplicate user: "+response.getBody());
-		});
-		assertThat(exception.getMessage(), equalTo(salida));
-	}
-
-	//crear equipos con datos repetidos
-
 	//crear problemas
-	//crear usuarios
-	//crear equipos
+	@Test
+	@DisplayName("Crear problema desde un archivo zip")
+	public void testCreateProblemFromZip() throws IOException {
+		String filename = "primavera.zip";
+		String problemName = "";
+		String contesId = "7";
+
+		String badTeamId = "897";
+		String badContestId = "576";
+		String salida = "";
+
+		salida = "TEAM NOT FOUND";
+		testCreateProblemFromZipWithException(filename, problemName, badTeamId, badContestId, salida);
+
+		salida = "CONCURSO NOT FOUND";
+		testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
+
+		// empty problem name
+		testCreateProblemFromZip(filename, problemName, teamId, contesId);
+
+		// empty file
+		filename = ".zip.zip";
+		salida = "Nombre del problema vacio";
+		testCreateProblemFromZipWithException(filename, problemName, teamId, contesId, salida);
+
+		filename = ".zip.zip";
+		problemName = "pruba vacio";
+		salida = "No hay casos de prueba";
+		testCreateProblemFromZipWithException(filename, problemName, teamId, contesId, salida);
+
+		// file with problem name
+		filename = "pruebaMYSQL.zip";
+		problemName = "problema de mysql";
+		testCreateProblemFromZip(filename, problemName, teamId, contesId);
+	}
+
+	private void testCreateProblemFromZip(String filename, String problemName, String teamId, String contestId) throws IOException {
+		String createProblemURL = baseURL + "/problem/fromZip";
+		File file = new File("." + basePathTestFiles + "/" + filename);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+		params.add("file", new FileSystemResource(file));
+		params.add("problemName", problemName);
+		params.add("teamId", teamId);
+		params.add("contestId", contestId);
+
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+		ResponseEntity<String> response = restTemplate.postForEntity(createProblemURL, requestEntity, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode problem = mapper.readTree(response.getBody());
+		JsonNode team = problem.get("equipoPropietario");
+
+		assertThat(team.get("id").asText(), equalTo(teamId));
+		assertThat(team.get("nombreEquipo").asText(), equalTo("pavloXd"));
+
+		if (problemName.isEmpty()) {
+			assertThat(problem.get("nombreEjercicio").asText() + ".zip", equalTo(filename));
+		} else {
+			assertThat(problem.get("nombreEjercicio").asText(), equalTo(problemName));
+		}
+	}
+
+	private void testCreateProblemFromZipWithException(String filename, String problem, String team, String contest, String salida) {
+		String createProblemURL = baseURL + "/problem/fromZip";
+		File file = new File("." + basePathTestFiles + "/" + filename);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+		MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
+		params.add("file", new FileSystemResource(file));
+		params.add("problemName", problem);
+		params.add("teamId", team);
+		params.add("contestId", contest);
+
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+		Exception exception = assertThrows(Exception.class, () -> {
+			ResponseEntity<String> response = restTemplate.postForEntity(createProblemURL, requestEntity, String.class);
+		});
+		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
+	}
+
 	//realizar entregas
-
-	//actualizar datos
-	//eliminar datos
-
-	//actualizar problemas
-	//eliminar problemas
-
-	//actualizar concurso
-	//eliminar concurso
 
 }
