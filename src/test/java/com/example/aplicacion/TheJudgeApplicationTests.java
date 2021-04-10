@@ -38,13 +38,12 @@ public class TheJudgeApplicationTests {
 
 	@Test
 	@DisplayName("Verificar estado inicial de la aplicación")
-	public void test1() throws IOException, JSONException, ParseException {
-		String url = baseURL + "/contest/?contestId=7";
+	public void test0() throws IOException, JSONException, ParseException {
+		String url = baseURL + "/contest/7";
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode lista = mapper.readTree(response.getBody());
-		JsonNode contest = lista.get(0);
+		JsonNode contest = mapper.readTree(response.getBody());
 		System.out.println(contest);
 		assertThat(contest.get("id").asLong(), equalTo(7L));
 		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
@@ -57,7 +56,7 @@ public class TheJudgeApplicationTests {
 
 	@Test
 	@DisplayName("Crear concurso con el usuario por defecto")
-	public void test2() throws IOException {
+	public void test1() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -92,10 +91,43 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
 
 		JsonNode contest = mapper.readTree(response.getBody());
+		String contestId = contest.get("id").asText();
 		assertThat(contest.get("nombreContest").asText(), equalTo(contestName));
 		assertThat(contest.get("descripcion").asText(), equalTo(contestDescription));
 		assertThat(contest.get("teamPropietario").asText(), equalTo(team.asText()));
+
 		System.out.println(contest);
+		testGetContest(contestId);
+	}
+
+	@Test
+	@DisplayName("Obtener Concurso")
+	public void test2() throws IOException {
+		String badContestId = "564";
+		String contestId = "7";
+
+		testGetContest(contestId);
+
+		String salida = "CONTEST NOT FOUND";
+		testGetContestWithException(badContestId, salida);
+	}
+
+	private void testGetContest(String contestId) throws IOException {
+		String getContestURL = baseURL + "/contest/" + contestId;
+		ResponseEntity<String> response = restTemplate.getForEntity(getContestURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode contest = mapper.readTree(response.getBody());
+		assertThat(contest.get("id").asText(), equalTo(contestId));
+	}
+
+	private void testGetContestWithException(String contestId, String salida) {
+		String getContestURL = baseURL + "/contest/" + contestId;
+		Exception exception = assertThrows(Exception.class, () -> {
+			restTemplate.getForEntity(getContestURL, String.class);
+		});
+		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
 	//crear problemas
@@ -155,6 +187,7 @@ public class TheJudgeApplicationTests {
 		System.out.println(response.getBody());
 
 		JsonNode problem = mapper.readTree(response.getBody());
+		String problemId = problem.get("id").asText();
 		JsonNode team = problem.get("equipoPropietario");
 
 		assertThat(team.get("id").asText(), equalTo(teamId));
@@ -165,6 +198,8 @@ public class TheJudgeApplicationTests {
 		} else {
 			assertThat(problem.get("nombreEjercicio").asText(), equalTo(problemName));
 		}
+
+		testGetProblem(problemId);
 	}
 
 	private void testCreateProblemFromZipWithException(String filename, String problem, String team, String contest, String salida) {
@@ -187,10 +222,39 @@ public class TheJudgeApplicationTests {
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
+	@Test
+	@DisplayName("Obtener problema")
+	public void test4() throws IOException {
+		String badProblemId = "756";
+		String problemId = "1";
+
+		String salida = "ERROR PROBLEM NOT FOUND";
+		testGetProblemWithException(badProblemId, salida);
+		testGetProblem(problemId);
+	}
+
+	private void testGetProblem(String problemId) throws IOException {
+		String getProblemURL = baseURL + "/problem/" + problemId;
+		ResponseEntity<String> response = restTemplate.getForEntity(getProblemURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode problem = mapper.readTree(response.getBody());
+		assertThat(problem.get("id").asText(), equalTo(problemId));
+	}
+
+	private void testGetProblemWithException(String problemId, String salida) {
+		String getProblemURL = baseURL + "/problem/" + problemId;
+		Exception exception = assertThrows(Exception.class, () -> {
+			restTemplate.getForEntity(getProblemURL, String.class);
+		});
+		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
+	}
+
 	//realizar entregas
 	@Test
 	@DisplayName("Realizar entrega")
-	public void test4() throws IOException {
+	public void test5() throws IOException {
 		//fail("Not implemented yet!");
 		String contestId = "7";
 		String anotherContestId = "8";
@@ -304,8 +368,8 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Get a submission")
-	public void test5() throws IOException {
+	@DisplayName("Obtener entrega")
+	public void test6() throws IOException {
 		String badSubId = "756";
 		String subId = "6";
 
