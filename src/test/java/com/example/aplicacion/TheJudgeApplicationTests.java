@@ -55,7 +55,7 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Crear concurso con el usuario por defecto")
+	@DisplayName("Crear concurso")
 	public void test1() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
