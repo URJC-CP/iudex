@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class DockerContainerMySQL extends DockerContainer {
 
@@ -66,9 +67,9 @@ public class DockerContainerMySQL extends DockerContainer {
 
 		var executionID = dockerClient
 			.execCreateCmd(container.getId())
-				.withAttachStdout(true)
+			.withAttachStdout(true)
 			.withCmd("bash", "-c", "mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME1 >salidaError.ans 2>&1 && mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME2 >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt")
-				.exec()
+			.exec()
 			.getId();
 		// Starting the execution
 		try {
@@ -80,14 +81,12 @@ public class DockerContainerMySQL extends DockerContainer {
 			e.printStackTrace();
 		}
 
-		// TODO fuerzo a esperar 5 segundos, y luego paro el contenedor. Este tiempo deberia ir en funcion del timeout o cuando acabe el comando, por implementar
-		try {
-			Thread.sleep(5000);
-			dockerClient
-					.stopContainerCmd(container.getId()).exec();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.valueOf(result.getMaxTimeout()));
+		String signalEjecutor = null;
+		do {
+			Thread.onSpinWait();
+			signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
+		} while (LocalDateTime.now().isBefore(maxTime) && signalEjecutor.equals(""));
 
 		//comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
 		InspectContainerResponse inspectContainerResponse = null;
@@ -112,8 +111,6 @@ public class DockerContainerMySQL extends DockerContainer {
 		//para que no de fallo de compilador
 		result.setSignalCompilador("0");
 
-		String signalEjecutor = null;
-		signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
 		result.setSignalEjecutor(signalEjecutor);
 
 		//logger.info("DOCKER MySQL: EL result "+result.getId() + " ha terminado con senyal "+ signal);
