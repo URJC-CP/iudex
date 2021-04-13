@@ -282,14 +282,14 @@ public class TheJudgeApplicationTests {
 		salida = "PROBLEM NOT IN CONCURSO";
 		testAddSubmissionWithException(anotherContestId, problemPrimavera, teamId, language, codeFile, salida);
 
-		// incorrect language selected
-		codeFile = "primavera/submissions/accepted/main.java";
-		language = getLanguage("python");
-		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
-
 		// all okay
 		codeFile = "primavera/submissions/accepted/main.java";
 		language = getLanguage("java");
+		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
+
+		// incorrect language selected
+		codeFile = "primavera/submissions/accepted/main.java";
+		language = getLanguage("python");
 		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
 
 		// incorrect file type
