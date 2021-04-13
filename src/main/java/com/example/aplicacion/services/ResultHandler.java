@@ -1,18 +1,13 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.DockerContainerC;
-import com.example.aplicacion.Docker.DockerContainerCPP;
-import com.example.aplicacion.Docker.DockerContainerJava;
-import com.example.aplicacion.Docker.DockerContainerPython3;
+import com.example.aplicacion.Docker.*;
 import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Repository.LanguageRepository;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +22,17 @@ import java.util.Map;
 public class ResultHandler {
 
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
-
     private DockerClient dockerClient;
     private final Map<String, String> imagenes;
+
+    @Value("${problem.default.timeout}")
+    private String timeoutTime;
+    @Value("${problem.default.memory}")
+    private String memoryLimit;
+    @Value("${problem.default.cores}")
+    private String defaultCPU;
+    @Value("${problem.default.storage}")
+    private String defaultStorage;
 
     public ResultHandler() {
         logger.info("Starting connection with docker");
@@ -54,15 +57,6 @@ public class ResultHandler {
 
     }
 
-    @Value("${problem.default.timeout}")
-    private String timeoutTime;
-    @Value("${problem.default.memory}")
-    private String memoryLimit;
-    @Value("${problem.default.cores}")
-    private String defaultCPU;
-    @Value("${problem.default.storage}")
-    private String defaultStorage;
-
     public void ejecutor(Result res) throws IOException {
         Language lenguaje = res.getLanguage();
         switch (lenguaje.getNombreLenguaje()) {
@@ -82,14 +76,17 @@ public class ResultHandler {
                 new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
 
+            case "sql":
+                new DockerContainerMySQL(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
+                break;
         }
 
     }
 
     public String buildImage(File file) {
         String salida = dockerClient.buildImageCmd().withDockerfile(file)
-                .exec(new BuildImageResultCallback())
-                .awaitImageId();
+            .exec(new BuildImageResultCallback())
+            .awaitImageId();
         return salida;
     }
 
