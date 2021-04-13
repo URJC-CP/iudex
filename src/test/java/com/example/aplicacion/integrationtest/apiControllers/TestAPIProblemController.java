@@ -16,14 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
@@ -126,150 +121,16 @@ public class TestAPIProblemController {
 		y el controlador no acepta JSON
 	*/
 	@DisplayName("Create problem Using a Problem Object")
-	@Disabled("Create problem Using a Problem Object - Solo se puede utilizar String como param de mockMvc")
+	@Disabled("Create problem Using a Problem Object - Cannot be mocked")
 	public void testAPICreateProblem() throws Exception {
-		String url = "/API/v1/problem";
-		ProblemString ps = new ProblemString();
-		// new problem with same values as the other one but different id
-		Problem newProblem = new Problem();
-		newProblem.setId(201);
-		newProblem.setNombreEjercicio(problem.getNombreEjercicio());
-		newProblem.setEquipoPropietario(problem.getEquipoPropietario());
-		ps.setProblem(newProblem);
-
-		String salida = "OK";
-		HttpStatus status = HttpStatus.OK;
-		ps.setSalida(salida);
-		ps.setProblem(newProblem);
-
-		when(problemService.addProblem(problem)).thenReturn(ps);
-		String result = mockMvc.perform(
-			post(url).characterEncoding("utf8")
-				//TODO: pass problem as param
-				.param("problem", jsonConverter.convertObjectToJSON(problem)))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(jsonConverter.convertObjectToJSON(problem.toProblemAPI()), result);
+		fail("Could not send an instance as a param with mock");
 	}
 
 	@Test
 	@DisplayName("Create Problem From Zip")
-	@Disabled("Create Problem From Zip - Tiene algun fallo")
+	@Disabled("Create Problem From Zip - Cannot be mocked")
 	public void testAPICreateProblemFromZip() throws Exception {
-		File goodFile = new File("prueba2.zip");
-		File badFile = new File("vacio.zip");
-		//crear ficheros nuevos para realizar la prueba
-		//si se utilizan ficheros reales, hay que comentar las lineas 249 y 250
-		boolean deleteFiles = goodFile.createNewFile() && badFile.createNewFile();
-		InputStream goodInputStream = new FileInputStream(goodFile);
-		InputStream badInputStream = new FileInputStream(badFile);
-
-		String url = "/API/v1/problem/fromZip";
-		String badTeam = "756";
-		String goodTeam = String.valueOf(owner.getId());
-		String badContest = "532";
-		String goodContest = String.valueOf(contest.getId());
-		String badProblem = "";
-		String goodProblem = problem.getNombreEjercicio();
-		String badFilename = badFile.getName();
-		String goodFilename = goodFile.getName();
-
-		ProblemString ps = new ProblemString();
-		String salida = "TEAM NOT FOUND";
-		ps.setSalida(salida);
-		HttpStatus status = HttpStatus.NOT_FOUND;
-
-		try {
-			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, badTeam, badProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, badTeam, badProblem, goodContest, status, salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, badTeam, goodProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, badTeam, goodProblem, goodContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, badProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, goodContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, goodProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, badTeam, goodProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, badTeam, badProblem, goodContest, status, salida);
-
-			salida = "CONCURSO NOT FOUND";
-			ps.setSalida(salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, badProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, goodProblem, badContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, badContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, goodProblem, badContest, status, salida);
-
-			salida = "Nombre del problema vacio";
-			ps.setSalida(salida);
-
-			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, badFile, badInputStream, goodTeam, badProblem, goodContest, status, salida);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, badProblem, goodContest)).thenReturn(ps);
-			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, badProblem, goodContest, status, salida);
-
-			//TODO: investigar que sucede en este caso
-			when(problemService.addProblemFromZip(badFilename, badInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
-
-			salida = "OK";
-			ps.setSalida(salida);
-			status = HttpStatus.OK;
-			ps.setProblem(problem);
-
-			when(problemService.addProblemFromZip(goodFilename, goodInputStream, goodTeam, goodProblem, goodContest)).thenReturn(ps);
-			salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
-			testAddProblemFromZip(url, goodFile, goodInputStream, goodTeam, goodProblem, goodContest, status, salida);
-
-			//TODO: verificar que se actualiza la segunda vez --> que llama a update
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		} finally {
-			if (deleteFiles) {
-				//eliminar ficheros creados
-				goodFile.deleteOnExit();
-				badFile.deleteOnExit();
-				badInputStream.close();
-				goodInputStream.close();
-			}
-		}
-	}
-
-	private void testAddProblemFromZip(String url, File file, InputStream is, String team, String problem, String contest, HttpStatus status, String salida) throws Exception {
-		String filename = file.getName();
-		MockMultipartFile filePart = new MockMultipartFile("file", filename, MediaType.MULTIPART_FORM_DATA_VALUE, is);
-
-		String result = mockMvc.perform(
-			MockMvcRequestBuilders.multipart(url)
-				.file(filePart)
-				.param("problemName", problem)
-				.param("teamId", team)
-				.param("contestId", contest)
-				.characterEncoding("utf-8"))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(salida, result);
+		fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
 	}
 
 	@Test
@@ -340,9 +201,9 @@ public class TestAPIProblemController {
 
 	@Test
 	@DisplayName("Update Problem From Zip")
-	@Disabled("Update Problem From Zip - Not implemented yet!")
+	@Disabled("Update Problem From Zip - Cannot be mocked")
 	public void testAPIUpdateProblemFromZip() {
-		fail("Not implemented yet!");
+		fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
 	}
 
 	@Test
