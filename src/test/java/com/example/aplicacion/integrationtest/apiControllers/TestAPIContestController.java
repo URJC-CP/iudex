@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,10 +26,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APIContestController.class)
@@ -79,21 +82,29 @@ public class TestAPIContestController {
 
 	@Test
 	@DisplayName("Get All Contests with Pagination")
-	@Disabled("Get All Contests with Pagination - Averiguar como probar con paginación")
-	//TODO: probar paginación
+	@Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
 	public void testAPIGetAllContestsWithPagination() throws Exception {
-		String url = "/API/v1/contest/1";
-		fail("In process!");
+		String url = "/API/v1/contest/page";
+		Pageable pageable = PageRequest.of(1, 5);
+		PageImpl<Contest> page = new PageImpl<>(List.of(contest));
+		when(contestService.getContestPage(pageable)).thenReturn(page);
+		mockMvc.perform(
+			get(url)
+				.characterEncoding("utf-8")
+				.param("pageable", String.valueOf(pageable))
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$['pageable']['paged']").value("true"));
 	}
 
 	@Test
 	@DisplayName("Get One Contest")
 	public void testAPIGetContest() throws Exception {
-		String badURL = "/API/v1/contest/523";
-		String goodURL = "/API/v1/contest/" + contest.getId();
-
 		String badContest = "523";
 		String goodContest = String.valueOf(contest.getId());
+
+		String badURL = "/API/v1/contest/" + badContest;
+		String goodURL = "/API/v1/contest/" + goodContest;
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "";
@@ -213,7 +224,6 @@ public class TestAPIContestController {
 		ContestString cs = new ContestString();
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "CONTEST ID DOES NOT EXIST";
-		String result;
 
 		cs.setSalida(salida);
 		when(contestService.updateContest(badContest, badName, badTeam, description)).thenReturn(cs);
@@ -276,26 +286,26 @@ public class TestAPIContestController {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "contest NOT FOUND";
 		when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL, badContest, badProblem, status, salida);
+		testAddProblem(badURL, status, salida);
 		when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
-		testAddProblem(badURL2, badContest, goodProblem, status, salida);
+		testAddProblem(badURL2, status, salida);
 
 		salida = "PROBLEM NOT FOUND";
 		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL3, goodContest, badProblem, status, salida);
+		testAddProblem(badURL3, status, salida);
 
 		salida = "PROBLEM DUPLICATED";
 		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL3, goodContest, badProblem, status, salida);
+		testAddProblem(badURL3, status, salida);
 
 		status = HttpStatus.OK;
 		salida = "OK";
 		when(contestService.anyadeProblemaContest(goodContest, goodProblem)).thenReturn(salida);
 		salida = "";
-		testAddProblem(goodURL, goodContest, goodProblem, status, salida);
+		testAddProblem(goodURL, status, salida);
 	}
 
-	private void testAddProblem(String url, String contest, String problem, HttpStatus status, String salida) throws Exception {
+	private void testAddProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result;
 		result = mockMvc.perform(
 			post(url).characterEncoding("utf8")
@@ -322,23 +332,23 @@ public class TestAPIContestController {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "contest NOT FOUND";
 		when(contestService.deleteProblemFromContest(badContest, badProblem)).thenReturn(salida);
-		testDeleteContest(badURL, status, salida);
+		testDeleteProblem(badURL, status, salida);
 		when(contestService.deleteProblemFromContest(badContest, goodProblem)).thenReturn(salida);
-		testDeleteContest(badURL2, status, salida);
+		testDeleteProblem(badURL2, status, salida);
 
 		salida = "PROBLEM NOT FOUND";
 		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
-		testDeleteContest(badURL3, status, salida);
+		testDeleteProblem(badURL3, status, salida);
 
 		salida = "PROBLEM NOT IN CONCURSO";
 		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
-		testDeleteContest(badURL3, status, salida);
+		testDeleteProblem(badURL3, status, salida);
 
 		salida = "OK";
 		status = HttpStatus.OK;
 		when(contestService.deleteProblemFromContest(goodContest, goodProblem)).thenReturn(salida);
 		salida = "";
-		testDeleteContest(goodURL, status, salida);
+		testDeleteProblem(goodURL, status, salida);
 	}
 
 	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
@@ -350,7 +360,6 @@ public class TestAPIContestController {
 			.andDo(print())
 			.andReturn().getResponse()
 			.getContentAsString();
-
 		assertEquals(salida, result);
 	}
 }

@@ -32,8 +32,6 @@ public class TestAPIAdminController {
 	private ResultService resultService;
 
 	private Result result;
-	private ProblemData entrada;
-	private ProblemData salida;
 
 	@BeforeEach
 	public void init() {
@@ -41,10 +39,10 @@ public class TestAPIAdminController {
 		result.setId(564);
 		result.setFileName("Resultado de prueba");
 
-		entrada = new ProblemData(756, "Datos de prueba", "Probando", ProblemDataType.EntradaVisible);
+		ProblemData entrada = new ProblemData(756, "Datos de prueba", "Probando", ProblemDataType.EntradaVisible);
 		result.setEntradaInO(entrada);
 
-		salida = new ProblemData(876, "Datos de prueba", "Probando", ProblemDataType.SalidaVisible);
+		ProblemData salida = new ProblemData(876, "Datos de prueba", "Probando", ProblemDataType.SalidaVisible);
 		result.setSalidaEstandarCorrectaInO(salida);
 
 		when(resultService.getResult(String.valueOf(result.getId()))).thenReturn(result);

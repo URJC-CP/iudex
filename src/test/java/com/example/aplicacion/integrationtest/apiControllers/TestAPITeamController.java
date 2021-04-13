@@ -137,7 +137,6 @@ public class TestAPITeamController {
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "TEAM NOT FOUND";
-		status = HttpStatus.NOT_FOUND;
 		when(teamService.deleteTeamByTeamId(badTeam)).thenReturn(salida);
 		testDeleteTeam(badURL, status, salida);
 

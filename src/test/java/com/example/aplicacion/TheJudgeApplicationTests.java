@@ -2,8 +2,6 @@ package com.example.aplicacion;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.parser.ParseException;
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,12 +36,17 @@ public class TheJudgeApplicationTests {
 
 	@Test
 	@DisplayName("Verificar estado inicial de la aplicación")
-	public void test0() throws IOException, JSONException, ParseException {
+	public void test0() {
 		String url = baseURL + "/contest/7";
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode contest = mapper.readTree(response.getBody());
+		JsonNode contest = null;
+		try {
+			contest = mapper.readTree(response.getBody());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		System.out.println(contest);
 		assertThat(contest.get("id").asLong(), equalTo(7L));
 		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
@@ -60,9 +63,9 @@ public class TheJudgeApplicationTests {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> params = null;
-		HttpEntity<MultiValueMap<String, String>> request = null;
-		ResponseEntity<String> response = null;
+		MultiValueMap<String, String> params;
+		HttpEntity<MultiValueMap<String, String>> request;
+		ResponseEntity<String> response;
 
 		//buscar equipo
 		String getAllTeamsUrl = baseURL + "/team";
@@ -124,9 +127,7 @@ public class TheJudgeApplicationTests {
 
 	private void testGetContestWithException(String contestId, String salida) {
 		String getContestURL = baseURL + "/contest/" + contestId;
-		Exception exception = assertThrows(Exception.class, () -> {
-			restTemplate.getForEntity(getContestURL, String.class);
-		});
+		Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getContestURL, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
@@ -138,7 +139,7 @@ public class TheJudgeApplicationTests {
 		String contesId = "7";
 		String badTeamId = "897";
 		String badContestId = "576";
-		String salida = "";
+		String salida;
 
 		// valid file without problem name
 		String filename = "primavera.zip";
@@ -216,9 +217,8 @@ public class TheJudgeApplicationTests {
 		params.add("contestId", contest);
 
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-		Exception exception = assertThrows(Exception.class, () -> {
-			restTemplate.postForEntity(createProblemURL, requestEntity, String.class);
-		});
+		Exception exception = assertThrows(Exception.class, () ->
+			restTemplate.postForEntity(createProblemURL, requestEntity, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
@@ -245,9 +245,7 @@ public class TheJudgeApplicationTests {
 
 	private void testGetProblemWithException(String problemId, String salida) {
 		String getProblemURL = baseURL + "/problem/" + problemId;
-		Exception exception = assertThrows(Exception.class, () -> {
-			restTemplate.getForEntity(getProblemURL, String.class);
-		});
+		Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getProblemURL, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
@@ -260,7 +258,7 @@ public class TheJudgeApplicationTests {
 		String anotherContestId = "8";
 		String badContestId = "768";
 		String problemPrimavera = "1";
-		String problemMySQL = "2";
+		//String problemMySQL = "2";
 		String badProblemId = "874";
 		String teamId = "6";
 		String badTeamId = "987";
@@ -311,12 +309,12 @@ public class TheJudgeApplicationTests {
 			case "python":
 				return "2";
 			case "c":
-				return "2";
+				return "3";
 			case "cpp":
 			case "c++":
-				return "3";
-			case "sql":
 				return "4";
+			case "sql":
+				return "5";
 			default:
 				return "1023";
 		}
@@ -361,9 +359,7 @@ public class TheJudgeApplicationTests {
 		params.add("teamId", teamId);
 
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-		Exception exception = assertThrows(Exception.class, () -> {
-			restTemplate.postForEntity(addSubmissionURL, requestEntity, String.class);
-		});
+		Exception exception = assertThrows(Exception.class, () -> restTemplate.postForEntity(addSubmissionURL, requestEntity, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
@@ -390,9 +386,7 @@ public class TheJudgeApplicationTests {
 
 	private void testGetSubmissionWithException(String subId, String salida) {
 		String getSubmissionURL = baseURL + "/submission/" + subId;
-		Exception exception = assertThrows(Exception.class, () -> {
-			restTemplate.getForEntity(getSubmissionURL, String.class);
-		});
+		Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getSubmissionURL, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 }

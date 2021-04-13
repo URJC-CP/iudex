@@ -41,7 +41,6 @@ public class TestAPISubmissionController {
 	private ProblemService problemService;
 
 	private Contest contest;
-	private Team owner;
 	private Problem problem;
 	private Submission submission;
 
@@ -52,7 +51,7 @@ public class TestAPISubmissionController {
 		contest.setNombreContest("elConcurso");
 		contest.setDescripcion("concurso de prueba");
 
-		owner = new Team();
+		Team owner = new Team();
 		owner.setId(201);
 		owner.setNombreEquipo("propietario");
 		contest.setTeamPropietario(owner);
@@ -105,7 +104,7 @@ public class TestAPISubmissionController {
 		salida = "CONTEST NOT FOUND";
 		testGetSubmissionsWithContestId(url, badContest, status, salida);
 
-		salida = "OK";
+		//salida = "OK";
 		status = HttpStatus.OK;
 		salida = jsonConverter.convertObjectToJSON(List.of(submission.toSubmissionAPI()));
 		testGetSubmissionsWithProblemId(url, goodProblem, status, salida);
@@ -160,10 +159,10 @@ public class TestAPISubmissionController {
 	@DisplayName("Get All Submissions with Pagination")
 	@Disabled("Get All Submissions with Pagination - Not implemented yet!")
 	public void testAPIGetAllSubmissions() {
-		String badProblem;
-		String goodProblem;
-		String badContest;
-		String goodContest;
+		//String badProblem;
+		//String goodProblem;
+		//String badContest;
+		//String goodContest;
 	}
 
 	@Test

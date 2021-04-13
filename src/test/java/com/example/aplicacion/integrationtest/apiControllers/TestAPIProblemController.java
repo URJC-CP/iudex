@@ -162,8 +162,7 @@ public class TestAPIProblemController {
 		File badFile = new File("vacio.zip");
 		//crear ficheros nuevos para realizar la prueba
 		//si se utilizan ficheros reales, hay que comentar las lineas 249 y 250
-		goodFile.createNewFile();
-		badFile.createNewFile();
+		boolean deleteFiles = goodFile.createNewFile() && badFile.createNewFile();
 		InputStream goodInputStream = new FileInputStream(goodFile);
 		InputStream badInputStream = new FileInputStream(badFile);
 
@@ -245,11 +244,13 @@ public class TestAPIProblemController {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			//eliminar ficheros creados
-			goodFile.deleteOnExit();
-			badFile.deleteOnExit();
-			badInputStream.close();
-			goodInputStream.close();
+			if (deleteFiles) {
+				//eliminar ficheros creados
+				goodFile.deleteOnExit();
+				badFile.deleteOnExit();
+				badInputStream.close();
+				goodInputStream.close();
+			}
 		}
 	}
 
@@ -315,12 +316,11 @@ public class TestAPIProblemController {
 
 		salida = "OK";
 		ps.setProblem(problem);
+		ps.setSalida(salida);
 		status = HttpStatus.OK;
-		ps.setProblem(problem);
 		when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
-
 		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
+		testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
 	}
 
 	private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
