@@ -294,7 +294,7 @@ public class ProblemService {
         //Quitamos los problemas del contest
         for (Contest contestAux : problem.get().getListaContestsPertenece()) {
             logger.debug("Remove problem " + problemId + " from contest " + contestAux.getId());
-            if (!contestAux.getListaProblemas().remove(problem)) {
+            if (!contestAux.getListaProblemas().remove(problem.get())) {
                 logger.error("Couldn't remove problem " + problemId + " from contest " + contestAux.getId());
             }
         }
