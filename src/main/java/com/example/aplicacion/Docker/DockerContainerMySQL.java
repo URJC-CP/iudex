@@ -88,6 +88,8 @@ public class DockerContainerMySQL extends DockerContainer {
 			signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
 		} while (LocalDateTime.now().isBefore(maxTime) && signalEjecutor.equals(""));
 
+		dockerClient.stopContainerCmd(container.getId()).exec();
+
 		//comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
 		InspectContainerResponse inspectContainerResponse = null;
 		do {
