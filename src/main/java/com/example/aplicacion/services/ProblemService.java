@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class ProblemService {
     Logger logger = LoggerFactory.getLogger(ProblemService.class);
@@ -56,7 +55,6 @@ public class ProblemService {
         logger.debug("Create build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
         return problemString;
     }
-
 
     public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
         logger.debug("Create problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
@@ -100,17 +98,8 @@ public class ProblemService {
             }
         }
 
-        //Si el usuario introduce un nombre lo metemos a cholon
-        if (!nombreProblema.equals("")) {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
-            problem = problemString.getProblem();
-            //problem.setNombreEjercicio(nombreProblema);
-        }
-        //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
-        else {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
-            problem = problemString.getProblem();
-        }
+        problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
+        problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
@@ -127,7 +116,6 @@ public class ProblemService {
 
         contest.get().addProblem(problem);
         problem.getListaContestsPertenece().add(contest.get());
-        
         problemRepository.save(problem);
         contestRepository.save(contest.get());
 
@@ -162,17 +150,18 @@ public class ProblemService {
             return salida;
         }
 
-        //Si el usuario introduce un nombre lo metemos a cholon
-        if (!nombreProblema.equals("")) {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
-            problem = problemString.getProblem();
-            problem.setNombreEjercicio(nombreProblema);
+        //obtener nombre del problema
+        String exerciseName = nombreProblema;
+        if (nombreProblema == null || nombreProblema.trim().equals("")) {
+            exerciseName = nombreFichero.split("\\.")[0];
         }
-        //Si no mete nombre cogera el que tenga en el .yml. Si no tiene en el yml cogera el nombre del archivo como nombre del problema.
-        else {
-            problemString = zipHandlerService.generateProblemFromZIP(problem, nombreFichero, inputStream, idcontest, teamId);
-            problem = problemString.getProblem();
+        if (exerciseName.equals("")) {
+            logger.error("Problem name is missing");
+            salida.setSalida("Nombre del problema vacio");
+            return salida;
         }
+        problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
+        problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
@@ -220,9 +209,6 @@ public class ProblemService {
             logger.error("Couldn't update problem " + problemOriginal.get().getNombreEjercicio() + "\nProblem id: " + problemOriginal.get().getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
             return problemUpdated;
         }
-
-        //Tenemos que borrar el problema para poder cambiar el id
-        //deleteProblem(problemUpdated.getProblem());
 
         //Cambiamos el id
         problemUpdated.getProblem().setId(Long.valueOf(idProblema));
@@ -417,10 +403,6 @@ public class ProblemService {
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {
         oldProblem.setNombreEjercicio(newProblem.getNombreEjercicio());
-        /*oldProblem.setEntradaOculta(newProblem.getEntradaOculta());
-        oldProblem.setEntradaVisible(newProblem.getEntradaVisible());
-        oldProblem.setSalidaOculta(newProblem.getSalidaOculta());
-        oldProblem.setSalidaVisible(newProblem.getSalidaVisible());*/
         oldProblem.setData(newProblem.getData());
 
         //Anyadimos losproblemsvalidator a la lista de viejos
