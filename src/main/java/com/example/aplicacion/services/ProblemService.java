@@ -78,18 +78,12 @@ public class ProblemService {
         }
 
         //obtener nombre del problema
-        String exerciseName = nombreProblema;
         if (nombreProblema == null || nombreProblema.trim().equals("")) {
-            exerciseName = nombreFichero.split("\\.")[0];
-        }
-        if (exerciseName.equals("")) {
-            logger.error("Problem name is missing");
-            salida.setSalida("Nombre del problema vacio");
-            return salida;
+            nombreProblema = nombreFichero;
         }
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
-        Optional<Problem> aux = problemRepository.findProblemByNombreEjercicio(exerciseName);
+        Optional<Problem> aux = problemRepository.findProblemByNombreEjercicio(nombreProblema);
         if (aux.isPresent()) {
             problem = aux.get();
             //si el problema esta almacendo en el concurso
@@ -98,7 +92,7 @@ public class ProblemService {
             }
         }
 
-        problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
+        problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, idcontest, teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -107,7 +101,7 @@ public class ProblemService {
             if (problem != null) {
                 logger.error("Problem " + problem.getId() + " couldn't be saved");
             } else {
-                logger.error("Couldn't create problem " + exerciseName);
+                logger.error("Couldn't create problem " + nombreProblema);
             }
             //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
@@ -120,8 +114,6 @@ public class ProblemService {
         contestRepository.save(contest.get());
 
         problemValidatorService.validateProblem(problem);
-        //Devolvemos la version actualizada despues de los save
-        //problem =problemRepository.findProblemById(problem.getId());
 
         salida.setProblem(problem);
         salida.setSalida("OK");
@@ -151,16 +143,11 @@ public class ProblemService {
         }
 
         //obtener nombre del problema
-        String exerciseName = nombreProblema;
         if (nombreProblema == null || nombreProblema.trim().equals("")) {
-            exerciseName = nombreFichero.split("\\.")[0];
+            nombreProblema = nombreFichero;
         }
-        if (exerciseName.equals("")) {
-            logger.error("Problem name is missing");
-            salida.setSalida("Nombre del problema vacio");
-            return salida;
-        }
-        problemString = zipHandlerService.generateProblemFromZIP(problem, exerciseName, inputStream, idcontest, teamId);
+
+        problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, idcontest, teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -387,18 +374,7 @@ public class ProblemService {
     }
 
     private void deleteInNOut(Problem problem) {
-        for (ProblemData inNOut : problem.getEntradaVisible()) {
-            inNOutRepository.delete(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaVisible()) {
-            inNOutRepository.delete(inNOut);
-        }
-        for (ProblemData inNOut : problem.getEntradaOculta()) {
-            inNOutRepository.delete(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaOculta()) {
-            inNOutRepository.delete(inNOut);
-        }
+        problem.clearData();
     }
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {
