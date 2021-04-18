@@ -18,8 +18,8 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @SpringBootTest
 public class TheJudgeApplicationTests {
@@ -290,15 +290,14 @@ public class TheJudgeApplicationTests {
 		// incorrect language selected
 		codeFile = "primavera/submissions/accepted/main.java";
 		language = getLanguage("python");
-		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
+		salida = "";
+		testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
 
 		// incorrect file type
 		codeFile = ".zip.zip";
 		language = getLanguage("java");
-		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
-
-		fail("I created a python submission with a java file" +
-			"\nI created a submission with an empty zip file");
+		salida = "";
+		testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
 	}
 
 	private String getLanguage(String language) {
@@ -386,6 +385,80 @@ public class TheJudgeApplicationTests {
 
 	private void testGetSubmissionWithException(String subId, String salida) {
 		String getSubmissionURL = baseURL + "/submission/" + subId;
+		Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getSubmissionURL, String.class));
+		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
+	}
+
+	@Test
+	@DisplayName("Obtener todos los equipos")
+	public void test7() {
+		String getTeamURL = baseURL + "/team/";
+
+		ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode teamNode;
+		try {
+			teamNode = mapper.readTree(response.getBody()).get(0);
+			assertThat(teamNode.get("id").asLong(), equalTo(7L));
+			assertThat(teamNode.get("nombreEquipo"), equalTo("pavloXd"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	@DisplayName("Obtener equipo y verificar que todos los datos obtenidos no son vacios")
+	public void test8() {
+		String goodTeam = "6";
+		String badTeam = "867";
+
+		testGetTeamWithAllData(goodTeam);
+
+		String salida = "ERROR, TEAM NOT FOUND";
+		testGetTeamWithException(badTeam, salida);
+	}
+
+	private void testGetTeam(String teamID) {
+		String getTeamURL = baseURL + "/team/" + teamID;
+		ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode teamNode;
+		try {
+			teamNode = mapper.readTree(response.getBody());
+			assertThat(teamNode.get("id").asText(), equalTo(teamID));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void testGetTeamWithAllData(String teamID) {
+		String getTeamURL = baseURL + "/team/" + teamID;
+		ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode teamNode;
+		try {
+			teamNode = mapper.readTree(response.getBody());
+			assertThat(teamNode.get("id").asText(), equalTo(teamID));
+			assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
+
+			assertNotEquals(teamNode.get("listaDeSubmissions").asText(), "");
+			assertNotEquals(teamNode.get("listaProblemasCreados").asText(), "");
+			assertNotEquals(teamNode.get("listaProblemasParticipados").asText(), "");
+			assertNotEquals(teamNode.get("listaContestsCreados").asText(), "");
+			assertNotEquals(teamNode.get("listaContestsParticipados").asText(), "");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void testGetTeamWithException(String teamID, String salida) {
+		String getSubmissionURL = baseURL + "/team/" + teamID;
 		Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getSubmissionURL, String.class));
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
