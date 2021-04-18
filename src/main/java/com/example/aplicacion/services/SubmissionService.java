@@ -126,8 +126,14 @@ public class SubmissionService {
 
         //Guardamos la submission
         problema.get().addSubmission(submission);
-        team.get().getListaContestsParticipados().add(contest.get());
-        team.get().getListaProblemasParticipados().add(problema.get());
+        List<Contest> contestList = team.get().getListaContestsParticipados();
+        if (!contestList.contains(contest.get())) {
+            team.get().getListaContestsParticipados().add(contest.get());
+        }
+        List<Problem> problemList = team.get().getListaProblemasParticipados();
+        if (!problemList.contains(problema.get())) {
+            team.get().getListaProblemasParticipados().add(problema.get());
+        }
         teamRepository.save(team.get());
         problemRepository.save(problema.get());
 
