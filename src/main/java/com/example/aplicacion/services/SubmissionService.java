@@ -128,11 +128,11 @@ public class SubmissionService {
         problema.get().addSubmission(submission);
         List<Contest> contestList = team.get().getListaContestsParticipados();
         if (!contestList.contains(contest.get())) {
-            team.get().getListaContestsParticipados().add(contest.get());
+            contestList.add(contest.get());
         }
         List<Problem> problemList = team.get().getListaProblemasParticipados();
         if (!problemList.contains(problema.get())) {
-            team.get().getListaProblemasParticipados().add(problema.get());
+            problemList.add(problema.get());
         }
         teamRepository.save(team.get());
         problemRepository.save(problema.get());
