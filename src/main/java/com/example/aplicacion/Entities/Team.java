@@ -25,9 +25,9 @@ public class Team {
     private List<Submission> listaDeSubmissions;
     @OneToMany(mappedBy = "equipoPropietario", cascade = CascadeType.ALL)
     private List<Problem> listaProblemasCreados;
-    @ManyToMany//(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Problem> listaProblemasParticipados;
-    @ManyToMany//(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Contest> listaContestsParticipados;
     @OneToMany(mappedBy = "teamPropietario", cascade = CascadeType.ALL)
     private List<Contest> listaContestsCreados;

@@ -26,12 +26,12 @@ public class Contest {
     @ManyToMany
     private List<Problem> listaProblemas;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "listaContestsParticipados", cascade = CascadeType.ALL)
     private List<Team> listaParticipantes;
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
 
     public Contest() {
@@ -41,45 +41,47 @@ public class Contest {
         this.listaProblemas = new ArrayList<>();
     }
 
-    public ContestAPI toContestAPI()  {
+    public ContestAPI toContestAPI() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
-        for(Problem problem: this.listaProblemas){
+        for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPISimple());
         }
         contestAPI.setListaProblemas(listaProblemass);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for(Team team: this.listaParticipantes){
+        for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
         contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
-    public ContestAPI toContestAPIFull()  {
+
+    public ContestAPI toContestAPIFull() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
-        for(Problem problem: this.listaProblemas){
+        for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPI());
         }
         contestAPI.setListaProblemas(listaProblemass);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for(Team team: this.listaParticipantes){
+        for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
         contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
-    public ContestAPI toContestAPISimple(){
+
+    public ContestAPI toContestAPISimple() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
@@ -126,16 +128,19 @@ public class Contest {
         this.listaParticipantes = listaParticipantes;
     }
 
-    public void addProblem(Problem problem){
+    public void addProblem(Problem problem) {
         this.listaProblemas.add(problem);
     }
-    public void deleteProblem(Problem problem){this.listaProblemas.remove(problem );}
 
-    public void addTeam(Team team){
+    public void deleteProblem(Problem problem) {
+        this.listaProblemas.remove(problem);
+    }
+
+    public void addTeam(Team team) {
         this.listaParticipantes.add(team);
     }
 
-    public void deleteTeam(Team team){
+    public void deleteTeam(Team team) {
         this.listaParticipantes.remove(teamPropietario);
     }
 
@@ -147,10 +152,11 @@ public class Contest {
         this.listaSubmissions = listaSubmissions;
     }
 
-    public void addSubmission(Submission submission){
+    public void addSubmission(Submission submission) {
         this.listaSubmissions.add(submission);
     }
-    public void removeSubmission(Submission submission){
+
+    public void removeSubmission(Submission submission) {
         this.listaSubmissions.remove(submission);
     }
 
