@@ -16,12 +16,9 @@ public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-
     @Lob
     private String codigo;
     private String filename;
-
     @ManyToOne
     private Problem problema;
     @OneToMany(cascade = CascadeType.ALL)
@@ -29,10 +26,8 @@ public class Submission {
 
     private boolean corregido;
     private int numeroResultCorregidos;
-
     @Lob
     private String resultado;
-
 
     @ManyToOne
     private Language language;
@@ -50,11 +45,9 @@ public class Submission {
     private float execSubmissionMemory;
     private long timestamp = Instant.now().toEpochMilli();
 
-
     public Submission() {
         numeroResultCorregidos = 0;
     }
-
 
     public Submission(String codigo, Language lenguaje, String filename) {
         this.codigo = codigo;
