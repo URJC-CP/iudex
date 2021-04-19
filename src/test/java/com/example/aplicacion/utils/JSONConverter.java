@@ -15,8 +15,7 @@ public class JSONConverter {
 		try {
 			return objectMapper.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -24,8 +23,7 @@ public class JSONConverter {
 		try {
 			return objectMapper.readValue(json, cls);
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
+			throw new RuntimeException(e);
 		}
 	}
 }
