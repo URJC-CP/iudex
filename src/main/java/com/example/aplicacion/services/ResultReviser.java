@@ -66,8 +66,7 @@ public class ResultReviser {
     }
 
     private String removeWhitespace(String aux) {
-        aux = aux.startsWith(" ") ? aux.substring(1) : aux;
-        aux = aux.endsWith(" ") ? aux.substring(0, aux.length() - 1) : aux;
+        aux = aux.trim();
         return aux;
     }
 

@@ -71,6 +71,14 @@ public class BasicController {
         languageRepository.save(lenguaje4);
         logger.info("Finish build C++ image " + imageId4 + " from " + dckfl4.getName());
 
+        //Creamos imagen para mysql
+        logger.info("Build MySQL image");
+        File dckfl5 = new File("DOCKERS/MySQL/Dockerfile");
+        String imageId5 = resultHandler.buildImage(dckfl5);
+        Language lenguaje5 = new Language("sql", imageId5);
+        languageRepository.save(lenguaje5);
+        logger.info("Finish build MySQL image " + imageId5 + " from " + dckfl5.getName());
+
         userService.crearUsuario("pavloXd", "mail1");
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
