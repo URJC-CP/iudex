@@ -5,6 +5,7 @@ import com.example.aplicacion.Pojos.ResultAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
@@ -269,5 +270,18 @@ public class Result {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Result result = (Result) o;
+        return id == result.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

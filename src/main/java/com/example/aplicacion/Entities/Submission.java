@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 //En esta clase se mantendra una copia de la ejecucion de un problema por un grupo. Sera la entrada, el codigo, la salidaEstandar, salida error y salida compilador
 @Entity
@@ -309,5 +310,18 @@ public class Submission {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Submission that = (Submission) o;
+        return id == that.getId() && problema.equals(that.getProblema()) && contest.equals(that.getContest()) && team.equals(that.getTeam());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, problema, contest, team);
     }
 }
