@@ -12,6 +12,8 @@ import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,8 +69,8 @@ public class SmokeTest {
     @Autowired
     RabbitResultRevieserReceiver reviserReceiver;
 
-    // verificar que la app este desplegada
     @Test
+    @DisplayName("verificar que la app este desplegada")
     public void contextLoads() {
         //check rabbit
         assertNotNull(reviserReceiver);
@@ -100,6 +102,7 @@ public class SmokeTest {
 
     // verificar estado inicial de los repositorios
     @Test
+    @DisplayName("Verificar estado inicial de los repositorios")
     public void emptyRepositories() {
         assertEquals(contestRepository.findAll().size(), 1);
         assertTrue(problemDataRepository.findAll().isEmpty());
@@ -113,6 +116,7 @@ public class SmokeTest {
 
     // verificar los lenguajes
     @Test
+    @DisplayName("Verificar los lenguajes soportados")
     public void languageTest() {
         assertNotNull(languageRepository.findLanguageByNombreLenguaje("java"));
         assertNotNull(languageRepository.findLanguageByNombreLenguaje("python"));
@@ -122,10 +126,16 @@ public class SmokeTest {
     }
 
     // verificar el paso de mensajes por la cola -- rabbit
+    @Test
+    @DisplayName("Verificar metodo send de rabbit")
+    @Disabled("Verificar metodo send de rabbit - Not implemented")
     public void testSend() {
 
     }
 
+    @Test
+    @DisplayName("Verificar metodo receive de rabbit")
+    @Disabled("Verificar metodo receive de rabbit - Not implemented")
     public void testReceive() {
 
     }

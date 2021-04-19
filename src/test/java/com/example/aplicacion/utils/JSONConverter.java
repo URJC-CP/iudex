@@ -8,14 +8,24 @@ import java.io.IOException;
 public class JSONConverter {
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
-	public String convertObjectToJSON(Object obj) throws JsonProcessingException {
+	public String convertObjectToJSON(Object obj) {
 		if (obj == null) {
 			throw new RuntimeException("Invalid object!");
 		}
-		return objectMapper.writeValueAsString(obj);
+		try {
+			return objectMapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
-	public Object convertJSONToObject(String json, Class cls) throws IOException {
-		return objectMapper.readValue(json, cls);
+	public Object convertJSONToObject(String json, Class cls) {
+		try {
+			return objectMapper.readValue(json, cls);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 }
