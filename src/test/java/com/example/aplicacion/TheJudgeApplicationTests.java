@@ -28,32 +28,31 @@ public class TheJudgeApplicationTests {
 	private RestTemplate restTemplate;
 	private ObjectMapper mapper;
 
+	private String contestId;
+	private String teamId;
+
 	@BeforeEach
 	public void init() {
 		restTemplate = new RestTemplate();
 		mapper = new ObjectMapper();
-	}
 
-	@Test
-	@DisplayName("Verificar estado inicial de la aplicación")
-	public void test0() {
-		String url = baseURL + "/contest/7";
+		String url = baseURL + "/contest";
 		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
 		JsonNode contest = null;
 		try {
-			contest = mapper.readTree(response.getBody());
+			contest = mapper.readTree(response.getBody()).get(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(contest);
-		assertThat(contest.get("id").asLong(), equalTo(7L));
+		// get contestId
+		this.contestId = (contest.get("id").asText());
 		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
 
+		// get teamId
 		JsonNode teamNode = contest.get("teamPropietario");
-		System.out.println(teamNode);
-		assertThat(teamNode.get("id").asLong(), equalTo(6L));
+		this.teamId = teamNode.get("id").asText();
 		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
 	}
 
@@ -68,17 +67,15 @@ public class TheJudgeApplicationTests {
 		ResponseEntity<String> response;
 
 		//buscar equipo
-		String getAllTeamsUrl = baseURL + "/team";
+		String getAllTeamsUrl = baseURL + "/team/" + teamId;
 		response = restTemplate.getForEntity(getAllTeamsUrl, String.class);
 		assertThat(response.getStatusCode(), is(HttpStatus.OK));
 
-		JsonNode teams = mapper.readTree(response.getBody());
-		JsonNode team = teams.get(0);
+		JsonNode team = mapper.readTree(response.getBody());
 		System.out.println(team);
 
 		//obtener id del equipo
-		long teamId = team.get("id").asLong();
-
+		String teamId = team.get("id").asText();
 		String contestName = "concurso prueba 001";
 		String contestDescription = "concurso de prueba";
 
@@ -106,11 +103,9 @@ public class TheJudgeApplicationTests {
 	@Test
 	@DisplayName("Obtener Concurso")
 	public void test2() throws IOException {
-		String badContestId = "564";
-		String contestId = "7";
-
 		testGetContest(contestId);
 
+		String badContestId = "564";
 		String salida = "CONTEST NOT FOUND";
 		testGetContestWithException(badContestId, salida);
 	}
@@ -135,8 +130,6 @@ public class TheJudgeApplicationTests {
 	@Test
 	@DisplayName("Crear problema desde un archivo zip")
 	public void test3() throws IOException {
-		String teamId = "6";
-		String contesId = "7";
 		String badTeamId = "897";
 		String badContestId = "576";
 		String salida;
@@ -150,23 +143,23 @@ public class TheJudgeApplicationTests {
 		salida = "CONCURSO NOT FOUND";
 		testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
 
-		testCreateProblemFromZip(filename, problemName, teamId, contesId);
+		testCreateProblemFromZip(filename, problemName, teamId, contestId);
 
 		// unnamed empty file without problem name
 		filename = ".zip.zip";
 		salida = "Nombre del problema vacio";
-		testCreateProblemFromZipWithException(filename, problemName, teamId, contesId, salida);
+		testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
 		// unnamed empty file with problem name
 		filename = ".zip.zip";
 		problemName = "pruba vacio";
 		salida = "No hay casos de prueba";
-		testCreateProblemFromZipWithException(filename, problemName, teamId, contesId, salida);
+		testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
 		// valid file with problem name
 		filename = "pruebaMYSQL.zip";
 		problemName = "problema de mysql";
-		testCreateProblemFromZip(filename, problemName, teamId, contesId);
+		testCreateProblemFromZip(filename, problemName, teamId, contestId);
 	}
 
 	private void testCreateProblemFromZip(String filename, String problemName, String teamId, String contestId) throws IOException {
@@ -225,12 +218,13 @@ public class TheJudgeApplicationTests {
 	@Test
 	@DisplayName("Obtener problema")
 	public void test4() throws IOException {
-		String badProblemId = "756";
 		String problemId = "1";
+		testGetProblem(problemId);
 
+		String badProblemId = "756";
 		String salida = "ERROR PROBLEM NOT FOUND";
 		testGetProblemWithException(badProblemId, salida);
-		testGetProblem(problemId);
+
 	}
 
 	private void testGetProblem(String problemId) throws IOException {
@@ -253,18 +247,40 @@ public class TheJudgeApplicationTests {
 	@Test
 	@DisplayName("Realizar entrega")
 	public void test5() throws IOException {
-		//fail("Not implemented yet!");
-		String contestId = "7";
-		String anotherContestId = "8";
 		String badContestId = "768";
-		String problemPrimavera = "1";
-		//String problemMySQL = "2";
 		String badProblemId = "874";
-		String teamId = "6";
 		String badTeamId = "987";
 
-		String language = "";
-		String codeFile = "vacio.java";
+		// get anothercontestId
+		String url = baseURL + "/contest";
+		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+
+		JsonNode contest = null;
+		try {
+			contest = mapper.readTree(response.getBody()).get(1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// get contestId
+		String anotherContestId = (contest.get("id").asText());
+
+		//get problemId
+		String getProblemURL = baseURL + "/problem";
+		response = restTemplate.getForEntity(getProblemURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode problem = mapper.readTree(response.getBody()).get(0);
+		String problemId = problem.get("id").asText();
+
+		// all okay
+		String codeFile = "primavera/submissions/accepted/main.java";
+		String language = getLanguage("java");
+		testAddSubmission(contestId, problemId, teamId, language, codeFile);
+
+		language = "";
+		codeFile = "vacio.java";
 		String salida = "CONTEST NOT FOUND";
 		testAddSubmissionWithException(badContestId, badProblemId, badTeamId, language, codeFile, salida);
 
@@ -272,7 +288,7 @@ public class TheJudgeApplicationTests {
 		testAddSubmissionWithException(contestId, badProblemId, badTeamId, language, codeFile, salida);
 
 		salida = "TEAM NOT FOUND";
-		testAddSubmissionWithException(contestId, problemPrimavera, badTeamId, language, codeFile, salida);
+		testAddSubmissionWithException(contestId, problemId, badTeamId, language, codeFile, salida);
 
 		//salida = "LANGUAGE NOT FOUND"; --> cannot be reached --> 500 : [ERROR GENERAL DEL SISTEMA]
 		//language = getLanguage("php");
@@ -280,24 +296,19 @@ public class TheJudgeApplicationTests {
 
 		language = getLanguage("java");
 		salida = "PROBLEM NOT IN CONCURSO";
-		testAddSubmissionWithException(anotherContestId, problemPrimavera, teamId, language, codeFile, salida);
-
-		// all okay
-		codeFile = "primavera/submissions/accepted/main.java";
-		language = getLanguage("java");
-		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
+		testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
 
 		// incorrect language selected
 		codeFile = "primavera/submissions/accepted/main.java";
 		language = getLanguage("python");
 		salida = "";
-		testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
+		testAddSubmissionWithException(contestId, problemId, teamId, language, codeFile, salida);
 
 		// incorrect file type
 		codeFile = ".zip.zip";
 		language = getLanguage("java");
 		salida = "";
-		testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
+		testAddSubmissionWithException(contestId, problemId, teamId, language, codeFile, salida);
 	}
 
 	private String getLanguage(String language) {
@@ -366,11 +377,18 @@ public class TheJudgeApplicationTests {
 	@DisplayName("Obtener entrega")
 	public void test6() throws IOException {
 		String badSubId = "756";
-		String subId = "6";
+
+		String getSubmissionURL = baseURL + "/submissions";
+		ResponseEntity<String> response = restTemplate.getForEntity(getSubmissionURL, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+		System.out.println(response.getBody());
+
+		JsonNode submission = mapper.readTree(response.getBody()).get(0);
+		String submissionId = submission.get("id").asText();
+		testGetSubmission(submissionId);
 
 		String salida = "SUBMISSION NOT FOUND";
 		testGetSubmissionWithException(badSubId, salida);
-		testGetSubmission(subId);
 	}
 
 	private void testGetSubmission(String subId) throws IOException {
@@ -390,31 +408,11 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Obtener todos los equipos")
-	public void test7() {
-		String getTeamURL = baseURL + "/team/";
-
-		ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		System.out.println(response.getBody());
-
-		JsonNode teamNode;
-		try {
-			teamNode = mapper.readTree(response.getBody()).get(0);
-			assertThat(teamNode.get("id").asLong(), equalTo(7L));
-			assertThat(teamNode.get("nombreEquipo"), equalTo("pavloXd"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
 	@DisplayName("Obtener equipo y verificar que todos los datos obtenidos no son vacios")
-	public void test8() {
-		String goodTeam = "6";
+	public void test7() {
 		String badTeam = "867";
 
-		testGetTeamWithAllData(goodTeam);
+		testGetTeamWithAllData(teamId);
 
 		String salida = "ERROR, TEAM NOT FOUND";
 		testGetTeamWithException(badTeam, salida);
