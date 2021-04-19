@@ -3,9 +3,6 @@ package com.example.aplicacion.Controllers.apiControllers;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.TeamAPI;
 import com.example.aplicacion.Pojos.TeamString;
-import com.example.aplicacion.services.ContestService;
-import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.SubmissionService;
 import com.example.aplicacion.services.TeamService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +18,7 @@ import java.util.Optional;
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APITeamController {
     @Autowired
-    SubmissionService submissionService;
-    @Autowired
-    ContestService contestService;
-    @Autowired
-    ProblemService problemService;
-    @Autowired
     TeamService teamService;
-
 
     @ApiOperation("Return all Teams")
     @GetMapping("/API/v1/team")
@@ -109,12 +99,12 @@ public class APITeamController {
     @ApiOperation("Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
-        String salida = teamService.deleteUserFromTeam(teamId, userId);
+        TeamString salida = teamService.deleteUserFromTeam(teamId, userId);
 
-        if (salida.equals("OK")) {
+        if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 

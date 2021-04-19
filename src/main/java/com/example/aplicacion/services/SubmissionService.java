@@ -4,7 +4,6 @@ import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.SubmissionStringResult;
 import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -58,27 +57,27 @@ public class SubmissionService {
         logger.debug("Create submission " + fileName + "\nProblem: " + problem + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
-        if(contest.isEmpty()){
+        if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " no found");
-            submissionStringResult.setSalida("CONCURSO NOT FOUND");
+            submissionStringResult.setSalida("CONTEST NOT FOUND");
             return submissionStringResult;
         }
 
         Optional<Problem> problema = problemRepository.findProblemById(Long.valueOf(problem));
-        if(problema.isEmpty()){
+        if (problema.isEmpty()) {
             logger.error("Problem " + problem + " not found");
             submissionStringResult.setSalida("PROBLEM NOT FOUND");
             return submissionStringResult;
         }
 
-        Optional<Team> team =teamRepository.findTeamById(Long.valueOf(idEquipo));
+        Optional<Team> team = teamRepository.findTeamById(Long.valueOf(idEquipo));
         if (team.isEmpty()) {
-            logger.error("Team/user " + idEquipo + " not found");          
+            logger.error("Team/user " + idEquipo + " not found");
             submissionStringResult.setSalida("TEAM NOT FOUND");
             return submissionStringResult;
         }
-        Optional<Language> language  = languageRepository.findLanguageById(Long.valueOf(lenguaje));
-        if(language.isEmpty()){
+        Optional<Language> language = languageRepository.findLanguageById(Long.valueOf(lenguaje));
+        if (language.isEmpty()) {
             logger.error("Unsupported language " + language.get().getNombreLenguaje());
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
@@ -93,7 +92,7 @@ public class SubmissionService {
         //Para que le asigne el@Id
         submissionRepository.save(submission);
         //Comprobamos q el problema pertenezca al contest
-        if(!contest.get().getListaProblemas().contains(problema.get())){
+        if (!contest.get().getListaProblemas().contains(problema.get())) {
             logger.error("Problem " + problem + " not in contest " + idContest);
             submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
             return submissionStringResult;
@@ -105,8 +104,8 @@ public class SubmissionService {
         List<ProblemData> salidaCorrectaProblemaVisible = problema.get().getSalidaVisible();
         int numeroEntradasVisible = entradasProblemaVisible.size();
 
-        for(int i =0; i<numeroEntradasVisible; i++){
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit() );
+        for (int i = 0; i < numeroEntradasVisible; i++) {
+            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
@@ -116,8 +115,8 @@ public class SubmissionService {
         List<ProblemData> entradasProblema = problema.get().getEntradaOculta();
         List<ProblemData> salidaCorrectaProblema = problema.get().getSalidaOculta();
         int numeroEntradas = entradasProblema.size();
-        
-        for(int i =0; i<numeroEntradas; i++){
+
+        for (int i = 0; i < numeroEntradas; i++) {
             Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
@@ -148,15 +147,15 @@ public class SubmissionService {
         }
          */
 
-        Optional<Team> team =teamRepository.findTeamById(Long.valueOf(idEquipo));
+        Optional<Team> team = teamRepository.findTeamById(Long.valueOf(idEquipo));
         if (team.isEmpty()) {
             logger.error("Team/user " + idEquipo + " not found");
             submissionStringResult.setSalida("TEAM NOT FOUND");
             return submissionStringResult;
         }
 
-        Optional<Language> language  = languageRepository.findLanguageByNombreLenguaje(lenguaje);
-        if(language.isEmpty()){
+        Optional<Language> language = languageRepository.findLanguageByNombreLenguaje(lenguaje);
+        if (language.isEmpty()) {
             logger.error("Unsupported language " + lenguaje);
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
@@ -170,7 +169,7 @@ public class SubmissionService {
         submission.setProblema(problema);
         //submission.setContest(contest);
         submission.setTeam(team.get());
-        int numeroDeResult =0;
+        int numeroDeResult = 0;
 
         //Lo movemos de aqui por problemas y ejecuta por separado
         /*
@@ -253,42 +252,42 @@ public class SubmissionService {
         return submissionRepository.findAll(firstPageWithTwoElements);
     }
 
-    public String  deleteSubmission(String submissionId){
+    public String deleteSubmission(String submissionId) {
         logger.debug("Delete submission " + submissionId);
-        Optional<Submission> submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
-        if (submission.isEmpty()){
+        Optional<Submission> submission = submissionRepository.findSubmissionById(Long.valueOf(submissionId));
+        if (submission.isEmpty()) {
             logger.error("Submission " + submissionId + " not found");
             return "SUBMISSION NOT FOUND";
         }
 
         //Comprobamos que no se este intentando borrar una SUBMISSIOn pertenciente a un SubmissionProblemValidator
-        if(submission.get().isEsProblemValidator()){
+        if (submission.get().isEsProblemValidator()) {
             logger.error("Submission " + submissionId + " is from problem validator, cannot be deleted from here");
             return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
         }
         submissionRepository.delete(submission.get());
-        
+
         logger.debug("Finish delete submission " + submissionId);
         return "OK";
     }
 
-    public String deleteSubmission(String submissionId, String problemId, String contestId){
+    public String deleteSubmission(String submissionId, String problemId, String contestId) {
         logger.debug("Delete submission " + submissionId + "\nProblem: " + problemId + "\nContest: " + contestId);
-        
-        Optional<Submission> submission=submissionRepository.findSubmissionById(Long.valueOf(submissionId));
-        if (submission.isEmpty()){
+
+        Optional<Submission> submission = submissionRepository.findSubmissionById(Long.valueOf(submissionId));
+        if (submission.isEmpty()) {
             logger.error("Submission " + submissionId + " not found\nProblem: " + problemId + "\nContest: " + contestId);
             return "SUBMISSION NOT FOUND";
         }
-        
+
         Optional<Problem> problem = problemRepository.findProblemById(Long.valueOf(problemId));
-        if(problem.isEmpty()){
+        if (problem.isEmpty()) {
             logger.error("Problem " + problemId + " not found");
             return "PROBLEM NOT FOUND";
         }
-        
+
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(contestId));
-        if(contest.isEmpty()){
+        if (contest.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             return "CONCURSO NOT FOUND";
         }
@@ -297,11 +296,11 @@ public class SubmissionService {
             logger.error("Problem " + problemId + " not in contest " + contestId);
             return "CONCURSO NOT CONTAINS PROBLEM";
         }
-        if(submission.get().getProblema().equals(problem)){
+        if (submission.get().getProblema().equals(problem)) {
             logger.error("Submission " + submissionId + " not in problem " + problemId);
             return "SUBMISSION NO PERTENECE A ESTE PROBLEMA";
         }
-        if(submission.get().getContest().equals(contest)){
+        if (submission.get().getContest().equals(contest)) {
             logger.error("Submission " + submissionId + " not in contest " + contestId);
             return "SUBMISSION NO PERTENCE A ESTE CONCURSO";
         }
@@ -325,7 +324,7 @@ public class SubmissionService {
         return submissionRepository.findSubmissionsByProblemaAndContest(problem, contest);
     }
 
-    public Optional<Submission> getSubmission(String submissionId){
+    public Optional<Submission> getSubmission(String submissionId) {
         return submissionRepository.findSubmissionById(Long.valueOf(submissionId));
     }
 
