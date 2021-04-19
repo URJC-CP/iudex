@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-//This class Sends the propeer information to the rabbitqueu
+//This class Sends the proper information to the rabbit queue
 @Service
 public class SubmissionService {
 
@@ -59,7 +59,7 @@ public class SubmissionService {
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
         if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " no found");
-            submissionStringResult.setSalida("CONCURSO NOT FOUND");
+            submissionStringResult.setSalida("CONTEST NOT FOUND");
             return submissionStringResult;
         }
 
@@ -82,6 +82,14 @@ public class SubmissionService {
             submissionStringResult.setSalida("LANGUAGE NOT FOUND");
             return submissionStringResult;
         }
+
+        //Comprobamos que el problema pertenezca al contest
+        if (!contest.get().getListaProblemas().contains(problema.get())) {
+            logger.error("Problem " + problem + " not in contest " + idContest);
+            submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
+            return submissionStringResult;
+        }
+
         //Creamos la Submission
         Submission submission = new Submission(codigo, language.get(), fileName);
         //anadimos el probelma a la submsion
@@ -89,14 +97,8 @@ public class SubmissionService {
         submission.setContest(contest.get());
         submission.setTeam(team.get());
 
-        //Para que le asigne el@Id
+        //Guardamos la entrega
         submissionRepository.save(submission);
-        //Comprobamos q el problema pertenezca al contest
-        if (!contest.get().getListaProblemas().contains(problema.get())) {
-            logger.error("Problem " + problem + " not in contest " + idContest);
-            submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
-            return submissionStringResult;
-        }
 
         int numeroDeResult = 0;
         //Creamos los result que tienen que ir con la submission y anadimos a submision
@@ -124,7 +126,7 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        //Guardamos la submission
+        //actualizamos el problema
         problema.get().addSubmission(submission);
         List<Contest> contestList = team.get().getListaContestsParticipados();
         if (!contestList.contains(contest.get())) {
@@ -171,47 +173,13 @@ public class SubmissionService {
         }
         //Creamos la Submission
         Submission submission = new Submission(codigo, language.get(), fileName);
-        //Para que le asigne el@Id
-        //SEBORRATEMPORALMENTEsubmissionRepository.save(submission);
-
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
         //submission.setContest(contest);
         submission.setTeam(team.get());
-        int numeroDeResult = 0;
-
-        //Lo movemos de aqui por problemas y ejecuta por separado
-        /*
-        //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<InNOut> entradasProblemaVisible = problema.getEntradaVisible();
-        List<InNOut> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
-        int numeroEntradasVisible = entradasProblemaVisible.size();
-        for(int i =0; i<numeroEntradasVisible; i++){
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit() );
-            resAux.setNumeroCasoDePrueba(numeroDeResult);
-            numeroDeResult++;
-            //resultRepository.save(resAux);
-            submission.addResult(resAux);
-        }
-
-        List<InNOut> entradasProblema = problema.getEntradaOculta();
-        List<InNOut> salidaCorrectaProblema = problema.getSalidaOculta();
-        int numeroEntradas = entradasProblema.size();
-        for(int i =0; i<numeroEntradas; i++){
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resAux.setNumeroCasoDePrueba(numeroDeResult);
-            numeroDeResult++;
-            //resultRepository.save(resAux);
-            submission.addResult(resAux);
-        }
-         */
-
         submission.setEsProblemValidator(true);
         //Guardamos la submission
-
         problema.addSubmission(submission);
-        //SEBORRATEMPORALMENTEproblemRepository.save(problema);
-        //SE BORRA TEMPORALMENTE
 
         submissionStringResult.setSalida("OK");
         submissionStringResult.setSubmission(submission);
@@ -248,7 +216,6 @@ public class SubmissionService {
 
     public void ejecutaSubmission(Submission submission) {
         //Envio de mensaje a la cola
-        //Envio de mensaje a la cola
         logger.debug("Send submission " + submission.getId());
         for (Result res : submission.getResults()) {
             sender.sendMessage(res);
@@ -272,7 +239,7 @@ public class SubmissionService {
         //Comprobamos que no se este intentando borrar una SUBMISSIOn pertenciente a un SubmissionProblemValidator
         if (submission.get().isEsProblemValidator()) {
             logger.error("Submission " + submissionId + " is from problem validator, cannot be deleted from here");
-            return "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
+            return "SUBMISSION IS FROM PROBLEM VALIDATOR. YOU MUST DELETE THE PROBLEM TO DELETE THIS SUBMISSION";
         }
         submissionRepository.delete(submission.get());
 

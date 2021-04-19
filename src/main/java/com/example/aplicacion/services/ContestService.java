@@ -46,7 +46,7 @@ public class ContestService {
         if (descripcion.isPresent()) {
             contest.setDescripcion(descripcion.get());
         }
-      
+
         Optional<Team> team = teamRepository.findTeamById(Long.valueOf(teamId));
         if (team.isEmpty()) {
             logger.error("Team " + teamId + " not found");
@@ -59,7 +59,7 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest);
-        
+
         logger.debug("Finish build contest " + nameContest + "\nId: " + contest.getId());
         return salida;
     }
@@ -67,7 +67,7 @@ public class ContestService {
     public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion) {
         logger.debug("Update contest " + contestId);
         ContestString salida = new ContestString();
-        
+
         //Buscamos el contest
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(contestId));
         if (contest.isEmpty()) {
@@ -102,7 +102,7 @@ public class ContestService {
 
         salida.setSalida("OK");
         salida.setContest(contest.get());
-       
+
         logger.debug("Finish update contest " + contestId);
         return salida;
     }
@@ -133,7 +133,7 @@ public class ContestService {
 
         //borramos el contest
         contestRepository.delete(contest.get());
-        
+
         logger.debug("Finish delete contest " + idcontest);
         return "OK";
     }
@@ -142,23 +142,23 @@ public class ContestService {
         logger.debug("Add problem " + idProblema + " to contest " + idContest);
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
         Optional<Problem> problema = problemRepository.findProblemById(Long.valueOf(idProblema));
-        
+
         if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             return "contest NOT FOUND";
         }
         if (problema.isEmpty()) {
             logger.error("Problem " + idProblema + " not found");
-            return "USER NOT FOUND";
+            return "PROBLEM NOT FOUND";
         }
         if (contest.get().getListaProblemas().contains(problema.get())) {
             logger.error("Problem " + idProblema + " already in contest");
             return "PROBLEM DUPLICATED";
         }
-        
+
         contest.get().addProblem(problema.get());
         contestRepository.save(contest.get());
-        
+
         logger.debug("Finish add problem " + idProblema + " to contest " + idContest);
         return "OK";
     }
@@ -167,23 +167,23 @@ public class ContestService {
         logger.debug("Delete problem " + idProblema + " from contest " + idContest);
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
         Optional<Problem> problema = problemRepository.findProblemById(Long.valueOf(idProblema));
-        
+
         if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             return "contest NOT FOUND";
         }
         if (problema.isEmpty()) {
             logger.error("Problem " + idProblema + " not found");
-            return "USER NOT FOUND";
+            return "PROBLEM NOT FOUND";
         }
         if (!contest.get().getListaProblemas().contains(problema.get())) {
             logger.error("Problem " + idProblema + " not in contest " + idContest);
             return "PROBLEM NOT IN CONCURSO";
         }
-        
+
         contest.get().deleteProblem(problema.get());
         contestRepository.save(contest.get());
-        
+
         logger.debug("Finish delete problem " + idProblema + " from contest " + idContest);
         return "OK";
     }
@@ -192,7 +192,7 @@ public class ContestService {
         logger.debug("Add team/user " + idTeam + " to contest " + idcontest);
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idcontest));
         Optional<Team> team = teamRepository.findTeamById(Long.valueOf(idTeam));
-        
+
         if (contest.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
@@ -204,13 +204,12 @@ public class ContestService {
             if (!contest.get().getListaParticipantes().contains(team.get())) {
                 contest.get().addTeam(team.get());
                 contestRepository.save(contest.get());
-            } 
-            else {
+            } else {
                 logger.error("Team/user " + idTeam + " already in contest " + idcontest);
                 return "YA ESTA EN EL CONCURSO";
             }
         }
-        
+
         logger.debug("Finish add team/user " + idTeam + " to contest " + idcontest);
         return "OK";
     }

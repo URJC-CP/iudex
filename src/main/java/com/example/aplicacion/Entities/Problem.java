@@ -9,10 +9,7 @@ import com.google.common.hash.Hashing;
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Problem {
@@ -22,6 +19,7 @@ public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(unique = true)
     private String nombreEjercicio;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -241,6 +239,10 @@ public class Problem {
                 datos.remove(data);
             }
         }
+    }
+
+    public void clearData() {
+        this.datos.clear();
     }
 
     public List<ProblemData> getEntradaOculta() {
@@ -557,5 +559,18 @@ public class Problem {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Problem problem = (Problem) o;
+        return id == problem.getId() && nombreEjercicio.equals(problem.getNombreEjercicio());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombreEjercicio);
     }
 }

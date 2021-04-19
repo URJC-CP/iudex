@@ -4,6 +4,7 @@ import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 @Entity
 public class Language {
@@ -14,14 +15,17 @@ public class Language {
     private String nombreLenguaje;
 
     private String imgenId;
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
-    public Language() {    }
+    public Language() {
+    }
 
     public Language(String lenguaje, String imgenId) {
-        this.nombreLenguaje = lenguaje; this.imgenId = imgenId;
+        this.nombreLenguaje = lenguaje;
+        this.imgenId = imgenId;
     }
-    public LanguageAPI toLanguageAPI(){
+
+    public LanguageAPI toLanguageAPI() {
         LanguageAPI languageAPI = new LanguageAPI();
         languageAPI.setId(this.id);
         languageAPI.setNombreLenguaje(nombreLenguaje);
@@ -59,5 +63,18 @@ public class Language {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Language language = (Language) o;
+        return id == language.getId() && nombreLenguaje.equals(language.getNombreLenguaje());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombreLenguaje);
     }
 }

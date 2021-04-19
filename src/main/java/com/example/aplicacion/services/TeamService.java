@@ -65,7 +65,7 @@ public class TeamService {
                 userService.deleteUserByNickname(team.get().getNombreEquipo());
             }
             teamRepository.delete(team.get());
-            
+
             logger.debug("Finish delete team/user " + name + "\nTeam/user id: " + team.get().getId());
             return "OK";
         }
@@ -77,8 +77,7 @@ public class TeamService {
         if (team.isEmpty()) {
             logger.error("Team/user " + teamId + " not found");
             return "TEAM NOT FOUND";
-        }
-        else {
+        } else {
             //Si es un team user borramos el user
             if (team.get().isEsUser()) {
                 userService.deleteUserByNickname(team.get().getNombreEquipo());
@@ -135,39 +134,39 @@ public class TeamService {
         return salida;
     }
 
-    public String deleteUserFromTeam(String teamId, String userId) {
+    public TeamString deleteUserFromTeam(String teamId, String userId) {
         logger.debug("Delete user " + userId + " from team " + teamId);
         TeamString salida = new TeamString();
         Optional<Team> team = getTeamFromId(teamId);
         if (team.isEmpty()) {
             logger.error("Team " + teamId + " not found");
             salida.setSalida("TEAM NOT FOUND");
-            return "TEAM NOT FOUND";
+            return salida;
         }
 
         Optional<User> user = userService.getUserById(Long.valueOf(userId));
         if (user.isEmpty()) {
             logger.error("User " + userId + " not found");
             salida.setSalida("USER NOT FOUND");
-            return "USER NOT FOUND";
+            return salida;
         }
 
         if (!team.get().getParticipantes().contains(user.get())) {
             logger.error("User " + userId + " already in team " + teamId);
-            salida.setSalida("USER ALREADY IN TEAM");
-            return "USER IS NOT IN TEAM";
+            salida.setSalida("USER IS NOT IN TEAM");
+            return salida;
         }
 
         team.get().getParticipantes().remove(user.get());
         teamRepository.save(team.get());
 
         logger.debug("Finish delete user " + userId + " from team " + teamId);
-        return "OK";
+        salida.setSalida("OK");
+        return salida;
     }
 
     public TeamString updateTeam(String teamId, Optional<String> teamName) {
         logger.debug("Update team " + teamId);
-      
         TeamString salida = new TeamString();
         Optional<Team> team = getTeamFromId(teamId);
         if (team.isEmpty()) {

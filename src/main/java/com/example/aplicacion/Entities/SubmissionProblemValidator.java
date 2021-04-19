@@ -1,9 +1,10 @@
 package com.example.aplicacion.Entities;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-public class SubmissionProblemValidator{
+public class SubmissionProblemValidator {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -12,7 +13,8 @@ public class SubmissionProblemValidator{
     @OneToOne(cascade = CascadeType.ALL)
     private Submission submission;
 
-    public SubmissionProblemValidator(){}
+    public SubmissionProblemValidator() {
+    }
 
 
     public String getExpectedSolution() {
@@ -39,4 +41,16 @@ public class SubmissionProblemValidator{
         this.id = id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubmissionProblemValidator that = (SubmissionProblemValidator) o;
+        return id == that.id && submission.equals(that.submission);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, submission);
+    }
 }
