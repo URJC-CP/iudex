@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Contest {
@@ -31,7 +32,7 @@ public class Contest {
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
 
     public Contest() {
@@ -41,45 +42,47 @@ public class Contest {
         this.listaProblemas = new ArrayList<>();
     }
 
-    public ContestAPI toContestAPI()  {
+    public ContestAPI toContestAPI() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
-        for(Problem problem: this.listaProblemas){
+        for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPISimple());
         }
         contestAPI.setListaProblemas(listaProblemass);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for(Team team: this.listaParticipantes){
+        for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
         contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
-    public ContestAPI toContestAPIFull()  {
+
+    public ContestAPI toContestAPIFull() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
         List<ProblemAPI> listaProblemass = new ArrayList<>();
-        for(Problem problem: this.listaProblemas){
+        for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPI());
         }
         contestAPI.setListaProblemas(listaProblemass);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for(Team team: this.listaParticipantes){
+        for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
         contestAPI.setTimestamp(this.timestamp);
         return contestAPI;
     }
-    public ContestAPI toContestAPISimple(){
+
+    public ContestAPI toContestAPISimple() {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
@@ -126,16 +129,19 @@ public class Contest {
         this.listaParticipantes = listaParticipantes;
     }
 
-    public void addProblem(Problem problem){
+    public void addProblem(Problem problem) {
         this.listaProblemas.add(problem);
     }
-    public void deleteProblem(Problem problem){this.listaProblemas.remove(problem );}
 
-    public void addTeam(Team team){
+    public void deleteProblem(Problem problem) {
+        this.listaProblemas.remove(problem);
+    }
+
+    public void addTeam(Team team) {
         this.listaParticipantes.add(team);
     }
 
-    public void deleteTeam(Team team){
+    public void deleteTeam(Team team) {
         this.listaParticipantes.remove(teamPropietario);
     }
 
@@ -147,10 +153,11 @@ public class Contest {
         this.listaSubmissions = listaSubmissions;
     }
 
-    public void addSubmission(Submission submission){
+    public void addSubmission(Submission submission) {
         this.listaSubmissions.add(submission);
     }
-    public void removeSubmission(Submission submission){
+
+    public void removeSubmission(Submission submission) {
         this.listaSubmissions.remove(submission);
     }
 
@@ -168,5 +175,18 @@ public class Contest {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Contest contest = (Contest) o;
+        return id == contest.getId() && nombreContest.equals(contest.getNombreContest());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombreContest);
     }
 }

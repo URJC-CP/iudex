@@ -5,6 +5,7 @@ import com.example.aplicacion.Pojos.ProblemDataType;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Objects;
 
 //tupla q contiene el nombre y texto de una answer
 @Entity
@@ -101,5 +102,18 @@ public class ProblemData {
 
     public String getTypeString() {
         return type.name();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProblemData that = (ProblemData) o;
+        return id == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

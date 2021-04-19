@@ -2,12 +2,12 @@ package com.example.aplicacion.Entities;
 
 
 import com.example.aplicacion.Pojos.UserAPI;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -16,18 +16,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column( unique = true)
+    @Column(unique = true)
     private String nickname;
 
-    @Column( unique = true)
+    @Column(unique = true)
     private String email;
 
-    private long timestamp=  Instant.now().toEpochMilli();
+    private long timestamp = Instant.now().toEpochMilli();
 
 
     @ManyToMany
     private List<Team> equiposParticipantes;
-
 
 
     public User(String nickname, String email) {
@@ -41,7 +40,7 @@ public class User {
 
     }
 
-    public UserAPI toUserAPI(){
+    public UserAPI toUserAPI() {
         UserAPI userAPI = new UserAPI();
         userAPI.setId(this.id);
         userAPI.setNickname(this.nickname);
@@ -82,10 +81,9 @@ public class User {
     }
 
 
-
-   public void addTeam(Team team){
+    public void addTeam(Team team) {
         this.equiposParticipantes.add(team);
-   }
+    }
 
     public List<Team> getEquiposParticipantes() {
         return equiposParticipantes;
@@ -101,5 +99,18 @@ public class User {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && nickname.equals(user.nickname) && email.equals(user.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nickname, email);
     }
 }
