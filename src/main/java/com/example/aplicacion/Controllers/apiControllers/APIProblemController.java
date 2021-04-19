@@ -3,9 +3,7 @@ package com.example.aplicacion.Controllers.apiControllers;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.SubmissionService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,14 +22,7 @@ import java.util.Optional;
 public class APIProblemController {
 
     @Autowired
-    SubmissionService submissionService;
-    @Autowired
-    ContestService contestService;
-    @Autowired
     ProblemService problemService;
-
-
-    //PROBLEMS
 
     //Get all problems in DB
     @ApiOperation("Return All Problems")

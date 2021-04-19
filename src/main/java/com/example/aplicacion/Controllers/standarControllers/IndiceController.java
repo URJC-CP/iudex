@@ -61,14 +61,14 @@ public class IndiceController {
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
         logger.debug(" Submit answer\nProblem: " + problemaAsignado + ", Language: " + lenguaje
-                + "\nTeam/user: " + teamId + ", Contest: " + contestId);
+            + "\nTeam/user: " + teamId + ", Contest: " + contestId);
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
         String cod = new String(codigo.getBytes());
         //String ent = new String(entrada.getBytes());
 
         logger.debug("Running Submission...\nProblem: " + problemaAsignado + ", Language: " + lenguaje
-                + "\nTeam: " + teamId + ", Contest: " + contestId);
+            + "\nTeam: " + teamId + ", Contest: " + contestId);
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
         logger.debug("Submission " + salida.getSubmission().getId() + " finished running with " + salida.getSalida());

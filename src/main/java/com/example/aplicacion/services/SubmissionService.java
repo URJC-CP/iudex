@@ -59,7 +59,7 @@ public class SubmissionService {
         Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idContest));
         if (contest.isEmpty()) {
             logger.error("Contest " + idContest + " no found");
-            submissionStringResult.setSalida("CONCURSO NOT FOUND");
+            submissionStringResult.setSalida("CONTEST NOT FOUND");
             return submissionStringResult;
         }
 
@@ -97,7 +97,7 @@ public class SubmissionService {
         submission.setContest(contest.get());
         submission.setTeam(team.get());
 
-        //Para que le asigne el@Id
+        //Guardamos la entrega
         submissionRepository.save(submission);
 
         int numeroDeResult = 0;
@@ -126,7 +126,7 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
-        //Guardamos la submission
+        //actualizamos el problema
         problema.get().addSubmission(submission);
         problemRepository.save(problema.get());
 
