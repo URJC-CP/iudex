@@ -1,0 +1,12 @@
+CREATE TABLE `prueba` (
+  `id` int(11) NOT NULL PRIMARY KEY,
+  `name` varchar(30) NOT NULL
+);
+
+INSERT INTO `prueba` (`id`, `name`) VALUES
+(1, 'elemento 1'),
+(2, 'elemento 2'),
+(3, 'elemento 5');
+
+
+SELECT * FROM `prueba`;
