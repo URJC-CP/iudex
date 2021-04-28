@@ -1,7 +1,10 @@
 package com.example.aplicacion;
 
+import com.example.aplicacion.Pojos.ContestAPI;
+import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.SubmissionAPI;
+import com.example.aplicacion.Pojos.TeamAPI;
 import com.example.aplicacion.utils.JSONConverter;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +19,7 @@ import java.io.File;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -35,15 +38,15 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
 		// get default contest
-		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody()).get(0);
-		String contestId = (contest.get("id").asText());
-		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
+		ContestAPI contest = ((ContestAPI[]) jsonConverter.convertTreeStringToObject(response.getBody(), ContestAPI[].class))[0];
+		String contestId = String.valueOf(contest.getId());
 		testGetContest(contestId);
+		assertThat(contest.getNombreContest(), equalTo("contestPrueba"));
 
 		// get default team
-		JsonNode teamNode = contest.get("teamPropietario");
-		String teamId = teamNode.get("id").asText();
-		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		TeamAPI team = contest.getTeamPropietario();
+		String teamId = String.valueOf(team.getId());
+		assertThat(team.getNombreEquipo(), equalTo("pavloXd"));
 		testGetTeam(teamId);
 	}
 
@@ -53,8 +56,8 @@ public class TheJudgeApplicationTests {
 		response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
-		return contest.get("id").asText();
+		ContestAPI contestAPI = ((ContestAPI[]) jsonConverter.convertTreeStringToObject(response.getBody(), ContestAPI[].class))[index];
+		return String.valueOf(contestAPI.getId());
 	}
 
 	private String getTeamId(int index) {
@@ -63,8 +66,8 @@ public class TheJudgeApplicationTests {
 		response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode team = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
-		return team.get("id").asText();
+		TeamAPI teamAPI = ((TeamAPI[]) jsonConverter.convertTreeStringToObject(response.getBody(), TeamAPI[].class))[index];
+		return String.valueOf(teamAPI.getId());
 	}
 
 	private String getProblemId(int index) {
@@ -73,8 +76,8 @@ public class TheJudgeApplicationTests {
 		response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
-		return problem.get("id").asText();
+		ProblemAPI problemAPI = ((ProblemAPI[]) jsonConverter.convertTreeStringToObject(response.getBody(), ProblemAPI[].class))[index];
+		return String.valueOf(problemAPI.getId());
 	}
 
 	@Test
@@ -131,13 +134,12 @@ public class TheJudgeApplicationTests {
 		response = restTemplate.postForEntity(url, request, String.class);
 		assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
 
-		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody());
-		String contestId = contest.get("id").asText();
-		assertThat(contest.get("nombreContest").asText(), equalTo(name));
-		assertThat(contest.get("descripcion").asText(), equalTo(description));
-		assertThat(contest.get("teamPropietario").get("id").asText(), equalTo(owner));
+		ContestAPI contest = (ContestAPI) jsonConverter.convertTreeStringToObject(response.getBody(), ContestAPI.class);
+		String contestId = String.valueOf(contest.getId());
+		assertThat(contest.getNombreContest(), equalTo(name));
+		assertThat(contest.getDescripcion(), equalTo(description));
+		assertThat(String.valueOf(contest.getTeamPropietario().getId()), equalTo(owner));
 
-		System.out.println(contest);
 		testGetContest(contestId);
 	}
 
@@ -155,8 +157,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody());
-		assertThat(contest.get("id").asText(), equalTo(contestId));
+		ContestAPI contest = (ContestAPI) jsonConverter.convertTreeStringToObject(response.getBody(), ContestAPI.class);
+		assertThat(String.valueOf(contest.getId()), equalTo(contestId));
 	}
 
 	private void testGetContestWithException(String contestId, String salida) {
@@ -212,19 +214,17 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody());
-		String problemId = problem.get("id").asText();
-		JsonNode team = problem.get("equipoPropietario");
+		ProblemAPI problem = (ProblemAPI) jsonConverter.convertTreeStringToObject(response.getBody(), ProblemAPI.class);
+		String problemId = String.valueOf(problem.getId());
+		TeamAPI team = problem.getEquipoPropietario();
 
-		assertThat(team.get("id").asText(), equalTo(teamId));
-		assertThat(team.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		assertThat(String.valueOf(team.getId()), equalTo(teamId));
+		assertThat(team.getNombreEquipo(), equalTo("pavloXd"));
 
 		if (problemName.isEmpty()) {
-			assertThat(problem.get("nombreEjercicio").asText(), equalTo(filename.trim().split("\\.")[0]));
-		} else {
-			assertThat(problem.get("nombreEjercicio").asText(), equalTo(problemName));
+			problemName = filename.trim().split("\\.")[0];
 		}
-
+		assertThat(problem.getNombreEjercicio(), equalTo(problemName));
 		testGetProblem(problemId);
 	}
 
@@ -261,8 +261,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody());
-		assertThat(problem.get("id").asText(), equalTo(problemId));
+		ProblemAPI problem = (ProblemAPI) jsonConverter.convertTreeStringToObject(response.getBody(), ProblemAPI.class);
+		assertThat(String.valueOf(problem.getId()), equalTo(problemId));
 	}
 
 	private void testGetProblemWithException(String problemId, String salida) {
@@ -284,8 +284,6 @@ public class TheJudgeApplicationTests {
 		String badProblemId = "874";
 		String badTeamId = "987";
 
-		ResponseEntity<String> response;
-
 		// all okay
 		String codeFile = "vacio.java";
 		String language = "";
@@ -298,9 +296,11 @@ public class TheJudgeApplicationTests {
 		salida = "TEAM NOT FOUND";
 		testAddSubmissionWithException(contestId, problemId, badTeamId, language, codeFile, salida);
 
-		//salida = "LANGUAGE NOT FOUND"; --> cannot be reached --> 500 : [ERROR GENERAL DEL SISTEMA]
-		//language = getLanguage("php");
-		//testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
+		/*
+		salida = "LANGUAGE NOT FOUND"; --> cannot be reached --> 500 : [ERROR GENERAL DEL SISTEMA]
+	 	language = getLanguage("php");
+	 	testAddSubmissionWithException(contestId, problemPrimavera, teamId, language, codeFile, salida);
+		 */
 
 		language = getLanguage("java");
 		salida = "PROBLEM NOT IN CONCURSO";
@@ -357,8 +357,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode submission = jsonConverter.convertStringToJSONNode(response.getBody());
-		String submissionId = submission.get("id").asText();
+		SubmissionAPI submission = (SubmissionAPI) jsonConverter.convertTreeStringToObject(response.getBody(), SubmissionAPI.class);
+		String submissionId = String.valueOf(submission.getId());
 		testGetSubmission(submissionId);
 	}
 
@@ -395,8 +395,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode submission = jsonConverter.convertStringToJSONNode(response.getBody());
-		assertThat(submission.get("id").asText(), equalTo(subId));
+		SubmissionAPI submission = (SubmissionAPI) jsonConverter.convertTreeStringToObject(response.getBody(), SubmissionAPI.class);
+		assertThat(String.valueOf(submission.getId()), equalTo(subId));
 	}
 
 	private void testGetSubmissionWithException(String subId, String salida) {
@@ -419,8 +419,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode teamNode = jsonConverter.convertStringToJSONNode(response.getBody());
-		assertThat(teamNode.get("id").asText(), equalTo(teamID));
+		TeamAPI team = (TeamAPI) jsonConverter.convertTreeStringToObject(response.getBody(), TeamAPI.class);
+		assertThat(String.valueOf(team.getId()), equalTo(teamID));
 	}
 
 	private void testGetTeamWithAllData(String teamID) {
@@ -429,16 +429,15 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode teamNode = jsonConverter.convertStringToJSONNode(response.getBody());
-		assertThat(teamNode.get("id").asText(), equalTo(teamID));
-		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		TeamAPI team = (TeamAPI) jsonConverter.convertTreeStringToObject(response.getBody(), TeamAPI.class);
+		assertThat(String.valueOf(team.getId()), equalTo(teamID));
+		assertThat(team.getNombreEquipo(), equalTo("pavloXd"));
 
-		assertNotEquals(teamNode.get("listaDeSubmissions").asText(), "");
-		assertNotEquals(teamNode.get("listaProblemasCreados").asText(), "");
-		assertNotEquals(teamNode.get("listaProblemasParticipados").asText(), "");
-		assertNotEquals(teamNode.get("listaContestsCreados").asText(), "");
-		assertNotEquals(teamNode.get("listaContestsParticipados").asText(), "");
-
+		assertFalse(team.getListaDeSubmissions().isEmpty());
+		assertFalse(team.getListaProblemasCreados().isEmpty());
+		assertFalse(team.getListaProblemasParticipados().isEmpty());
+		assertFalse(team.getListaContestsCreados().isEmpty());
+		assertFalse(team.getListaContestsParticipados().isEmpty());
 	}
 
 	private void testGetTeamWithException(String teamID, String salida) {

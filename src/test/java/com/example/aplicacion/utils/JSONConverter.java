@@ -28,10 +28,11 @@ public class JSONConverter {
 		}
 	}
 
-	public JsonNode convertStringToJSONNode(String jsonString) {
+	public Object convertTreeStringToObject(String jsonString, Class pojoClass) {
 		try {
 			JsonNode node = objectMapper.readTree(jsonString);
-			return node;
+			Object obj = objectMapper.treeToValue(node, pojoClass);
+			return obj;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

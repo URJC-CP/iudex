@@ -1,6 +1,7 @@
 package com.example.aplicacion.Pojos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -31,7 +32,8 @@ public class ProblemAPI {
 
     private String color;
 
-    public String getProblemURLpdf(){
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public String getProblemURLpdf() {
         return String.format("/API/v1/problem/%s/getPDF", id);
     }
 
