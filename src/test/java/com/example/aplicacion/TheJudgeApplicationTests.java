@@ -1,8 +1,7 @@
 package com.example.aplicacion;
 
+import com.example.aplicacion.utils.JSONConverter;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
-import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -25,98 +23,139 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class TheJudgeApplicationTests {
 	private final String baseURL = "http://localhost:8080/API/v1";
 	private final String basePathTestFiles = "/src/main/resources/testfiles";
-	private RestTemplate restTemplate;
-	private ObjectMapper mapper;
+	private final RestTemplate restTemplate = new RestTemplate();
+	private final JSONConverter jsonConverter = new JSONConverter();
 
-	private String contestId;
-	private String teamId;
-
-	@BeforeEach
-	public void init() {
-		restTemplate = new RestTemplate();
-		mapper = new ObjectMapper();
-
+	@Test
+	@DisplayName("Application's initial state")
+	public void test0() {
+		ResponseEntity<String> response;
 		String url = baseURL + "/contest";
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+		response = restTemplate.getForEntity(url, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-		JsonNode contest = null;
-		try {
-			contest = mapper.readTree(response.getBody()).get(0);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// get contestId
-		this.contestId = (contest.get("id").asText());
+		// get default contest
+		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody()).get(0);
+		String contestId = (contest.get("id").asText());
 		assertThat(contest.get("nombreContest").asText(), equalTo("contestPrueba"));
+		testGetContest(contestId);
 
-		// get teamId
+		// get default team
 		JsonNode teamNode = contest.get("teamPropietario");
-		this.teamId = teamNode.get("id").asText();
+		String teamId = teamNode.get("id").asText();
 		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		testGetTeam(teamId);
+	}
+
+	private String getContestId(int index) {
+		ResponseEntity<String> response;
+		String url = baseURL + "/contest";
+		response = restTemplate.getForEntity(url, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+
+		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
+		return contest.get("id").asText();
+	}
+
+	private String getTeamId(int index) {
+		ResponseEntity<String> response;
+		String url = baseURL + "/team";
+		response = restTemplate.getForEntity(url, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+
+		JsonNode team = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
+		return team.get("id").asText();
+	}
+
+	private String getProblemId(int index) {
+		ResponseEntity<String> response;
+		String url = baseURL + "/problem";
+		response = restTemplate.getForEntity(url, String.class);
+		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+
+		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody()).get(index);
+		return problem.get("id").asText();
 	}
 
 	@Test
-	@DisplayName("Crear concurso")
-	public void test1() throws IOException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+	@DisplayName("Application basic test - create contest, add problem and do submission")
+	public void test1() {
+		String contestId = getContestId(0);
+		String teamId = getTeamId(0);
 
+		// create new contest
+		String contestName = "concurso prueba 001";
+		String contestDescription = "concurso de prueba";
+		testCreateNewContest(contestName, contestDescription, teamId);
+
+		// create new problem from zip and no name
+		String filename = "primavera.zip";
+		String problemName = "";
+		testCreateProblemFromZip(filename, problemName, teamId, contestId);
+		String problemPrimavera = getProblemId(0);
+
+		// create new problem from zip with problem name
+		filename = "mysql.zip";
+		problemName = "problema de mysql";
+		testCreateProblemFromZip(filename, problemName, teamId, contestId);
+		String problemMysql = getProblemId(1);
+
+		// submit java file to primavera
+		String codeFile = "primavera/submissions/accepted/main.java";
+		String language = getLanguage("java");
+		testAddSubmission(contestId, problemPrimavera, teamId, language, codeFile);
+
+		// submit sql file to problema de mysql
+		codeFile = "mysql/submissions/accepted/accepted.sql";
+		language = getLanguage("java");
+		testAddSubmission(contestId, problemMysql, teamId, language, codeFile);
+
+		testGetTeamWithAllData(teamId);
+	}
+
+	private void testCreateNewContest(String name, String description, String owner) {
+		String url = baseURL + "/contest";
+
+		HttpHeaders headers = new HttpHeaders();
 		MultiValueMap<String, String> params;
 		HttpEntity<MultiValueMap<String, String>> request;
 		ResponseEntity<String> response;
 
-		//buscar equipo
-		String getAllTeamsUrl = baseURL + "/team/" + teamId;
-		response = restTemplate.getForEntity(getAllTeamsUrl, String.class);
-		assertThat(response.getStatusCode(), is(HttpStatus.OK));
-
-		JsonNode team = mapper.readTree(response.getBody());
-		System.out.println(team);
-
-		//obtener id del equipo
-		String teamId = team.get("id").asText();
-		String contestName = "concurso prueba 001";
-		String contestDescription = "concurso de prueba";
-
-		//crear concurso
-		String contestURL = baseURL + "/contest";
 		params = new LinkedMultiValueMap<>();
-		params.add("contestName", contestName);
-		params.add("teamId", String.valueOf(teamId));
-		params.add("descripcion", contestDescription);
+		params.add("contestName", name);
+		params.add("teamId", String.valueOf(owner));
+		params.add("descripcion", description);
 
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		request = new HttpEntity<>(params, headers);
-		response = restTemplate.postForEntity(contestURL, request, String.class);
+		response = restTemplate.postForEntity(url, request, String.class);
 		assertThat(response.getStatusCode(), is(HttpStatus.CREATED));
 
-		JsonNode contest = mapper.readTree(response.getBody());
+		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody());
 		String contestId = contest.get("id").asText();
-		assertThat(contest.get("nombreContest").asText(), equalTo(contestName));
-		assertThat(contest.get("descripcion").asText(), equalTo(contestDescription));
-		assertThat(contest.get("teamPropietario").asText(), equalTo(team.asText()));
+		assertThat(contest.get("nombreContest").asText(), equalTo(name));
+		assertThat(contest.get("descripcion").asText(), equalTo(description));
+		assertThat(contest.get("teamPropietario").get("id").asText(), equalTo(owner));
 
 		System.out.println(contest);
 		testGetContest(contestId);
 	}
 
 	@Test
-	@DisplayName("Obtener Concurso")
-	public void test2() throws IOException {
-		testGetContest(contestId);
-
+	@DisplayName("Get contest with invalid id")
+	public void test2() {
 		String badContestId = "564";
 		String salida = "CONTEST NOT FOUND";
 		testGetContestWithException(badContestId, salida);
 	}
 
-	private void testGetContest(String contestId) throws IOException {
+	private void testGetContest(String contestId) {
 		String getContestURL = baseURL + "/contest/" + contestId;
 		ResponseEntity<String> response = restTemplate.getForEntity(getContestURL, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode contest = mapper.readTree(response.getBody());
+		JsonNode contest = jsonConverter.convertStringToJSONNode(response.getBody());
 		assertThat(contest.get("id").asText(), equalTo(contestId));
 	}
 
@@ -126,15 +165,15 @@ public class TheJudgeApplicationTests {
 		assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
 	}
 
-	//crear problemas
 	@Test
-	@DisplayName("Crear problema desde un archivo zip")
-	public void test3() throws IOException {
+	@DisplayName("Create problem from zip with invalid parameters")
+	public void test3() {
+		String contestId = getContestId(0);
+		String teamId = getTeamId(0);
 		String badTeamId = "897";
 		String badContestId = "576";
 		String salida;
 
-		// valid file without problem name
 		String filename = "primavera.zip";
 		String problemName = "";
 		salida = "TEAM NOT FOUND";
@@ -142,8 +181,6 @@ public class TheJudgeApplicationTests {
 
 		salida = "CONCURSO NOT FOUND";
 		testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
-
-		testCreateProblemFromZip(filename, problemName, teamId, contestId);
 
 		// unnamed empty file without problem name
 		filename = ".zip.zip";
@@ -155,14 +192,9 @@ public class TheJudgeApplicationTests {
 		problemName = "pruba vacio";
 		salida = "No hay casos de prueba";
 		testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
-
-		// valid file with problem name
-		filename = "pruebaMYSQL.zip";
-		problemName = "problema de mysql";
-		testCreateProblemFromZip(filename, problemName, teamId, contestId);
 	}
 
-	private void testCreateProblemFromZip(String filename, String problemName, String teamId, String contestId) throws IOException {
+	private void testCreateProblemFromZip(String filename, String problemName, String teamId, String contestId) {
 		String createProblemURL = baseURL + "/problem/fromZip";
 		File file = new File("." + basePathTestFiles + "/" + filename);
 
@@ -180,7 +212,7 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode problem = mapper.readTree(response.getBody());
+		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody());
 		String problemId = problem.get("id").asText();
 		JsonNode team = problem.get("equipoPropietario");
 
@@ -188,7 +220,7 @@ public class TheJudgeApplicationTests {
 		assertThat(team.get("nombreEquipo").asText(), equalTo("pavloXd"));
 
 		if (problemName.isEmpty()) {
-			assertThat(problem.get("nombreEjercicio").asText() + ".zip", equalTo(filename));
+			assertThat(problem.get("nombreEjercicio").asText(), equalTo(filename.trim().split("\\.")[0]));
 		} else {
 			assertThat(problem.get("nombreEjercicio").asText(), equalTo(problemName));
 		}
@@ -216,24 +248,20 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Obtener problema")
-	public void test4() throws IOException {
-		String problemId = "1";
-		testGetProblem(problemId);
-
+	@DisplayName("Get problem with invalid id")
+	public void test4() {
 		String badProblemId = "756";
 		String salida = "ERROR PROBLEM NOT FOUND";
 		testGetProblemWithException(badProblemId, salida);
-
 	}
 
-	private void testGetProblem(String problemId) throws IOException {
+	private void testGetProblem(String problemId) {
 		String getProblemURL = baseURL + "/problem/" + problemId;
 		ResponseEntity<String> response = restTemplate.getForEntity(getProblemURL, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode problem = mapper.readTree(response.getBody());
+		JsonNode problem = jsonConverter.convertStringToJSONNode(response.getBody());
 		assertThat(problem.get("id").asText(), equalTo(problemId));
 	}
 
@@ -245,42 +273,22 @@ public class TheJudgeApplicationTests {
 
 	//realizar entregas
 	@Test
-	@DisplayName("Realizar entrega")
-	public void test5() throws IOException {
+	@DisplayName("Add submission with invalid parameters")
+	public void test5() {
+		String contestId = getContestId(0);
+		String teamId = getTeamId(0);
+		String anotherContestId = getContestId(1);
+		String problemId = getProblemId(0);
+
 		String badContestId = "768";
 		String badProblemId = "874";
 		String badTeamId = "987";
 
-		// get anothercontestId
-		String url = baseURL + "/contest";
-		ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-
-		JsonNode contest = null;
-		try {
-			contest = mapper.readTree(response.getBody()).get(1);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		// get contestId
-		String anotherContestId = (contest.get("id").asText());
-
-		//get problemId
-		String getProblemURL = baseURL + "/problem";
-		response = restTemplate.getForEntity(getProblemURL, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		System.out.println(response.getBody());
-
-		JsonNode problem = mapper.readTree(response.getBody()).get(0);
-		String problemId = problem.get("id").asText();
+		ResponseEntity<String> response;
 
 		// all okay
-		String codeFile = "primavera/submissions/accepted/main.java";
-		String language = getLanguage("java");
-		testAddSubmission(contestId, problemId, teamId, language, codeFile);
-
-		language = "";
-		codeFile = "vacio.java";
+		String codeFile = "vacio.java";
+		String language = "";
 		String salida = "CONTEST NOT FOUND";
 		testAddSubmissionWithException(badContestId, badProblemId, badTeamId, language, codeFile, salida);
 
@@ -330,7 +338,7 @@ public class TheJudgeApplicationTests {
 		}
 	}
 
-	private void testAddSubmission(String contestId, String problemId, String teamId, String language, String codeFileName) throws IOException {
+	private void testAddSubmission(String contestId, String problemId, String teamId, String language, String codeFileName) {
 		String addSubmissionURL = baseURL + "/submission";
 		File file = new File("." + basePathTestFiles + "/" + codeFileName);
 
@@ -349,7 +357,7 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode submission = mapper.readTree(response.getBody());
+		JsonNode submission = jsonConverter.convertStringToJSONNode(response.getBody());
 		String submissionId = submission.get("id").asText();
 		testGetSubmission(submissionId);
 	}
@@ -374,30 +382,20 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Obtener entrega")
-	public void test6() throws IOException {
+	@DisplayName("Get submission with invalid id")
+	public void test6() {
 		String badSubId = "756";
-
-		String getSubmissionURL = baseURL + "/submissions";
-		ResponseEntity<String> response = restTemplate.getForEntity(getSubmissionURL, String.class);
-		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-		System.out.println(response.getBody());
-
-		JsonNode submission = mapper.readTree(response.getBody()).get(0);
-		String submissionId = submission.get("id").asText();
-		testGetSubmission(submissionId);
-
 		String salida = "SUBMISSION NOT FOUND";
 		testGetSubmissionWithException(badSubId, salida);
 	}
 
-	private void testGetSubmission(String subId) throws IOException {
+	private void testGetSubmission(String subId) {
 		String getSubmissionURL = baseURL + "/submission/" + subId;
 		ResponseEntity<String> response = restTemplate.getForEntity(getSubmissionURL, String.class);
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode submission = mapper.readTree(response.getBody());
+		JsonNode submission = jsonConverter.convertStringToJSONNode(response.getBody());
 		assertThat(submission.get("id").asText(), equalTo(subId));
 	}
 
@@ -408,12 +406,9 @@ public class TheJudgeApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Obtener equipo y verificar que todos los datos obtenidos no son vacios")
+	@DisplayName("Get team with invalid id")
 	public void test7() {
 		String badTeam = "867";
-
-		testGetTeamWithAllData(teamId);
-
 		String salida = "ERROR, TEAM NOT FOUND";
 		testGetTeamWithException(badTeam, salida);
 	}
@@ -424,13 +419,8 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode teamNode;
-		try {
-			teamNode = mapper.readTree(response.getBody());
-			assertThat(teamNode.get("id").asText(), equalTo(teamID));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		JsonNode teamNode = jsonConverter.convertStringToJSONNode(response.getBody());
+		assertThat(teamNode.get("id").asText(), equalTo(teamID));
 	}
 
 	private void testGetTeamWithAllData(String teamID) {
@@ -439,20 +429,16 @@ public class TheJudgeApplicationTests {
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 		System.out.println(response.getBody());
 
-		JsonNode teamNode;
-		try {
-			teamNode = mapper.readTree(response.getBody());
-			assertThat(teamNode.get("id").asText(), equalTo(teamID));
-			assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
+		JsonNode teamNode = jsonConverter.convertStringToJSONNode(response.getBody());
+		assertThat(teamNode.get("id").asText(), equalTo(teamID));
+		assertThat(teamNode.get("nombreEquipo").asText(), equalTo("pavloXd"));
 
-			assertNotEquals(teamNode.get("listaDeSubmissions").asText(), "");
-			assertNotEquals(teamNode.get("listaProblemasCreados").asText(), "");
-			assertNotEquals(teamNode.get("listaProblemasParticipados").asText(), "");
-			assertNotEquals(teamNode.get("listaContestsCreados").asText(), "");
-			assertNotEquals(teamNode.get("listaContestsParticipados").asText(), "");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		assertNotEquals(teamNode.get("listaDeSubmissions").asText(), "");
+		assertNotEquals(teamNode.get("listaProblemasCreados").asText(), "");
+		assertNotEquals(teamNode.get("listaProblemasParticipados").asText(), "");
+		assertNotEquals(teamNode.get("listaContestsCreados").asText(), "");
+		assertNotEquals(teamNode.get("listaContestsParticipados").asText(), "");
+
 	}
 
 	private void testGetTeamWithException(String teamID, String salida) {

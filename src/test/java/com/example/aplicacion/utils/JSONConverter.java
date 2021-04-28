@@ -1,6 +1,7 @@
 package com.example.aplicacion.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -22,6 +23,15 @@ public class JSONConverter {
 	public Object convertJSONToObject(String json, Class cls) {
 		try {
 			return objectMapper.readValue(json, cls);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public JsonNode convertStringToJSONNode(String jsonString) {
+		try {
+			JsonNode node = objectMapper.readTree(jsonString);
+			return node;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
