@@ -32,6 +32,8 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionService submissionService;
     @Autowired
+    private ProblemService problemService;
+    @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
 
@@ -63,9 +65,13 @@ public class ZipHandlerService {
         //Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
         Pattern p2 = Pattern.compile("(.+)\\.(.+)$");
 
+        Map<String, String> entradaVisible = new HashMap<>();
+        Map<String, String> salidaVisible = new HashMap<>();
+        Map<String, String> entradaOculta = new HashMap<>();
+        Map<String, String> salidaOculta = new HashMap<>();
+
         while (zipEntry != null) {
             String nombreZip = zipEntry.getName();
-
             //ER para gestionar los path
             Matcher m = p.matcher(nombreZip);
             //Si entra significa q es de la categoria /algo/algo/fichero
@@ -80,50 +86,37 @@ public class ZipHandlerService {
                 //Hay que quitar parte del path que no necesitamos CHUCHES/data
                 path1 = path1.replaceAll(".+/", "");
 
+                // get entrada/salida
                 if (path1.equals("data")) {
-                    //entrada / salida
-                    String inputText = null;
-                    String outputText = null;
-                    boolean isPublic = false;
-
                     //si es de ejemplo
                     if (path2.equals("sample")) {
-                        isPublic = true;
                         if (extension.equals("ans")) {
                             //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                             //Leemos el archivo zip a string
-                            inputText = convertZipToString(zipFile);
+                            salidaVisible.put(filename, convertZipToString(zipFile));
                         } else if (extension.equals("in")) {
                             //revisamos q el zip este bien
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                            outputText = convertZipToString(zipFile);
+                            entradaVisible.put(filename, convertZipToString(zipFile));
                         }
+                        logger.info("ZIP DECOMPRESS: Add new example testcase for problem " + problem.getNombreEjercicio());
                     }
                     //si es corrección
                     else if (path2.equals("secret")) {
-                        isPublic = false;
                         if (extension.equals("ans")) {
                             //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                             //Leemos el archivo zip a string
-                            outputText = convertZipToString(zipFile);
+                            salidaOculta.put(filename, convertZipToString(zipFile));
 
                         } else if (extension.equals("in")) {
                             //revisamos q el zip este bien
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                            inputText = convertZipToString(zipFile);
-
+                            entradaOculta.put(filename, convertZipToString(zipFile));
                         }
-                    }
-                    if (isPublic) {
-                        logger.info("ZIP DECOMPRESS: Add new example testcase for problem " + problem.getNombreEjercicio());
-                    } else {
                         logger.info("ZIP DECOMPRESS: Add new testcase for problem " + problem.getNombreEjercicio());
                     }
-
-                    Sample sample = new Sample(filename, inputText, outputText, true);
-                    problem.addData(sample);
                 }
 
                 //Buscamos ahora las submission
@@ -186,6 +179,22 @@ public class ZipHandlerService {
         }
         zipFile.closeEntry();
         zipFile.close();
+
+        // add example testcase
+        for (String key : entradaVisible.keySet()) {
+            String entrada = entradaVisible.get(key);
+            String salida = salidaVisible.get(key);
+            Sample sample = new Sample(key, entrada, salida, true);
+            problem.addData(sample);
+        }
+
+        // add correction testcase
+        for (String key : entradaOculta.keySet()) {
+            String entrada = entradaOculta.get(key);
+            String salida = salidaOculta.get(key);
+            Sample sample = new Sample(key, entrada, salida, false);
+            problem.addData(sample);
+        }
 
         if (!problem.hasTestCaseFiles()) {
             logger.warn("TestCase files not found");
@@ -270,7 +279,7 @@ public class ZipHandlerService {
 
     private void borraInNOut(Problem problem) {
         logger.debug("Delete input/output files from problem " + problem.getId());
-        problem.clearData();
+        problemService.deleteSamples(problem);
         logger.debug("Finish delete input/output files from problem " + problem.getId());
     }
 

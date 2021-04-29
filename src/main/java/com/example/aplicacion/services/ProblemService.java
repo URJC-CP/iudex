@@ -356,8 +356,9 @@ public class ProblemService {
         }
     }
 
-    private void deleteSample(Problem problem) {
+    public void deleteSamples(Problem problem) {
         problem.clearData();
+        problemRepository.save(problem);
     }
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {

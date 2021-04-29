@@ -39,7 +39,7 @@ public class Sample {
         this.isPublic = isPublic;
     }
 
-    public SampleAPI toInNOutAPI() {
+    public SampleAPI toSampleAPI() {
         SampleAPI sampleAPI = new SampleAPI();
         sampleAPI.setId(this.id);
         sampleAPI.setName(this.name);

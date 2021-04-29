@@ -101,7 +101,7 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setSamples(convertInNOuttoInNOUTAPI(this.getDatosVisibles()));
+        problemAPI.setSamples(convertSampletoSampleAPI(this.getDatosVisibles()));
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
@@ -127,7 +127,7 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setSamples(convertInNOuttoInNOUTAPI(this.getDatosVisibles()));
+        problemAPI.setSamples(convertSampletoSampleAPI(this.getDatosVisibles()));
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
@@ -164,15 +164,15 @@ public class Problem {
         return salida;
     }
 
-    private List<SampleAPI> convertInNOuttoInNOUTAPI(List<Sample> inNOuts) {
+    private List<SampleAPI> convertSampletoSampleAPI(List<Sample> samples) {
         List<SampleAPI> salida = new ArrayList<>();
-        for (Sample inNOut : inNOuts) {
-            salida.add(inNOut.toInNOutAPI());
+        for (Sample sample : samples) {
+            salida.add(sample.toSampleAPI());
         }
         return salida;
     }
 
-    private List<String> convertListINOtoListString(List<Sample> samples) {
+    private List<String> convertListSampletoListString(List<Sample> samples) {
         List<String> salida = new ArrayList<>();
         for (Sample sample : samples) {
             salida.add(sample.getInputText());
@@ -228,7 +228,11 @@ public class Problem {
     }
 
     private void removeData(boolean visible) {
-        datos.removeIf(data -> data.isPublic() == visible);
+        for (Sample sample : datos) {
+            if (sample.isPublic() == visible) {
+                datos.remove(sample);
+            }
+        }
     }
 
     public void clearData() {
