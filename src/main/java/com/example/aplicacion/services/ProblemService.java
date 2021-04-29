@@ -23,7 +23,7 @@ public class ProblemService {
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private ProblemDataRepository inNOutRepository;
+    private SampleRepository sampleRepository;
     @Autowired
     private ZipHandlerService zipHandlerService;
     @Autowired
@@ -176,7 +176,7 @@ public class ProblemService {
         logger.debug("Update problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nContest: " + idcontest);
         ProblemString problemUpdated = new ProblemString();
 
-        Optional<Problem> problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
+        Optional<Problem> problemOriginal = problemRepository.findProblemById(Long.parseLong(idProblema));
         if (problemOriginal.isEmpty()) {
             logger.error("Problem " + idProblema + " not found");
             problemUpdated.setSalida("PROBLEM NOT FOUND");
@@ -198,7 +198,7 @@ public class ProblemService {
         }
 
         //Cambiamos el id
-        problemUpdated.getProblem().setId(Long.valueOf(idProblema));
+        problemUpdated.getProblem().setId(Long.parseLong(idProblema));
         //Anyadimos al nuevo problema las submissions y problemvalidator de laanterior
         problemUpdated.getProblem().getSubmissions().addAll(problemOriginal.get().getSubmissions());
 
@@ -223,7 +223,7 @@ public class ProblemService {
         logger.debug("Update(v2) problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
         ProblemString problemUpdated = new ProblemString();
 
-        Optional<Problem> problemOriginal = problemRepository.findProblemById(Long.valueOf(idProblema));
+        Optional<Problem> problemOriginal = problemRepository.findProblemById(Long.parseLong(idProblema));
         if (problemOriginal.isEmpty()) {
             logger.error("Problem " + idProblema + " not found");
             problemUpdated.setSalida("PROBLEM NOT FOUND");
@@ -258,7 +258,7 @@ public class ProblemService {
 
     public String deleteProblem(String problemId) {
         logger.debug("Delete problem " + problemId);
-        Optional<Problem> problem = problemRepository.findProblemById(Long.valueOf(problemId));
+        Optional<Problem> problem = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problem.isEmpty()) {
             logger.error("Problem " + problemId + " not found");
             return "PROBLEM NOT FOUND";
@@ -305,7 +305,7 @@ public class ProblemService {
     }
 
     public Optional<Problem> getProblem(String idProblem) {
-        return problemRepository.findProblemById(Long.valueOf(idProblem));
+        return problemRepository.findProblemById(Long.parseLong(idProblem));
     }
 
     public List<Problem> getAllProblemas() {
@@ -315,9 +315,7 @@ public class ProblemService {
     }
 
     public List<Submission> getSubmissionFromProblem(Problem problem) {
-        List<Submission> salida = new ArrayList<>();
-        salida = problem.getSubmissions();
-        return salida;
+        return problem.getSubmissions();
     }
 
     public List<Submission> getSubmissionsFromContestFromProblem(Contest contest, Problem problem) {
@@ -339,32 +337,17 @@ public class ProblemService {
     public List<ProblemEntradaSalidaVisiblesHTML> getProblemEntradaSalidaVisiblesHTML(Problem problem) {
         List<ProblemEntradaSalidaVisiblesHTML> lista = new ArrayList<>();
 
-        List<ProblemData> entradasProblemaVisible = problem.getEntradaVisible();
-        List<ProblemData> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
-        int numeroEntradasVisible = entradasProblemaVisible.size();
-        for (int i = 0; i < numeroEntradasVisible; i++) {
+        List<Sample> datosVisibles = problem.getDatosVisibles();
+        for (Sample datosVisible : datosVisibles) {
             ProblemEntradaSalidaVisiblesHTML problemEntradaSalidaVisiblesHTML = new ProblemEntradaSalidaVisiblesHTML();
-            problemEntradaSalidaVisiblesHTML.setEntrada(entradasProblemaVisible.get(i));
-            problemEntradaSalidaVisiblesHTML.setSalida(salidaCorrectaProblemaVisible.get(i));
-
+            problemEntradaSalidaVisiblesHTML.setSample(datosVisible);
             lista.add(problemEntradaSalidaVisiblesHTML);
         }
         return lista;
     }
 
-    private void saveAllInnNOut(Problem problem) {
-        for (ProblemData inNOut : problem.getEntradaVisible()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaVisible()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getEntradaOculta()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaOculta()) {
-            inNOutRepository.save(inNOut);
-        }
+    private void saveAllSamples(Problem problem) {
+        sampleRepository.saveAll(problem.getData());
     }
 
     private void saveAllSubmissions(Problem problem) {
@@ -373,7 +356,7 @@ public class ProblemService {
         }
     }
 
-    private void deleteInNOut(Problem problem) {
+    private void deleteSample(Problem problem) {
         problem.clearData();
     }
 

@@ -1,8 +1,7 @@
 package com.example.aplicacion.Entities;
 
 import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.ProblemDataAPI;
-import com.example.aplicacion.Pojos.ProblemDataType;
+import com.example.aplicacion.Pojos.SampleAPI;
 import com.example.aplicacion.Pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
@@ -23,7 +22,7 @@ public class Problem {
     private String nombreEjercicio;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<ProblemData> datos;
+    private List<Sample> datos;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<SubmissionProblemValidator> submissionProblemValidators;
@@ -82,12 +81,10 @@ public class Problem {
         }
     }
 
-    public Problem(String nombreEjercicio, List<ProblemData> entradaOculta, List<ProblemData> salidaOculta, List<ProblemData> entradaVisible, List<ProblemData> salidaVisible) {
+    public Problem(String nombreEjercicio, List<Sample> datosVisibles, List<Sample> datosOcultos) {
         this.nombreEjercicio = nombreEjercicio;
-        datos.addAll(entradaOculta);
-        datos.addAll(salidaOculta);
-        datos.addAll(entradaVisible);
-        datos.addAll(salidaVisible);
+        this.datos.addAll(datosVisibles);
+        this.datos.addAll(datosOcultos);
 
         this.submissionProblemValidators = new ArrayList<>();
         this.submissions = new ArrayList<>();
@@ -97,15 +94,14 @@ public class Problem {
 
         this.timeout = timeoutPropierties;
         this.memoryLimit = memoryLimitPropierties;
-        this.hashString = hasheaElString(nombreEjercicio + listaToString(entradaOculta) + listaToString(salidaOculta) + listaToString(entradaVisible) + listaToString(salidaVisible));
+        this.hashString = hasheaElString(nombreEjercicio + listaToString(datosOcultos) + listaToString(datosVisibles));
     }
 
     public ProblemAPI toProblemAPI() {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.getEntradaVisible()));
-        problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.getSalidaVisible()));
+        problemAPI.setSamples(convertInNOuttoInNOUTAPI(this.getDatosVisibles()));
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
@@ -131,8 +127,7 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setEntradaVisible(convertInNOuttoInNOUTAPI(this.getEntradaVisible()));
-        problemAPI.setSalidaVisible(convertInNOuttoInNOUTAPI(this.getSalidaVisible()));
+        problemAPI.setSamples(convertInNOuttoInNOUTAPI(this.getDatosVisibles()));
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
@@ -161,26 +156,27 @@ public class Problem {
         return problemAPI;
     }
 
-    private String listaToString(List<ProblemData> lista) {
+    private String listaToString(List<Sample> lista) {
         String salida = "";
-        for (ProblemData inout : lista) {
-            salida.concat(inout.toString());
+        for (Sample inout : lista) {
+            salida = salida.concat(inout.toString());
         }
         return salida;
     }
 
-    private List<ProblemDataAPI> convertInNOuttoInNOUTAPI(List<ProblemData> inNOuts) {
-        List<ProblemDataAPI> salida = new ArrayList<>();
-        for (ProblemData inNOut : inNOuts) {
+    private List<SampleAPI> convertInNOuttoInNOUTAPI(List<Sample> inNOuts) {
+        List<SampleAPI> salida = new ArrayList<>();
+        for (Sample inNOut : inNOuts) {
             salida.add(inNOut.toInNOutAPI());
         }
         return salida;
     }
 
-    private List<String> convertListINOtoListString(List<ProblemData> inNOuts) {
+    private List<String> convertListINOtoListString(List<Sample> samples) {
         List<String> salida = new ArrayList<>();
-        for (ProblemData inNOut : inNOuts) {
-            salida.add(inNOut.getText());
+        for (Sample sample : samples) {
+            salida.add(sample.getInputText());
+            salida.add(sample.getOutputText());
         }
         return salida;
     }
@@ -213,79 +209,55 @@ public class Problem {
         return datos.size() > 0;
     }
 
-    public List<ProblemData> getData() {
+    public List<Sample> getData() {
         return datos;
     }
 
-    public void setData(List<ProblemData> datos) {
+    public void setData(List<Sample> datos) {
         this.datos = datos;
     }
 
-    private List<ProblemData> getData(ProblemDataType type) {
-        Set<ProblemData> rep = new HashSet<>();
-        for (ProblemData data : datos) {
-            if (data.getType() == type) {
+    private List<Sample> getData(boolean visible) {
+        Set<Sample> rep = new HashSet<>();
+        for (Sample data : datos) {
+            if (data.isPublic() == visible) {
                 rep.add(data);
             }
         }
-        ArrayList<ProblemData> dataFiles = new ArrayList<>();
-        dataFiles.addAll(rep);
-        return dataFiles;
+        return new ArrayList<>(rep);
     }
 
-    private void removeData(ProblemDataType type) {
-        for (ProblemData data : datos) {
-            if (data.getType() == type) {
-                datos.remove(data);
-            }
-        }
+    private void removeData(boolean visible) {
+        datos.removeIf(data -> data.isPublic() == visible);
     }
 
     public void clearData() {
         this.datos.clear();
     }
 
-    public List<ProblemData> getEntradaOculta() {
-        return getData(ProblemDataType.EntradaOculta);
+    public List<Sample> getDatosOcultos() {
+        return getData(false);
     }
 
-    public void setEntradaOculta(List<ProblemData> entradaOculta) {
-        removeData(ProblemDataType.EntradaOculta);
-        this.datos.addAll(entradaOculta);
+    public void setDatosOcultos(List<Sample> datosOcultos) {
+        removeData(false);
+        this.datos.addAll(datosOcultos);
     }
 
-    public List<ProblemData> getEntradaVisible() {
-        return getData(ProblemDataType.EntradaVisible);
+    public List<Sample> getDatosVisibles() {
+        return getData(true);
     }
 
-    public void setEntradaVisible(List<ProblemData> entradaVisible) {
-        removeData(ProblemDataType.EntradaVisible);
-        this.datos.addAll(entradaVisible);
+    public void setDatosVisibles(List<Sample> datosVisibles) {
+        removeData(true);
+        this.datos.addAll(datosVisibles);
     }
 
-    public List<ProblemData> getSalidaOculta() {
-        return getData(ProblemDataType.SalidaOculta);
-    }
-
-    public void setSalidaOculta(List<ProblemData> salidaOculta) {
-        removeData(ProblemDataType.SalidaOculta);
-        this.datos.addAll(salidaOculta);
-    }
-
-    public List<ProblemData> getSalidaVisible() {
-        return getData(ProblemDataType.SalidaVisible);
-    }
-
-    public void setSalidaVisible(List<ProblemData> salidaVisible) {
-        removeData(ProblemDataType.SalidaVisible);
-        this.datos.addAll(salidaVisible);
-    }
-
-    public void addData(ProblemData data) {
+    public void addData(Sample data) {
         datos.add(data);
     }
 
-    public void removeData(ProblemData data) {
+    public void removeData(Sample data) {
         datos.remove(data);
     }
 

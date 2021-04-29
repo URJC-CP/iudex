@@ -1,10 +1,9 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ProblemDataType;
 import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.Repository.ProblemDataRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SampleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class ZipHandlerService {
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private ProblemDataRepository inNOutRepository;
+    private SampleRepository inNOutRepository;
     @Autowired
     private SubmissionService submissionService;
     @Autowired
@@ -59,7 +58,7 @@ public class ZipHandlerService {
         ZipInputStream zipFile = new ZipInputStream(inputStream);
         ZipEntry zipEntry = zipFile.getNextEntry();
 
-        //Patron que parsea los apth de los archivos
+        //Patron que parsea los path de los archivos
         Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)");
         //Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
         Pattern p2 = Pattern.compile("(.+)\\.(.+)$");
@@ -81,56 +80,58 @@ public class ZipHandlerService {
                 //Hay que quitar parte del path que no necesitamos CHUCHES/data
                 path1 = path1.replaceAll(".+/", "");
 
-                //Si es ES de ejemplo
-                if (path1.equals("data") && path2.equals("sample")) {
-                    if (extension.equals("ans")) {
-                        //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
-                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                        //Leemos el archivo zip a string
-                        String aux = convertZipToString(zipFile);
-                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaVisible);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addData(inNOut);
-                    } else if (extension.equals("in")) {
-                        //revisamos q el zip este bien
-                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                        String aux = convertZipToString(zipFile);
-                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaVisible);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addData(inNOut);
+                if (path1.equals("data")) {
+                    //entrada / salida
+                    String inputText = null;
+                    String outputText = null;
+                    boolean isPublic = false;
+
+                    //si es de ejemplo
+                    if (path2.equals("sample")) {
+                        isPublic = true;
+                        if (extension.equals("ans")) {
+                            //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
+                            addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                            //Leemos el archivo zip a string
+                            inputText = convertZipToString(zipFile);
+                        } else if (extension.equals("in")) {
+                            //revisamos q el zip este bien
+                            addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                            outputText = convertZipToString(zipFile);
+                        }
                     }
-                }
-                //Si es ES secreta
-                else if (path1.equals("data") && path2.equals("secret")) {
-                    if (extension.equals("ans")) {
-                        //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
-                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                        //Leemos el archivo zip a string
-                        String aux = convertZipToString(zipFile);
-                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaOculta);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addData(inNOut);
-                    } else if (extension.equals("in")) {
-                        //revisamos q el zip este bien
-                        addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
-                        String aux = convertZipToString(zipFile);
-                        ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaOculta);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
-                        problem.addData(inNOut);
-                        logger.info("ZIP DECOMPRESS: Add new testcase input for problem " + problem.getNombreEjercicio());
+                    //si es corrección
+                    else if (path2.equals("secret")) {
+                        isPublic = false;
+                        if (extension.equals("ans")) {
+                            //Cuando entra un ans SIEMPRE tiene que estar la pila vacia, si no lanza error
+                            addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                            //Leemos el archivo zip a string
+                            outputText = convertZipToString(zipFile);
+
+                        } else if (extension.equals("in")) {
+                            //revisamos q el zip este bien
+                            addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
+                            inputText = convertZipToString(zipFile);
+
+                        }
                     }
+                    if (isPublic) {
+                        logger.info("ZIP DECOMPRESS: Add new example testcase for problem " + problem.getNombreEjercicio());
+                    } else {
+                        logger.info("ZIP DECOMPRESS: Add new testcase for problem " + problem.getNombreEjercicio());
+                    }
+
+                    Sample sample = new Sample(filename, inputText, outputText, true);
+                    problem.addData(sample);
                 }
+
                 //Buscamos ahora las submission
                 if ("submissions".equals(path1)) {
                     String resultadoEsperado = "";
 
                     if (path2.equals("accepted")) {
                         resultadoEsperado = "accepted";
-
                     } else if (path2.equals("wrong_answer")) {
                         resultadoEsperado = "wrong_answer";
                     } else if (path2.equals("run_time_error")) {
@@ -269,23 +270,7 @@ public class ZipHandlerService {
 
     private void borraInNOut(Problem problem) {
         logger.debug("Delete input/output files from problem " + problem.getId());
-
-        for (ProblemData aux : problem.getEntradaVisible()) {
-            inNOutRepository.delete(aux);
-            //problem.removeEntradaVisible(aux);
-        }
-        for (ProblemData aux : problem.getSalidaVisible()) {
-            //problem.removeSalidaVisible(aux);
-            inNOutRepository.delete(aux);
-        }
-        for (ProblemData aux : problem.getEntradaOculta()) {
-            //problem.removeEntradaOculta(aux);
-            inNOutRepository.delete(aux);
-        }
-        for (ProblemData aux : problem.getSalidaOculta()) {
-            //problem.removeSalidaOculta(aux);
-            inNOutRepository.delete(aux);
-        }
+        problem.clearData();
         logger.debug("Finish delete input/output files from problem " + problem.getId());
     }
 

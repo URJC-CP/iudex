@@ -1,24 +1,15 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.ProblemData;
+import com.example.aplicacion.Entities.Sample;
 
 public class ProblemEntradaSalidaVisiblesHTML {
-    ProblemData entrada;
-    ProblemData salida;
+    Sample sample;
 
-    public ProblemData getEntrada() {
-        return entrada;
+    public Sample getSample() {
+        return sample;
     }
 
-    public void setEntrada(ProblemData entrada) {
-        this.entrada = entrada;
-    }
-
-    public ProblemData getSalida() {
-        return salida;
-    }
-
-    public void setSalida(ProblemData salida) {
-        this.salida = salida;
+    public void setSample(Sample sample) {
+        this.sample = sample;
     }
 }

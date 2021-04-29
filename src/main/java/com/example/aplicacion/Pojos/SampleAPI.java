@@ -3,11 +3,11 @@ package com.example.aplicacion.Pojos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-
-public class ProblemDataAPI {
+public class SampleAPI {
     private long id;
     private String name;
-    private String text;
+    private String inputText;
+    private String outputText;
     private long timestamp;
 
     public long getId() {
@@ -26,12 +26,20 @@ public class ProblemDataAPI {
         this.name = name;
     }
 
-    public String getText() {
-        return text;
+    public String getInputText() {
+        return inputText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setInputText(String text) {
+        this.inputText = text;
+    }
+
+    public String getOutputText() {
+        return outputText;
+    }
+
+    public void setOutputText(String text) {
+        this.outputText = text;
     }
 
     public long getTimestamp() {

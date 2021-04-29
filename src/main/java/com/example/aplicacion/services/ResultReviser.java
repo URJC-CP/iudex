@@ -32,7 +32,7 @@ public class ResultReviser {
         //Si no ejecuta ninguno significa que su ejecucion es correcta
         else {
             //Comprobar salida Estandar
-            String salidaCorrecta = res.getSalidaEstandarCorrectaInO().getText();
+            String salidaCorrecta = res.getSample().getOutputText();
             if (compareIgnoreExpressions(res.getSalidaEstandar(), salidaCorrecta)) {
                 res.setResultadoRevision("accepted");
             } else {
@@ -61,8 +61,7 @@ public class ResultReviser {
         salidaAux = removeWhitespace(salidaAux);
         ejerAux = removeWhitespace(ejerAux);
 
-        boolean aux = ejerAux.equals(salidaAux);
-        return aux;
+        return ejerAux.equals(salidaAux);
     }
 
     private String removeWhitespace(String aux) {
@@ -71,7 +70,6 @@ public class ResultReviser {
     }
 
     private String[] getTime(String aux) {
-        String[] salida = aux.split(" ");
-        return salida;
+        return aux.split(" ");
     }
 }
