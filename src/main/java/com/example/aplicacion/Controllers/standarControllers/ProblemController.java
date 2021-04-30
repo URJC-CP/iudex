@@ -44,34 +44,36 @@ public class ProblemController {
         ModelAndView modelAndView = new ModelAndView();
 
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
-        Optional<Problem> problem = problemService.getProblem(idProblem);
-        Optional<Contest> contest = contestService.getContest(idContest);
-        if (contest.isEmpty()) {
+        Optional<Problem> problemOptional = problemService.getProblem(idProblem);
+        Optional<Contest> contestOptional = contestService.getContest(idContest);
+        if (contestOptional.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
+        Contest contest = contestOptional.get();
 
-        if (problem.isEmpty()) {
+        if (problemOptional.isEmpty()) {
             logger.error("Problem " + idProblem + " not found");
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
+        Problem problem = problemOptional.get();
 
-        if (!contest.get().getListaProblemas().contains(problem.get())) {
+        if (!contest.getListaProblemas().contains(problem)) {
             logger.error("Problem " + idProblem + " not found in contest " + idContest);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        modelAndView.getModel().put("problem", problem.get());
-        modelAndView.getModel().put("contest", contest.get());
+        modelAndView.getModel().put("problem", problem);
+        modelAndView.getModel().put("contest", contest);
         modelAndView.getModel().put("languages", languageService.getNLanguages());
         modelAndView.getModel().put("teams", teamService.getAllTeams());
-        modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem.get()));
+        modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
 
         logger.debug("Show problem " + idProblem + " from contest " + idContest);
         modelAndView.setViewName("problem");
@@ -83,15 +85,15 @@ public class ProblemController {
     @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
-        Optional<Problem> problem = problemService.getProblem(idProblem);
+        Optional<Problem> problemOptional = problemService.getProblem(idProblem);
 
-        if (problem.isEmpty()) {
+        if (problemOptional.isEmpty()) {
             logger.error("Problem " + idProblem + " not found");
             return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
+        Problem problem = problemOptional.get();
 
-
-        byte[] contents = problem.get().getDocumento();
+        byte[] contents = problem.getDocumento();
         if (contents == null || contents.length == 0) {
             return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
         }
@@ -99,7 +101,7 @@ public class ProblemController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
 
-        String filename = problem.get().getNombreEjercicio() + ".pdf";
+        String filename = problem.getNombreEjercicio() + ".pdf";
 
         //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());

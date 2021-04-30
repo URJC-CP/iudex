@@ -61,7 +61,7 @@ public class ProblemService {
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
 
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.valueOf(teamId));
+        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
             logger.error("Team/user " + teamId + " not found");
             salida.setSalida("TEAM NOT FOUND");
@@ -70,7 +70,7 @@ public class ProblemService {
         Team team = teamOptional.get();
         problem.setEquipoPropietario(team);
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.valueOf(idcontest));
+        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             salida.setSalida("CONCURSO NOT FOUND");
@@ -126,7 +126,7 @@ public class ProblemService {
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
 
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.valueOf(teamId));
+        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
             logger.error("Team/user " + teamId + " not found");
             salida.setSalida("TEAM NOT FOUND");
@@ -135,7 +135,7 @@ public class ProblemService {
         Team team = teamOptional.get();
         problem.setEquipoPropietario(team);
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.valueOf(idcontest));
+        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             salida.setSalida("CONCURSO NOT FOUND");
@@ -224,7 +224,7 @@ public class ProblemService {
         }
         Problem problemOriginal = problemOriginalOptional.get();
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.valueOf(idcontest));
+        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             problemUpdated.setSalida("CONCURSO NOT FOUND");
@@ -271,7 +271,7 @@ public class ProblemService {
 
         problemRepository.delete(problem);
 
-        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.get().getNombreEjercicio());
+        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
         return "OK";
     }
 
@@ -410,7 +410,7 @@ public class ProblemService {
             problem.setNombreEjercicio(nombreProblema.get());
         }
         if (teamId.isPresent()) {
-            Optional<Team> teamOptional = teamRepository.findTeamById(Long.valueOf(teamId.get()));
+            Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId.get()));
             if (teamOptional.isEmpty()) {
                 logger.error("Team/user " + teamId + " not found");
                 salida.setSalida("ERROR TEAMID NOT FOUND");

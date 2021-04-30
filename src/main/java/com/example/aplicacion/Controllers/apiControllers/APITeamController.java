@@ -33,11 +33,12 @@ public class APITeamController {
     @ApiOperation("Return Team")
     @GetMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> getTeam(@PathVariable String teamId) {
-        Optional<Team> team = teamService.getTeamFromId(teamId);
-        if (team.isEmpty()) {
+        Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
+        if (teamOptional.isEmpty()) {
             return new ResponseEntity("ERROR, TEAM NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(team.get().toTeamAPI(), HttpStatus.OK);
+        Team team = teamOptional.get();
+        return new ResponseEntity<>(team.toTeamAPI(), HttpStatus.OK);
     }
 
     @ApiOperation("Creates a Team")

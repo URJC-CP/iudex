@@ -81,7 +81,7 @@ public class DockerContainerMySQL extends DockerContainer {
 			e.printStackTrace();
 		}
 
-		LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.valueOf(result.getMaxTimeout()));
+		LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));
 		String signalEjecutor = null;
 		do {
 			Thread.onSpinWait();

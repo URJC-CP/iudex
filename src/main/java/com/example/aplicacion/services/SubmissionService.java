@@ -107,22 +107,22 @@ public class SubmissionService {
 
         int numeroDeResult = 0;
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<Sample> datosVisibles = problema.get().getDatosVisibles();
+        List<Sample> datosVisibles = problema.getDatosVisibles();
         int numeroDatosVisible = datosVisibles.size();
 
         for (int i = 0; i < numeroDatosVisible; i++) {
-            Result resAux = new Result(datosVisibles.get(i), codigo, language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
+            Result resAux = new Result(datosVisibles.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
 
-        List<Sample> datosOcultos = problema.get().getDatosOcultos();
+        List<Sample> datosOcultos = problema.getDatosOcultos();
         int numeroEntradas = datosOcultos.size();
 
         for (int i = 0; i < numeroEntradas; i++) {
-            Result resAux = new Result(datosOcultos.get(i), codigo, language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
+            Result resAux = new Result(datosOcultos.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
