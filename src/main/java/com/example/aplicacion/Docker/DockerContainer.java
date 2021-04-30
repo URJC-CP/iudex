@@ -53,11 +53,7 @@ public class DockerContainer {
         tar.closeArchiveEntry();
         tar.close();
 
-
-        InputStream salida = new ByteArrayInputStream(bos.toByteArray());
-
-
-        return salida;
+        return new ByteArrayInputStream(bos.toByteArray());
     }
 
     //Sacado de aqui https://stackoverflow.com/questions/25325442/wait-x-seconds-or-until-a-condition-becomes-true/25325830#comment85873450_25325830
@@ -99,10 +95,8 @@ public class DockerContainer {
 
         while ((tarAux = tarIn.getNextTarEntry()) != null) {
             //Buscamos el fichero a copiar
-            if (tarAux.isDirectory()) {
-
-            } else {  //Una vez sabemos que es fichero lo copiamos
-
+            if (!tarAux.isDirectory()) {
+                //Una vez sabemos que es fichero lo copiamos
                 salida = IOUtils.toString(tarIn);
 
                 //DESCOMENTAR PARA GUARDAR EN FICHERO
@@ -111,7 +105,6 @@ public class DockerContainer {
                 //fileOutput.close();
             }
         }
-
 
         //Comprobamos el tamano del String para evitar petar por tamano excesivo, si esta por encima enviamos un "" y notificamos
         if (salida.length() > 100000000) {

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-
 import java.util.Optional;
 
 //Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
@@ -40,41 +39,15 @@ public class ProblemValidatorService {
     private RabbitResultExecutionSender sender;
 
     public void validateProblem(Problem problemA) {
-        Optional<Problem> problem = problemRepository.findProblemById(problemA.getId());
+        Optional<Problem> problemOptional = problemRepository.findProblemById(problemA.getId());
 
+        Problem problem = problemOptional.get();
         //Recorremos la lista de submission y las enviamos
-        if (problem.get().getSubmissionProblemValidators().size() != 0) {
-            for (SubmissionProblemValidator submissionProblemValidator : problem.get().getSubmissionProblemValidators()) {
+        if (problem.getSubmissionProblemValidators().size() != 0) {
+            for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
-                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.get().getId() + ", " + problem.get().getNombreEjercicio());
-                //NO HACE FALTA CREAR LOS RESULTS AQUI> SE CREAN EN SUBMISSIONPROBLEMVALIDATORSERVICE
-            /*
-            List<InNOut> entradasProblemaVisible = problem.getEntradaVisible();
-            List<InNOut> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
-
-            //Creamos los result correspondientes
-            int numeroEntradasVisible = entradasProblemaVisible.size();
-            for(int i =0; i<numeroEntradasVisible; i++){
-                Result resAux = new Result(entradasProblemaVisible.get(i), submission.getCodigo(), salidaCorrectaProblemaVisible.get(i), submission.getLanguage(), submission.getFilename(), problem.getTimeout(), problem.getMemoryLimit() );
-                resultRepository.save(resAux);
-                submission.addResult(resAux);
-            }
-
-            //Creamos las entradas no visibles
-            List<InNOut> entradasProblema = problem.getEntradaOculta();
-            List<InNOut> salidaCorrectaProblema = problem.getSalidaOculta();
-            int numeroEntradas = entradasProblema.size();
-            for(int i =0; i<numeroEntradas; i++){
-                Result resAux = new Result(entradasProblema.get(i), submission.getCodigo(), salidaCorrectaProblema.get(i), submission.getLanguage(), submission.getFilename(), problem.getTimeout(), problem.getMemoryLimit());
-                resultRepository.save(resAux);
-                submission.addResult(resAux);
-            }
-
-
-            //Guardamos la submission
-            submissionProblemValidatorRepository.save(submissionProblemValidator);
-             */
+                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.getId() + ", " + problem.getNombreEjercicio());
 
                 //Ejecutamos
                 if (submission.getLanguage() != null) {
@@ -90,24 +63,25 @@ public class ProblemValidatorService {
         }
         //Si es un problema sin submission validamos
         else {
-            problem.get().setValido(true);
-            logger.debug("Finish validate problem " + problem.get().getNombreEjercicio() + " without test case");
-            problemRepository.save(problem.get());
+            problem.setValido(true);
+            logger.debug("Finish validate problem " + problem.getNombreEjercicio() + " without test case");
+            problemRepository.save(problem);
         }
     }
 
     public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator) {
         long problemId = submissionProblemValidator.getSubmission().getProblema().getId();
-        
+
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
-        Optional<Problem> problem = problemRepository.findById(problemId);
-        logger.debug("Check problem " + problem.get().getNombreEjercicio());
-      
+        Optional<Problem> problemOptional = problemRepository.findById(problemId);
+        Problem problem = problemOptional.get();
+        logger.debug("Check problem " + problem.getNombreEjercicio());
+
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
         Boolean estaTerminado = true;
-        for (SubmissionProblemValidator submissionProblemValidator1 : problem.get().getSubmissionProblemValidators()) {
+        for (SubmissionProblemValidator submissionProblemValidator1 : problem.getSubmissionProblemValidators()) {
             if (submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()) {
-            }else {  //Aun no ha terminado
+            } else {  //Aun no ha terminado
                 estaTerminado = false;
                 break;
             }
@@ -116,14 +90,14 @@ public class ProblemValidatorService {
         //Si esta terminado ejecutaremos que el resultado correspondiente de cada submission es el q tiene q ser, q los accepted sean aceepted etcetc
         if (estaTerminado) {
             //En caso de que sea valido lo apuntamos
-            if (checkSubmissionResultIsValide(problem.get())) {
-                problem.get().setValido(true);
-                logger.debug("Finish validate problem " + problem.get().getNombreEjercicio());
+            if (checkSubmissionResultIsValide(problem)) {
+                problem.setValido(true);
+                logger.debug("Finish validate problem " + problem.getNombreEjercicio());
             } else {
-                problem.get().setValido(false);
-                logger.warn("Invalid problem " + problem.get().getNombreEjercicio());
+                problem.setValido(false);
+                logger.warn("Invalid problem " + problem.getNombreEjercicio());
             }
-            problemRepository.save(problem.get());
+            problemRepository.save(problem);
         }
     }
 
@@ -143,31 +117,12 @@ public class ProblemValidatorService {
             }
 
             //Si el resultado esperado es igual al obtenido devolvemos true si no false
-            if (submissionProblemValidator.getExpectedSolution().equals(aux)) {
-
-            } else {
+            if (!submissionProblemValidator.getExpectedSolution().equals(aux)) {
                 salida = false;
                 logger.info("Unexpected result in submission " + submissionProblemValidator.getSubmission().getId());
                 logger.info("Expected result: " + submissionProblemValidator.getExpectedSolution() + "\nGiven result: " + aux);
             }
         }
-
         return salida;
     }
-
-    /*
-    private void waitForResult(SubmissionProblemValidator submissionProblemValidator){
-        Submission submission = submissionProblemValidator.getSubmission();
-        while(!submission.isCorregido()){
-            try {
-                Thread.sleep(10000);
-                submission = submissionRepository.findSubmissionById(submission.getId());
-            } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-            }
-        }
-    }
-
-     */
-
 }

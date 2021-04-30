@@ -42,7 +42,6 @@ public class APIProblemController {
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
     }
 
-
     //GetProblem
     @ApiOperation("Return selected problem")
     @GetMapping("/API/v1/problem/{problemId}")
@@ -66,7 +65,6 @@ public class APIProblemController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
-
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
@@ -114,8 +112,6 @@ public class APIProblemController {
         } else {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
-
-
     }
 
     //Devuelve el pdf del problema
@@ -154,6 +150,4 @@ public class APIProblemController {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
     }
-
-
 }

@@ -89,16 +89,12 @@ public class ZipHandlerService {
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
                         ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaVisible);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
                         ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaVisible);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
                     }
                 }
@@ -110,16 +106,12 @@ public class ZipHandlerService {
                         //Leemos el archivo zip a string
                         String aux = convertZipToString(zipFile);
                         ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.SalidaOculta);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
                     } else if (extension.equals("in")) {
                         //revisamos q el zip este bien
                         addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                         String aux = convertZipToString(zipFile);
                         ProblemData inNOut = new ProblemData(filename, aux, ProblemDataType.EntradaOculta);
-                        //inNOut.setProblem(problem);
-                        //SEBORRATEMPORALMENTEinNOutRepository.save(inNOut);
                         problem.addData(inNOut);
                         logger.info("ZIP DECOMPRESS: Add new testcase input for problem " + problem.getNombreEjercicio());
                     }
@@ -203,8 +195,6 @@ public class ZipHandlerService {
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")) {
             logger.error("Aborting upload, error encountered while uploading: " + checkMap);
-            //Si hay algun fallo borramos todos los inNOut que hemos creado
-            //borraInNOut(problem);
             problemString.setSalida(checkMap);
         }
 
@@ -230,13 +220,6 @@ public class ZipHandlerService {
         }
     }
 
-    /*
-    public Problem generateProblemFromZIP(Problem problem, MultipartFile multipartFile) throws Exception {
-        File convFile = new File(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(convFile);
-        return generateProblemFromZIP(problem, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-    }
-     */
     private void addStringToMap(Map<String, List<String>> mapa, String nombre, String extension) {
         if (mapa.containsKey(nombre)) {
             List<String> laux = mapa.get(nombre);

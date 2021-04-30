@@ -61,8 +61,7 @@ public class ResultReviser {
         salidaAux = removeWhitespace(salidaAux);
         ejerAux = removeWhitespace(ejerAux);
 
-        boolean aux = ejerAux.equals(salidaAux);
-        return aux;
+        return ejerAux.equals(salidaAux);
     }
 
     private String removeWhitespace(String aux) {
@@ -71,7 +70,6 @@ public class ResultReviser {
     }
 
     private String[] getTime(String aux) {
-        String[] salida = aux.split(" ");
-        return salida;
+        return aux.split(" ");
     }
 }

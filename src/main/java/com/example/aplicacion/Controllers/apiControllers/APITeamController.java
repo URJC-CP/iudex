@@ -37,14 +37,12 @@ public class APITeamController {
         if (team.isEmpty()) {
             return new ResponseEntity("ERROR, TEAM NOT FOUND", HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<>(team.get().toTeamAPI(), HttpStatus.OK);
     }
 
     @ApiOperation("Creates a Team")
     @PostMapping("/API/v1/team")
     public ResponseEntity<TeamAPI> createTeam(@RequestParam String nombreEquipo) {
-
         //false pq no es un usuario
         TeamString salida = teamService.crearTeam(nombreEquipo, false);
 
@@ -53,13 +51,11 @@ public class APITeamController {
         } else {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
-
     }
 
     @ApiOperation("Delete a Team")
     @DeleteMapping("/API/v1/team/{teamId}")
     public ResponseEntity deleteTeam(@PathVariable String teamId) {
-
         String salida = teamService.deleteTeamByTeamId(teamId);
         if (salida.equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -71,15 +67,12 @@ public class APITeamController {
     @ApiOperation("Update a Team")
     @PutMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName) {
-
         TeamString salida = teamService.updateTeam(teamId, teamName);
-
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
         } else {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
-
     }
 
 
@@ -87,7 +80,6 @@ public class APITeamController {
     @PutMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId) {
         TeamString salida = teamService.addUserToTeamUssingIds(teamId, userId);
-
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
         } else {
@@ -95,18 +87,14 @@ public class APITeamController {
         }
     }
 
-
     @ApiOperation("Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
         TeamString salida = teamService.deleteUserFromTeam(teamId, userId);
-
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
-
-
 }
