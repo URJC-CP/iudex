@@ -27,13 +27,12 @@ public class Contest {
     @ManyToMany
     private List<Problem> listaProblemas;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "listaContestsParticipados")
     private List<Team> listaParticipantes;
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
     private long timestamp = Instant.now().toEpochMilli();
-
 
     public Contest() {
         this.listaProblemas = new ArrayList<>();

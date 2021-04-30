@@ -110,29 +110,19 @@ public class ContestService {
 
     public String deleteContest(String idcontest) {
         logger.debug("Delete contest " + idcontest);
-        Optional<Contest> contest = contestRepository.findContestById(Long.valueOf(idcontest));
-        if (contest.isEmpty()) {
+        Optional<Contest> optional = contestRepository.findContestById(Long.valueOf(idcontest));
+        if (optional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
-        /*
-        //buscamos si en la lista de problemas hay alguno que solo este en este contest
-        boolean borrar = false;
-        Problem problemAux2 = new Problem();
-        for(Problem problemAux: contest.getListaProblemas()){
-            //Si hay algun problema que solo pertece a un contest lo borramos
-            if(problemAux.getListaContestsPertenece().size()==1 &&problemAux.getListaContestsPertenece().contains(contest)){
-                borrar=true;
-                problemAux2 = problemAux;
-            }
+        Contest contest = optional.get();
+        // quitar contest de los participantes
+        for (Team teamAux : contest.getListaParticipantes()) {
+            teamAux.getListaContestsParticipados().remove(contest);
         }
-        if (borrar) {
-            problemService.deleteProblem(Long.toString(problemAux2.getId()));
-        }
-         */
 
         //borramos el contest
-        contestRepository.delete(contest.get());
+        contestRepository.delete(contest);
 
         logger.debug("Finish delete contest " + idcontest);
         return "OK";

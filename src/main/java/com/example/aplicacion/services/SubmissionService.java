@@ -126,6 +126,15 @@ public class SubmissionService {
 
         //actualizamos el problema
         problema.get().addSubmission(submission);
+        List<Contest> contestList = team.get().getListaContestsParticipados();
+        if (!contestList.contains(contest.get())) {
+            contestList.add(contest.get());
+        }
+        List<Problem> problemList = team.get().getListaProblemasParticipados();
+        if (!problemList.contains(problema.get())) {
+            problemList.add(problema.get());
+        }
+        teamRepository.save(team.get());
         problemRepository.save(problema.get());
 
         submissionStringResult.setSalida("OK");

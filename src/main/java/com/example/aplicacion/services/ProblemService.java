@@ -272,6 +272,11 @@ public class ProblemService {
             }
         }
 
+        // Quitamos el problema de equipos Intentados
+        for(Team teamAux: problem.get().getListaEquiposIntentados()){
+            teamAux.getListaProblemasParticipados().remove(problem.get());
+        }
+
         problemRepository.delete(problem.get());
 
         logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.get().getNombreEjercicio());

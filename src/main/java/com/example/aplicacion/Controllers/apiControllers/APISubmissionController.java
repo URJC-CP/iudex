@@ -34,7 +34,6 @@ public class APISubmissionController {
     @Autowired
     ProblemService problemService;
 
-
     @ApiOperation("Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
@@ -135,5 +134,4 @@ public class APISubmissionController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
-
 }
