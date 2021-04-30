@@ -24,13 +24,13 @@ public class Team {
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Submission> listaDeSubmissions;
-    @OneToMany(mappedBy = "equipoPropietario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "equipoPropietario")
     private List<Problem> listaProblemasCreados;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Problem> listaProblemasParticipados;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     private List<Contest> listaContestsParticipados;
-    @OneToMany(mappedBy = "teamPropietario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teamPropietario")
     private List<Contest> listaContestsCreados;
     private long timestamp = Instant.now().toEpochMilli();
 
