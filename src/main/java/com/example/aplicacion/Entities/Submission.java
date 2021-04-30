@@ -122,9 +122,9 @@ public class Submission {
         return submissionAPI;
     }
 
-    private String listaToString(List<ProblemData> lista) {
+    private String listaToString(List<Sample> lista) {
         String salida = "";
-        for (ProblemData inout : lista) {
+        for (Sample inout : lista) {
             salida.concat(inout.toString());
         }
         return salida;
