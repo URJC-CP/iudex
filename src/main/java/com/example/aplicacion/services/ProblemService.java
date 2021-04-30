@@ -23,7 +23,7 @@ public class ProblemService {
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private ProblemDataRepository inNOutRepository;
+    private SampleRepository sampleRepository;
     @Autowired
     private ZipHandlerService zipHandlerService;
     @Autowired
@@ -249,25 +249,27 @@ public class ProblemService {
 
     public String deleteProblem(String problemId) {
         logger.debug("Delete problem " + problemId);
-        Optional<Problem> problem = problemRepository.findProblemById(Long.parseLong(problemId));
-        if (problem.isEmpty()) {
+        Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
+        if (problemOptional.isEmpty()) {
             logger.error("Problem " + problemId + " not found");
             return "PROBLEM NOT FOUND";
         }
+        Problem problem = problemOptional.get();
 
         //Quitamos los problemas del contest
-        for (Contest contestAux : problem.get().getListaContestsPertenece()) {
+        for (Contest contestAux : problem.getListaContestsPertenece()) {
             logger.debug("Remove problem " + problemId + " from contest " + contestAux.getId());
-            if (!contestAux.getListaProblemas().remove(problem.get())) {
+            if (!contestAux.getListaProblemas().remove(problem)) {
                 logger.error("Couldn't remove problem " + problemId + " from contest " + contestAux.getId());
             }
         }
 
         // Quitamos el problema de equipos Intentados
-        for (Team teamAux : problem.get().getListaEquiposIntentados()) {
-            teamAux.getListaProblemasParticipados().remove(problem.get());
+        for (Team teamAux : problem.getListaEquiposIntentados()) {
+            teamAux.getListaProblemasParticipados().remove(problem);
         }
-        problemRepository.delete(problem.get());
+
+        problemRepository.delete(problem);
 
         logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.get().getNombreEjercicio());
         return "OK";
@@ -332,32 +334,17 @@ public class ProblemService {
     public List<ProblemEntradaSalidaVisiblesHTML> getProblemEntradaSalidaVisiblesHTML(Problem problem) {
         List<ProblemEntradaSalidaVisiblesHTML> lista = new ArrayList<>();
 
-        List<ProblemData> entradasProblemaVisible = problem.getEntradaVisible();
-        List<ProblemData> salidaCorrectaProblemaVisible = problem.getSalidaVisible();
-        int numeroEntradasVisible = entradasProblemaVisible.size();
-        for (int i = 0; i < numeroEntradasVisible; i++) {
+        List<Sample> datosVisibles = problem.getDatosVisibles();
+        for (Sample datosVisible : datosVisibles) {
             ProblemEntradaSalidaVisiblesHTML problemEntradaSalidaVisiblesHTML = new ProblemEntradaSalidaVisiblesHTML();
-            problemEntradaSalidaVisiblesHTML.setEntrada(entradasProblemaVisible.get(i));
-            problemEntradaSalidaVisiblesHTML.setSalida(salidaCorrectaProblemaVisible.get(i));
-
+            problemEntradaSalidaVisiblesHTML.setSample(datosVisible);
             lista.add(problemEntradaSalidaVisiblesHTML);
         }
         return lista;
     }
 
-    private void saveAllInnNOut(Problem problem) {
-        for (ProblemData inNOut : problem.getEntradaVisible()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaVisible()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getEntradaOculta()) {
-            inNOutRepository.save(inNOut);
-        }
-        for (ProblemData inNOut : problem.getSalidaOculta()) {
-            inNOutRepository.save(inNOut);
-        }
+    private void saveAllSamples(Problem problem) {
+        sampleRepository.saveAll(problem.getData());
     }
 
     private void saveAllSubmissions(Problem problem) {
@@ -366,8 +353,9 @@ public class ProblemService {
         }
     }
 
-    private void deleteInNOut(Problem problem) {
+    public void deleteSamples(Problem problem) {
         problem.clearData();
+        problemRepository.save(problem);
     }
 
     private void updateProblemInside(Problem oldProblem, Problem newProblem) {

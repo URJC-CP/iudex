@@ -1,6 +1,5 @@
 package com.example.aplicacion.Entities;
 
-
 import com.example.aplicacion.Pojos.ResultAPI;
 
 import javax.persistence.*;
@@ -18,9 +17,7 @@ public class Result {
     private String codigo;
 
     @OneToOne
-    private ProblemData entradaInO;
-    @OneToOne
-    private ProblemData salidaEstandarCorrectaInO;
+    private Sample sample;
 
     @Lob
     private String salidaEstandar;
@@ -60,15 +57,14 @@ public class Result {
     }
 
 
-    public Result(ProblemData entrada, String codigo, ProblemData salidaEstandarCorrectaInO, Language language, String fileName, String maxtimeout, String maxMemory) {
+    public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory) {
         this.codigo = codigo;
-        this.entradaInO = entrada;
+        this.sample = datos;
         this.salidaEstandar = "";
         this.salidaError = "";
         this.salidaCompilador = "";
         this.signalCompilador = "0";
         this.signalEjecutor = "";
-        this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
         this.resultadoRevision = "";
         this.language = language;
         this.fileName = fileName;
@@ -116,20 +112,19 @@ public class Result {
 
     @Override
     public String toString() {
-        return codigo + entradaInO + salidaCompilador + salidaError + salidaEstandar;
+        return codigo + getEntrada() + salidaCompilador + salidaError + salidaEstandar;
     }
 
     public String getEntrada() {
-        return entradaInO.getText();
+        return sample.getInputText();
     }
 
-    public ProblemData getEntradaInO() {
-        return entradaInO;
+    public Sample getSample() {
+        return sample;
     }
 
-
-    public void setEntradaInO(ProblemData entrada) {
-        this.entradaInO = entrada;
+    public void setSample(Sample entrada) {
+        this.sample = entrada;
     }
 
     public String getSalidaEstandar() {
@@ -181,15 +176,7 @@ public class Result {
     }
 
     public String getSalidaEstandarCorrecta() {
-        return salidaEstandarCorrectaInO.getText();
-    }
-
-    public ProblemData getSalidaEstandarCorrectaInO() {
-        return salidaEstandarCorrectaInO;
-    }
-
-    public void setSalidaEstandarCorrectaInO(ProblemData salidaEstandarCorrectaInO) {
-        this.salidaEstandarCorrectaInO = salidaEstandarCorrectaInO;
+        return sample.getOutputText();
     }
 
     public String getSalidaTime() {

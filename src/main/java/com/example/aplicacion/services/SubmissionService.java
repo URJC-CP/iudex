@@ -107,24 +107,22 @@ public class SubmissionService {
 
         int numeroDeResult = 0;
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<ProblemData> entradasProblemaVisible = problema.getEntradaVisible();
-        List<ProblemData> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
-        int numeroEntradasVisible = entradasProblemaVisible.size();
+        List<Sample> datosVisibles = problema.get().getDatosVisibles();
+        int numeroDatosVisible = datosVisibles.size();
 
-        for (int i = 0; i < numeroEntradasVisible; i++) {
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+        for (int i = 0; i < numeroDatosVisible; i++) {
+            Result resAux = new Result(datosVisibles.get(i), codigo, language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
             submission.addResult(resAux);
         }
 
-        List<ProblemData> entradasProblema = problema.getEntradaOculta();
-        List<ProblemData> salidaCorrectaProblema = problema.getSalidaOculta();
-        int numeroEntradas = entradasProblema.size();
+        List<Sample> datosOcultos = problema.get().getDatosOcultos();
+        int numeroEntradas = datosOcultos.size();
 
         for (int i = 0; i < numeroEntradas; i++) {
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(datosOcultos.get(i), codigo, language.get(), submission.getFilename(), problema.get().getTimeout(), problema.get().getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
@@ -198,21 +196,19 @@ public class SubmissionService {
         int numeroDeResult = 0;
         logger.debug("Create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<ProblemData> entradasProblemaVisible = problema.getEntradaVisible();
-        List<ProblemData> salidaCorrectaProblemaVisible = problema.getSalidaVisible();
-        int numeroEntradasVisible = entradasProblemaVisible.size();
+        List<Sample> datosVisibles = problema.getDatosVisibles();
+        int numeroEntradasVisible = datosVisibles.size();
         for (int i = 0; i < numeroEntradasVisible; i++) {
-            Result resAux = new Result(entradasProblemaVisible.get(i), codigo, salidaCorrectaProblemaVisible.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(datosVisibles.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             submission.addResult(resAux);
         }
 
-        List<ProblemData> entradasProblema = problema.getEntradaOculta();
-        List<ProblemData> salidaCorrectaProblema = problema.getSalidaOculta();
-        int numeroEntradas = entradasProblema.size();
+        List<Sample> datosOcultos = problema.getDatosOcultos();
+        int numeroEntradas = datosOcultos.size();
         for (int i = 0; i < numeroEntradas; i++) {
-            Result resAux = new Result(entradasProblema.get(i), codigo, salidaCorrectaProblema.get(i), language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(datosOcultos.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             submission.addResult(resAux);

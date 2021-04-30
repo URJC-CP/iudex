@@ -1,9 +1,8 @@
 package com.example.aplicacion.integrationtest.apiControllers;
 
 import com.example.aplicacion.Controllers.apiControllers.APIAdminController;
-import com.example.aplicacion.Entities.ProblemData;
+import com.example.aplicacion.Entities.Sample;
 import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Pojos.ProblemDataType;
 import com.example.aplicacion.services.ResultService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +38,8 @@ public class TestAPIAdminController {
 		result.setId(564);
 		result.setFileName("Resultado de prueba");
 
-		ProblemData entrada = new ProblemData(756, "Datos de prueba", "Probando", ProblemDataType.EntradaVisible);
-		result.setEntradaInO(entrada);
-
-		ProblemData salida = new ProblemData(876, "Datos de prueba", "Probando", ProblemDataType.SalidaVisible);
-		result.setSalidaEstandarCorrectaInO(salida);
+		Sample sample = new Sample(756, "Datos de prueba", "Probando" , "Probando", true);
+		result.setSample(sample);
 
 		when(resultService.getResult(String.valueOf(result.getId()))).thenReturn(result);
 	}

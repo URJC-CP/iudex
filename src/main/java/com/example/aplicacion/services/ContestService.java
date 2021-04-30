@@ -114,12 +114,14 @@ public class ContestService {
 
     public String deleteContest(String idcontest) {
         logger.debug("Delete contest " + idcontest);
+
         Optional<Contest> optionalContest = contestRepository.findContestById(Long.parseLong(idcontest));
         if (optionalContest.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
         Contest contest = optionalContest.get();
+
         // quitar contest de los participantes
         for (Team teamAux : contest.getListaParticipantes()) {
             teamAux.getListaContestsParticipados().remove(contest);
@@ -220,14 +222,15 @@ public class ContestService {
 
     public String deleteTeamFromcontest(String idcontest, String idTeam) {
         logger.debug("Delete team/user " + idTeam + " from contest " + idcontest);
+
         Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idTeam));
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
         Contest contest = contestOptional.get();
 
+        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idTeam));
         if (teamOptional.isEmpty()) {
             logger.error("Team/user " + idTeam + " not found");
             return "USER NOT FOUND";

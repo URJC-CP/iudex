@@ -8,18 +8,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProblemAPI {
     private long id;
-
     private String nombreEjercicio;
-    private List<ProblemDataAPI> entradaVisible;
-    private List<ProblemDataAPI> salidaVisible;
-
-
+    private List<SampleAPI> samples;
     private List<SubmissionAPI> submissions;
-
     private TeamAPI equipoPropietario;
 
     private Boolean valido;
-
     private String timeout;
     private String memoryLimit;
 
@@ -28,7 +22,6 @@ public class ProblemAPI {
     private String source_url;
     private String license;
     private String rights_owner;
-
 
     private String color;
 
@@ -52,7 +45,6 @@ public class ProblemAPI {
     public void setNombreEjercicio(String nombreEjercicio) {
         this.nombreEjercicio = nombreEjercicio;
     }
-
 
     public List<SubmissionAPI> getSubmissions() {
         return submissions;
@@ -134,20 +126,12 @@ public class ProblemAPI {
         this.rights_owner = rights_owner;
     }
 
-    public List<ProblemDataAPI> getEntradaVisible() {
-        return entradaVisible;
+    public List<SampleAPI> getSamples() {
+        return samples;
     }
 
-    public void setEntradaVisible(List<ProblemDataAPI> entradaVisible) {
-        this.entradaVisible = entradaVisible;
-    }
-
-    public List<ProblemDataAPI> getSalidaVisible() {
-        return salidaVisible;
-    }
-
-    public void setSalidaVisible(List<ProblemDataAPI> salidaVisible) {
-        this.salidaVisible = salidaVisible;
+    public void setSamples(List<SampleAPI> samples) {
+        this.samples = samples;
     }
 
     public String getColor() {

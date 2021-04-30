@@ -3,16 +3,17 @@
 <head>
 
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="" name="description">
+    <meta content="" name="author">
 
     <title>The Judge - Problem</title>
 
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
@@ -38,12 +39,24 @@
         <tbody>
         {{#problem.submissions}}
         <tr>
-            <th><option>{{id}}</option></th>
-            <th><option>{{problema.nombreEjercicio}}</option></th>
-            <th><option>{{team.nombreEquipo}}</option></th>
-            <th><option>{{corregido}}</option></th>
-            <th><option>{{resultado}}</option></th>
-            <th><option>{{language.nombreLenguaje}}</option></th>
+            <th>
+                <option>{{id}}</option>
+            </th>
+            <th>
+                <option>{{problema.nombreEjercicio}}</option>
+            </th>
+            <th>
+                <option>{{team.nombreEquipo}}</option>
+            </th>
+            <th>
+                <option>{{corregido}}</option>
+            </th>
+            <th>
+                <option>{{resultado}}</option>
+            </th>
+            <th>
+                <option>{{language.nombreLenguaje}}</option>
+            </th>
 
         </tr>
         {{/problem.submissions}}
@@ -54,8 +67,9 @@
 
 <!--PDF show-->
 <div class="container">
-   <p>PDF PROBLEMA</p>
-    <object data="/getPDF/contest/{{contest.id}}/problema/{{problem.id}}" type="application/pdf" width="70%" height="400px">
+    <p>PDF PROBLEMA</p>
+    <object data="/getPDF/contest/{{contest.id}}/problema/{{problem.id}}" height="400px" type="application/pdf"
+            width="70%">
         <p>It appears you don't have a PDF plugin for this browser.
             No biggie... you can <a href="/getPDF/contest/{{contest.id}}/problema/{{problem.id}}">click here to
                 download the PDF file.</a></p>
@@ -69,10 +83,10 @@
         {{#ejemplos}}
             <div class="text">
                 <p>Entrada</p>
-                <p>{{entrada.text}}</p>
+                <p>{{sample.inputText}}</p>
 
                 <p>Salida</p>
-                <p>{{salida.text}}</p>
+                <p>{{salida.outputText}}</p>
             </div>
 
         {{/ejemplos}}
@@ -81,13 +95,13 @@
 </div>
 
 <div class="container">
-    <form method="post" action="/createSubmission" enctype="multipart/form-data">
+    <form action="/createSubmission" enctype="multipart/form-data" method="post">
         <div class="row">
             <p>Codigo</p>
-            <input type="file" id="codigo" name="codigo"  required>
+            <input id="codigo" name="codigo" required type="file">
         </div>
 
-        <input type="hidden" name="problemaAsignado" value="{{problem.id}}">
+        <input name="problemaAsignado" type="hidden" value="{{problem.id}}">
         <div class="row">
             <select class="form-control" name="lenguaje">
                 {{#languages}}
@@ -102,10 +116,10 @@
                 {{/teams}}
             </select>
         </div>
-        <input type="hidden" name="contestId" value="{{contest.id}}">
+        <input name="contestId" type="hidden" value="{{contest.id}}">
 
         <div class="siguiente">
-            <button type="submit" class="btn btn-success">Guardar</button>
+            <button class="btn btn-success" type="submit">Guardar</button>
         </div>
     </form>
 </div>
@@ -117,14 +131,14 @@
 
 <div class="container">
     <p>Borra submission de este problema</p>
-    <form method="post" action="/deleteSubmission" >
+    <form action="/deleteSubmission" method="post">
         <select class="form-control" name="submissionId">
             {{#problem.submissions}}
             <option value="{{id}}">{{id}}</option>
             {{/problem.submissions}}
         </select>
         <div class="siguiente">
-            <button type="submit" class="btn btn-success">Guardar</button>
+            <button class="btn btn-success" type="submit">Guardar</button>
         </div>
     </form>
 

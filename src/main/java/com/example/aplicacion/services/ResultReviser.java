@@ -32,7 +32,7 @@ public class ResultReviser {
         //Si no ejecuta ninguno significa que su ejecucion es correcta
         else {
             //Comprobar salida Estandar
-            String salidaCorrecta = res.getSalidaEstandarCorrectaInO().getText();
+            String salidaCorrecta = res.getSample().getOutputText();
             if (compareIgnoreExpressions(res.getSalidaEstandar(), salidaCorrecta)) {
                 res.setResultadoRevision("accepted");
             } else {

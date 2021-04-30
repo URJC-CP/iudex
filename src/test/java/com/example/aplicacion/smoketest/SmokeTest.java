@@ -47,7 +47,7 @@ public class SmokeTest {
     @Autowired
     ContestRepository contestRepository;
     @Autowired
-    ProblemDataRepository problemDataRepository;
+    SampleRepository sampleRepository;
     @Autowired
     LanguageRepository languageRepository;
     @Autowired
@@ -91,7 +91,7 @@ public class SmokeTest {
 
         //check repositories have been initialized
         assertNotNull(contestRepository);
-        assertNotNull(problemDataRepository);
+        assertNotNull(sampleRepository);
         assertNotNull(languageRepository);
         assertNotNull(problemRepository);
         assertNotNull(resultRepository);
@@ -105,7 +105,7 @@ public class SmokeTest {
     @DisplayName("Verificar estado inicial de los repositorios")
     public void emptyRepositories() {
         assertEquals(contestRepository.findAll().size(), 1);
-        assertTrue(problemDataRepository.findAll().isEmpty());
+        assertTrue(sampleRepository.findAll().isEmpty());
         assertFalse(languageRepository.findAll().isEmpty());
         assertTrue(problemRepository.findAll().isEmpty());
         assertTrue(resultRepository.findAll().isEmpty());
