@@ -37,14 +37,15 @@ public class RabbitResultRevieserReceiver {
         //lo guardamos
         resultRepository.save(res);
 
-        Optional<Submission> submission = submissionRepository.findSubmissionByResults(res);
-        submission.get().sumarResultCorregido();
+        Optional<Submission> submissionOptional = submissionRepository.findSubmissionByResults(res);
+        Submission submission = submissionOptional.get();
+        submission.sumarResultCorregido();
 
         //en caso de que ya se hayan corregido todos mandaremos una senal para que se valide el submission
-        if (submission.get().isTerminadoDeEjecutarResults()) {
-            submissionReviserService.revisarSubmission(submission.get());
+        if (submission.isTerminadoDeEjecutarResults()) {
+            submissionReviserService.revisarSubmission(submission);
         }
-        submissionRepository.save(submission.get());
+        submissionRepository.save(submission);
 
     }
 }

@@ -81,7 +81,7 @@ public class DockerContainerMySQL extends DockerContainer {
 			e.printStackTrace();
 		}
 
-		LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.valueOf(result.getMaxTimeout()));
+		LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));
 		String signalEjecutor = null;
 		do {
 			Thread.onSpinWait();
@@ -97,17 +97,14 @@ public class DockerContainerMySQL extends DockerContainer {
 		} while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
 
 		//Buscamos la salida Estandar
-		String salidaEstandar = null;
-		salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
+		String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
 		result.setSalidaEstandar(salidaEstandar);
 
 		//buscamos la salida Error
-		String salidaError = null;
-		salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
+		String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
 		result.setSalidaError(salidaError);
 
-		String time = null;
-		time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+		String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
 		result.setSalidaTime(time);
 
 		//para que no de fallo de compilador

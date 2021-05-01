@@ -59,30 +59,24 @@ public class DockerContainerCPP extends DockerContainer {
         } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
-        String salidaEstandar = null;
-        salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
+        String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
-        String salidaError = null;
-        salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
+        String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
-        String salidaCompilador = null;
-        salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
+        String salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
         result.setSalidaCompilador(salidaCompilador);
 
-        String time = null;
-        time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+        String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
         result.setSalidaTime(time);
 
-        String signalEjecutor = null;
-        signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
+        String signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);
 
-        String signalCompilador = null;
-        signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
+        String signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
         //logger.info("DOCKERCPP: EL result "+result.getId() + " ha terminado con senyal "+ signal);

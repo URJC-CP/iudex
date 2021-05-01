@@ -42,16 +42,16 @@ public class APIProblemController {
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
     }
 
-
     //GetProblem
     @ApiOperation("Return selected problem")
     @GetMapping("/API/v1/problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
-        Optional<Problem> problem = problemService.getProblem(problemId);
-        if (problem.isEmpty()) {
+        Optional<Problem> problemOptional = problemService.getProblem(problemId);
+        if (problemOptional.isEmpty()) {
             return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(problem.get().toProblemAPIFull(), HttpStatus.OK);
+        Problem problem = problemOptional.get();
+        return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
     }
 
     //Crea problema desde objeto Problem
@@ -66,7 +66,6 @@ public class APIProblemController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
-
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
@@ -114,8 +113,6 @@ public class APIProblemController {
         } else {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
-
-
     }
 
     //Devuelve el pdf del problema
@@ -123,20 +120,21 @@ public class APIProblemController {
     @ApiOperation("Get pdf from Problem")
     @GetMapping("/API/v1/problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
-        Optional<Problem> problem = problemService.getProblem(problemId);
+        Optional<Problem> problemOptional = problemService.getProblem(problemId);
 
-        if (problem.isEmpty()) {
+        if (problemOptional.isEmpty()) {
             return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
+        Problem problem = problemOptional.get();
 
-        byte[] contents = problem.get().getDocumento();
+        byte[] contents = problem.getDocumento();
         if (contents == null || contents.length == 0) {
             return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        String filename = problem.get().getNombreEjercicio() + ".pdf";
+        String filename = problem.getNombreEjercicio() + ".pdf";
         //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
@@ -154,6 +152,4 @@ public class APIProblemController {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
     }
-
-
 }

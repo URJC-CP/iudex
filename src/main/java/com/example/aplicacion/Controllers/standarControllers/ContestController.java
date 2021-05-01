@@ -33,13 +33,14 @@ public class ContestController {
     @GetMapping("/goToContest")
     public String goToContest(Model model, @RequestParam String contestId) {
         logger.debug("Get request received for contest " + contestId);
-        Optional<Contest> contest = contestService.getContest(contestId);
-        if (contest.isEmpty()) {
+        Optional<Contest> contestOptional = contestService.getContest(contestId);
+        if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }
-        model.addAttribute("contest", contest.get());
+        Contest contest = contestOptional.get();
+        model.addAttribute("contest", contest);
         model.addAttribute("teams", teamService.getAllTeams());
         model.addAttribute("problems", problemService.getAllProblemas());
 

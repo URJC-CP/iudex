@@ -21,10 +21,9 @@ import java.util.Map;
 @Service
 public class ResultHandler {
 
+    private final Map<String, String> imagenes;
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
     private DockerClient dockerClient;
-    private final Map<String, String> imagenes;
-
     @Value("${problem.default.timeout}")
     private String timeoutTime;
     @Value("${problem.default.memory}")
@@ -37,24 +36,8 @@ public class ResultHandler {
     public ResultHandler() {
         logger.info("Starting connection with docker");
         this.imagenes = new HashMap<>();
-
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
-
-        //Creamos las imagenes
-        /*
-        File dckfl = new File("DOCKERS/Dockerfile");
-        String imageId = dockerClient.buildImageCmd().withDockerfile(dckfl)
-                .exec(new BuildImageResultCallback())
-                .awaitImageId();
-        this.imagenes.put("java", imageId);
-        logger.info("Building image: "+imageId);
-        System.out.println("\nhemos creado la imagen \n " + imageId);
-
-
-         */
-        //logger.info("hemos creado la imagen " + imageId);
         logger.info("Connection established with docker");
-
     }
 
     public void ejecutor(Result res) throws IOException {

@@ -36,7 +36,6 @@ public class APIContestController {
             contestAPIS.add(contest.toContestAPIFull());
         }
         return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
-
     }
 
     @ApiOperation("Return Page Contest")
@@ -44,7 +43,6 @@ public class APIContestController {
     public ResponseEntity<Page<ContestAPI>> getAllContestPage(Pageable pageable) {
         Page<ContestAPI> salida = contestService.getContestPage(pageable).map(Contest::toContestAPI);
         return new ResponseEntity<>(salida, HttpStatus.OK);
-
     }
 
     //Get one Contest
@@ -53,16 +51,16 @@ public class APIContestController {
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
 
         ContestAPI contestAPI = new ContestAPI();
-        Optional<Contest> contest = contestService.getContest(contestId);
-        if (contest.isEmpty()) {
+        Optional<Contest> contestOptional = contestService.getContest(contestId);
+        if (contestOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        contestAPI = contest.get().toContestAPI();
+        Contest contest = contestOptional.get();
+        contestAPI = contest.toContestAPI();
 
         ResponseEntity<ContestAPI> responseEntity = new ResponseEntity<>(contestAPI, HttpStatus.OK);
         return responseEntity;
     }
-
 
     //Crea un concurso
     @ApiOperation("Create a contest")
@@ -75,7 +73,6 @@ public class APIContestController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
-
 
     //Delete one Contest
     @ApiOperation("Delete a contest")
@@ -121,6 +118,4 @@ public class APIContestController {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
     }
-
-
 }

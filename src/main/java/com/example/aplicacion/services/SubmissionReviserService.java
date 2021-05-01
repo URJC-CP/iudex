@@ -42,25 +42,24 @@ public class SubmissionReviserService {
         }
 
         //HAY QUE HACERLO CON EL RESTO DE OPCIONES WRONG ANSWER ETCETC
-
         submission.setCorregido(true);
         submissionRepository.save(submission);
 
         //Ahora buscamos si pudiera ser una submission de problema entrado desde ZIP
-        Optional<SubmissionProblemValidator> submissionProblemValidator = submissionProblemValidatorRepository.findSubmissionProblemValidatorBySubmission(submission);
-        if (submissionProblemValidator.isPresent()) {
+        Optional<SubmissionProblemValidator> submissionProblemValidatorOptional = submissionProblemValidatorRepository.findSubmissionProblemValidatorBySubmission(submission);
+        if (submissionProblemValidatorOptional.isPresent()) {
+            SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorOptional.get();
             //En caso de que sea una submission de la entrada de un problema ejecutaremos el metodo que controlara que cuando todas las submission de dicho probelma ha terminado
             //Se valide el problema y pueda usarse en la aplicacion
-            problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator.get());
+            problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator);
         }
-        logger.info("Finish review submission " + submission.getId()+" with "+submission.getResultado());
+        logger.info("Finish review submission " + submission.getId() + " with " + submission.getResultado());
     }
 
     //Chekea si esta aceptado
     private boolean checkAccepted(Submission submission) {
         boolean salida = true;
         for (Result result : submission.getResults()) {
-
             if (result.getResultadoRevision().equals("accepted")) {
                 //Sumamos los tiempos de ejecucion
                 submission.setExecSubmissionTime(submission.getExecSubmissionTime() + result.getExecTime());
@@ -77,7 +76,6 @@ public class SubmissionReviserService {
     //Obtiene el primer error
     private String checkSubmission(Submission submission) {
         String salida = "";
-
         for (Result result : submission.getResults()) {
             if (result.getResultadoRevision().equals("accepted")) {
                 //Sumamos los tiempos de ejecucion
@@ -85,12 +83,10 @@ public class SubmissionReviserService {
                 submission.setExecSubmissionMemory(submission.getExecSubmissionMemory() + result.getExecMemory());
             } else {
                 //Obtenemos el primero de los errores
-                String aux = result.getResultadoRevision();
-                salida = aux;
+                salida = result.getResultadoRevision();
                 break;
             }
         }
-
         return salida;
     }
 }

@@ -213,8 +213,6 @@ public class ZipHandlerService {
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")) {
             logger.error("Aborting upload, error encountered while uploading: " + checkMap);
-            //Si hay algun fallo borramos todos los inNOut que hemos creado
-            //borraInNOut(problem);
             problemString.setSalida(checkMap);
         }
 
@@ -240,13 +238,6 @@ public class ZipHandlerService {
         }
     }
 
-    /*
-    public Problem generateProblemFromZIP(Problem problem, MultipartFile multipartFile) throws Exception {
-        File convFile = new File(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(convFile);
-        return generateProblemFromZIP(problem, multipartFile.getOriginalFilename(), multipartFile.getInputStream());
-    }
-     */
     private void addStringToMap(Map<String, List<String>> mapa, String nombre, String extension) {
         if (mapa.containsKey(nombre)) {
             List<String> laux = mapa.get(nombre);

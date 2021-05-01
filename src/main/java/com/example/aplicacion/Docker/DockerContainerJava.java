@@ -79,38 +79,31 @@ public class DockerContainerJava extends DockerContainer {
          */
 
         //Buscamos la salida Estandar
-        String salidaEstandar = null;
-        salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
+        String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
 
         //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
-        String salidaError = null;
-
-        salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
+        String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
 
         //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
-        String salidaCompilador = null;
-        salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
+        String salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
         //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
-        String time = null;
-        time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+        String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
         //System.out.println(time);
         result.setSalidaTime(time);
 
 
-        String signalEjecutor = null;
-        signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
+        String signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);
 
-        String signalCompilador = null;
-        signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
+        String signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
 
         //logger.info("DOCKER JAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
@@ -128,7 +121,6 @@ public class DockerContainerJava extends DockerContainer {
         Matcher m = p.matcher(getResult().getCodigo());
         if (m.find()) {
             salida = m.group(1);
-
         }
         //Si no, buscamos la clase q no es publica
         else {
@@ -136,10 +128,8 @@ public class DockerContainerJava extends DockerContainer {
             Matcher m2 = p2.matcher(getResult().getCodigo());
             if (m2.find()) {
                 salida = m2.group(1);
-
             }
         }
-
         return salida;
     }
 }

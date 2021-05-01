@@ -8,15 +8,12 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APIErrorController {
-
     Logger logger = LoggerFactory.getLogger(APIErrorController.class);
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleError(RuntimeException e){
-        logger.error(""+ e.toString());
-
+    public String handleError(RuntimeException e) {
+        logger.error("" + e.toString());
         return "ERROR GENERAL DEL SISTEMA";
     }
-
 }

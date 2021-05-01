@@ -12,13 +12,11 @@ public class ResultService {
     @Autowired
     ResultRepository resultRepository;
 
-
-    public Result getResult(String resultId){
-        return resultRepository.findResultById(Long.valueOf(resultId)).get();
-
+    public Result getResult(String resultId) {
+        return resultRepository.findResultById(Long.parseLong(resultId)).get();
     }
 
-    public List<Result> getAllResults(){
+    public List<Result> getAllResults() {
         return resultRepository.findAll();
     }
 }
