@@ -4,6 +4,7 @@ import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public class Language {
     private List<Contest> concursos;
 
     public Language() {
+        concursos = new ArrayList<>();
     }
 
     public Language(String lenguaje, String imgenId) {
