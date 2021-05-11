@@ -3,6 +3,7 @@ package com.example.aplicacion.Pojos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class SubmissionAPI {
@@ -10,6 +11,7 @@ public class SubmissionAPI {
     private long id;
     private List<ResultAPI> results;
     private TeamAPI team;
+    private ProblemAPI problem;
 
     private Boolean corregido;
     private Integer numeroResultCorregidos;
@@ -30,7 +32,13 @@ public class SubmissionAPI {
         this.id = id;
     }
 
+    public ProblemAPI getProblem() {
+        return problem;
+    }
 
+    public void setProblem(ProblemAPI problem) {
+        this.problem = problem;
+    }
 
     public List<ResultAPI> getResults() {
         return results;
@@ -42,10 +50,6 @@ public class SubmissionAPI {
 
     public boolean isCorregido() {
         return corregido;
-    }
-
-    public void setCorregido(boolean corregido) {
-        this.corregido = corregido;
     }
 
     public Integer getNumeroResultCorregidos() {
@@ -98,6 +102,10 @@ public class SubmissionAPI {
 
     public Boolean getCorregido() {
         return corregido;
+    }
+
+    public void setCorregido(boolean corregido) {
+        this.corregido = corregido;
     }
 
     public void setCorregido(Boolean corregido) {
