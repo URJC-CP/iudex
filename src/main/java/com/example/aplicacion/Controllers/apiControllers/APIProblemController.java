@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.ws.rs.Consumes;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/API/v1/")
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APIProblemController {
 
@@ -26,7 +28,7 @@ public class APIProblemController {
 
     //Get all problems in DB
     @ApiOperation("Return All Problems")
-    @GetMapping("/API/v1/problem")
+    @GetMapping("problem")
     public ResponseEntity<List<ProblemAPI>> problems() {
         List<Problem> problems = problemService.getAllProblemas();
         List<ProblemAPI> salida = new ArrayList<>();
@@ -37,14 +39,14 @@ public class APIProblemController {
     }
 
     @ApiOperation("Return Page of all Problems")
-    @GetMapping("/API/v1/problem/page")
+    @GetMapping("problem/page")
     public ResponseEntity<Page<ProblemAPI>> getAllProblemPage(Pageable pageable) {
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
     }
 
     //GetProblem
     @ApiOperation("Return selected problem")
-    @GetMapping("/API/v1/problem/{problemId}")
+    @GetMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
@@ -56,7 +58,7 @@ public class APIProblemController {
 
     //Crea problema desde objeto Problem
     @ApiOperation("Create problem Using a Problem Object")
-    @PostMapping("/API/v1/problem")
+    @PostMapping("problem")
     public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
 
         ProblemString salida = problemService.addProblem(problem);
@@ -70,7 +72,7 @@ public class APIProblemController {
     //Crea problema y devuelve el problema. Necesita team y contest
     @ApiOperation("Create Problem from Zip")
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PostMapping(value = "/API/v1/problem/fromZip")
+    @PostMapping(value = "problem/fromZip")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         ProblemString salida;
         try {
@@ -86,7 +88,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Update problem from ZIP")
-    @PutMapping(value = "/API/v1/problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
 
         ProblemString salida;
@@ -104,7 +106,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Update a problem with Request Param")
-    @PutMapping("/API/v1/problem/{problemId}")
+    @PutMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
 
         ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
@@ -118,7 +120,7 @@ public class APIProblemController {
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @ApiOperation("Get pdf from Problem")
-    @GetMapping("/API/v1/problem/{problemId}/getPDF")
+    @GetMapping("problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
 
@@ -143,7 +145,7 @@ public class APIProblemController {
     }
 
     @ApiOperation("Delete problem from all contests")
-    @DeleteMapping("/API/v1/problem/{problemId}")
+    @DeleteMapping("problem/{problemId}")
     public ResponseEntity deleteProblem(@PathVariable String problemId) {
         String salida = problemService.deleteProblem(problemId);
         if (salida.equals("OK")) {
@@ -151,5 +153,84 @@ public class APIProblemController {
         } else {
             return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation("Add sample to problem")
+    @PostMapping("problem/{problemId}/sample")
+    public ResponseEntity addSampleToProblem(@PathVariable String problemId,
+         @RequestParam String name,
+         @RequestPart("entrada") MultipartFile sampleInput,
+         @RequestPart("salida") MultipartFile sampleOutput,
+         @RequestParam boolean isPublic) {
+
+        if (sampleInput.isEmpty() || sampleOutput.isEmpty()) {
+            return new ResponseEntity("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
+        }
+
+        String inputText;
+        try {
+            inputText = new String(sampleInput.getBytes());
+        } catch (IOException e) {
+            return new ResponseEntity("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        String outputText;
+        try {
+            outputText = new String(sampleInput.getBytes());
+        } catch (IOException e) {
+            return new ResponseEntity("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+
+        String salida = problemService.addSampleToProblem(problemId, name, inputText, outputText, isPublic);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+    }
+
+    @ApiOperation("Update sample from problem")
+    @PutMapping("problem/{problemId}/sample/{sampleId}")
+    public ResponseEntity updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId,
+          @RequestParam(value= "name", required = false) Optional<String> nameOptional,
+          @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional,
+          @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional,
+          @RequestParam(value= "isPublic", required = false) Optional<Boolean> isPublicOptional) {
+        if (nameOptional.isEmpty() && sampleInputOptional.isEmpty() && sampleOutputOptional.isEmpty() && isPublicOptional.isEmpty()) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<String> inputText = Optional.ofNullable(null);
+        if (sampleInputOptional.isPresent()) {
+            try {
+                inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
+            } catch (IOException e) {
+                return new ResponseEntity("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+        }
+
+        Optional<String> outputText = Optional.ofNullable(null);
+        if (sampleOutputOptional.isPresent()) {
+            try {
+                outputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
+            } catch (IOException e) {
+                return new ResponseEntity("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
+        }
+
+        String salida = problemService.updateSampleFromProblem(nameOptional, problemId, sampleId, inputText, outputText, isPublicOptional);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+    }
+
+    @ApiOperation("Delete sample from problem")
+    @DeleteMapping("problem/{problemId}/sample/{sampleId}")
+    public ResponseEntity deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
+        String salida = problemService.deleteSampleFromProblem(problemId, sampleId);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
     }
 }
