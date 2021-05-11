@@ -95,6 +95,13 @@ public class SubmissionService {
             return submissionStringResult;
         }
 
+        // comprobar si el problema tiene casos de prueba
+        if (!problema.hasTestCaseFiles()) {
+            logger.error("Problem " + problem + " does not contain any test files");
+            submissionStringResult.setSalida("PROBLEM IS EMPTY");
+            return submissionStringResult;
+        }
+
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion

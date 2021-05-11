@@ -464,7 +464,7 @@ public class ProblemService {
     }
 
     public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId,
-          Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
+                                          Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
         logger.debug("Update sample " + sampleId + " from problem " + problemId);
         ProblemString ps = new ProblemString();
         String salida;
@@ -494,7 +494,7 @@ public class ProblemService {
         String name = (nameOptional.isPresent()) ? nameOptional.get() : sample.getName();
         String inputText = (inputTextOptional.isPresent()) ? inputTextOptional.get() : sample.getInputText();
         String outputText = (outputTextOptional.isPresent()) ? outputTextOptional.get() : sample.getOutputText();
-        boolean isPresent = (isPublicOptional.isPresent()) ? isPublicOptional.get(): sample.isPublic();
+        boolean isPresent = (isPublicOptional.isPresent()) ? isPublicOptional.get() : sample.isPublic();
         Sample newSample = new Sample(name, inputText, outputText, isPresent);
         sampleRepository.save(newSample);
 
@@ -527,16 +527,9 @@ public class ProblemService {
         }
         Sample sample = sampleOptional.get();
 
-        List<Sample> datos = problem.getData();
-        if (!datos.contains(sample)) {
+        if (!problem.getData().contains(sample)) {
             logger.error("Sample " + sampleId + " not in problem " + problemId + "!");
             salida = "SAMPLE NOT IN PROBLEM!";
-            return salida;
-        }
-
-        if(datos.size() == 1){
-            logger.error("Problem " + problemId + " has only one sample!");
-            salida = "PROBLEM HAS ONLY ONE SAMPLE";
             return salida;
         }
 
