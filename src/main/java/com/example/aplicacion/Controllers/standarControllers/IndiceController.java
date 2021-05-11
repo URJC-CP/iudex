@@ -71,7 +71,7 @@ public class IndiceController {
             + "\nTeam: " + teamId + ", Contest: " + contestId);
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
-        logger.debug("Submission " + salida.getSubmission().getId() + " finished running with " + salida.getSalida());
+        logger.debug("Submission finished running with " + salida.getSalida());
 
         if (salida.equals("OK")) {
             return "redirect:/";

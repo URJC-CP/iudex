@@ -44,7 +44,7 @@ public class SubmissionService {
         //Creamos la submission
         submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
         if (!submissionStringResult.getSalida().equals("OK")) {
-            logger.error("Create and run submission " + fileName + " failed with " + submissionStringResult.getSalida() + "\nProblem: " + problem + "Contest: " + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
+            logger.error("Create and run submission " + fileName + " failed with " + submissionStringResult.getSalida() + "\nProblem: " + problem + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
             return submissionStringResult;
         }
         //ejecutamos
