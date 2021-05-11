@@ -4,6 +4,7 @@ import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,6 +18,9 @@ public class Language {
     private String imgenId;
     private long timestamp = Instant.now().toEpochMilli();
 
+    @ManyToMany
+    private List<Contest> concursos;
+
     public Language() {
     }
 
@@ -26,10 +30,15 @@ public class Language {
     }
 
     public LanguageAPI toLanguageAPI() {
+        LanguageAPI languageAPI = toLanguageAPISimple();
+        languageAPI.setTimestamp(this.timestamp);
+        return languageAPI;
+    }
+
+    public LanguageAPI toLanguageAPISimple() {
         LanguageAPI languageAPI = new LanguageAPI();
         languageAPI.setId(this.id);
         languageAPI.setNombreLenguaje(nombreLenguaje);
-        languageAPI.setTimestamp(this.timestamp);
         return languageAPI;
     }
 
@@ -63,6 +72,14 @@ public class Language {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public List<Contest> getConcursos() {
+        return concursos;
+    }
+
+    public void setConcursos(List<Contest> concursos) {
+        this.concursos = concursos;
     }
 
     @Override

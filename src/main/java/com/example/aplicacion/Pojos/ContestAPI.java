@@ -1,8 +1,5 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.Team;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
@@ -13,7 +10,7 @@ public class ContestAPI {
 
     private String nombreContest;
     private String descripcion;
-    
+    private List<LanguageAPI> lenguajesAceptados;
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
@@ -41,6 +38,14 @@ public class ContestAPI {
 
     public void setTeamPropietario(TeamAPI teamPropietario) {
         this.teamPropietario = teamPropietario;
+    }
+
+    public List<LanguageAPI> getLenguajesAceptados() {
+        return lenguajesAceptados;
+    }
+
+    public void setLenguajesAceptados(List<LanguageAPI> lenguagesAceptados) {
+        this.lenguajesAceptados = lenguagesAceptados;
     }
 
     public List<ProblemAPI> getListaProblemas() {

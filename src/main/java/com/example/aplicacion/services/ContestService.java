@@ -1,6 +1,7 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.Contest;
+import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
 import com.example.aplicacion.Pojos.ContestString;
@@ -30,6 +31,8 @@ public class ContestService {
     private ProblemRepository problemRepository;
     @Autowired
     private ProblemService problemService;
+    @Autowired
+    private LanguageService languageService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion) {
         logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
@@ -56,6 +59,8 @@ public class ContestService {
         Team team = teamOptional.get();
         contest.setTeamPropietario(team);
 
+        Language java = languageService.getLanguageByName("java").get();
+        contest.addLanguage(java);
         contestRepository.save(contest);
 
         salida.setSalida("OK");

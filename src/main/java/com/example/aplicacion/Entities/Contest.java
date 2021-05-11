@@ -1,6 +1,7 @@
 package com.example.aplicacion.Entities;
 
 import com.example.aplicacion.Pojos.ContestAPI;
+import com.example.aplicacion.Pojos.LanguageAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.TeamAPI;
 
@@ -15,6 +16,9 @@ public class Contest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Language> lenguajes;
 
     @Column(unique = true)
     private String nombreContest;
@@ -39,6 +43,7 @@ public class Contest {
         this.listaParticipantes = new ArrayList<>();
         this.listaSubmissions = new ArrayList<>();
         this.listaProblemas = new ArrayList<>();
+        this.lenguajes = new ArrayList<>();
     }
 
     public ContestAPI toContestAPI() {
@@ -47,6 +52,13 @@ public class Contest {
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
+
+        List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
+        for (Language lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        }
+        contestAPI.setLenguajesAceptados(lenguajesAceptados);
+
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPISimple());
@@ -67,6 +79,13 @@ public class Contest {
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
+
+        List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
+        for (Language lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        }
+        contestAPI.setLenguajesAceptados(lenguajesAceptados);
+
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPI());
@@ -118,6 +137,24 @@ public class Contest {
 
     public void setListaProblemas(List<Problem> listaProblemas) {
         this.listaProblemas = listaProblemas;
+    }
+
+    public List<Language> getLenguajes() {
+        return lenguajes;
+    }
+
+    public void setLenguajes(List<Language> lenguajes) {
+        this.lenguajes = lenguajes;
+    }
+
+    public void addLanguage(Language language) {
+        if (!lenguajes.contains(language)) {
+            lenguajes.add(language);
+        }
+    }
+
+    public void removeLanguage(Language language) {
+        lenguajes.remove(language);
     }
 
     public List<Team> getListaParticipantes() {
