@@ -99,7 +99,7 @@ public class APIContestController {
     }
 
     @ApiOperation("Add Problem to Contest")
-    @PostMapping("contest/{contestId}/{problemId}")
+    @PutMapping("contest/{contestId}/{problemId}")
     public ResponseEntity addProblemToContest(@PathVariable String problemId, @PathVariable String contestId) {
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
         if (salida.equals("OK")) {
@@ -120,7 +120,29 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Add language to Contest")
+    @ApiOperation("Add Team to Contest")
+    @PutMapping("contest/{contestId}/team/{teamId}")
+    public ResponseEntity addTeamToContest(@PathVariable String teamId, @PathVariable String contestId) {
+        String salida = contestService.addTeamTocontest(teamId, contestId);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Delete Team From Contest")
+    @DeleteMapping("contest/{contestId}/team/{teamId}")
+    public ResponseEntity deleteTeamFromContest(@PathVariable String teamId, @PathVariable String contestId) {
+        String salida = contestService.deleteTeamFromcontest(contestId, teamId);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Add Language to Contest")
     @PostMapping("contest/{contestId}/language")
     public ResponseEntity addLanguageToContest(@PathVariable String contestId, @RequestParam String language) {
         String salida = contestService.addLanguageToContest(contestId, language);
@@ -141,7 +163,7 @@ public class APIContestController {
     }
 
     @ApiOperation("Set accepted languages of a contest")
-    @PostMapping("contest/{contestId}/languages")
+    @PostMapping("contest/{contestId}/language/addBulk")
     public ResponseEntity addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam(value = "lenguajes") String[] languageList) {
         String salida = contestService.addAcceptedLanguagesToContest(contestId, languageList);
         if (salida.equals("OK")) {
