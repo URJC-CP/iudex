@@ -218,6 +218,8 @@ public class ContestService {
         Team team = teamOptional.get();
 
         if (!contest.getListaParticipantes().contains(team)) {
+            team.getListaContestsParticipados().add(contest);
+            teamRepository.save(team);
             contest.addTeam(team);
             contestRepository.save(contest);
         } else {
@@ -278,6 +280,8 @@ public class ContestService {
             logger.error("Team/user " + teamId + " not in contest " + contest.getId());
             return "NO ESTA EN EL CONCURSO";
         } else {
+            team.getListaContestsParticipados().remove(contest);
+            teamRepository.save(team);
             contest.deleteTeam(team);
             contestRepository.save(contest);
         }

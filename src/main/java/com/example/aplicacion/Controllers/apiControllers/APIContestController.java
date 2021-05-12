@@ -122,7 +122,7 @@ public class APIContestController {
 
     @ApiOperation("Add Team to Contest")
     @PutMapping("contest/{contestId}/team/{teamId}")
-    public ResponseEntity addTeamToContest(@PathVariable String teamId, @PathVariable String contestId) {
+    public ResponseEntity addTeamToContest(@PathVariable String contestId, @PathVariable String teamId) {
         String salida = contestService.addTeamToContest(contestId, teamId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);

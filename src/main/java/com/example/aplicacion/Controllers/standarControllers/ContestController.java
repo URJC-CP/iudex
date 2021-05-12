@@ -65,7 +65,7 @@ public class ContestController {
     @PostMapping("/addUserToContest")
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId) {
         logger.debug("Add user " + teamId + " request receiver for contest " + contestId);
-        String salida = contestService.addTeamTocontest(teamId, contestId);
+        String salida = contestService.addTeamToContest(teamId, contestId);
 
         if (salida.equals("OK")) {
             logger.debug("Add user " + teamId + " request success for contest " + contestId);
@@ -80,7 +80,7 @@ public class ContestController {
     @PostMapping("/deleteTeamFromContest")
     public String deleteTeamFromContest(Model model, @RequestParam String teamId, @RequestParam String contestId) {
         logger.debug("Delete team " + teamId + " request received for contest " + contestId);
-        String salida = contestService.deleteTeamFromcontest(contestId, teamId);
+        String salida = contestService.deleteTeamFromContest(contestId, teamId);
 
         if (salida.equals("OK")) {
             logger.debug("Delete team " + teamId + " request success for contest " + contestId);
