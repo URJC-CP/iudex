@@ -321,9 +321,12 @@ public class ContestService {
         }
         Contest contest = contestOptional.get();
 
+        logger.debug("Clear language list of contest " + contestId);
+        contest.clearLanguage();
+
         for (String languageName : languageList) {
             salida = addLanguageToContest(contest, languageName);
-
+            // si falla se limpia la lista y se añade java por defecto
             if (!salida.equals("OK")) {
                 logger.debug("Clearing language list from contest " + contestId);
                 contest.clearLanguage();
