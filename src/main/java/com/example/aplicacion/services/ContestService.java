@@ -33,6 +33,8 @@ public class ContestService {
     private ProblemService problemService;
     @Autowired
     private LanguageService languageService;
+    @Autowired
+    private TeamService teamService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion) {
         logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
@@ -50,7 +52,7 @@ public class ContestService {
             contest.setDescripcion(descripcion.get());
         }
 
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
+        Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
             logger.error("Team " + teamId + " not found");
             salida.setSalida("TEAM NOT FOUND");
@@ -75,7 +77,7 @@ public class ContestService {
         ContestString salida = new ContestString();
 
         //Buscamos el contest
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(contestId));
+        Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             salida.setSalida("CONTEST ID DOES NOT EXIST");
@@ -95,7 +97,7 @@ public class ContestService {
         }
 
         if (teamId.isPresent()) {
-            Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId.get()));
+            Optional<Team> teamOptional = teamService.getTeamFromId(teamId.get());
             if (teamOptional.isEmpty()) {
                 logger.error("Team " + teamId.get() + " not found");
                 salida.setSalida("TEAM NOT FOUND");
@@ -120,7 +122,7 @@ public class ContestService {
     public String deleteContest(String idcontest) {
         logger.debug("Delete contest " + idcontest);
 
-        Optional<Contest> optionalContest = contestRepository.findContestById(Long.parseLong(idcontest));
+        Optional<Contest> optionalContest = getContest(idcontest);
         if (optionalContest.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
@@ -141,8 +143,8 @@ public class ContestService {
 
     public String anyadeProblemaContest(String idContest, String idProblema) {
         logger.debug("Add problem " + idProblema + " to contest " + idContest);
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idContest));
-        Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(idProblema));
+        Optional<Contest> contestOptional = getContest(idContest);
+        Optional<Problem> problemOptional = problemService.getProblem(idProblema);
 
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
@@ -170,8 +172,8 @@ public class ContestService {
 
     public String deleteProblemFromContest(String idContest, String idProblema) {
         logger.debug("Delete problem " + idProblema + " from contest " + idContest);
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idContest));
-        Optional<Problem> problemaOptional = problemRepository.findProblemById(Long.parseLong(idProblema));
+        Optional<Contest> contestOptional = getContest(idContest);
+        Optional<Problem> problemaOptional = problemService.getProblem(idProblema);
 
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
@@ -199,21 +201,21 @@ public class ContestService {
 
     public String addTeamTocontest(String idTeam, String idcontest) {
         logger.debug("Add team/user " + idTeam + " to contest " + idcontest);
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idTeam));
 
+        Optional<Contest> contestOptional = getContest(idcontest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
         Contest contest = contestOptional.get();
 
+        Optional<Team> teamOptional = teamService.getTeamFromId(idTeam);
         if (teamOptional.isEmpty()) {
             logger.error("Team/user " + idTeam + " not found");
             return "USER NOT FOUND";
         }
-
         Team team = teamOptional.get();
+
         if (!contest.getListaParticipantes().contains(team)) {
             contest.addTeam(team);
             contestRepository.save(contest);
@@ -228,14 +230,14 @@ public class ContestService {
     public String deleteTeamFromcontest(String idcontest, String idTeam) {
         logger.debug("Delete team/user " + idTeam + " from contest " + idcontest);
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
+        Optional<Contest> contestOptional = getContest(idcontest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
         Contest contest = contestOptional.get();
 
-        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idTeam));
+        Optional<Team> teamOptional = teamService.getTeamFromId(idTeam);
         if (teamOptional.isEmpty()) {
             logger.error("Team/user " + idTeam + " not found");
             return "USER NOT FOUND";
@@ -269,4 +271,93 @@ public class ContestService {
         return contestRepository.findAll(pageable);
     }
 
+    public String addLanguageToContest(String contestId, String languageName) {
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found!");
+            return "CONTEST NOT FOUND!";
+        }
+        Contest contest = contestOptional.get();
+        return addLanguageToContest(contest, languageName);
+    }
+
+    public String removeLanguageFromContest(String contestId, String languageId) {
+        logger.debug("Removing language " + languageId + " from contest " + contestId);
+        String salida;
+
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found!");
+            salida = "CONTEST NOT FOUND!";
+            return salida;
+        }
+        Contest contest = contestOptional.get();
+
+        Optional<Language> languageOptional = languageService.getLanguage(languageId);
+        if (languageOptional.isEmpty()) {
+            logger.error("Language " + languageId + " not found!");
+            salida = "LANGUAGE NOT FOUND!";
+            return salida;
+        }
+        Language language = languageOptional.get();
+
+        contest.removeLanguage(language);
+        contestRepository.save(contest);
+
+        logger.debug("Finish delete language " + languageId + " from contest " + contestId);
+        salida = "OK";
+        return salida;
+    }
+
+    public String addAcceptedLanguagesToContest(String contestId, String[] languageList) {
+        logger.debug("Add accepted languages to contest " + contestId);
+        String salida;
+
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found!");
+            salida = "CONTEST NOT FOUND!";
+            return salida;
+        }
+        Contest contest = contestOptional.get();
+
+        for (String languageName : languageList) {
+            salida = addLanguageToContest(contest, languageName);
+
+            if (!salida.equals("OK")) {
+                logger.debug("Clearing language list from contest " + contestId);
+                contest.clearLanguage();
+                logger.debug("Adding default language");
+                addLanguageToContest(contest, "java");
+                contestRepository.save(contest);
+                return salida;
+            }
+        }
+
+        logger.debug("Finish add accepted languages to contest " + contestId);
+        salida = "OK";
+        return salida;
+    }
+
+    private String addLanguageToContest(Contest contest, String languageName) {
+        logger.debug("Adding language " + languageName + " to contest " + contest.getId());
+        String salida;
+        languageName = languageName.trim().toLowerCase();
+
+        Optional<Language> languageOptional = languageService.getLanguageByName(languageName);
+        if (languageOptional.isEmpty()) {
+            logger.error("Unknown language " + languageName);
+            salida = "UNKNOWN LANGUAGE " + languageName.toUpperCase() + "!";
+            return salida;
+        }
+        Language language = languageOptional.get();
+
+        // add language
+        contest.addLanguage(language);
+        contestRepository.save(contest);
+
+        logger.debug("Finish add language " + languageName + " to contest " + contest.getId());
+        salida = "OK";
+        return salida;
+    }
 }
