@@ -123,7 +123,18 @@ public class APIContestController {
     @ApiOperation("Add Team to Contest")
     @PutMapping("contest/{contestId}/team/{teamId}")
     public ResponseEntity addTeamToContest(@PathVariable String teamId, @PathVariable String contestId) {
-        String salida = contestService.addTeamTocontest(teamId, contestId);
+        String salida = contestService.addTeamToContest(contestId, teamId);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Bulk add Team to Contest")
+    @PutMapping("contest/{contestId}/team/addBulk")
+    public ResponseEntity addTeamToContest(@PathVariable String contestId, @RequestParam(value = "equipos") String[] teamList) {
+        String salida = contestService.addTeamToContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
         } else {
@@ -133,8 +144,19 @@ public class APIContestController {
 
     @ApiOperation("Delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/{teamId}")
-    public ResponseEntity deleteTeamFromContest(@PathVariable String teamId, @PathVariable String contestId) {
-        String salida = contestService.deleteTeamFromcontest(contestId, teamId);
+    public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @PathVariable String teamId) {
+        String salida = contestService.deleteTeamFromContest(contestId, teamId);
+        if (salida.equals("OK")) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Bulk delete Team From Contest")
+    @DeleteMapping("contest/{contestId}/team/removeBulk")
+    public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @RequestParam(value = "equipos") String[] teamList) {
+        String salida = contestService.deleteTeamFromContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
         } else {

@@ -60,9 +60,6 @@ public class ContestService {
         }
         Team team = teamOptional.get();
         contest.setTeamPropietario(team);
-
-        Language java = languageService.getLanguageByName("java").get();
-        contest.addLanguage(java);
         contestRepository.save(contest);
 
         salida.setSalida("OK");
@@ -199,19 +196,23 @@ public class ContestService {
         return "OK";
     }
 
-    public String addTeamTocontest(String idTeam, String idcontest) {
-        logger.debug("Add team/user " + idTeam + " to contest " + idcontest);
-
+    public String addTeamToContest(String idcontest, String idTeam) {
         Optional<Contest> contestOptional = getContest(idcontest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
         }
         Contest contest = contestOptional.get();
+        return addTeamToContest(contest, idTeam);
+    }
 
-        Optional<Team> teamOptional = teamService.getTeamFromId(idTeam);
+    private String addTeamToContest(Contest contest, String teamId) {
+        logger.debug("Add team/user " + teamId + " to contest " + contest.getId());
+        String salida;
+
+        Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + idTeam + " not found");
+            logger.error("Team/user " + teamId + " not found");
             return "USER NOT FOUND";
         }
         Team team = teamOptional.get();
@@ -220,39 +221,91 @@ public class ContestService {
             contest.addTeam(team);
             contestRepository.save(contest);
         } else {
-            logger.error("Team/user " + idTeam + " already in contest " + idcontest);
+            logger.error("Team/user " + teamId + " already in contest " + contest.getId());
             return "YA ESTA EN EL CONCURSO";
         }
-        logger.debug("Finish add team/user " + idTeam + " to contest " + idcontest);
-        return "OK";
+
+        logger.debug("Finish add team/user " + teamId + " to contest " + contest.getId());
+        salida = "OK";
+        return salida;
     }
 
-    public String deleteTeamFromcontest(String idcontest, String idTeam) {
-        logger.debug("Delete team/user " + idTeam + " from contest " + idcontest);
-
-        Optional<Contest> contestOptional = getContest(idcontest);
+    public String addTeamToContest(String contestId, String[] teamIdList) {
+        logger.debug("Adding teams to contest " + contestId);
+        String salida;
+        Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
-            logger.error("Contest " + idcontest + " not found");
-            return "contest NOT FOUND";
+            logger.error("Contest " + contestId + " not found");
+            return "CONTEST NOT FOUND!";
         }
         Contest contest = contestOptional.get();
 
-        Optional<Team> teamOptional = teamService.getTeamFromId(idTeam);
+        for (String teamId : teamIdList) {
+            salida = addTeamToContest(contest, teamId);
+
+            // si hay algun problema se detiene la inserción
+            if (!salida.equals("OK")) {
+                logger.error("Error while adding team " + teamId + " to contest " + contestId);
+                return salida;
+            }
+        }
+        logger.debug("Finish adding teams to contest " + contestId);
+        salida = "OK";
+        return salida;
+    }
+
+    public String deleteTeamFromContest(String idContest, String idTeam) {
+        Optional<Contest> contestOptional = getContest(idContest);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + idContest + " not found");
+            return "contest NOT FOUND";
+        }
+        Contest contest = contestOptional.get();
+        return deleteTeamFromContest(contest, idTeam);
+    }
+
+    private String deleteTeamFromContest(Contest contest, String teamId) {
+        logger.debug("Delete team/user " + teamId + " from contest " + contest.getId());
+
+        Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + idTeam + " not found");
+            logger.error("Team/user " + teamId + " not found");
             return "USER NOT FOUND";
         }
         Team team = teamOptional.get();
 
         if (!contest.getListaParticipantes().contains(team)) {
-            logger.error("Team/user " + idTeam + " not in contest " + idcontest);
+            logger.error("Team/user " + teamId + " not in contest " + contest.getId());
             return "NO ESTA EN EL CONCURSO";
         } else {
             contest.deleteTeam(team);
             contestRepository.save(contest);
         }
-        logger.debug("Finish delete team/user " + idTeam + " from contest " + idcontest);
+        logger.debug("Finish delete team/user " + teamId + " from contest " + contest.getId());
         return "OK";
+    }
+
+    public String deleteTeamFromContest(String contestId, String[] teamIdList) {
+        logger.debug("Adding teams to contest " + contestId);
+        String salida;
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found");
+            return "CONTEST NOT FOUND!";
+        }
+        Contest contest = contestOptional.get();
+
+        for (String teamId : teamIdList) {
+            salida = deleteTeamFromContest(contest, teamId);
+            // si hay algun problema se detiene la inserción
+            if (!salida.equals("OK")) {
+                logger.error("Error while adding team " + teamId + " to contest " + contestId);
+                return salida;
+            }
+        }
+        logger.debug("Finish adding teams to contest " + contestId);
+        salida = "OK";
+        return salida;
     }
 
     public List<ProblemAPI> getProblemsFromConcurso(Contest contest) {
@@ -282,7 +335,7 @@ public class ContestService {
     }
 
     public String removeLanguageFromContest(String contestId, String languageId) {
-        logger.debug("Removing language " + languageId + " from contest " + contestId);
+        logger.debug("Delete language " + languageId + " from contest " + contestId);
         String salida;
 
         Optional<Contest> contestOptional = getContest(contestId);
@@ -321,18 +374,11 @@ public class ContestService {
         }
         Contest contest = contestOptional.get();
 
-        logger.debug("Clear language list of contest " + contestId);
-        contest.clearLanguage();
-
         for (String languageName : languageList) {
             salida = addLanguageToContest(contest, languageName);
-            // si falla se limpia la lista y se añade java por defecto
+            // si hay algún problema se detiene la operación
             if (!salida.equals("OK")) {
-                logger.debug("Clearing language list from contest " + contestId);
-                contest.clearLanguage();
-                logger.debug("Adding default language");
-                addLanguageToContest(contest, "java");
-                contestRepository.save(contest);
+                logger.error("Error while adding language " + languageName + " to contest " + contestId);
                 return salida;
             }
         }
