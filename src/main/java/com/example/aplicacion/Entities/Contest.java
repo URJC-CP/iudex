@@ -153,6 +153,10 @@ public class Contest {
         }
     }
 
+    public void clearLanguage() {
+        lenguajes.clear();
+    }
+
     public void removeLanguage(Language language) {
         lenguajes.remove(language);
     }
