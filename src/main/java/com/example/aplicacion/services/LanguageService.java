@@ -14,11 +14,14 @@ public class LanguageService {
     @Autowired
     private LanguageRepository languageRepository;
 
-    public Optional<Language> getLanguage(Long id) {
-        return languageRepository.findLanguageById(id);
+    public Optional<Language> getLanguage(String id) {
+        return languageRepository.findLanguageById(Long.parseLong(id));
     }
 
     public Optional<Language> getLanguageByName(String name) {
+        if (name.equals("python")) {
+            name += "3";
+        }
         return languageRepository.findLanguageByNombreLenguaje(name);
     }
 
