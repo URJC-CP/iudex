@@ -28,4 +28,8 @@ public class LanguageService {
     public List<Language> getNLanguages() {
         return languageRepository.findAll();
     }
+
+    public List<Language> getAllLanguages() {
+        return languageRepository.findAll();
+    }
 }
