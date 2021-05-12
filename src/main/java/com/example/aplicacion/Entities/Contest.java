@@ -6,7 +6,7 @@ import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.TeamAPI;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,12 +17,8 @@ public class Contest {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Language> lenguajes;
-
     @Column(unique = true)
     private String nombreContest;
-
     @Lob
     private String descripcion;
 
@@ -31,12 +27,16 @@ public class Contest {
     @ManyToMany
     private List<Problem> listaProblemas;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Language> lenguajes;
+
     @ManyToMany(mappedBy = "listaContestsParticipados")
     private List<Team> listaParticipantes;
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
-    private long timestamp = Instant.now().toEpochMilli();
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 
     public Contest() {
         this.listaProblemas = new ArrayList<>();
@@ -69,7 +69,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
-        contestAPI.setTimestamp(this.timestamp);
+        contestAPI.setStartDateTime(this.startDateTime);
+        contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
     }
 
@@ -96,7 +97,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
-        contestAPI.setTimestamp(this.timestamp);
+        contestAPI.setStartDateTime(this.startDateTime);
+        contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
     }
 
@@ -161,6 +163,22 @@ public class Contest {
         lenguajes.remove(language);
     }
 
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
     public List<Team> getListaParticipantes() {
         return listaParticipantes;
     }
@@ -207,14 +225,6 @@ public class Contest {
 
     public void setDescripcion(String description) {
         this.descripcion = description;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Override
