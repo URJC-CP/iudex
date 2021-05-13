@@ -44,8 +44,6 @@ public class Contest {
         this.listaSubmissions = new ArrayList<>();
         this.listaProblemas = new ArrayList<>();
         this.lenguajes = new ArrayList<>();
-        this.startDateTime = LocalDateTime.now();
-        this.endDateTime = startDateTime.plusDays(1);
     }
 
     public ContestAPI toContestAPI() {

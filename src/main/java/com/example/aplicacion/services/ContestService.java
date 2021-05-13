@@ -17,12 +17,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ContestService {
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     Logger logger = LoggerFactory.getLogger(ContestService.class);
     @Autowired
     private ContestRepository contestRepository;
@@ -37,7 +40,7 @@ public class ContestService {
     @Autowired
     private TeamService teamService;
 
-    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion) {
+    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion, String startDateTime, String endDateTime) {
         logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
         ContestString salida = new ContestString();
         if (contestRepository.existsByNombreContest(nameContest)) {
@@ -61,6 +64,10 @@ public class ContestService {
         }
         Team team = teamOptional.get();
         contest.setTeamPropietario(team);
+
+        contest.setStartDateTime(LocalDateTime.parse(startDateTime, dateTimeFormatter));
+        contest.setEndDateTime(LocalDateTime.parse(endDateTime, dateTimeFormatter));
+
         contestRepository.save(contest);
 
         salida.setSalida("OK");
@@ -70,7 +77,7 @@ public class ContestService {
         return salida;
     }
 
-    public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion) {
+    public ContestString updateContest(String contestId, Optional<String> nameContest, Optional<String> teamId, Optional<String> descripcion, Optional<String> startDateTime, Optional<String> endDateTime) {
         logger.debug("Update contest " + contestId);
         ContestString salida = new ContestString();
 
@@ -107,6 +114,17 @@ public class ContestService {
         if (descripcion.isPresent()) {
             contest.setDescripcion(descripcion.get());
         }
+
+        if (startDateTime.isPresent()) {
+            String startDateTimeValue = startDateTime.get();
+            contest.setStartDateTime(LocalDateTime.parse(startDateTimeValue, dateTimeFormatter));
+        }
+
+        if (startDateTime.isPresent()) {
+            String endDateTimeValue = endDateTime.get();
+            contest.setEndDateTime(LocalDateTime.parse(endDateTimeValue, dateTimeFormatter));
+        }
+
         contestRepository.save(contest);
 
         salida.setSalida("OK");
