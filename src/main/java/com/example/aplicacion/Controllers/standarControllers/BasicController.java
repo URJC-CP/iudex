@@ -1,9 +1,9 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.SampleRepository;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SampleRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -84,6 +86,10 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String startDateTime = dateTimeFormatter.format(LocalDateTime.now());
+        String endDateTime = dateTimeFormatter.format(LocalDateTime.now().plusDays(1));
+
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
     }
 }
