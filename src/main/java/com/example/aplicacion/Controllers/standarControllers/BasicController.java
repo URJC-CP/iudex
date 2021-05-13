@@ -1,9 +1,9 @@
 package com.example.aplicacion.Controllers.standarControllers;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.SampleRepository;
 import com.example.aplicacion.Repository.LanguageRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
+import com.example.aplicacion.Repository.SampleRepository;
 import com.example.aplicacion.Repository.SubmissionRepository;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ResultHandler;
@@ -16,7 +16,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Controller
 public class BasicController {
@@ -84,6 +86,9 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"));
+        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+
+        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
     }
 }

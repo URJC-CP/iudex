@@ -22,8 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -35,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(APIContestController.class)
 public class TestAPIContestController {
 	private final JSONConverter jsonConverter = new JSONConverter();
+
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
@@ -140,27 +143,30 @@ public class TestAPIContestController {
 		ContestString cs = new ContestString();
 		HttpStatus status = HttpStatus.NOT_FOUND;
 
+		long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+		long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+
 		String salida = "contest NAME DUPLICATED";
 		cs.setSalida(salida);
-		when(contestService.creaContest(badContest, badTeam, Optional.of(description))).thenReturn(cs);
-		testAddContest(url, badContest, badTeam, description, status, salida);
-		when(contestService.creaContest(badContest, goodTeam, Optional.of(description))).thenReturn(cs);
-		testAddContest(url, badContest, goodTeam, description, status, salida);
+		when(contestService.creaContest(badContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+		testAddContest(url, badContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
+		when(contestService.creaContest(badContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+		testAddContest(url, badContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 
 		salida = "TEAM NOT FOUND";
 		cs.setSalida(salida);
-		when(contestService.creaContest(goodContest, badTeam, Optional.of(description))).thenReturn(cs);
-		testAddContest(url, goodContest, badTeam, description, status, salida);
+		when(contestService.creaContest(goodContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+		testAddContest(url, goodContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 
 		cs.setSalida("OK");
 		status = HttpStatus.CREATED;
 		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
 		cs.setContest(contest);
-		when(contestService.creaContest(goodContest, goodTeam, Optional.of(description))).thenReturn(cs);
-		testAddContest(url, goodContest, goodTeam, description, status, salida);
+		when(contestService.creaContest(goodContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+		testAddContest(url, goodContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 	}
 
-	private void testAddContest(String url, String contest, String team, String description, HttpStatus status, String salida) throws Exception {
+	private void testAddContest(String url, String contest, String team, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
 		String result;
 		result = mockMvc.perform(
 			post(url)
@@ -168,6 +174,8 @@ public class TestAPIContestController {
 				.param("contestName", contest)
 				.param("teamId", team)
 				.param("descripcion", description)
+				.param("startDateTime", startDateTime)
+				.param("endDateTime", endDateTime)
 		).andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse()
@@ -225,38 +233,43 @@ public class TestAPIContestController {
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "CONTEST ID DOES NOT EXIST";
 
+		long startDateTimeLong = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+		long endDateTimeLong = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+		Optional<Long> startDateTime = Optional.of(startDateTimeLong);
+		Optional<Long> endDateTime = Optional.of(endDateTimeLong);
+
 		cs.setSalida(salida);
-		when(contestService.updateContest(badContest, badName, badTeam, description)).thenReturn(cs);
-		testUpdateContest(badURL, badName.get(), badTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(badContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(badURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(badContest, goodName, badTeam, description)).thenReturn(cs);
-		testUpdateContest(badURL, goodName.get(), badTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(badContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(badURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(badContest, badName, goodTeam, description)).thenReturn(cs);
-		testUpdateContest(badURL, badName.get(), goodTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(badContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(badURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
 		salida = "CONTEST NAME DUPLICATED";
 		cs.setSalida(salida);
-		when(contestService.updateContest(goodContest, badName, badTeam, description)).thenReturn(cs);
-		testUpdateContest(goodURL, badName.get(), badTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(goodContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(goodURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(goodContest, badName, goodTeam, description)).thenReturn(cs);
-		testUpdateContest(goodURL, badName.get(), goodTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(goodContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(goodURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
 		salida = "TEAM NOT FOUND";
 		cs.setSalida(salida);
-		when(contestService.updateContest(goodContest, goodName, badTeam, description)).thenReturn(cs);
-		testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(goodContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
 		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
 		status = HttpStatus.CREATED;
 		cs.setSalida("OK");
 		cs.setContest(contest);
-		when(contestService.updateContest(goodContest, goodName, goodTeam, description)).thenReturn(cs);
-		testUpdateContest(goodURL, goodName.get(), goodTeam.get(), description.get(), status, salida);
+		when(contestService.updateContest(goodContest, goodName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+		testUpdateContest(goodURL, goodName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 	}
 
-	private void testUpdateContest(String url, String contestName, String teamId, String description, HttpStatus status, String salida) throws Exception {
+	private void testUpdateContest(String url, String contestName, String teamId, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
 		String result;
 		result = mockMvc.perform(
 			put(url)
@@ -264,6 +277,8 @@ public class TestAPIContestController {
 				.param("contestName", contestName)
 				.param("teamId", teamId)
 				.param("descripcion", description)
+				.param("startDateTime", startDateTime)
+				.param("endDateTime", endDateTime)
 		).andExpect(status().is(status.value()))
 			.andDo(print())
 			.andReturn().getResponse().getContentAsString();

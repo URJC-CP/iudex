@@ -205,7 +205,6 @@ public class ProblemService {
 
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());
-
         problemValidatorService.validateProblem(problemUpdated.getProblem());
 
         logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
@@ -270,7 +269,6 @@ public class ProblemService {
         }
 
         problemRepository.delete(problem);
-
         logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
         return "OK";
     }
@@ -287,7 +285,6 @@ public class ProblemService {
         }
 
         problemRepository.delete(problem);
-
         logger.debug("Finish delete problem " + problem.getId() + "\nProblem name: " + problem.getNombreEjercicio());
         return "OK";
     }
@@ -436,5 +433,111 @@ public class ProblemService {
 
     public Page<Problem> getProblemsPage(Pageable pageable) {
         return problemRepository.findAll(pageable);
+    }
+
+    public String addSampleToProblem(String problemId, String name, String inputText, String outputText, boolean isPublic) {
+        logger.debug("Adding new sample to problem " + problemId);
+        String salida;
+
+        Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
+        if (problemOptional.isEmpty()) {
+            logger.error("Problem " + problemId + " not found!");
+            salida = "PROBLEM NOT FOUND!";
+            return salida;
+        }
+        Problem problem = problemOptional.get();
+
+        if (name.trim().equals("")) {
+            logger.error("Sample name is missing!");
+            salida = "REQUIRED PARAMETER NAME MISSING!";
+            return salida;
+        }
+
+        Sample sample = new Sample(name, inputText, outputText, isPublic);
+        sampleRepository.save(sample);
+        problem.addData(sample);
+        problemRepository.save(problem);
+
+        logger.debug("Finish add new sample to problem " + problemId);
+        salida = "OK";
+        return salida;
+    }
+
+    public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId,
+                                          Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
+        logger.debug("Update sample " + sampleId + " from problem " + problemId);
+        ProblemString ps = new ProblemString();
+        String salida;
+
+        Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
+        if (problemOptional.isEmpty()) {
+            logger.error("Problem " + problemId + " not found!");
+            salida = "PROBLEM NOT FOUND!";
+            return salida;
+        }
+        Problem problem = problemOptional.get();
+
+        Optional<Sample> sampleOptional = sampleRepository.findById(Long.valueOf(sampleId));
+        if (sampleOptional.isEmpty()) {
+            logger.error("Sample " + sampleId + " not found!");
+            salida = "SAMPLE NOT FOUND!";
+            return salida;
+        }
+        Sample sample = sampleOptional.get();
+
+        if (!problem.getData().contains(sample)) {
+            logger.error("Sample " + sampleId + " not in problem " + problemId + "!");
+            salida = "SAMPLE NOT IN PROBLEM!";
+            return salida;
+        }
+
+        String name = (nameOptional.isPresent()) ? nameOptional.get() : sample.getName();
+        String inputText = (inputTextOptional.isPresent()) ? inputTextOptional.get() : sample.getInputText();
+        String outputText = (outputTextOptional.isPresent()) ? outputTextOptional.get() : sample.getOutputText();
+        boolean isPresent = (isPublicOptional.isPresent()) ? isPublicOptional.get() : sample.isPublic();
+        Sample newSample = new Sample(name, inputText, outputText, isPresent);
+        sampleRepository.save(newSample);
+
+        problem.removeData(sample);
+        problem.addData(newSample);
+        problemRepository.save(problem);
+
+        logger.debug("Finish update sample " + sampleId + " from problem " + problemId);
+        salida = "OK";
+        return salida;
+    }
+
+    public String deleteSampleFromProblem(String problemId, String sampleId) {
+        logger.debug("Adding new sample to problem " + problemId);
+        String salida;
+
+        Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
+        if (problemOptional.isEmpty()) {
+            logger.error("Problem " + problemId + " not found!");
+            salida = "PROBLEM NOT FOUND!";
+            return salida;
+        }
+        Problem problem = problemOptional.get();
+
+        Optional<Sample> sampleOptional = sampleRepository.findById(Long.valueOf(sampleId));
+        if (sampleOptional.isEmpty()) {
+            logger.error("Sample " + sampleId + " not found!");
+            salida = "SAMPLE NOT FOUND!";
+            return salida;
+        }
+        Sample sample = sampleOptional.get();
+
+        if (!problem.getData().contains(sample)) {
+            logger.error("Sample " + sampleId + " not in problem " + problemId + "!");
+            salida = "SAMPLE NOT IN PROBLEM!";
+            return salida;
+        }
+
+        problem.removeData(sample);
+        problemRepository.save(problem);
+
+        logger.debug("Finish delete sample " + sampleId + " from problem " + problemId);
+        salida = "OK";
+        return salida;
     }
 }

@@ -1,11 +1,12 @@
 package com.example.aplicacion.Entities;
 
 import com.example.aplicacion.Pojos.ContestAPI;
+import com.example.aplicacion.Pojos.LanguageAPI;
 import com.example.aplicacion.Pojos.ProblemAPI;
 import com.example.aplicacion.Pojos.TeamAPI;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +19,6 @@ public class Contest {
 
     @Column(unique = true)
     private String nombreContest;
-
     @Lob
     private String descripcion;
 
@@ -27,18 +27,23 @@ public class Contest {
     @ManyToMany
     private List<Problem> listaProblemas;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Language> lenguajes;
+
     @ManyToMany(mappedBy = "listaContestsParticipados")
     private List<Team> listaParticipantes;
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private List<Submission> listaSubmissions;
 
-    private long timestamp = Instant.now().toEpochMilli();
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 
     public Contest() {
         this.listaProblemas = new ArrayList<>();
         this.listaParticipantes = new ArrayList<>();
         this.listaSubmissions = new ArrayList<>();
         this.listaProblemas = new ArrayList<>();
+        this.lenguajes = new ArrayList<>();
     }
 
     public ContestAPI toContestAPI() {
@@ -47,6 +52,13 @@ public class Contest {
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
+
+        List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
+        for (Language lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        }
+        contestAPI.setLenguajesAceptados(lenguajesAceptados);
+
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPISimple());
@@ -57,7 +69,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
-        contestAPI.setTimestamp(this.timestamp);
+        contestAPI.setStartDateTime(this.startDateTime);
+        contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
     }
 
@@ -67,6 +80,13 @@ public class Contest {
         contestAPI.setNombreContest(this.nombreContest);
         contestAPI.setDescripcion(this.descripcion);
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
+
+        List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
+        for (Language lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        }
+        contestAPI.setLenguajesAceptados(lenguajesAceptados);
+
         List<ProblemAPI> listaProblemass = new ArrayList<>();
         for (Problem problem : this.listaProblemas) {
             listaProblemass.add(problem.toProblemAPI());
@@ -77,7 +97,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
-        contestAPI.setTimestamp(this.timestamp);
+        contestAPI.setStartDateTime(this.startDateTime);
+        contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
     }
 
@@ -118,6 +139,44 @@ public class Contest {
 
     public void setListaProblemas(List<Problem> listaProblemas) {
         this.listaProblemas = listaProblemas;
+    }
+
+    public List<Language> getLenguajes() {
+        return lenguajes;
+    }
+
+    public void setLenguajes(List<Language> lenguajes) {
+        this.lenguajes = lenguajes;
+    }
+
+    public void addLanguage(Language language) {
+        if (!lenguajes.contains(language)) {
+            lenguajes.add(language);
+        }
+    }
+
+    public void clearLanguage() {
+        lenguajes.clear();
+    }
+
+    public void removeLanguage(Language language) {
+        lenguajes.remove(language);
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     public List<Team> getListaParticipantes() {
@@ -166,14 +225,6 @@ public class Contest {
 
     public void setDescripcion(String description) {
         this.descripcion = description;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Override

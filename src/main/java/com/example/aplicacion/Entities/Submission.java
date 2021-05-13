@@ -75,6 +75,7 @@ public class Submission {
         for (Result result : this.results) {
             resultAPIS.add(result.toResultAPISimple());
         }
+        submissionAPI.setProblem(this.getProblema().toProblemAPISimple());
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
@@ -94,6 +95,7 @@ public class Submission {
         for (Result result : this.results) {
             resultAPIS.add(result.toResultAPI());
         }
+        submissionAPI.setProblem(this.getProblema().toProblemAPISimple());
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);

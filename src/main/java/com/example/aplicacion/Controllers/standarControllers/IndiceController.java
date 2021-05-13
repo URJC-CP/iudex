@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Controller
 public class IndiceController {
@@ -71,7 +73,7 @@ public class IndiceController {
             + "\nTeam: " + teamId + ", Contest: " + contestId);
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
-        logger.debug("Submission " + salida.getSubmission().getId() + " finished running with " + salida.getSalida());
+        logger.debug("Submission finished running with " + salida.getSalida());
 
         if (salida.equals("OK")) {
             return "redirect:/";
@@ -123,7 +125,11 @@ public class IndiceController {
     @PostMapping("/creaContest")
     public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion) {
         logger.debug("Create contest " + contestName + " request received for team " + teamId);
-        String salida = contestService.creaContest(contestName, teamId, descripcion).getSalida();
+
+        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+
+        String salida = contestService.creaContest(contestName, teamId, descripcion, startDateTime, endDateTime).getSalida();
 
         if (salida.equals("OK")) {
             logger.debug("Create contest " + contestName + " success for team " + teamId);

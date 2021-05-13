@@ -44,7 +44,7 @@ public class SubmissionService {
         //Creamos la submission
         submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
         if (!submissionStringResult.getSalida().equals("OK")) {
-            logger.error("Create and run submission " + fileName + " failed with " + submissionStringResult.getSalida() + "\nProblem: " + problem + "Contest: " + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
+            logger.error("Create and run submission " + fileName + " failed with " + submissionStringResult.getSalida() + "\nProblem: " + problem + "\nLanguage: " + lenguaje + "\nTeam/user " + idEquipo + "\nContest: " + idContest);
             return submissionStringResult;
         }
         //ejecutamos
@@ -92,6 +92,13 @@ public class SubmissionService {
         if (!contest.getListaProblemas().contains(problema)) {
             logger.error("Problem " + problem + " not in contest " + idContest);
             submissionStringResult.setSalida("PROBLEM NOT IN CONCURSO");
+            return submissionStringResult;
+        }
+
+        // comprobar si el problema tiene casos de prueba
+        if (!problema.hasTestCaseFiles()) {
+            logger.error("Problem " + problem + " does not contain any test files");
+            submissionStringResult.setSalida("PROBLEM IS EMPTY");
             return submissionStringResult;
         }
 
