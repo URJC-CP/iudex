@@ -91,8 +91,8 @@ public class APIContestController {
     @ApiOperation("Update a contest")
     @PutMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName,
-        @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion,
-        @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
+                                                    @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion,
+                                                    @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
@@ -136,7 +136,7 @@ public class APIContestController {
 
     @ApiOperation("Bulk add Team to Contest")
     @PutMapping("contest/{contestId}/team/addBulk")
-    public ResponseEntity addTeamToContest(@PathVariable String contestId, @RequestParam(value = "equipos") String[] teamList) {
+    public ResponseEntity addTeamToContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         String salida = contestService.addTeamToContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -158,7 +158,7 @@ public class APIContestController {
 
     @ApiOperation("Bulk delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/removeBulk")
-    public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @RequestParam(value = "equipos") String[] teamList) {
+    public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         String salida = contestService.deleteTeamFromContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -189,7 +189,7 @@ public class APIContestController {
 
     @ApiOperation("Set accepted languages of a contest")
     @PostMapping("contest/{contestId}/language/addBulk")
-    public ResponseEntity addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam(value = "lenguajes") String[] languageList) {
+    public ResponseEntity addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam String[] languageList) {
         String salida = contestService.addAcceptedLanguagesToContest(contestId, languageList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
