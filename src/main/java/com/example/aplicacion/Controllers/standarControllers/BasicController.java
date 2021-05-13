@@ -17,8 +17,8 @@ import org.springframework.stereotype.Controller;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Controller
 public class BasicController {
@@ -86,9 +86,8 @@ public class BasicController {
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String startDateTime = dateTimeFormatter.format(LocalDateTime.now());
-        String endDateTime = dateTimeFormatter.format(LocalDateTime.now().plusDays(1));
+        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
 
         contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
     }

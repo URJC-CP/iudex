@@ -67,8 +67,8 @@ public class APIContestController {
     @ApiOperation("Create a contest")
     @PostMapping("contest")
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId,
-                                                 @RequestParam Optional<String> descripcion, @RequestParam String startDateTime, @RequestParam String endDateTime) {
-        ContestString salida = contestService.creaContest(contestName, teamId, descripcion, startDateTime, endDateTime);
+                                                 @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
+        ContestString salida = contestService.creaContest(contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
         } else {
@@ -92,8 +92,8 @@ public class APIContestController {
     @PutMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName,
         @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion,
-        @RequestParam Optional<String> startDateTime, @RequestParam Optional<String> endDateTime) {
-        ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startDateTime, endDateTime);
+        @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
+        ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
         } else {

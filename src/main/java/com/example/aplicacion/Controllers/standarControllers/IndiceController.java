@@ -19,8 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Controller
 public class IndiceController {
@@ -126,9 +126,8 @@ public class IndiceController {
     public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion) {
         logger.debug("Create contest " + contestName + " request received for team " + teamId);
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String startDateTime = dateTimeFormatter.format(LocalDateTime.now());
-        String endDateTime = dateTimeFormatter.format(LocalDateTime.now().plusDays(1));
+        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
 
         String salida = contestService.creaContest(contestName, teamId, descripcion, startDateTime, endDateTime).getSalida();
 
