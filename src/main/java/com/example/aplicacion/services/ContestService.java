@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -232,6 +233,7 @@ public class ContestService {
         return salida;
     }
 
+    @Transactional
     public String addTeamToContest(String contestId, String[] teamIdList) {
         logger.debug("Adding teams to contest " + contestId);
         String salida;
@@ -248,7 +250,7 @@ public class ContestService {
             // si hay algun problema se detiene la inserción
             if (!salida.equals("OK")) {
                 logger.error("Error while adding team " + teamId + " to contest " + contestId);
-                return salida;
+                throw new RuntimeException(salida);
             }
         }
         logger.debug("Finish adding teams to contest " + contestId);
@@ -289,8 +291,9 @@ public class ContestService {
         return "OK";
     }
 
+    @Transactional
     public String deleteTeamFromContest(String contestId, String[] teamIdList) {
-        logger.debug("Adding teams to contest " + contestId);
+        logger.debug("Delete some teams from contest " + contestId);
         String salida;
         Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
@@ -301,13 +304,12 @@ public class ContestService {
 
         for (String teamId : teamIdList) {
             salida = deleteTeamFromContest(contest, teamId);
-            // si hay algun problema se detiene la inserción
             if (!salida.equals("OK")) {
-                logger.error("Error while adding team " + teamId + " to contest " + contestId);
-                return salida;
+                logger.error("Error while removing team " + teamId + " from contest " + contestId);
+                throw new RuntimeException(salida);
             }
         }
-        logger.debug("Finish adding teams to contest " + contestId);
+        logger.debug("Finish delete teams from contest " + contestId);
         salida = "OK";
         return salida;
     }
@@ -358,6 +360,11 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
+        if (!contest.getLenguajes().contains(language)) {
+            logger.error("Language " + languageId + " not in contest " + contest.getId());
+            salida = "LANGUAGE NOT IN CONTEST!";
+            return salida;
+        }
         contest.removeLanguage(language);
         contestRepository.save(contest);
 
@@ -366,6 +373,7 @@ public class ContestService {
         return salida;
     }
 
+    @Transactional
     public String addAcceptedLanguagesToContest(String contestId, String[] languageList) {
         logger.debug("Add accepted languages to contest " + contestId);
         String salida;
@@ -383,7 +391,7 @@ public class ContestService {
             // si hay algún problema se detiene la operación
             if (!salida.equals("OK")) {
                 logger.error("Error while adding language " + languageName + " to contest " + contestId);
-                return salida;
+                throw new RuntimeException(salida);
             }
         }
 
@@ -405,7 +413,13 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
-        // add language
+        // add language if it has not been added
+        if (contest.getLenguajes().contains(language)) {
+            logger.error("Language " + languageName + " already in contest " + contest.getId());
+            salida = "LANGUAGE ALREADY IN CONTEST!";
+            return salida;
+        }
+
         contest.addLanguage(language);
         contestRepository.save(contest);
 
