@@ -459,7 +459,7 @@ public class ContestService {
             List<ProblemScore> problem_score_list;
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
-                if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
+                //if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
                 Team equipo = entrega.getTeam();
                 problem_score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
 
@@ -489,38 +489,50 @@ public class ContestService {
                 problems_scores.putIfAbsent(equipo, problem_score_list);
             }
 
-            first.setFirst(true);
+            if (first != null) {
+                first.setFirst(true);
+            }
         }
 
         StringBuilder cs = new StringBuilder();
         // contest score
-        cs.append("{\"contest_name\":").append(contest.getNombreContest());
-        cs.append(",\"teams\":{");
+        cs.append("{\"contest_name\":").append(contest.getNombreContest()).append(", \"teams\":{");
+        boolean removeComa = false;
 
-        StringBuilder ts = new StringBuilder();
         // score by problem
         for (Team equipo : contest.getListaParticipantes()) {
             List<ProblemScore> score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
-
             cs.append("\"team_name\":").append(equipo.getNombreEquipo());
             cs.append(",\"problems_solved\":").append(score_list.size());
-            cs.append(",\"problems_scores\":{");
 
             if (score_list.isEmpty()) {
                 for (Problem problem : contest.getListaProblemas()) {
                     score_list.add(new ProblemScore(problem, equipo));
                 }
             }
+
+            StringBuilder ts = new StringBuilder();
+            boolean removeComa2 = false;
             for (ProblemScore score : score_list) {
                 ts.append(score).append(",");
+                if (!removeComa2) {
+                    removeComa2 = true;
+                }
             }
-            ts.replace(ts.lastIndexOf(","), ts.length(), "}}");
+            if (removeComa2) {
+                ts.setCharAt(ts.lastIndexOf(","), ' ');
+            }
 
-            cs.append(",\"score\":").append("puntuacion_total");
-            cs.append(ts);
+            cs.append("\"score\":").append("puntuacion_total");
+            cs.append(",\"problems_scores\":{");
+            cs.append(ts).append("},");
+            if (!removeComa) {
+                removeComa = true;
+            }
         }
-        ts.replace(ts.lastIndexOf(","), ts.length(), "},");
-
+        if (removeComa) {
+            cs.setCharAt(cs.lastIndexOf(","), ' ');
+        }
         cs.append("}}");
         return cs.toString();
     }
