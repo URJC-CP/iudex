@@ -187,4 +187,14 @@ public class APIContestController {
         }
         return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
     }
+
+    @ApiOperation("Get scores of a contest")
+    @GetMapping("contest/{contestId}/scores")
+    public ResponseEntity getScores(@PathVariable String contestId) {
+        String salida = contestService.getScore(contestId);
+        if (salida.equals("CONTEST NOT FOUND!")) {
+            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(salida, HttpStatus.OK);
+    }
 }
