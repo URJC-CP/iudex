@@ -315,6 +315,9 @@ public class ProblemService {
     public List<Submission> getSubmissionsFromContestFromProblem(Contest contest, Problem problem) {
         List<Submission> salida = new ArrayList<>();
         for (Submission submission : problem.getSubmissions()) {
+            if (submission.isEsProblemValidator()) {
+                continue;
+            }
             if (submission.getContest().equals(contest)) {
                 salida.add(submission);
             }
@@ -410,7 +413,7 @@ public class ProblemService {
             Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId.get()));
             if (teamOptional.isEmpty()) {
                 logger.error("Team/user " + teamId + " not found");
-                salida.setSalida("ERROR TEAMID NOT FOUND");
+                salida.setSalida("ERROR TEAM ID NOT FOUND");
                 return salida;
             }
             Team team = teamOptional.get();
@@ -463,8 +466,7 @@ public class ProblemService {
         return salida;
     }
 
-    public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId,
-                                          Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
+    public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId, Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
         logger.debug("Update sample " + sampleId + " from problem " + problemId);
         ProblemString ps = new ProblemString();
         String salida;
