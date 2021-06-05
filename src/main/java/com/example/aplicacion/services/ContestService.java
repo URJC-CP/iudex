@@ -1,11 +1,9 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Contest;
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
+import com.example.aplicacion.Entities.*;
 import com.example.aplicacion.Pojos.ContestString;
 import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.ProblemScore;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
@@ -19,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -445,5 +441,87 @@ public class ContestService {
         logger.debug("Finish add language " + languageName + " to contest " + contest.getId());
         salida = "OK";
         return salida;
+    }
+
+    public String getScore(String contestId) {
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found!");
+            return "CONTEST NOT FOUND!";
+        }
+        Contest contest = contestOptional.get();
+
+        Map<Team, List<ProblemScore>> problems_scores = new HashMap<>();
+
+        for (Problem problem : contest.getListaProblemas()) {
+            ProblemScore first = null;
+            long min_exec_time = -1;
+            List<ProblemScore> problem_score_list;
+
+            for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
+                if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
+                Team equipo = entrega.getTeam();
+                problem_score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
+
+                // obtener problem score
+                ProblemScore problemScore = new ProblemScore(problem, equipo);
+                int index = problem_score_list.indexOf(problemScore);
+                if (index != -1) {
+                    problemScore = problem_score_list.get(index);
+                } else {
+                    problem_score_list.add(problemScore);
+                }
+
+                // actualizar intentos
+                problemScore.setIntentos(problemScore.getIntentos() + 1);
+
+                // obtener tiempo de las entregas aceptadas
+                if (entrega.getResultado().equalsIgnoreCase("accepted")) {
+                    long tiempo = (long) entrega.getExecSubmissionTime();
+                    long max_tiempo = (problemScore.getTimestamp() != 0l) ? Long.max(tiempo, problemScore.getTimestamp()) : tiempo;
+                    problemScore.setTimestamp(max_tiempo); // la ultima entrega realizada deberia de ser la buena
+
+                    // actualizar el primer equipo en resolver el problema
+                    min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
+                    first = (min_exec_time == tiempo || first == null) ? problemScore : first;
+                }
+
+                problems_scores.putIfAbsent(equipo, problem_score_list);
+            }
+
+            first.setFirst(true);
+        }
+
+        StringBuilder cs = new StringBuilder();
+        // contest score
+        cs.append("{\"contest_name\":").append(contest.getNombreContest());
+        cs.append(",\"teams\":{");
+
+        StringBuilder ts = new StringBuilder();
+        // score by problem
+        for (Team equipo : contest.getListaParticipantes()) {
+            List<ProblemScore> score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
+
+            cs.append("\"team_name\":").append(equipo.getNombreEquipo());
+            cs.append(",\"problems_solved\":").append(score_list.size());
+            cs.append(",\"problems_scores\":{");
+
+            if (score_list.isEmpty()) {
+                for (Problem problem : contest.getListaProblemas()) {
+                    score_list.add(new ProblemScore(problem, equipo));
+                }
+            }
+            for (ProblemScore score : score_list) {
+                ts.append(score).append(",");
+            }
+            ts.replace(ts.lastIndexOf(","), ts.length(), "}}");
+
+            cs.append(",\"score\":").append("puntuacion_total");
+            cs.append(ts);
+        }
+        ts.replace(ts.lastIndexOf(","), ts.length(), "},");
+
+        cs.append("}}");
+        return cs.toString();
     }
 }

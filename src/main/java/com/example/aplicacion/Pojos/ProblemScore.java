@@ -4,18 +4,26 @@ import com.example.aplicacion.Entities.Problem;
 import com.example.aplicacion.Entities.Team;
 import com.sun.istack.NotNull;
 
+import java.time.Instant;
+import java.util.Objects;
+
 public class ProblemScore {
+    private boolean first;
     private Problem problem;
     private Team team;
+    private float score;
     private int intentos;
     private long timestamp;
-    boolean first;
 
-    public ProblemScore(@NotNull Problem problem, @NotNull Team team, int intentos, long timestamp, boolean isFirst){
+    public ProblemScore(@NotNull Problem problem, @NotNull Team team) {
+        this(problem, team, 0, Instant.now().toEpochMilli(), false);
+    }
+
+    public ProblemScore(@NotNull Problem problem, @NotNull Team team, int intentos, long timestamp, boolean isFirst) {
         this.problem = problem;
         this.team = team;
         this.intentos = intentos;
-        this.timestamp = timestamp;
+        this.timestamp = 0;
         this.first = isFirst;
     }
 
@@ -33,6 +41,14 @@ public class ProblemScore {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
     }
 
     public int getIntentos() {
@@ -60,14 +76,25 @@ public class ProblemScore {
     }
 
     @Override
-    public String toString(){
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProblemScore that = (ProblemScore) o;
+        return problem.equals(that.problem) && team.equals(that.team);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(problem, team);
+    }
+
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\"").append(problem.getNombreEjercicio()).append("\":{");
-        sb.append("\"team:\"").append(team.getId());
-        sb.append(",\"num_try:\"").append(intentos);
+        sb.append("\"problem\":").append(problem.getNombreEjercicio());
+        sb.append(",\"tries:\"").append(intentos);
         sb.append(",\"tiempo:\"").append(timestamp);
         sb.append(",\"is_first\"").append(isFirst());
-        sb.append("}");
         return sb.toString();
     }
 }

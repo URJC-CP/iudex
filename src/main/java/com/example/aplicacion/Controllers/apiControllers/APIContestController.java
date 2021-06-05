@@ -24,9 +24,6 @@ public class APIContestController {
     @Autowired
     ContestService contestService;
 
-    //CONCURSOS
-
-    //Get all contest
     @ApiOperation("Return all contests")
     @GetMapping("contest")
     public ResponseEntity<List<ContestAPI>> getAllcontests() {
@@ -46,7 +43,6 @@ public class APIContestController {
         return new ResponseEntity<>(salida, HttpStatus.OK);
     }
 
-    //Get one Contest
     @ApiOperation("Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
@@ -63,11 +59,9 @@ public class APIContestController {
         return responseEntity;
     }
 
-    //Crea un concurso
     @ApiOperation("Create a contest")
     @PostMapping("contest")
-    public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId,
-                                                 @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
+    public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
         ContestString salida = contestService.creaContest(contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
@@ -76,7 +70,6 @@ public class APIContestController {
         }
     }
 
-    //Delete one Contest
     @ApiOperation("Delete a contest")
     @DeleteMapping("contest/{contestId}")
     public ResponseEntity deleteContest(@PathVariable String contestId) {
@@ -90,9 +83,7 @@ public class APIContestController {
 
     @ApiOperation("Update a contest")
     @PutMapping("contest/{contestId}")
-    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName,
-                                                    @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion,
-                                                    @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
+    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
