@@ -92,8 +92,9 @@ public class ProblemScore {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\"problem\":").append(problem.getNombreEjercicio());
+        sb.append(",\"score\":").append(getScore());
         sb.append(",\"tries:\"").append(intentos);
-        sb.append(",\"tiempo:\"").append(timestamp);
+        sb.append(",\"time:\"").append(timestamp);
         sb.append(",\"is_first\"").append(isFirst());
         return sb.toString();
     }

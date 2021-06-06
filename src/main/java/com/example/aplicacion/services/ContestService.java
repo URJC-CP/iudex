@@ -443,6 +443,12 @@ public class ContestService {
         return salida;
     }
 
+    /**
+     * Returns the score of the contest in json format given the contestId
+     *
+     * @param contestId the id of the contest
+     * @return the score of the contest in json as String
+     */
     public String getScore(String contestId) {
         Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
@@ -503,7 +509,6 @@ public class ContestService {
         for (Team equipo : contest.getListaParticipantes()) {
             List<ProblemScore> score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
             cs.append("\"team_name\":").append(equipo.getNombreEquipo());
-            cs.append(",\"problems_solved\":").append(score_list.size());
 
             if (score_list.isEmpty()) {
                 for (Problem problem : contest.getListaProblemas()) {
@@ -513,8 +518,10 @@ public class ContestService {
 
             StringBuilder ts = new StringBuilder();
             boolean removeComa2 = false;
+            float totalScore = 0;
             for (ProblemScore score : score_list) {
                 ts.append(score).append(",");
+                totalScore += score.getScore();
                 if (!removeComa2) {
                     removeComa2 = true;
                 }
@@ -523,7 +530,9 @@ public class ContestService {
                 ts.setCharAt(ts.lastIndexOf(","), ' ');
             }
 
-            cs.append("\"score\":").append("puntuacion_total");
+            cs.append(",\"problems_solved\":").append(score_list.size());
+            cs.append(",\"score\":").append(totalScore);
+
             cs.append(",\"problems_scores\":{");
             cs.append(ts).append("},");
             if (!removeComa) {
