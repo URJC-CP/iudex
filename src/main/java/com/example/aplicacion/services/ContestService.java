@@ -5,7 +5,6 @@ import com.example.aplicacion.Pojos.*;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
-import com.google.common.primitives.Floats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,8 @@ public class ContestService {
     @Autowired
     private TeamService teamService;
 
-    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion, long startTimestamp, long endTimestamp) {
-        logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
+    public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
+        logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + description);
         ContestString salida = new ContestString();
         if (contestRepository.existsByNombreContest(nameContest)) {
             logger.error("Contest name duplicated " + nameContest);
@@ -47,8 +46,8 @@ public class ContestService {
         Contest contest = new Contest();
         contest.setNombreContest(nameContest);
 
-        if (descripcion.isPresent()) {
-            contest.setDescripcion(descripcion.get());
+        if (description.isPresent()) {
+            contest.setDescripcion(description.get());
         }
 
         Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
@@ -470,11 +469,16 @@ public class ContestService {
         logger.debug("Add data to scoreboard");
         for (Problem problem : contest.getListaProblemas()) {
             ProblemScore first = null;
-            float min_exec_time = -1;
+            long min_exec_time = -1;
+            Set<Team> hasFirstAC = new HashSet<>();
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
                 //if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
                 Team equipo = entrega.getTeam();
+                if (hasFirstAC.contains(equipo) || entrega.getResultado().toLowerCase().contains("failed in compiler")) {
+                    continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación
+                }
+
                 TeamScore teamScore = teamScoreMap.get(equipo);
                 ProblemScore problemScore = teamScore.getProblemScore(problem);
 
@@ -483,19 +487,21 @@ public class ContestService {
 
                 // obtener tiempo de las entregas aceptadas
                 if (entrega.getResultado().equalsIgnoreCase("accepted")) {
-                    long tiempo = (long) entrega.getExecSubmissionTime();
-                    float max_tiempo = (problemScore.getTimestamp() != 0l) ? Floats.max(tiempo, problemScore.getTimestamp()) : tiempo;
-                    problemScore.setTimestamp(max_tiempo); // la ultima entrega realizada deberia de ser la buena
+                    hasFirstAC.add(equipo);
 
-                    // actualizar el primer equipo en resolver el problema
-                    min_exec_time = (min_exec_time == -1) ? tiempo : Floats.min(min_exec_time, tiempo);
+                    long tiempo = (long) entrega.getExecSubmissionTime();
+                    // actualizar puntuacion
+                    problemScore.setTimestamp(tiempo);
+                    problemScore.evaluate();
+                    teamScore.updateScore(problemScore.getScore());
+
+                    min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
                     first = (min_exec_time == tiempo || first == null) ? problemScore : first;
                 }
-                // actualizar puntuacion
-                problemScore.evaluate();
-                teamScore.updateScore(problemScore.getScore());
                 teamScore.addProblemScore(problemScore);
             }
+
+            // actualizar el primer equipo en resolver el problema
             if (first != null) {
                 first.setFirst(true);
             }

@@ -4,6 +4,7 @@ import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
 import com.sun.istack.NotNull;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class ProblemScore {
@@ -12,17 +13,17 @@ public class ProblemScore {
     private boolean first;
     private float score;
     private int intentos;
-    private float timestamp;
+    private long timestamp;
 
     public ProblemScore(@NotNull Problem problem, @NotNull Contest contest) {
-        this(problem, contest, 0, 0f, false);
+        this(problem, contest, 0, 0L, false);
     }
 
-    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest, int intentos, float timestamp, boolean isFirst) {
+    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest, int intentos, long timestamp, boolean isFirst) {
         this.problem = problem;
         this.contest = contest;
         this.intentos = intentos;
-        this.timestamp = 0;
+        this.timestamp = timestamp;
         this.first = isFirst;
     }
 
@@ -39,7 +40,8 @@ public class ProblemScore {
     }
 
     public void evaluate() {
-        this.score = this.timestamp + /* penalizacion * */ (this.intentos - 1);
+        long penalizacion = Integer.toUnsignedLong(20 * 60 * (this.intentos - 1));
+        this.score = Instant.ofEpochMilli(timestamp).plusSeconds(penalizacion).toEpochMilli();
     }
 
     public int getIntentos() {
@@ -50,11 +52,11 @@ public class ProblemScore {
         this.intentos = intentos;
     }
 
-    public float getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(float timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -81,13 +83,6 @@ public class ProblemScore {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"problem\":\"").append(problem.getNombreEjercicio()).append("\"");
-        sb.append(",\"score\":").append(getScore());
-        sb.append(",\"tries\":").append(intentos);
-        sb.append(",\"time\":").append(timestamp);
-        sb.append(",\"is_first\":").append(isFirst());
-        sb.append("}");
-        return sb.toString();
+        return "{\"problem\":\"" + problem.getNombreEjercicio() + "\"" + ",\"score\":" + getScore() + ",\"tries\":" + intentos + ",\"time\":" + timestamp + ",\"is_first\":" + isFirst() + "}";
     }
 }

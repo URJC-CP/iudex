@@ -46,7 +46,6 @@ public class APIContestController {
     @ApiOperation("Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
-
         ContestAPI contestAPI = new ContestAPI();
         Optional<Contest> contestOptional = contestService.getContest(contestId);
         if (contestOptional.isEmpty()) {

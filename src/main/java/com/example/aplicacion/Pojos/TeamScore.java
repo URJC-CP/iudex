@@ -47,8 +47,7 @@ public class TeamScore {
     }
 
     public ProblemScore getProblemScore(Problem problem) {
-        ProblemScore ps = scoreMap.getOrDefault(problem, new ProblemScore(problem, contest));
-        return ps;
+        return scoreMap.getOrDefault(problem, new ProblemScore(problem, contest));
     }
 
     public List<ProblemScore> getScoreList() {
