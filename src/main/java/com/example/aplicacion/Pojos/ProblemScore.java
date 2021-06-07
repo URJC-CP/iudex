@@ -1,27 +1,26 @@
 package com.example.aplicacion.Pojos;
 
+import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
 import com.sun.istack.NotNull;
 
-import java.time.Instant;
 import java.util.Objects;
 
 public class ProblemScore {
+    private final Contest contest;
+    private final Problem problem;
     private boolean first;
-    private Problem problem;
-    private Team team;
     private float score;
     private int intentos;
-    private long timestamp;
+    private float timestamp;
 
-    public ProblemScore(@NotNull Problem problem, @NotNull Team team) {
-        this(problem, team, 0, Instant.now().toEpochMilli(), false);
+    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest) {
+        this(problem, contest, 0, 0f, false);
     }
 
-    public ProblemScore(@NotNull Problem problem, @NotNull Team team, int intentos, long timestamp, boolean isFirst) {
+    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest, int intentos, float timestamp, boolean isFirst) {
         this.problem = problem;
-        this.team = team;
+        this.contest = contest;
         this.intentos = intentos;
         this.timestamp = 0;
         this.first = isFirst;
@@ -31,16 +30,8 @@ public class ProblemScore {
         return problem;
     }
 
-    public void setProblem(Problem problem) {
-        this.problem = problem;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
+    public Contest getContest() {
+        return contest;
     }
 
     public float getScore() {
@@ -59,11 +50,11 @@ public class ProblemScore {
         this.intentos = intentos;
     }
 
-    public long getTimestamp() {
+    public float getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(float timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -80,22 +71,23 @@ public class ProblemScore {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProblemScore that = (ProblemScore) o;
-        return problem.equals(that.problem) && team.equals(that.team);
+        return contest.equals(that.contest) && problem.equals(that.problem);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(problem, team);
+        return Objects.hash(contest, problem);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\"problem\":").append(problem.getNombreEjercicio());
+        sb.append("{\"problem\":\"").append(problem.getNombreEjercicio()).append("\"");
         sb.append(",\"score\":").append(getScore());
-        sb.append(",\"tries:\"").append(intentos);
-        sb.append(",\"time:\"").append(timestamp);
-        sb.append(",\"is_first\"").append(isFirst());
+        sb.append(",\"tries\":").append(intentos);
+        sb.append(",\"time\":").append(timestamp);
+        sb.append(",\"is_first\":").append(isFirst());
+        sb.append("}");
         return sb.toString();
     }
 }

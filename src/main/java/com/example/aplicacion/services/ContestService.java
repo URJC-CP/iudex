@@ -1,12 +1,11 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ContestString;
-import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.ProblemScore;
+import com.example.aplicacion.Pojos.*;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
+import com.google.common.primitives.Floats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -450,6 +449,7 @@ public class ContestService {
      * @return the score of the contest in json as String
      */
     public String getScore(String contestId) {
+        logger.debug("Get score received for contest " + contestId);
         Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
@@ -457,26 +457,26 @@ public class ContestService {
         }
         Contest contest = contestOptional.get();
 
-        Map<Team, List<ProblemScore>> problems_scores = new HashMap<>();
+        logger.debug("Initializing scoreboard");
+        Map<Team, TeamScore> teamScoreMap = new HashMap<>();
+        for (Team equipo : contest.getListaParticipantes()) {
+            TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo, contest));
+            for (Problem problem : contest.getListaProblemas()) {
+                teamScore.addProblemScore(new ProblemScore(problem, contest));
+            }
+            teamScoreMap.put(equipo, teamScore);
+        }
 
+        logger.debug("Add data to scoreboard");
         for (Problem problem : contest.getListaProblemas()) {
             ProblemScore first = null;
-            long min_exec_time = -1;
-            List<ProblemScore> problem_score_list;
+            float min_exec_time = -1;
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
                 //if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
                 Team equipo = entrega.getTeam();
-                problem_score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
-
-                // obtener problem score
-                ProblemScore problemScore = new ProblemScore(problem, equipo);
-                int index = problem_score_list.indexOf(problemScore);
-                if (index != -1) {
-                    problemScore = problem_score_list.get(index);
-                } else {
-                    problem_score_list.add(problemScore);
-                }
+                TeamScore teamScore = teamScoreMap.get(equipo);
+                ProblemScore problemScore = teamScore.getProblemScore(problem);
 
                 // actualizar intentos
                 problemScore.setIntentos(problemScore.getIntentos() + 1);
@@ -484,57 +484,34 @@ public class ContestService {
                 // obtener tiempo de las entregas aceptadas
                 if (entrega.getResultado().equalsIgnoreCase("accepted")) {
                     long tiempo = (long) entrega.getExecSubmissionTime();
-                    long max_tiempo = (problemScore.getTimestamp() != 0l) ? Long.max(tiempo, problemScore.getTimestamp()) : tiempo;
+                    float max_tiempo = (problemScore.getTimestamp() != 0l) ? Floats.max(tiempo, problemScore.getTimestamp()) : tiempo;
                     problemScore.setTimestamp(max_tiempo); // la ultima entrega realizada deberia de ser la buena
 
                     // actualizar el primer equipo en resolver el problema
-                    min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
+                    min_exec_time = (min_exec_time == -1) ? tiempo : Floats.min(min_exec_time, tiempo);
                     first = (min_exec_time == tiempo || first == null) ? problemScore : first;
                 }
-
-                problems_scores.putIfAbsent(equipo, problem_score_list);
+                teamScore.updateScore(problemScore.getScore());
+                teamScore.addProblemScore(problemScore);
             }
-
             if (first != null) {
                 first.setFirst(true);
             }
         }
 
+        logger.debug("Formatting scoreboard to json");
+        // ordenar team score
+        LinkedList<TeamScore> scores = new LinkedList<>(teamScoreMap.values());
+        Collections.sort(scores, new TeamScoreComparator());
+
+        // formatear la salida a json
         StringBuilder cs = new StringBuilder();
         // contest score
         cs.append("{\"contest_name\":").append(contest.getNombreContest()).append(", \"teams\":{");
         boolean removeComa = false;
 
-        // score by problem
-        for (Team equipo : contest.getListaParticipantes()) {
-            List<ProblemScore> score_list = problems_scores.getOrDefault(equipo, new LinkedList<>());
-            cs.append("\"team_name\":").append(equipo.getNombreEquipo());
-
-            if (score_list.isEmpty()) {
-                for (Problem problem : contest.getListaProblemas()) {
-                    score_list.add(new ProblemScore(problem, equipo));
-                }
-            }
-
-            StringBuilder ts = new StringBuilder();
-            boolean removeComa2 = false;
-            float totalScore = 0;
-            for (ProblemScore score : score_list) {
-                ts.append(score).append(",");
-                totalScore += score.getScore();
-                if (!removeComa2) {
-                    removeComa2 = true;
-                }
-            }
-            if (removeComa2) {
-                ts.setCharAt(ts.lastIndexOf(","), ' ');
-            }
-
-            cs.append(",\"problems_solved\":").append(score_list.size());
-            cs.append(",\"score\":").append(totalScore);
-
-            cs.append(",\"problems_scores\":{");
-            cs.append(ts).append("},");
+        for (TeamScore teamScore : scores) {
+            cs.append(teamScore).append(",");
             if (!removeComa) {
                 removeComa = true;
             }
@@ -543,6 +520,7 @@ public class ContestService {
             cs.setCharAt(cs.lastIndexOf(","), ' ');
         }
         cs.append("}}");
+        logger.debug("Finish formatting data to json string.");
         return cs.toString();
     }
 }

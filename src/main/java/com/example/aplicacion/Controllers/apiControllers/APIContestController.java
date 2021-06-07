@@ -189,7 +189,7 @@ public class APIContestController {
     }
 
     @ApiOperation("Get scores of a contest")
-    @GetMapping("contest/{contestId}/scores")
+    @GetMapping("contest/{contestId}/scoreboard")
     public ResponseEntity getScores(@PathVariable String contestId) {
         String salida = contestService.getScore(contestId);
         if (salida.equals("CONTEST NOT FOUND!")) {
