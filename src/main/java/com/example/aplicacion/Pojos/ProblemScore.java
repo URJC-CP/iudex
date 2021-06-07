@@ -38,8 +38,8 @@ public class ProblemScore {
         return score;
     }
 
-    public void setScore(float score) {
-        this.score = score;
+    public void evaluate() {
+        this.score = this.timestamp + /* penalizacion * */ (this.intentos - 1);
     }
 
     public int getIntentos() {

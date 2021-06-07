@@ -491,6 +491,8 @@ public class ContestService {
                     min_exec_time = (min_exec_time == -1) ? tiempo : Floats.min(min_exec_time, tiempo);
                     first = (min_exec_time == tiempo || first == null) ? problemScore : first;
                 }
+                // actualizar puntuacion
+                problemScore.evaluate();
                 teamScore.updateScore(problemScore.getScore());
                 teamScore.addProblemScore(problemScore);
             }
