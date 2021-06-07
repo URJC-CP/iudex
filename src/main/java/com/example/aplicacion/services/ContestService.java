@@ -507,7 +507,7 @@ public class ContestService {
         // formatear la salida a json
         StringBuilder cs = new StringBuilder();
         // contest score
-        cs.append("{\"contest_name\":").append(contest.getNombreContest()).append(", \"teams\":{");
+        cs.append("{\"contest_name\":\"").append(contest.getNombreContest()).append("\", \"teams\":{");
         boolean removeComa = false;
 
         for (TeamScore teamScore : scores) {
