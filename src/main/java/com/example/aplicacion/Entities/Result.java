@@ -26,7 +26,7 @@ public class Result {
     @Lob
     private String salidaCompilador;
 
-    private long timestamp = Instant.now().toEpochMilli();
+    private long timestamp;
 
     private int numeroCasoDePrueba;
 
@@ -49,13 +49,8 @@ public class Result {
     private String maxTimeout;
 
     public Result() {
-
-        this.maxMemory = "100";
-        this.maxTimeout = "10";
-        this.signalCompilador = "0";
-
+        this(null, null, null, null, "10", "100");
     }
-
 
     public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory) {
         this.codigo = codigo;
@@ -70,6 +65,7 @@ public class Result {
         this.fileName = fileName;
         this.maxTimeout = maxtimeout;
         this.maxMemory = maxMemory;
+        this.timestamp = Instant.now().toEpochMilli();
     }
 
     public ResultAPI toResultAPI() {

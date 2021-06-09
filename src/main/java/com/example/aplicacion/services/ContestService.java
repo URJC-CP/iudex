@@ -483,7 +483,7 @@ public class ContestService {
                 ProblemScore problemScore = teamScore.getProblemScore(problem);
 
                 // actualizar intentos
-                problemScore.setIntentos(problemScore.getIntentos() + 1);
+                problemScore.setTries(problemScore.getTries() + 1);
 
                 // obtener tiempo de las entregas aceptadas
                 if (entrega.getResultado().equalsIgnoreCase("accepted")) {

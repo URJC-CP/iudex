@@ -12,17 +12,17 @@ public class ProblemScore {
     private final Problem problem;
     private boolean first;
     private float score;
-    private int intentos;
+    private int tries;
     private long timestamp;
 
     public ProblemScore(@NotNull Problem problem, @NotNull Contest contest) {
         this(problem, contest, 0, 0L, false);
     }
 
-    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest, int intentos, long timestamp, boolean isFirst) {
+    public ProblemScore(@NotNull Problem problem, @NotNull Contest contest, int tries, long timestamp, boolean isFirst) {
         this.problem = problem;
         this.contest = contest;
-        this.intentos = intentos;
+        this.tries = tries;
         this.timestamp = timestamp;
         this.first = isFirst;
     }
@@ -40,16 +40,16 @@ public class ProblemScore {
     }
 
     public void evaluate() {
-        long penalizacion = Integer.toUnsignedLong(20 * 60 * (this.intentos - 1));
-        this.score = Instant.ofEpochMilli(timestamp).plusSeconds(penalizacion).toEpochMilli();
+        long penalty = Integer.toUnsignedLong(20 * 60 * (this.tries - 1));
+        this.score = Instant.ofEpochMilli(timestamp).plusSeconds(penalty).toEpochMilli();
     }
 
-    public int getIntentos() {
-        return intentos;
+    public int getTries() {
+        return tries;
     }
 
-    public void setIntentos(int intentos) {
-        this.intentos = intentos;
+    public void setTries(int tries) {
+        this.tries = tries;
     }
 
     public long getTimestamp() {
@@ -83,6 +83,6 @@ public class ProblemScore {
 
     @Override
     public String toString() {
-        return "{\"problem\":\"" + problem.getNombreEjercicio() + "\"" + ",\"score\":" + getScore() + ",\"tries\":" + intentos + ",\"time\":" + timestamp + ",\"is_first\":" + isFirst() + "}";
+        return "{\"problem\":\"" + problem.getNombreEjercicio() + "\"" + ",\"score\":" + getScore() + ",\"tries\":" + tries + ",\"time\":" + timestamp + ",\"is_first\":" + isFirst() + "}";
     }
 }
