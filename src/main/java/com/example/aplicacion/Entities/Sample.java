@@ -32,11 +32,8 @@ public class Sample {
     }
 
     public Sample(long id, String name, String inputText, String outputText, boolean isPublic) {
+        this(name, inputText, outputText, isPublic);
         this.id = id;
-        this.name = name;
-        this.inputText = inputText;
-        this.outputText = outputText;
-        this.isPublic = isPublic;
     }
 
     public SampleAPI toSampleAPI() {

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 //This class Sends the proper information to the rabbit queue
 @Service
@@ -113,23 +114,10 @@ public class SubmissionService {
         submissionRepository.save(submission);
 
         int numeroDeResult = 0;
+
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<Sample> datosVisibles = problema.getDatosVisibles();
-        int numeroDatosVisible = datosVisibles.size();
-
-        for (int i = 0; i < numeroDatosVisible; i++) {
-            Result resAux = new Result(datosVisibles.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resAux.setNumeroCasoDePrueba(numeroDeResult);
-            numeroDeResult++;
-            resultRepository.save(resAux);
-            submission.addResult(resAux);
-        }
-
-        List<Sample> datosOcultos = problema.getDatosOcultos();
-        int numeroEntradas = datosOcultos.size();
-
-        for (int i = 0; i < numeroEntradas; i++) {
-            Result resAux = new Result(datosOcultos.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+        for (Sample datos : problema.getData()) {
+            Result resAux = new Result(datos, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
@@ -138,14 +126,9 @@ public class SubmissionService {
 
         //actualizamos el problema
         problema.addSubmission(submission);
-        List<Contest> contestList = team.getListaContestsParticipados();
-        if (!contestList.contains(contest)) {
-            contestList.add(contest);
-        }
-        List<Problem> problemList = team.getListaProblemasParticipados();
-        if (!problemList.contains(problema)) {
-            problemList.add(problema);
-        }
+        team.getListaContestsParticipados().add(contest);
+        team.getListaProblemasParticipados().add(problema);
+
         teamRepository.save(team);
         problemRepository.save(problema);
 
@@ -203,19 +186,8 @@ public class SubmissionService {
         int numeroDeResult = 0;
         logger.debug("Create results for submission " + submission.getId() + "\nProblem: " + problema.getId() + "\nLanguage: " + language.getNombreLenguaje());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
-        List<Sample> datosVisibles = problema.getDatosVisibles();
-        int numeroEntradasVisible = datosVisibles.size();
-        for (int i = 0; i < numeroEntradasVisible; i++) {
-            Result resAux = new Result(datosVisibles.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
-            resAux.setNumeroCasoDePrueba(numeroDeResult);
-            numeroDeResult++;
-            submission.addResult(resAux);
-        }
-
-        List<Sample> datosOcultos = problema.getDatosOcultos();
-        int numeroEntradas = datosOcultos.size();
-        for (int i = 0; i < numeroEntradas; i++) {
-            Result resAux = new Result(datosOcultos.get(i), codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+        for (Sample sample : problema.getData()) {
+            Result resAux = new Result(sample, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             submission.addResult(resAux);
@@ -301,11 +273,11 @@ public class SubmissionService {
         return submissionRepository.findAll();
     }
 
-    public List<Submission> getSubmissionsFromContest(Contest contest) {
+    public Set<Submission> getSubmissionsFromContest(Contest contest) {
         return contest.getListaSubmissions();
     }
 
-    public List<Submission> getSubmissionFromProblem(Problem problem) {
+    public Set<Submission> getSubmissionFromProblem(Problem problem) {
         return problem.getSubmissions();
     }
 

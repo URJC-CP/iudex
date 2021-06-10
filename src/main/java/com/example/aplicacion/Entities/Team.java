@@ -4,9 +4,7 @@ import com.example.aplicacion.Pojos.*;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 //CLASE donde se guarda la informacion referente a los equipos
 @Entity
@@ -19,39 +17,33 @@ public class Team {
     private String nombreEquipo;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
-    private List<User> participantes;
+    private Set<User> participantes;
     private boolean esUser;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<Submission> listaDeSubmissions;
+    private Set<Submission> listaDeSubmissions;
     @OneToMany(mappedBy = "equipoPropietario")
-    private List<Problem> listaProblemasCreados;
+    private Set<Problem> listaProblemasCreados;
     @ManyToMany
-    private List<Problem> listaProblemasParticipados;
+    private Set<Problem> listaProblemasParticipados;
     @ManyToMany
-    private List<Contest> listaContestsParticipados;
+    private Set<Contest> listaContestsParticipados;
     @OneToMany(mappedBy = "teamPropietario")
-    private List<Contest> listaContestsCreados;
+    private Set<Contest> listaContestsCreados;
     private long timestamp = Instant.now().toEpochMilli();
 
     public Team() {
-        this.participantes = new ArrayList<>();
-        this.listaDeSubmissions = new ArrayList<>();
-        this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasParticipados = new ArrayList<>();
-        this.listaContestsCreados = new ArrayList<>();
-        this.listaContestsParticipados = new ArrayList<>();
-
+        this(null);
     }
 
     public Team(String nombreEquipo) {
         this.nombreEquipo = nombreEquipo;
-        this.participantes = new ArrayList<>();
-        this.listaDeSubmissions = new ArrayList<>();
-        this.listaProblemasCreados = new ArrayList<>();
-        this.listaProblemasParticipados = new ArrayList<>();
-        this.listaContestsCreados = new ArrayList<>();
-        this.listaContestsParticipados = new ArrayList<>();
+        this.participantes = new HashSet<>();
+        this.listaDeSubmissions = new HashSet<>();
+        this.listaProblemasCreados = new HashSet<>();
+        this.listaProblemasParticipados = new HashSet<>();
+        this.listaContestsCreados = new HashSet<>();
+        this.listaContestsParticipados = new HashSet<>();
     }
 
     public TeamAPI toTeamAPI() {
@@ -79,7 +71,7 @@ public class Team {
         return teamAPI;
     }
 
-    private List<ProblemAPI> problemToProblemAPI(List<Problem> problems) {
+    private List<ProblemAPI> problemToProblemAPI(Set<Problem> problems) {
         List<ProblemAPI> problemAPIS = new ArrayList<>();
         for (Problem problem : problems) {
             problemAPIS.add(problem.toProblemAPISimple());
@@ -87,7 +79,7 @@ public class Team {
         return problemAPIS;
     }
 
-    private List<SubmissionAPI> submissionToSubmissionAPI(List<Submission> problems) {
+    private List<SubmissionAPI> submissionToSubmissionAPI(Set<Submission> problems) {
         List<SubmissionAPI> listAux = new ArrayList<>();
         for (Submission auxElement : problems) {
             listAux.add(auxElement.toSubmissionAPI());
@@ -95,7 +87,7 @@ public class Team {
         return listAux;
     }
 
-    private List<ContestAPI> contestToContestAPI(List<Contest> problems) {
+    private List<ContestAPI> contestToContestAPI(Set<Contest> problems) {
         List<ContestAPI> listAux = new ArrayList<>();
         for (Contest auxElement : problems) {
             listAux.add(auxElement.toContestAPISimple());
@@ -111,35 +103,35 @@ public class Team {
         this.nombreEquipo = nombreEquipo;
     }
 
-    public List<User> getParticipantes() {
+    public Set<User> getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(List<User> participantes) {
+    public void setParticipantes(Set<User> participantes) {
         this.participantes = participantes;
     }
 
-    public List<Submission> getListaDeSubmissions() {
+    public Set<Submission> getListaDeSubmissions() {
         return listaDeSubmissions;
     }
 
-    public void setListaDeSubmissions(List<Submission> listaDeSubmissions) {
+    public void setListaDeSubmissions(Set<Submission> listaDeSubmissions) {
         this.listaDeSubmissions = listaDeSubmissions;
     }
 
-    public List<Problem> getListaProblemasParticipados() {
+    public Set<Problem> getListaProblemasParticipados() {
         return listaProblemasParticipados;
     }
 
-    public void setListaProblemasParticipados(List<Problem> listaProblemasIntentados) {
+    public void setListaProblemasParticipados(Set<Problem> listaProblemasIntentados) {
         this.listaProblemasParticipados = listaProblemasIntentados;
     }
 
-    public List<Problem> getListaProblemasCreados() {
+    public Set<Problem> getListaProblemasCreados() {
         return listaProblemasCreados;
     }
 
-    public void setListaProblemasCreados(List<Problem> listaProblemasCreados) {
+    public void setListaProblemasCreados(Set<Problem> listaProblemasCreados) {
         this.listaProblemasCreados = listaProblemasCreados;
     }
 
@@ -167,19 +159,19 @@ public class Team {
         this.id = id;
     }
 
-    public List<Contest> getListaContestsParticipados() {
+    public Set<Contest> getListaContestsParticipados() {
         return listaContestsParticipados;
     }
 
-    public void setListaContestsParticipados(List<Contest> listaContestsParticipados) {
+    public void setListaContestsParticipados(Set<Contest> listaContestsParticipados) {
         this.listaContestsParticipados = listaContestsParticipados;
     }
 
-    public List<Contest> getListaContestsCreados() {
+    public Set<Contest> getListaContestsCreados() {
         return listaContestsCreados;
     }
 
-    public void setListaContestsCreados(List<Contest> listaContestsCreados) {
+    public void setListaContestsCreados(Set<Contest> listaContestsCreados) {
         this.listaContestsCreados = listaContestsCreados;
     }
 

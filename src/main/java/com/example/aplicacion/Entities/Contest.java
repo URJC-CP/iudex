@@ -7,9 +7,7 @@ import com.example.aplicacion.Pojos.TeamAPI;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class Contest {
@@ -25,25 +23,24 @@ public class Contest {
     @ManyToOne
     private Team teamPropietario;
     @ManyToMany
-    private List<Problem> listaProblemas;
+    private Set<Problem> listaProblemas;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Language> lenguajes;
+    private Set<Language> lenguajes;
 
     @ManyToMany(mappedBy = "listaContestsParticipados")
-    private List<Team> listaParticipantes;
+    private Set<Team> listaParticipantes;
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
-    private List<Submission> listaSubmissions;
+    private Set<Submission> listaSubmissions;
 
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
     public Contest() {
-        this.listaProblemas = new ArrayList<>();
-        this.listaParticipantes = new ArrayList<>();
-        this.listaSubmissions = new ArrayList<>();
-        this.listaProblemas = new ArrayList<>();
-        this.lenguajes = new ArrayList<>();
+        this.listaProblemas = new HashSet<>();
+        this.listaParticipantes = new HashSet<>();
+        this.listaSubmissions = new HashSet<>();
+        this.lenguajes = new HashSet<>();
     }
 
     public ContestAPI toContestAPI() {
@@ -69,6 +66,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
+        contestAPI.setListaParticipantes(teamAPIS);
+
         contestAPI.setStartDateTime(this.startDateTime);
         contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
@@ -97,6 +96,8 @@ public class Contest {
         for (Team team : this.listaParticipantes) {
             teamAPIS.add(team.toTeamAPISimple());
         }
+        contestAPI.setListaParticipantes(teamAPIS);
+
         contestAPI.setStartDateTime(this.startDateTime);
         contestAPI.setEndDateTime(this.endDateTime);
         return contestAPI;
@@ -133,26 +134,24 @@ public class Contest {
         this.teamPropietario = teamPropietario;
     }
 
-    public List<Problem> getListaProblemas() {
+    public Set<Problem> getListaProblemas() {
         return listaProblemas;
     }
 
-    public void setListaProblemas(List<Problem> listaProblemas) {
+    public void setListaProblemas(Set<Problem> listaProblemas) {
         this.listaProblemas = listaProblemas;
     }
 
-    public List<Language> getLenguajes() {
+    public Set<Language> getLenguajes() {
         return lenguajes;
     }
 
-    public void setLenguajes(List<Language> lenguajes) {
+    public void setLenguajes(Set<Language> lenguajes) {
         this.lenguajes = lenguajes;
     }
 
     public void addLanguage(Language language) {
-        if (!lenguajes.contains(language)) {
-            lenguajes.add(language);
-        }
+        lenguajes.add(language);
     }
 
     public void clearLanguage() {
@@ -179,11 +178,11 @@ public class Contest {
         this.endDateTime = endDateTime;
     }
 
-    public List<Team> getListaParticipantes() {
+    public Set<Team> getListaParticipantes() {
         return listaParticipantes;
     }
 
-    public void setListaParticipantes(List<Team> listaParticipantes) {
+    public void setListaParticipantes(Set<Team> listaParticipantes) {
         this.listaParticipantes = listaParticipantes;
     }
 
@@ -203,11 +202,11 @@ public class Contest {
         this.listaParticipantes.remove(teamPropietario);
     }
 
-    public List<Submission> getListaSubmissions() {
+    public Set<Submission> getListaSubmissions() {
         return listaSubmissions;
     }
 
-    public void setListaSubmissions(List<Submission> listaSubmissions) {
+    public void setListaSubmissions(Set<Submission> listaSubmissions) {
         this.listaSubmissions = listaSubmissions;
     }
 

@@ -5,9 +5,9 @@ import com.example.aplicacion.Pojos.UserAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class User {
@@ -26,19 +26,16 @@ public class User {
 
 
     @ManyToMany
-    private List<Team> equiposParticipantes;
+    private Set<Team> equiposParticipantes;
 
 
     public User(String nickname, String email) {
         this.nickname = nickname;
         this.email = email;
-        this.equiposParticipantes = new ArrayList<>();
-
+        this.equiposParticipantes = new HashSet<>();
     }
 
-    public User() {
-
-    }
+    public User() {}
 
     public UserAPI toUserAPI() {
         UserAPI userAPI = new UserAPI();
@@ -85,11 +82,11 @@ public class User {
         this.equiposParticipantes.add(team);
     }
 
-    public List<Team> getEquiposParticipantes() {
+    public Set<Team> getEquiposParticipantes() {
         return equiposParticipantes;
     }
 
-    public void setEquiposParticipantes(List<Team> equiposParticipantes) {
+    public void setEquiposParticipantes(Set<Team> equiposParticipantes) {
         this.equiposParticipantes = equiposParticipantes;
     }
 

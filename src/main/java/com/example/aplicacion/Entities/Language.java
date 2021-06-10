@@ -4,9 +4,9 @@ import com.example.aplicacion.Pojos.LanguageAPI;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Language {
@@ -20,10 +20,10 @@ public class Language {
     private long timestamp = Instant.now().toEpochMilli();
 
     @ManyToMany
-    private List<Contest> concursos;
+    private Set<Contest> concursos;
 
     public Language() {
-        concursos = new ArrayList<>();
+        concursos = new HashSet<>();
     }
 
     public Language(String lenguaje, String imgenId) {
@@ -76,11 +76,11 @@ public class Language {
         this.timestamp = timestamp;
     }
 
-    public List<Contest> getConcursos() {
+    public Set<Contest> getConcursos() {
         return concursos;
     }
 
-    public void setConcursos(List<Contest> concursos) {
+    public void setConcursos(Set<Contest> concursos) {
         this.concursos = concursos;
     }
 
