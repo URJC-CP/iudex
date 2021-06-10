@@ -447,21 +447,21 @@ public class ContestService {
      * @param contestId the id of the contest
      * @return the score of the contest in json as String
      */
-    public String getScore(String contestId) {
+    public List<TeamScore> getScore(String contestId) {
         logger.debug("Get score received for contest " + contestId);
         Optional<Contest> contestOptional = getContest(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
-            return "CONTEST NOT FOUND!";
+            throw new RuntimeException("CONTEST NOT FOUND!");
         }
         Contest contest = contestOptional.get();
 
         logger.debug("Initializing scoreboard");
         Map<Team, TeamScore> teamScoreMap = new HashMap<>();
         for (Team equipo : contest.getListaParticipantes()) {
-            TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo, contest));
+            TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo.toTeamAPISimple()));
             for (Problem problem : contest.getListaProblemas()) {
-                teamScore.addProblemScore(new ProblemScore(problem, contest));
+                teamScore.addProblemScore(new ProblemScore(problem.toProblemAPISimple()), problem);
             }
             teamScoreMap.put(equipo, teamScore);
         }
@@ -498,7 +498,7 @@ public class ContestService {
                     min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
                     first = (min_exec_time == tiempo || first == null) ? problemScore : first;
                 }
-                teamScore.addProblemScore(problemScore);
+                teamScore.addProblemScore(problemScore, problem);
             }
 
             // actualizar el primer equipo en resolver el problema
@@ -507,28 +507,10 @@ public class ContestService {
             }
         }
 
-        logger.debug("Formatting scoreboard to json");
+        logger.debug("Finish create scoreboard");
         // ordenar team score
-        LinkedList<TeamScore> scores = new LinkedList<>(teamScoreMap.values());
+        List<TeamScore> scores = new ArrayList<>(teamScoreMap.values());
         Collections.sort(scores, new TeamScoreComparator());
-
-        // formatear la salida a json
-        StringBuilder cs = new StringBuilder();
-        // contest score
-        cs.append("{\"contest_name\":\"").append(contest.getNombreContest()).append("\", \"teams\":{");
-        boolean removeComa = false;
-
-        for (TeamScore teamScore : scores) {
-            cs.append(teamScore).append(",");
-            if (!removeComa) {
-                removeComa = true;
-            }
-        }
-        if (removeComa) {
-            cs.setCharAt(cs.lastIndexOf(","), ' ');
-        }
-        cs.append("}}");
-        logger.debug("Finish formatting data to json string.");
-        return cs.toString();
+        return scores;
     }
 }

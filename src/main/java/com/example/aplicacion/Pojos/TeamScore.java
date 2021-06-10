@@ -1,37 +1,29 @@
 package com.example.aplicacion.Pojos;
 
-import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
 import com.sun.istack.NotNull;
 
 import java.util.*;
 
 public class TeamScore {
-    private final Team team;
-    private final Contest contest;
+    private final TeamAPI team;
     private Map<Problem, ProblemScore> scoreMap;
     private float score;
     private int solvedProblems;
 
-    public TeamScore(@NotNull Team team, @NotNull Contest contest) {
-        this(team, contest, new HashMap<>(), 0, 0f);
+    public TeamScore(@NotNull TeamAPI team) {
+        this(team, new HashMap<>(), 0, 0f);
     }
 
-    public TeamScore(@NotNull Team team, @NotNull Contest contest, HashMap<Problem, ProblemScore> scoreMap, int solvedProblems, float score) {
+    public TeamScore(@NotNull TeamAPI team, HashMap<Problem, ProblemScore> scoreMap, int solvedProblems, float score) {
         this.team = team;
-        this.contest = contest;
         this.scoreMap = scoreMap;
         this.score = score;
         this.solvedProblems = solvedProblems;
     }
 
-    public Team getTeam() {
+    public TeamAPI getTeam() {
         return team;
-    }
-
-    public Contest getContest() {
-        return contest;
     }
 
     public float getScore() {
@@ -47,7 +39,7 @@ public class TeamScore {
     }
 
     public ProblemScore getProblemScore(Problem problem) {
-        return scoreMap.getOrDefault(problem, new ProblemScore(problem, contest));
+        return scoreMap.getOrDefault(problem, new ProblemScore(problem.toProblemAPISimple()));
     }
 
     public List<ProblemScore> getScoreList() {
@@ -58,14 +50,11 @@ public class TeamScore {
         this.scoreMap = scoreMap;
     }
 
-    public void addProblemScore(ProblemScore score) {
+    public void addProblemScore(ProblemScore score, Problem problem) {
         if (score == null) {
             throw new RuntimeException("Error! Wrong parameter!");
         }
-        if (!contest.equals(score.getContest())) {
-            throw new RuntimeException("Error! Problem not in Contest!");
-        }
-        scoreMap.putIfAbsent(score.getProblem(), score);
+        scoreMap.putIfAbsent(problem, score);
     }
 
     public void updateScore(float score) {
@@ -78,33 +67,11 @@ public class TeamScore {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TeamScore teamScore = (TeamScore) o;
-        return team.equals(teamScore.team) && contest.equals(teamScore.contest);
+        return team.equals(teamScore.team);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(team, contest);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\"team_name\":").append(team.getNombreEquipo());
-        sb.append(",\"problems_solved\":").append(solvedProblems);
-        sb.append(",\"score\":").append(score);
-
-        sb.append(",\"problems_scores\":{");
-        boolean removeComa = false;
-        for (ProblemScore ps : scoreMap.values()) {
-            sb.append(ps).append(",");
-            if (!removeComa) {
-                removeComa = true;
-            }
-        }
-        if (removeComa) {
-            sb.setCharAt(sb.lastIndexOf(","), ' ');
-        }
-        sb.append("}");
-        return sb.toString();
+        return Objects.hash(team);
     }
 }

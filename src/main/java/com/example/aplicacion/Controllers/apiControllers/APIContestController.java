@@ -3,6 +3,7 @@ package com.example.aplicacion.Controllers.apiControllers;
 import com.example.aplicacion.Entities.Contest;
 import com.example.aplicacion.Pojos.ContestAPI;
 import com.example.aplicacion.Pojos.ContestString;
+import com.example.aplicacion.Pojos.TeamScore;
 import com.example.aplicacion.services.ContestService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,10 +191,11 @@ public class APIContestController {
     @ApiOperation("Get scores of a contest")
     @GetMapping("contest/{contestId}/scoreboard")
     public ResponseEntity getScores(@PathVariable String contestId) {
-        String salida = contestService.getScore(contestId);
-        if (salida.equals("CONTEST NOT FOUND!")) {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        try {
+            List<TeamScore> scores = contestService.getScore(contestId);
+            return new ResponseEntity(scores, HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity("CONTEST NOT FOUND!", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(salida, HttpStatus.OK);
     }
 }
