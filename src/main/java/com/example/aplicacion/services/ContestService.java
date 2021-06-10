@@ -1,11 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Contest;
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Pojos.ContestString;
-import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.Pojos.*;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;
@@ -19,9 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,8 +34,8 @@ public class ContestService {
     @Autowired
     private TeamService teamService;
 
-    public ContestString creaContest(String nameContest, String teamId, Optional<String> descripcion, long startTimestamp, long endTimestamp) {
-        logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + descripcion);
+    public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
+        logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + description);
         ContestString salida = new ContestString();
         if (contestRepository.existsByNombreContest(nameContest)) {
             logger.error("Contest name duplicated " + nameContest);
@@ -52,8 +46,8 @@ public class ContestService {
         Contest contest = new Contest();
         contest.setNombreContest(nameContest);
 
-        if (descripcion.isPresent()) {
-            contest.setDescripcion(descripcion.get());
+        if (description.isPresent()) {
+            contest.setDescripcion(description.get());
         }
 
         Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
@@ -445,5 +439,78 @@ public class ContestService {
         logger.debug("Finish add language " + languageName + " to contest " + contest.getId());
         salida = "OK";
         return salida;
+    }
+
+    /**
+     * Returns the score of the contest in json format given the contestId
+     *
+     * @param contestId the id of the contest
+     * @return the score of the contest in json as String
+     */
+    public List<TeamScore> getScore(String contestId) {
+        logger.debug("Get score received for contest " + contestId);
+        Optional<Contest> contestOptional = getContest(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest " + contestId + " not found!");
+            throw new RuntimeException("CONTEST NOT FOUND!");
+        }
+        Contest contest = contestOptional.get();
+
+        logger.debug("Initializing scoreboard");
+        Map<Team, TeamScore> teamScoreMap = new HashMap<>();
+        for (Team equipo : contest.getListaParticipantes()) {
+            TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo.toTeamAPISimple()));
+            for (Problem problem : contest.getListaProblemas()) {
+                teamScore.addProblemScore(new ProblemScore(problem.toProblemAPISimple()), problem);
+            }
+            teamScoreMap.put(equipo, teamScore);
+        }
+
+        logger.debug("Add data to scoreboard");
+        for (Problem problem : contest.getListaProblemas()) {
+            ProblemScore first = null;
+            long min_exec_time = -1;
+            Set<Team> hasFirstAC = new HashSet<>();
+
+            for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
+                //if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
+                Team equipo = entrega.getTeam();
+                if (hasFirstAC.contains(equipo) || entrega.getResultado().toLowerCase().contains("failed in compiler")) {
+                    continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación
+                }
+
+                TeamScore teamScore = teamScoreMap.get(equipo);
+                ProblemScore problemScore = teamScore.getProblemScore(problem);
+
+                // actualizar intentos
+                problemScore.setTries(problemScore.getTries() + 1);
+
+                // obtener tiempo de las entregas aceptadas
+                if (entrega.getResultado().equalsIgnoreCase("accepted")) {
+                    hasFirstAC.add(equipo);
+
+                    long tiempo = (long) entrega.getExecSubmissionTime();
+                    // actualizar puntuacion
+                    problemScore.setTimestamp(tiempo);
+                    problemScore.evaluate();
+                    teamScore.updateScore(problemScore.getScore());
+
+                    min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
+                    first = (min_exec_time == tiempo || first == null) ? problemScore : first;
+                }
+                teamScore.addProblemScore(problemScore, problem);
+            }
+
+            // actualizar el primer equipo en resolver el problema
+            if (first != null) {
+                first.setFirst(true);
+            }
+        }
+
+        logger.debug("Finish create scoreboard");
+        // ordenar team score
+        List<TeamScore> scores = new ArrayList<>(teamScoreMap.values());
+        Collections.sort(scores, new TeamScoreComparator());
+        return scores;
     }
 }
