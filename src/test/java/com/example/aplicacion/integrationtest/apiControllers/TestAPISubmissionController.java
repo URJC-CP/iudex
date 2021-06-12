@@ -16,9 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -60,7 +58,7 @@ public class TestAPISubmissionController {
 		problem.setId(244);
 		problem.setNombreEjercicio("Ejercicio de prueba");
 		problem.setEquipoPropietario(owner);
-		contest.setListaProblemas(List.of(problem));
+		contest.addProblem(problem);
 
 		submission = new Submission();
 		submission.setId(342);
@@ -68,8 +66,8 @@ public class TestAPISubmissionController {
 		submission.setContest(contest);
 		submission.setTeam(owner);
 		submission.setLanguage(new Language());
-		submission.setResults(new LinkedList<>());
-		problem.setSubmissions(List.of(submission));
+		submission.setResults(new HashSet<>());
+		problem.setSubmissions(Set.of(submission));
 
 		when(contestService.getContest(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
 		when(contestService.getAllContests()).thenReturn(List.of(contest));
@@ -79,8 +77,8 @@ public class TestAPISubmissionController {
 
 		when(submissionService.getSubmission(String.valueOf(submission.getId()))).thenReturn(Optional.of(submission));
 		when(submissionService.getAllSubmissions()).thenReturn(List.of(submission));
-		when(submissionService.getSubmissionFromProblem(problem)).thenReturn(List.of(submission));
-		when(submissionService.getSubmissionsFromContest(contest)).thenReturn(List.of(submission));
+		when(submissionService.getSubmissionFromProblem(problem)).thenReturn(Set.of(submission));
+		when(submissionService.getSubmissionsFromContest(contest)).thenReturn(Set.of(submission));
 	}
 
 	@Test

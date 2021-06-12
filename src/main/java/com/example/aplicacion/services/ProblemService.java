@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProblemService {
@@ -80,7 +81,7 @@ public class ProblemService {
 
         //obtener nombre del problema
         if (nombreProblema == null || nombreProblema.trim().equals("")) {
-            nombreProblema = nombreFichero;
+            nombreProblema = nombreFichero.trim();
         }
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
@@ -308,7 +309,7 @@ public class ProblemService {
         return problemas;
     }
 
-    public List<Submission> getSubmissionFromProblem(Problem problem) {
+    public Set<Submission> getSubmissionFromProblem(Problem problem) {
         return problem.getSubmissions();
     }
 
@@ -334,7 +335,7 @@ public class ProblemService {
     public List<ProblemEntradaSalidaVisiblesHTML> getProblemEntradaSalidaVisiblesHTML(Problem problem) {
         List<ProblemEntradaSalidaVisiblesHTML> lista = new ArrayList<>();
 
-        List<Sample> datosVisibles = problem.getDatosVisibles();
+        Set<Sample> datosVisibles = problem.getDatosVisibles();
         for (Sample datosVisible : datosVisibles) {
             ProblemEntradaSalidaVisiblesHTML problemEntradaSalidaVisiblesHTML = new ProblemEntradaSalidaVisiblesHTML();
             problemEntradaSalidaVisiblesHTML.setSample(datosVisible);

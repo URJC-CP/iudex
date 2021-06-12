@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(APIContestController.class)
 public class TestAPIContestController {
 	private final JSONConverter jsonConverter = new JSONConverter();
+	private final String baseURL = "/API/v1/contest";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -69,14 +70,8 @@ public class TestAPIContestController {
 	@Test
 	@DisplayName("Get All Contests")
 	public void testAPIGetAllContests() throws Exception {
-		String url = "/API/v1/contest/";
-		String result = mockMvc.perform(
-			get(url).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andReturn()
-			.getResponse()
-			.getContentAsString();
+		String url = baseURL;
+		String result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
 
 		ContestAPI[] contestArray = new ContestAPI[1];
 		contestArray[0] = contest.toContestAPI();
@@ -87,17 +82,11 @@ public class TestAPIContestController {
 	@DisplayName("Get All Contests with Pagination")
 	@Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
 	public void testAPIGetAllContestsWithPagination() throws Exception {
-		String url = "/API/v1/contest/page";
+		String url = baseURL + "/page";
 		Pageable pageable = PageRequest.of(1, 5);
 		PageImpl<Contest> page = new PageImpl<>(List.of(contest));
 		when(contestService.getContestPage(pageable)).thenReturn(page);
-		mockMvc.perform(
-			get(url)
-				.characterEncoding("utf-8")
-				.param("pageable", String.valueOf(pageable))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$['pageable']['paged']").value("true"));
+		mockMvc.perform(get(url).characterEncoding("utf-8").param("pageable", String.valueOf(pageable)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$['pageable']['paged']").value("true"));
 	}
 
 	@Test
@@ -106,8 +95,8 @@ public class TestAPIContestController {
 		String badContest = "523";
 		String goodContest = String.valueOf(contest.getId());
 
-		String badURL = "/API/v1/contest/" + badContest;
-		String goodURL = "/API/v1/contest/" + goodContest;
+		String badURL = baseURL + "/" + badContest;
+		String goodURL = baseURL + "/" + goodContest;
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		String salida = "";
@@ -120,21 +109,16 @@ public class TestAPIContestController {
 
 	private void testGetContest(String url, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			get(url).accept(MediaType.APPLICATION_JSON)
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
+		result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		assertEquals(salida, result);
 	}
 
 	@Test
 	@DisplayName("Create Contest")
 	public void testAPICreateContest() throws Exception {
-		String url = "/API/v1/contest";
+		String url = baseURL;
 
-		String badContest = "521";
+		String badContest = "concurso_falso_123";
 		String goodContest = contest.getNombreContest();
 		String badTeam = "643";
 		String goodTeam = String.valueOf(owner.getId());
@@ -168,26 +152,15 @@ public class TestAPIContestController {
 
 	private void testAddContest(String url, String contest, String team, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			post(url)
-				.characterEncoding("utf8")
-				.param("contestName", contest)
-				.param("teamId", team)
-				.param("descripcion", description)
-				.param("startDateTime", startDateTime)
-				.param("endDateTime", endDateTime)
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
+		result = mockMvc.perform(post(url).characterEncoding("utf8").param("contestName", contest).param("teamId", team).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		assertEquals(salida, result);
 	}
 
 	@Test
 	@DisplayName("Delete Contest")
 	public void testAPIDeleteContest() throws Exception {
-		String badURL = "/API/v1/contest/521";
-		String goodURL = "/API/v1/contest/" + contest.getId();
+		String badURL = baseURL + "/521";
+		String goodURL = baseURL + "/" + contest.getId();
 
 		String badContest = "521";
 		String goodContest = String.valueOf(contest.getId());
@@ -205,12 +178,7 @@ public class TestAPIContestController {
 
 	private void testDeleteContest(String url, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			delete(url)
-				.characterEncoding("utf8")
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse().getContentAsString();
+		result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		System.out.println(result);
 		assertEquals(salida, result);
 	}
@@ -218,8 +186,8 @@ public class TestAPIContestController {
 	@Test
 	@DisplayName("Update Contest")
 	public void testAPIUpdateContest() throws Exception {
-		String badURL = "/API/v1/contest/521";
-		String goodURL = "/API/v1/contest/" + contest.getId();
+		String badURL = baseURL + "/521";
+		String goodURL = baseURL + "/" + contest.getId();
 
 		String badContest = "521";
 		String goodContest = String.valueOf(contest.getId());
@@ -271,27 +239,17 @@ public class TestAPIContestController {
 
 	private void testUpdateContest(String url, String contestName, String teamId, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			put(url)
-				.characterEncoding("utf8")
-				.param("contestName", contestName)
-				.param("teamId", teamId)
-				.param("descripcion", description)
-				.param("startDateTime", startDateTime)
-				.param("endDateTime", endDateTime)
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse().getContentAsString();
+		result = mockMvc.perform(put(url).characterEncoding("utf8").param("contestName", contestName).param("teamId", teamId).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		assertEquals(salida, result);
 	}
 
 	@Test
 	@DisplayName("Add Problem to Contest")
 	public void testAPIAddProblemToContest() throws Exception {
-		String badURL = "/API/v1/contest/532/756";
-		String badURL2 = "/API/v1/contest/532/" + problem.getId();
-		String badURL3 = "/API/v1/contest/" + contest.getId() + "/756";
-		String goodURL = "/API/v1/contest/" + contest.getId() + "/" + problem.getId();
+		String badURL = baseURL + "/532/756";
+		String badURL2 = baseURL + "/532/" + problem.getId();
+		String badURL3 = baseURL + "/" + contest.getId() + "/756";
+		String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
 
 		String badContest = "532";
 		String goodContest = String.valueOf(contest.getId());
@@ -322,22 +280,17 @@ public class TestAPIContestController {
 
 	private void testAddProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			post(url).characterEncoding("utf8")
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
+		result = mockMvc.perform(put(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		assertEquals(salida, result);
 	}
 
 	@Test
 	@DisplayName("Delete Problem From Contest")
 	public void testAPIDeleteProblemFromContest() throws Exception {
-		String badURL = "/contest/531/764";
-		String badURL2 = "/contest/531/" + problem.getId();
-		String badURL3 = "/contest/" + contest.getId() + "/764";
-		String goodURL = "/contest/" + contest.getId() + "/" + problem.getId();
+		String badURL = baseURL + "/531/764";
+		String badURL2 = baseURL + "/531/" + problem.getId();
+		String badURL3 = baseURL + "/" + contest.getId() + "/764";
+		String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
 
 		String badContest = "531";
 		String goodContest = String.valueOf(contest.getId());
@@ -368,13 +321,7 @@ public class TestAPIContestController {
 
 	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
 		String result;
-		result = mockMvc.perform(
-			delete(url)
-				.characterEncoding("utf8")
-		).andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
+		result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
 		assertEquals(salida, result);
 	}
 }

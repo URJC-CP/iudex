@@ -7,9 +7,7 @@ import com.google.common.hash.Hashing;
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 //En esta clase se mantendra una copia de la ejecucion de un problema por un grupo. Sera la entrada, el codigo, la salidaEstandar, salida error y salida compilador
 @Entity
@@ -23,7 +21,7 @@ public class Submission {
     @ManyToOne
     private Problem problema;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Result> results;
+    private Set<Result> results;
 
     private boolean corregido;
     private int numeroResultCorregidos;
@@ -55,7 +53,7 @@ public class Submission {
         this.language = lenguaje;
         this.corregido = false;
         this.resultado = "";
-        this.results = new ArrayList<>();
+        this.results = new HashSet<>();
         this.filename = filename;
         this.numeroResultCorregidos = 0;
 
@@ -117,14 +115,6 @@ public class Submission {
         return submissionAPI;
     }
 
-    private String listaToString(List<Sample> lista) {
-        String salida = "";
-        for (Sample inout : lista) {
-            salida.concat(inout.toString());
-        }
-        return salida;
-    }
-
     public String generaHash() {
         return this.hashStringSubmission = hasheaElString(codigo);
     }
@@ -146,22 +136,20 @@ public class Submission {
         this.id = id;
     }
 
-
     public String getCodigo() {
         return codigo;
     }
 
     public void setCodigo(String codigo) {
-
         this.codigo = codigo;
         generaHash();
     }
 
-    public List<Result> getResults() {
+    public Set<Result> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(Set<Result> results) {
         this.results = results;
     }
 
@@ -192,7 +180,6 @@ public class Submission {
 
     public void generaHashProblema() {
         this.hashStringDelProblema = problema.getHashString();
-
     }
 
     public void addResult(Result res) {

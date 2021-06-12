@@ -22,20 +22,20 @@ public class Problem {
     private String nombreEjercicio;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Sample> datos;
+    private Set<Sample> datos;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<SubmissionProblemValidator> submissionProblemValidators;
+    private Set<SubmissionProblemValidator> submissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL)
-    private List<SubmissionProblemValidator> oldSubmissionProblemValidators;
+    private Set<SubmissionProblemValidator> oldSubmissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "problema")
-    private List<Submission> submissions;
+    private Set<Submission> submissions;
     @ManyToOne
     private Team equipoPropietario;
     @ManyToMany(mappedBy = "listaProblemasParticipados")
-    private List<Team> listaEquiposIntentados;
+    private Set<Team> listaEquiposIntentados;
     @ManyToMany(mappedBy = "listaProblemas")
-    private List<Contest> listaContestsPertenece;
+    private Set<Contest> listaContestsPertenece;
     private boolean valido;
     private long timestamp = Instant.now().toEpochMilli();
     private int numeroSubmissions;
@@ -65,36 +65,36 @@ public class Problem {
     private String color;
 
     public Problem() {
-        this.datos = new ArrayList<>();
-        this.submissionProblemValidators = new ArrayList<>();
-        this.submissions = new ArrayList<>();
-        this.listaContestsPertenece = new ArrayList<>();
-        this.oldSubmissionProblemValidators = new ArrayList<>();
-        this.listaEquiposIntentados = new ArrayList<>();
+        this.datos = new HashSet<>();
+        this.submissionProblemValidators = new HashSet<>();
+        this.submissions = new HashSet<>();
+        this.listaContestsPertenece = new HashSet<>();
+        this.oldSubmissionProblemValidators = new HashSet<>();
+        this.listaEquiposIntentados = new HashSet<>();
         //valores por defecto
         if (timeout == null) {
             this.timeout = timeoutPropierties;
         }
         if (memoryLimit == null) {
             this.memoryLimit = memoryLimitPropierties;
-
         }
     }
 
     public Problem(String nombreEjercicio, List<Sample> datosVisibles, List<Sample> datosOcultos) {
         this.nombreEjercicio = nombreEjercicio;
+        this.datos = new HashSet<>();
         this.datos.addAll(datosVisibles);
         this.datos.addAll(datosOcultos);
 
-        this.submissionProblemValidators = new ArrayList<>();
-        this.submissions = new ArrayList<>();
-        this.listaContestsPertenece = new ArrayList<>();
-        this.oldSubmissionProblemValidators = new ArrayList<>();
-        this.listaEquiposIntentados = new ArrayList<>();
+        this.submissionProblemValidators = new HashSet<>();
+        this.submissions = new HashSet<>();
+        this.listaContestsPertenece = new HashSet<>();
+        this.oldSubmissionProblemValidators = new HashSet<>();
+        this.listaEquiposIntentados = new HashSet<>();
 
         this.timeout = timeoutPropierties;
         this.memoryLimit = memoryLimitPropierties;
-        this.hashString = hasheaElString(nombreEjercicio + listaToString(datosOcultos) + listaToString(datosVisibles));
+        this.hashString = hasheaElString(nombreEjercicio + listaToString(datos));
     }
 
     public ProblemAPI toProblemAPI() {
@@ -156,7 +156,7 @@ public class Problem {
         return problemAPI;
     }
 
-    private String listaToString(List<Sample> lista) {
+    private String listaToString(Set<Sample> lista) {
         String salida = "";
         for (Sample inout : lista) {
             salida = salida.concat(inout.toString());
@@ -164,7 +164,7 @@ public class Problem {
         return salida;
     }
 
-    private List<SampleAPI> convertSampletoSampleAPI(List<Sample> samples) {
+    private List<SampleAPI> convertSampletoSampleAPI(Set<Sample> samples) {
         List<SampleAPI> salida = new ArrayList<>();
         for (Sample sample : samples) {
             salida.add(sample.toSampleAPI());
@@ -209,37 +209,33 @@ public class Problem {
         return datos.size() > 0;
     }
 
-    public List<Sample> getData() {
+    public Set<Sample> getData() {
         return datos;
     }
 
-    public void setData(List<Sample> datos) {
+    public void setData(Set<Sample> datos) {
         this.datos = datos;
     }
 
-    private List<Sample> getData(boolean visible) {
+    private Set<Sample> getData(boolean visible) {
         Set<Sample> rep = new HashSet<>();
         for (Sample data : datos) {
             if (data.isPublic() == visible) {
                 rep.add(data);
             }
         }
-        return new ArrayList<>(rep);
+        return rep;
     }
 
     private void removeData(boolean visible) {
-        for (Sample sample : datos) {
-            if (sample.isPublic() == visible) {
-                datos.remove(sample);
-            }
-        }
+        datos.removeIf(sample -> sample.isPublic() == visible);
     }
 
     public void clearData() {
         this.datos.clear();
     }
 
-    public List<Sample> getDatosOcultos() {
+    public Set<Sample> getDatosOcultos() {
         return getData(false);
     }
 
@@ -248,11 +244,11 @@ public class Problem {
         this.datos.addAll(datosOcultos);
     }
 
-    public List<Sample> getDatosVisibles() {
+    public Set<Sample> getDatosVisibles() {
         return getData(true);
     }
 
-    public void setDatosVisibles(List<Sample> datosVisibles) {
+    public void setDatosVisibles(Set<Sample> datosVisibles) {
         removeData(true);
         this.datos.addAll(datosVisibles);
     }
@@ -417,11 +413,11 @@ public class Problem {
         this.limit_time_safety_margin = limit_time_safety_margin;
     }
 
-    public List<SubmissionProblemValidator> getSubmissionProblemValidators() {
+    public Set<SubmissionProblemValidator> getSubmissionProblemValidators() {
         return submissionProblemValidators;
     }
 
-    public void setSubmissionProblemValidators(List<SubmissionProblemValidator> submissionProblemValidators) {
+    public void setSubmissionProblemValidators(Set<SubmissionProblemValidator> submissionProblemValidators) {
         this.submissionProblemValidators = submissionProblemValidators;
     }
 
@@ -453,11 +449,11 @@ public class Problem {
         this.hashString = hashString;
     }
 
-    public List<Submission> getSubmissions() {
+    public Set<Submission> getSubmissions() {
         return submissions;
     }
 
-    public void setSubmissions(List<Submission> submissions) {
+    public void setSubmissions(Set<Submission> submissions) {
         this.submissions = submissions;
     }
 
@@ -477,11 +473,11 @@ public class Problem {
         this.equipoPropietario = equipoPropietario;
     }
 
-    public List<Team> getListaEquiposIntentados() {
+    public Set<Team> getListaEquiposIntentados() {
         return listaEquiposIntentados;
     }
 
-    public void setListaEquiposIntentados(List<Team> listaEquiposIntentados) {
+    public void setListaEquiposIntentados(Set<Team> listaEquiposIntentados) {
         this.listaEquiposIntentados = listaEquiposIntentados;
     }
 
@@ -493,19 +489,19 @@ public class Problem {
         this.documento = documento;
     }
 
-    public List<Contest> getListaContestsPertenece() {
+    public Set<Contest> getListaContestsPertenece() {
         return listaContestsPertenece;
     }
 
-    public void setListaContestsPertenece(List<Contest> listaContestsPertenece) {
+    public void setListaContestsPertenece(Set<Contest> listaContestsPertenece) {
         this.listaContestsPertenece = listaContestsPertenece;
     }
 
-    public List<SubmissionProblemValidator> getOldSubmissionProblemValidators() {
+    public Set<SubmissionProblemValidator> getOldSubmissionProblemValidators() {
         return oldSubmissionProblemValidators;
     }
 
-    public void setOldSubmissionProblemValidators(List<SubmissionProblemValidator> oldSubmissionProblemValidators) {
+    public void setOldSubmissionProblemValidators(Set<SubmissionProblemValidator> oldSubmissionProblemValidators) {
         this.oldSubmissionProblemValidators = oldSubmissionProblemValidators;
     }
 
