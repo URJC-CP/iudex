@@ -16,6 +16,11 @@
 
     <properties>
         <java.version>11</java.version>
+          
+        <!-- SonarCloud integration -->
+        <sonar.projectKey>URJC-CP_iudex</sonar.projectKey>
+        <sonar.organization>urjc-cp</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
