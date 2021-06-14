@@ -299,11 +299,11 @@ public class Submission {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Submission that = (Submission) o;
-        return id == that.getId() && problema.equals(that.getProblema()) && contest.equals(that.getContest()) && team.equals(that.getTeam());
+        return id == that.getId() && problema.equals(that.getProblema()) && team.equals(that.getTeam());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, problema, contest, team);
+        return Objects.hash(id, problema, team);
     }
 }
