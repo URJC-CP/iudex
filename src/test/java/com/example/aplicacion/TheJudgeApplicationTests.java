@@ -308,17 +308,20 @@ public class TheJudgeApplicationTests {
         salida = "PROBLEM NOT IN CONCURSO";
         testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
 
+        /* Verificación del fichero no se realiza en back
         // incorrect language selected
         codeFile = "primavera/submissions/accepted/main.java";
         language = getLanguage("python");
         salida = "";
         testAddSubmissionWithException(contestId, problemId, teamId, language, codeFile, salida);
-
+         */
+        /* Verificación del fichero no se realiza en back
         // incorrect file type
         codeFile = ".zip.zip";
         language = getLanguage("java");
         salida = "";
         testAddSubmissionWithException(contestId, problemId, teamId, language, codeFile, salida);
+         */
     }
 
     private String getLanguage(String language) {
