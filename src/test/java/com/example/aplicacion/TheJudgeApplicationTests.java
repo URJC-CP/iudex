@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class TheJudgeApplicationTests {
     private final String baseURL = "http://localhost:8080/API/v1";
     private final String basePathTestFiles = "/src/main/resources/testfiles";
