@@ -8,6 +8,7 @@ import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
@@ -23,18 +24,19 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TheJudgeApplicationTests {
-    private final String baseURL = "http://localhost:8080/API/v1";
     private final String basePathTestFiles = "/src/main/resources/testfiles";
     private final RestTemplate restTemplate = new RestTemplate();
     private final JSONConverter jsonConverter = new JSONConverter();
+    @LocalServerPort
+    private int port;
 
     @Test
     @DisplayName("Application's initial state")
     public void test0() {
         ResponseEntity<String> response;
-        String url = baseURL + "/contest";
+        String url = getBaseURL() + "/contest";
         response = restTemplate.getForEntity(url, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
@@ -53,7 +55,7 @@ public class TheJudgeApplicationTests {
 
     private String getContestId(int index) {
         ResponseEntity<String> response;
-        String url = baseURL + "/contest";
+        String url = getBaseURL() + "/contest";
         response = restTemplate.getForEntity(url, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
@@ -63,7 +65,7 @@ public class TheJudgeApplicationTests {
 
     private String getTeamId(int index) {
         ResponseEntity<String> response;
-        String url = baseURL + "/team";
+        String url = getBaseURL() + "/team";
         response = restTemplate.getForEntity(url, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
@@ -73,7 +75,7 @@ public class TheJudgeApplicationTests {
 
     private String getProblemId(int index) {
         ResponseEntity<String> response;
-        String url = baseURL + "/problem";
+        String url = getBaseURL() + "/problem";
         response = restTemplate.getForEntity(url, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
@@ -118,7 +120,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testCreateNewContest(String name, String description, String owner) {
-        String url = baseURL + "/contest";
+        String url = getBaseURL() + "/contest";
 
         HttpHeaders headers = new HttpHeaders();
         MultiValueMap<String, String> params;
@@ -155,7 +157,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetContest(String contestId) {
-        String getContestURL = baseURL + "/contest/" + contestId;
+        String getContestURL = getBaseURL() + "/contest/" + contestId;
         ResponseEntity<String> response = restTemplate.getForEntity(getContestURL, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         System.out.println(response.getBody());
@@ -165,7 +167,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetContestWithException(String contestId, String salida) {
-        String getContestURL = baseURL + "/contest/" + contestId;
+        String getContestURL = getBaseURL() + "/contest/" + contestId;
         Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getContestURL, String.class));
         assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
     }
@@ -200,7 +202,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testCreateProblemFromZip(String filename, String problemName, String teamId, String contestId) {
-        String createProblemURL = baseURL + "/problem/fromZip";
+        String createProblemURL = getBaseURL() + "/problem/fromZip";
         File file = new File("." + basePathTestFiles + "/" + filename);
 
         HttpHeaders headers = new HttpHeaders();
@@ -232,7 +234,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testCreateProblemFromZipWithException(String filename, String problem, String team, String contest, String salida) {
-        String createProblemURL = baseURL + "/problem/fromZip";
+        String createProblemURL = getBaseURL() + "/problem/fromZip";
         File file = new File("." + basePathTestFiles + "/" + filename);
 
         HttpHeaders headers = new HttpHeaders();
@@ -258,7 +260,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetProblem(String problemId) {
-        String getProblemURL = baseURL + "/problem/" + problemId;
+        String getProblemURL = getBaseURL() + "/problem/" + problemId;
         ResponseEntity<String> response = restTemplate.getForEntity(getProblemURL, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         System.out.println(response.getBody());
@@ -268,7 +270,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetProblemWithException(String problemId, String salida) {
-        String getProblemURL = baseURL + "/problem/" + problemId;
+        String getProblemURL = getBaseURL() + "/problem/" + problemId;
         Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getProblemURL, String.class));
         assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
     }
@@ -329,7 +331,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testAddSubmission(String contestId, String problemId, String teamId, String language, String codeFileName) {
-        String addSubmissionURL = baseURL + "/submission";
+        String addSubmissionURL = getBaseURL() + "/submission";
         File file = new File("." + basePathTestFiles + "/" + codeFileName);
 
         HttpHeaders headers = new HttpHeaders();
@@ -353,7 +355,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testAddSubmissionWithException(String contestId, String problemId, String teamId, String language, String codeFileName, String salida) {
-        String addSubmissionURL = baseURL + "/submission";
+        String addSubmissionURL = getBaseURL() + "/submission";
         File file = new File("." + basePathTestFiles + "/" + codeFileName);
 
         HttpHeaders headers = new HttpHeaders();
@@ -380,7 +382,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetSubmission(String subId) {
-        String getSubmissionURL = baseURL + "/submission/" + subId;
+        String getSubmissionURL = getBaseURL() + "/submission/" + subId;
         ResponseEntity<String> response = restTemplate.getForEntity(getSubmissionURL, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         System.out.println(response.getBody());
@@ -390,7 +392,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetSubmissionWithException(String subId, String salida) {
-        String getSubmissionURL = baseURL + "/submission/" + subId;
+        String getSubmissionURL = getBaseURL() + "/submission/" + subId;
         Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getSubmissionURL, String.class));
         assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
     }
@@ -404,7 +406,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetTeam(String teamID) {
-        String getTeamURL = baseURL + "/team/" + teamID;
+        String getTeamURL = getBaseURL() + "/team/" + teamID;
         ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         System.out.println(response.getBody());
@@ -414,7 +416,7 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetTeamWithAllData(String teamID) {
-        String getTeamURL = baseURL + "/team/" + teamID;
+        String getTeamURL = getBaseURL() + "/team/" + teamID;
         ResponseEntity<String> response = restTemplate.getForEntity(getTeamURL, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
         System.out.println(response.getBody());
@@ -431,8 +433,12 @@ public class TheJudgeApplicationTests {
     }
 
     private void testGetTeamWithException(String teamID, String salida) {
-        String getSubmissionURL = baseURL + "/team/" + teamID;
+        String getSubmissionURL = getBaseURL() + "/team/" + teamID;
         Exception exception = assertThrows(Exception.class, () -> restTemplate.getForEntity(getSubmissionURL, String.class));
         assertThat(exception.getMessage(), equalTo("404 : [" + salida + "]"));
+    }
+
+    private String getBaseURL() {
+        return "http://localhost:" + port + "/API/v1";
     }
 }
