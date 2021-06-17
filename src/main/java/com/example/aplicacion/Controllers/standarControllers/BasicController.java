@@ -91,14 +91,16 @@ public class BasicController {
             logger.info("Finish build MySQL image " + imageId5 + " from " + dckfl5.getName());
         }
 
-        userService.crearUsuario("pavloXd", "mail1");
-        //userService.crearUsuario("pavloXD", "mail2");
-        //userService.crearUsuario("pavloXD2", "mail1");
-        //userService.deleteUserByNickname("pavloXD");
-
-        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-
-        contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
+        if (!userService.existsUserByNickname("pavloXd")) {
+            userService.crearUsuario("pavloXd", "mail1");
+            //userService.crearUsuario("pavloXD", "mail2");
+            //userService.crearUsuario("pavloXD2", "mail1");
+            //userService.deleteUserByNickname("pavloXD");
+        }
+        if (!contestService.existsContsteByName("contestPrueba")) {
+            long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+            contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
+        }
     }
 }

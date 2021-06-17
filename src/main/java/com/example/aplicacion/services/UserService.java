@@ -120,4 +120,8 @@ public class UserService {
     public Optional<User> getUserById(long userId) {
         return userRepository.findUserById(userId);
     }
+
+    public boolean existsUserByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
 }

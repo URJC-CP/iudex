@@ -335,6 +335,10 @@ public class ContestService {
         return contestRepository.findContestById(Long.parseLong(idContest));
     }
 
+    public boolean existsContsteByName(String name) {
+        return contestRepository.existsByNombreContest(name);
+    }
+
     public List<Contest> getAllContests() {
         return contestRepository.findAll();
     }
