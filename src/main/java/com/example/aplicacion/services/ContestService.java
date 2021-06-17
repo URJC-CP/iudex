@@ -37,7 +37,7 @@ public class ContestService {
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + description);
         ContestString salida = new ContestString();
-        if (contestRepository.existsByNombreContest(nameContest)) {
+        if (contestRepository.findContestByNombreContest(nameContest).isPresent()) {
             logger.error("Contest name duplicated " + nameContest);
             salida.setSalida("contest NAME DUPLICATED");
             return salida;
@@ -77,7 +77,7 @@ public class ContestService {
         ContestString salida = new ContestString();
 
         //Buscamos el contest
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             salida.setSalida("CONTEST ID DOES NOT EXIST");
@@ -87,7 +87,7 @@ public class ContestService {
 
         //Si namecontest esta presente lo cambiamos
         if (nameContest.isPresent()) {
-            if (contestRepository.existsByNombreContest(nameContest.get())) {
+            if (contestRepository.findContestByNombreContest(nameContest.get()).isPresent()) {
                 logger.error("Contest name " + nameContest.get() + " duplicated");
                 salida.setSalida("CONTEST NAME DUPLICATED");
                 return salida;
@@ -133,7 +133,7 @@ public class ContestService {
     public String deleteContest(String idcontest) {
         logger.debug("Delete contest " + idcontest);
 
-        Optional<Contest> optionalContest = getContest(idcontest);
+        Optional<Contest> optionalContest = getContestById(idcontest);
         if (optionalContest.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
@@ -154,7 +154,7 @@ public class ContestService {
 
     public String anyadeProblemaContest(String idContest, String idProblema) {
         logger.debug("Add problem " + idProblema + " to contest " + idContest);
-        Optional<Contest> contestOptional = getContest(idContest);
+        Optional<Contest> contestOptional = getContestById(idContest);
         Optional<Problem> problemOptional = problemService.getProblem(idProblema);
 
         if (contestOptional.isEmpty()) {
@@ -183,7 +183,7 @@ public class ContestService {
 
     public String deleteProblemFromContest(String idContest, String idProblema) {
         logger.debug("Delete problem " + idProblema + " from contest " + idContest);
-        Optional<Contest> contestOptional = getContest(idContest);
+        Optional<Contest> contestOptional = getContestById(idContest);
         Optional<Problem> problemaOptional = problemService.getProblem(idProblema);
 
         if (contestOptional.isEmpty()) {
@@ -211,7 +211,7 @@ public class ContestService {
     }
 
     public String addTeamToContest(String idcontest, String idTeam) {
-        Optional<Contest> contestOptional = getContest(idcontest);
+        Optional<Contest> contestOptional = getContestById(idcontest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idcontest + " not found");
             return "contest NOT FOUND";
@@ -250,7 +250,7 @@ public class ContestService {
     public String addTeamToContest(String contestId, String[] teamIdList) {
         logger.debug("Adding teams to contest " + contestId);
         String salida;
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             return "CONTEST NOT FOUND!";
@@ -272,7 +272,7 @@ public class ContestService {
     }
 
     public String deleteTeamFromContest(String idContest, String idTeam) {
-        Optional<Contest> contestOptional = getContest(idContest);
+        Optional<Contest> contestOptional = getContestById(idContest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             return "contest NOT FOUND";
@@ -308,7 +308,7 @@ public class ContestService {
     public String deleteTeamFromContest(String contestId, String[] teamIdList) {
         logger.debug("Delete some teams from contest " + contestId);
         String salida;
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             return "CONTEST NOT FOUND!";
@@ -331,8 +331,12 @@ public class ContestService {
         return contest.getListaProblemas().stream().map(x -> x.toProblemAPI()).collect(Collectors.toList());
     }
 
-    public Optional<Contest> getContest(String idContest) {
+    public Optional<Contest> getContestById(String idContest) {
         return contestRepository.findContestById(Long.parseLong(idContest));
+    }
+
+    public Optional<Contest> getContestByName(String contestName) {
+        return contestRepository.findContestByNombreContest(contestName);
     }
 
     public List<Contest> getAllContests() {
@@ -344,7 +348,7 @@ public class ContestService {
     }
 
     public String addLanguageToContest(String contestId, String languageName) {
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
             return "CONTEST NOT FOUND!";
@@ -357,7 +361,7 @@ public class ContestService {
         logger.debug("Delete language " + languageId + " from contest " + contestId);
         String salida;
 
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
             salida = "CONTEST NOT FOUND!";
@@ -391,7 +395,7 @@ public class ContestService {
         logger.debug("Add accepted languages to contest " + contestId);
         String salida;
 
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
             salida = "CONTEST NOT FOUND!";
@@ -449,7 +453,7 @@ public class ContestService {
      */
     public List<TeamScore> getScore(String contestId) {
         logger.debug("Get score received for contest " + contestId);
-        Optional<Contest> contestOptional = getContest(contestId);
+        Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found!");
             throw new RuntimeException("CONTEST NOT FOUND!");

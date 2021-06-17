@@ -33,7 +33,7 @@ public class ContestController {
     @GetMapping("/goToContest")
     public String goToContest(Model model, @RequestParam String contestId) {
         logger.debug("Get request received for contest " + contestId);
-        Optional<Contest> contestOptional = contestService.getContest(contestId);
+        Optional<Contest> contestOptional = contestService.getContestById(contestId);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + contestId + " not found");
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");

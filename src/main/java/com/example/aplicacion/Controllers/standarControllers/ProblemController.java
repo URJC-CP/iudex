@@ -45,7 +45,7 @@ public class ProblemController {
 
         logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
         Optional<Problem> problemOptional = problemService.getProblem(idProblem);
-        Optional<Contest> contestOptional = contestService.getContest(idContest);
+        Optional<Contest> contestOptional = contestService.getContestById(idContest);
         if (contestOptional.isEmpty()) {
             logger.error("Contest " + idContest + " not found");
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");

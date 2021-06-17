@@ -10,9 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface ContestRepository extends JpaRepository<Contest, Long> {
-    boolean existsByNombreContest(String nombre);
 
     Optional<Contest> findContestById(Long id);
+    Optional<Contest> findContestByNombreContest(String name);
 
     Page<Contest> findAll(Pageable pageable);
 }

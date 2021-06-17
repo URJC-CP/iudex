@@ -40,7 +40,7 @@ public class APISubmissionController {
 
         //Si tiene los dos devolvemos lo que corresponde
         if (contestId.isPresent() && problemId.isPresent()) {
-            Optional<Contest> contestOptional = contestService.getContest(contestId.get());
+            Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty() || contestOptional.isEmpty()) {
                 return new ResponseEntity("Problem or contest not found", HttpStatus.NOT_FOUND);
@@ -69,7 +69,7 @@ public class APISubmissionController {
                 return new ResponseEntity(submissionAPIS, HttpStatus.OK);
             }
         } else if (contestId.isPresent()) {
-            Optional<Contest> contestOptional = contestService.getContest(contestId.get());
+            Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             if (contestOptional.isEmpty()) {
                 return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
             } else {

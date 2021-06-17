@@ -69,7 +69,7 @@ public class TestAPISubmissionController {
 		submission.setResults(new HashSet<>());
 		problem.setSubmissions(Set.of(submission));
 
-		when(contestService.getContest(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
+		when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
 		when(contestService.getAllContests()).thenReturn(List.of(contest));
 
 		when(problemService.getAllProblemas()).thenReturn(List.of(problem));

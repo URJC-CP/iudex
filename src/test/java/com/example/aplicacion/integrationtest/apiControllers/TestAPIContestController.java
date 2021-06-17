@@ -63,7 +63,7 @@ public class TestAPIContestController {
         problem.setId(244);
         problem.setNombreEjercicio("Ejercicio de prueba");
 
-        when(contestService.getContest(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
+        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
         when(contestService.getAllContests()).thenReturn(List.of(contest));
     }
 
