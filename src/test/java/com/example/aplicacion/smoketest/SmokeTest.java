@@ -104,7 +104,7 @@ public class SmokeTest {
     @Test
     @DisplayName("Verificar estado inicial de los repositorios")
     public void emptyRepositories() {
-        assertEquals(contestRepository.findAll().size(), 1);
+        assertEquals(1, contestRepository.findAll().size());
         assertTrue(sampleRepository.findAll().isEmpty());
         assertFalse(languageRepository.findAll().isEmpty());
         assertTrue(problemRepository.findAll().isEmpty());
