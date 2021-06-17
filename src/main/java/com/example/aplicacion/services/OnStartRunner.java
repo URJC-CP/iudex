@@ -46,6 +46,8 @@ public class OnStartRunner implements ApplicationRunner {
         createLanguage("sql", "DOCKERS/MySQL/Dockerfile");
 
         userService.crearUsuario("pavloXd", "mail1");
+        var teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
+
         //userService.crearUsuario("pavloXD", "mail2");
         //userService.crearUsuario("pavloXD2", "mail1");
         //userService.deleteUserByNickname("pavloXD");
@@ -56,7 +58,7 @@ public class OnStartRunner implements ApplicationRunner {
             logger.info("Demo contest contestPrueba already exists, skipping creation");
         } else {
             logger.info("Creating demo contest 'contestPrueba' with team 'pavloXd'");
-            contestService.creaContest("contestPrueba", Long.toString(teamService.getTeamByNick("pavloXd").get().getId()), Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
+            contestService.creaContest("contestPrueba", teamId, Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
         }
     }
 
