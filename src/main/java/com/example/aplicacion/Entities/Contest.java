@@ -41,6 +41,8 @@ public class Contest {
         this.listaParticipantes = new HashSet<>();
         this.listaSubmissions = new HashSet<>();
         this.lenguajes = new HashSet<>();
+        this.startDateTime = LocalDateTime.now();
+        this.endDateTime = startDateTime.plusDays(15);
     }
 
     public ContestAPI toContestAPI() {
@@ -68,8 +70,8 @@ public class Contest {
         }
         contestAPI.setListaParticipantes(teamAPIS);
 
-        contestAPI.setStartDateTime(this.startDateTime);
-        contestAPI.setEndDateTime(this.endDateTime);
+        contestAPI.setStartDateTime(convertLocalDateTimeToMillis(this.startDateTime));
+        contestAPI.setEndDateTime(convertLocalDateTimeToMillis(this.endDateTime));
         return contestAPI;
     }
 
@@ -98,8 +100,8 @@ public class Contest {
         }
         contestAPI.setListaParticipantes(teamAPIS);
 
-        contestAPI.setStartDateTime(this.startDateTime);
-        contestAPI.setEndDateTime(this.endDateTime);
+        contestAPI.setStartDateTime(convertLocalDateTimeToMillis(this.startDateTime));
+        contestAPI.setEndDateTime(convertLocalDateTimeToMillis(this.endDateTime));
         return contestAPI;
     }
 
@@ -224,6 +226,10 @@ public class Contest {
 
     public void setDescripcion(String description) {
         this.descripcion = description;
+    }
+
+    private long convertLocalDateTimeToMillis(LocalDateTime dateTime) {
+        return dateTime.atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
     }
 
     @Override

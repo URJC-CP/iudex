@@ -4,7 +4,6 @@ import com.example.aplicacion.Controllers.apiControllers.APIContestController;
 import com.example.aplicacion.Controllers.apiControllers.APIProblemController;
 import com.example.aplicacion.Controllers.apiControllers.APISubmissionController;
 import com.example.aplicacion.Controllers.apiControllers.APITeamController;
-import com.example.aplicacion.Controllers.standarControllers.BasicController;
 import com.example.aplicacion.Controllers.standarControllers.ContestController;
 import com.example.aplicacion.Controllers.standarControllers.IndiceController;
 import com.example.aplicacion.Controllers.standarControllers.ProblemController;
@@ -12,6 +11,7 @@ import com.example.aplicacion.Repository.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;
+import com.example.aplicacion.services.OnStartRunner;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +34,6 @@ public class SmokeTest {
     APITeamController apiTeamController;
 
     // controllers
-    @Autowired
-    BasicController basicController;
     @Autowired
     ContestController contestController;
     @Autowired
@@ -69,6 +67,10 @@ public class SmokeTest {
     @Autowired
     RabbitResultRevieserReceiver reviserReceiver;
 
+    // Runner
+    @Autowired
+    OnStartRunner onStartRunner;
+
     @Test
     @DisplayName("verificar que la app este desplegada")
     public void contextLoads() {
@@ -84,7 +86,6 @@ public class SmokeTest {
         assertNotNull(apiTeamController);
 
         //check controllers have been initialized
-        assertNotNull(basicController);
         assertNotNull(contestController);
         assertNotNull(indiceController);
         assertNotNull(problemController);
@@ -98,11 +99,15 @@ public class SmokeTest {
         assertNotNull(submissionRepository);
         assertNotNull(teamRepository);
         assertNotNull(userRepository);
+
+        // check application runner
+        assertNotNull(onStartRunner);
     }
 
     // verificar estado inicial de los repositorios
     @Test
     @DisplayName("Verificar estado inicial de los repositorios")
+    @Disabled("No se cumple nunca si se han ejecutado otros tests antes porque la bbdd esta sucia")
     public void emptyRepositories() {
         assertEquals(contestRepository.findAll().size(), 1);
         assertTrue(sampleRepository.findAll().isEmpty());

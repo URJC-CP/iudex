@@ -36,292 +36,292 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(APIContestController.class)
 public class TestAPIContestController {
-	private final JSONConverter jsonConverter = new JSONConverter();
-	private final String baseURL = "/API/v1/contest";
+    private final JSONConverter jsonConverter = new JSONConverter();
+    private final String baseURL = "/API/v1/contest";
 
-	@Autowired
-	private MockMvc mockMvc;
-	@MockBean
-	private ContestService contestService;
-	private Contest contest;
-	private Team owner;
-	private Problem problem;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ContestService contestService;
+    private Contest contest;
+    private Team owner;
+    private Problem problem;
 
-	@BeforeEach
-	public void init() {
-		contest = new Contest();
-		contest.setId(101);
-		contest.setNombreContest("elConcurso");
-		contest.setDescripcion("concurso de prueba");
+    @BeforeEach
+    public void init() {
+        contest = new Contest();
+        contest.setId(101);
+        contest.setNombreContest("elConcurso");
+        contest.setDescripcion("concurso de prueba");
 
-		owner = new Team();
-		owner.setId(201);
-		owner.setNombreEquipo("propietario");
-		contest.setTeamPropietario(owner);
+        owner = new Team();
+        owner.setId(201);
+        owner.setNombreEquipo("propietario");
+        contest.setTeamPropietario(owner);
 
-		problem = new Problem();
-		problem.setId(244);
-		problem.setNombreEjercicio("Ejercicio de prueba");
+        problem = new Problem();
+        problem.setId(244);
+        problem.setNombreEjercicio("Ejercicio de prueba");
 
-		when(contestService.getContest(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
-		when(contestService.getAllContests()).thenReturn(List.of(contest));
-	}
+        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
+        when(contestService.getAllContests()).thenReturn(List.of(contest));
+    }
 
-	@Test
-	@DisplayName("Get All Contests")
-	public void testAPIGetAllContests() throws Exception {
-		String url = baseURL;
-		String result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+    @Test
+    @DisplayName("Get All Contests")
+    public void testAPIGetAllContests() throws Exception {
+        String url = baseURL;
+        String result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
 
-		ContestAPI[] contestArray = new ContestAPI[1];
-		contestArray[0] = contest.toContestAPI();
-		assertEquals(jsonConverter.convertObjectToJSON(contestArray), result);
-	}
+        ContestAPI[] contestArray = new ContestAPI[1];
+        contestArray[0] = contest.toContestAPI();
+        assertEquals(jsonConverter.convertObjectToJSON(contestArray), result);
+    }
 
-	@Test
-	@DisplayName("Get All Contests with Pagination")
-	@Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
-	public void testAPIGetAllContestsWithPagination() throws Exception {
-		String url = baseURL + "/page";
-		Pageable pageable = PageRequest.of(1, 5);
-		PageImpl<Contest> page = new PageImpl<>(List.of(contest));
-		when(contestService.getContestPage(pageable)).thenReturn(page);
-		mockMvc.perform(get(url).characterEncoding("utf-8").param("pageable", String.valueOf(pageable)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$['pageable']['paged']").value("true"));
-	}
+    @Test
+    @DisplayName("Get All Contests with Pagination")
+    @Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
+    public void testAPIGetAllContestsWithPagination() throws Exception {
+        String url = baseURL + "/page";
+        Pageable pageable = PageRequest.of(1, 5);
+        PageImpl<Contest> page = new PageImpl<>(List.of(contest));
+        when(contestService.getContestPage(pageable)).thenReturn(page);
+        mockMvc.perform(get(url).characterEncoding("utf-8").param("pageable", String.valueOf(pageable)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$['pageable']['paged']").value("true"));
+    }
 
-	@Test
-	@DisplayName("Get One Contest")
-	public void testAPIGetContest() throws Exception {
-		String badContest = "523";
-		String goodContest = String.valueOf(contest.getId());
+    @Test
+    @DisplayName("Get One Contest")
+    public void testAPIGetContest() throws Exception {
+        String badContest = "523";
+        String goodContest = String.valueOf(contest.getId());
 
-		String badURL = baseURL + "/" + badContest;
-		String goodURL = baseURL + "/" + goodContest;
+        String badURL = baseURL + "/" + badContest;
+        String goodURL = baseURL + "/" + goodContest;
 
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "";
-		testGetContest(badURL, status, salida);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "CONTEST NOT FOUND";
+        testGetContest(badURL, status, salida);
 
-		status = HttpStatus.OK;
-		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
-		testGetContest(goodURL, status, salida);
-	}
+        status = HttpStatus.OK;
+        salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
+        testGetContest(goodURL, status, salida);
+    }
 
-	private void testGetContest(String url, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testGetContest(String url, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Create Contest")
-	public void testAPICreateContest() throws Exception {
-		String url = baseURL;
+    @Test
+    @DisplayName("Create Contest")
+    public void testAPICreateContest() throws Exception {
+        String url = baseURL;
 
-		String badContest = "concurso_falso_123";
-		String goodContest = contest.getNombreContest();
-		String badTeam = "643";
-		String goodTeam = String.valueOf(owner.getId());
-		String description = contest.getDescripcion();
+        String badContest = "concurso_falso_123";
+        String goodContest = contest.getNombreContest();
+        String badTeam = "643";
+        String goodTeam = String.valueOf(owner.getId());
+        String description = contest.getDescripcion();
 
-		ContestString cs = new ContestString();
-		HttpStatus status = HttpStatus.NOT_FOUND;
+        ContestString cs = new ContestString();
+        HttpStatus status = HttpStatus.NOT_FOUND;
 
-		long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-		long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
 
-		String salida = "contest NAME DUPLICATED";
-		cs.setSalida(salida);
-		when(contestService.creaContest(badContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
-		testAddContest(url, badContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
-		when(contestService.creaContest(badContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
-		testAddContest(url, badContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
+        String salida = "contest NAME DUPLICATED";
+        cs.setSalida(salida);
+        when(contestService.creaContest(badContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+        testAddContest(url, badContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
+        when(contestService.creaContest(badContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+        testAddContest(url, badContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 
-		salida = "TEAM NOT FOUND";
-		cs.setSalida(salida);
-		when(contestService.creaContest(goodContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
-		testAddContest(url, goodContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
+        salida = "TEAM NOT FOUND";
+        cs.setSalida(salida);
+        when(contestService.creaContest(goodContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+        testAddContest(url, goodContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 
-		cs.setSalida("OK");
-		status = HttpStatus.CREATED;
-		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
-		cs.setContest(contest);
-		when(contestService.creaContest(goodContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
-		testAddContest(url, goodContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
-	}
+        cs.setSalida("OK");
+        status = HttpStatus.CREATED;
+        salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
+        cs.setContest(contest);
+        when(contestService.creaContest(goodContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
+        testAddContest(url, goodContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
+    }
 
-	private void testAddContest(String url, String contest, String team, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(post(url).characterEncoding("utf8").param("contestName", contest).param("teamId", team).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testAddContest(String url, String contest, String team, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(post(url).characterEncoding("utf8").param("contestName", contest).param("teamId", team).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Delete Contest")
-	public void testAPIDeleteContest() throws Exception {
-		String badURL = baseURL + "/521";
-		String goodURL = baseURL + "/" + contest.getId();
+    @Test
+    @DisplayName("Delete Contest")
+    public void testAPIDeleteContest() throws Exception {
+        String badURL = baseURL + "/521";
+        String goodURL = baseURL + "/" + contest.getId();
 
-		String badContest = "521";
-		String goodContest = String.valueOf(contest.getId());
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "contest NOT FOUND";
+        String badContest = "521";
+        String goodContest = String.valueOf(contest.getId());
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "contest NOT FOUND";
 
-		when(contestService.deleteContest(badContest)).thenReturn(salida);
-		testDeleteContest(badURL, status, salida);
+        when(contestService.deleteContest(badContest)).thenReturn(salida);
+        testDeleteContest(badURL, status, salida);
 
-		status = HttpStatus.OK;
-		salida = "";
-		when(contestService.deleteContest(goodContest)).thenReturn("OK");
-		testDeleteContest(goodURL, status, salida);
-	}
+        status = HttpStatus.OK;
+        salida = "";
+        when(contestService.deleteContest(goodContest)).thenReturn("OK");
+        testDeleteContest(goodURL, status, salida);
+    }
 
-	private void testDeleteContest(String url, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		System.out.println(result);
-		assertEquals(salida, result);
-	}
+    private void testDeleteContest(String url, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        System.out.println(result);
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Update Contest")
-	public void testAPIUpdateContest() throws Exception {
-		String badURL = baseURL + "/521";
-		String goodURL = baseURL + "/" + contest.getId();
+    @Test
+    @DisplayName("Update Contest")
+    public void testAPIUpdateContest() throws Exception {
+        String badURL = baseURL + "/521";
+        String goodURL = baseURL + "/" + contest.getId();
 
-		String badContest = "521";
-		String goodContest = String.valueOf(contest.getId());
-		Optional<String> badName = Optional.of("654");
-		Optional<String> goodName = Optional.of(contest.getNombreContest());
-		Optional<String> badTeam = Optional.of("435");
-		Optional<String> goodTeam = Optional.of(String.valueOf(owner.getId()));
-		Optional<String> description = Optional.of(contest.getDescripcion());
+        String badContest = "521";
+        String goodContest = String.valueOf(contest.getId());
+        Optional<String> badName = Optional.of("654");
+        Optional<String> goodName = Optional.of(contest.getNombreContest());
+        Optional<String> badTeam = Optional.of("435");
+        Optional<String> goodTeam = Optional.of(String.valueOf(owner.getId()));
+        Optional<String> description = Optional.of(contest.getDescripcion());
 
-		ContestString cs = new ContestString();
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "CONTEST ID DOES NOT EXIST";
+        ContestString cs = new ContestString();
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "CONTEST ID DOES NOT EXIST";
 
-		long startDateTimeLong = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-		long endDateTimeLong = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-		Optional<Long> startDateTime = Optional.of(startDateTimeLong);
-		Optional<Long> endDateTime = Optional.of(endDateTimeLong);
+        long startDateTimeLong = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        long endDateTimeLong = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
+        Optional<Long> startDateTime = Optional.of(startDateTimeLong);
+        Optional<Long> endDateTime = Optional.of(endDateTimeLong);
 
-		cs.setSalida(salida);
-		when(contestService.updateContest(badContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(badURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        cs.setSalida(salida);
+        when(contestService.updateContest(badContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(badURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(badContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(badURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        when(contestService.updateContest(badContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(badURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(badContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(badURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        when(contestService.updateContest(badContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(badURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		salida = "CONTEST NAME DUPLICATED";
-		cs.setSalida(salida);
-		when(contestService.updateContest(goodContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(goodURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        salida = "CONTEST NAME DUPLICATED";
+        cs.setSalida(salida);
+        when(contestService.updateContest(goodContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(goodURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		when(contestService.updateContest(goodContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(goodURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        when(contestService.updateContest(goodContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(goodURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		salida = "TEAM NOT FOUND";
-		cs.setSalida(salida);
-		when(contestService.updateContest(goodContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+        salida = "TEAM NOT FOUND";
+        cs.setSalida(salida);
+        when(contestService.updateContest(goodContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-		salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
-		status = HttpStatus.CREATED;
-		cs.setSalida("OK");
-		cs.setContest(contest);
-		when(contestService.updateContest(goodContest, goodName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
-		testUpdateContest(goodURL, goodName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
-	}
+        salida = jsonConverter.convertObjectToJSON(contest.toContestAPI());
+        status = HttpStatus.CREATED;
+        cs.setSalida("OK");
+        cs.setContest(contest);
+        when(contestService.updateContest(goodContest, goodName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
+        testUpdateContest(goodURL, goodName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
+    }
 
-	private void testUpdateContest(String url, String contestName, String teamId, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(put(url).characterEncoding("utf8").param("contestName", contestName).param("teamId", teamId).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testUpdateContest(String url, String contestName, String teamId, String description, String startDateTime, String endDateTime, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url).characterEncoding("utf8").param("contestName", contestName).param("teamId", teamId).param("descripcion", description).param("startTimestamp", startDateTime).param("endTimestamp", endDateTime)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Add Problem to Contest")
-	public void testAPIAddProblemToContest() throws Exception {
-		String badURL = baseURL + "/532/756";
-		String badURL2 = baseURL + "/532/" + problem.getId();
-		String badURL3 = baseURL + "/" + contest.getId() + "/756";
-		String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
+    @Test
+    @DisplayName("Add Problem to Contest")
+    public void testAPIAddProblemToContest() throws Exception {
+        String badURL = baseURL + "/532/756";
+        String badURL2 = baseURL + "/532/" + problem.getId();
+        String badURL3 = baseURL + "/" + contest.getId() + "/756";
+        String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
 
-		String badContest = "532";
-		String goodContest = String.valueOf(contest.getId());
-		String badProblem = "756";
-		String goodProblem = String.valueOf(problem.getId());
+        String badContest = "532";
+        String goodContest = String.valueOf(contest.getId());
+        String badProblem = "756";
+        String goodProblem = String.valueOf(problem.getId());
 
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "contest NOT FOUND";
-		when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL, status, salida);
-		when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
-		testAddProblem(badURL2, status, salida);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "contest NOT FOUND";
+        when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
+        testAddProblem(badURL, status, salida);
+        when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
+        testAddProblem(badURL2, status, salida);
 
-		salida = "PROBLEM NOT FOUND";
-		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL3, status, salida);
+        salida = "PROBLEM NOT FOUND";
+        when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+        testAddProblem(badURL3, status, salida);
 
-		salida = "PROBLEM DUPLICATED";
-		when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
-		testAddProblem(badURL3, status, salida);
+        salida = "PROBLEM DUPLICATED";
+        when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+        testAddProblem(badURL3, status, salida);
 
-		status = HttpStatus.OK;
-		salida = "OK";
-		when(contestService.anyadeProblemaContest(goodContest, goodProblem)).thenReturn(salida);
-		salida = "";
-		testAddProblem(goodURL, status, salida);
-	}
+        status = HttpStatus.OK;
+        salida = "OK";
+        when(contestService.anyadeProblemaContest(goodContest, goodProblem)).thenReturn(salida);
+        salida = "";
+        testAddProblem(goodURL, status, salida);
+    }
 
-	private void testAddProblem(String url, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(put(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testAddProblem(String url, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Delete Problem From Contest")
-	public void testAPIDeleteProblemFromContest() throws Exception {
-		String badURL = baseURL + "/531/764";
-		String badURL2 = baseURL + "/531/" + problem.getId();
-		String badURL3 = baseURL + "/" + contest.getId() + "/764";
-		String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
+    @Test
+    @DisplayName("Delete Problem From Contest")
+    public void testAPIDeleteProblemFromContest() throws Exception {
+        String badURL = baseURL + "/531/764";
+        String badURL2 = baseURL + "/531/" + problem.getId();
+        String badURL3 = baseURL + "/" + contest.getId() + "/764";
+        String goodURL = baseURL + "/" + contest.getId() + "/" + problem.getId();
 
-		String badContest = "531";
-		String goodContest = String.valueOf(contest.getId());
-		String badProblem = "764";
-		String goodProblem = String.valueOf(problem.getId());
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badProblem = "764";
+        String goodProblem = String.valueOf(problem.getId());
 
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "contest NOT FOUND";
-		when(contestService.deleteProblemFromContest(badContest, badProblem)).thenReturn(salida);
-		testDeleteProblem(badURL, status, salida);
-		when(contestService.deleteProblemFromContest(badContest, goodProblem)).thenReturn(salida);
-		testDeleteProblem(badURL2, status, salida);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "contest NOT FOUND";
+        when(contestService.deleteProblemFromContest(badContest, badProblem)).thenReturn(salida);
+        testDeleteProblem(badURL, status, salida);
+        when(contestService.deleteProblemFromContest(badContest, goodProblem)).thenReturn(salida);
+        testDeleteProblem(badURL2, status, salida);
 
-		salida = "PROBLEM NOT FOUND";
-		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
-		testDeleteProblem(badURL3, status, salida);
+        salida = "PROBLEM NOT FOUND";
+        when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
+        testDeleteProblem(badURL3, status, salida);
 
-		salida = "PROBLEM NOT IN CONCURSO";
-		when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
-		testDeleteProblem(badURL3, status, salida);
+        salida = "PROBLEM NOT IN CONCURSO";
+        when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
+        testDeleteProblem(badURL3, status, salida);
 
-		salida = "OK";
-		status = HttpStatus.OK;
-		when(contestService.deleteProblemFromContest(goodContest, goodProblem)).thenReturn(salida);
-		salida = "";
-		testDeleteProblem(goodURL, status, salida);
-	}
+        salida = "OK";
+        status = HttpStatus.OK;
+        when(contestService.deleteProblemFromContest(goodContest, goodProblem)).thenReturn(salida);
+        salida = "";
+        testDeleteProblem(goodURL, status, salida);
+    }
 
-	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
-		String result;
-		result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 }

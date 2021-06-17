@@ -81,7 +81,7 @@ public class ProblemService {
 
         //obtener nombre del problema
         if (nombreProblema == null || nombreProblema.trim().equals("")) {
-            nombreProblema = nombreFichero.trim();
+            nombreProblema = nombreFichero.trim().split("\\.")[0];
         }
 
         //verificar si el problema ya ha sido creado apartir del mismo zip

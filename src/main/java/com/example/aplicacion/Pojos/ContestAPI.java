@@ -2,7 +2,6 @@ package com.example.aplicacion.Pojos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -15,8 +14,8 @@ public class ContestAPI {
     private TeamAPI teamPropietario;
     private List<ProblemAPI> listaProblemas;
     private List<TeamAPI> listaParticipantes;
-    private LocalDateTime startDateTime;
-    private LocalDateTime endDateTime;
+    private long startDateTime;
+    private long endDateTime;
 
     public long getId() {
         return id;
@@ -74,19 +73,19 @@ public class ContestAPI {
         this.descripcion = descripcion;
     }
 
-    public LocalDateTime getStartDateTime() {
+    public long getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
+    public void setStartDateTime(long startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public LocalDateTime getEndDateTime() {
+    public long getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(long endDateTime) {
         this.endDateTime = endDateTime;
     }
 }

@@ -48,13 +48,12 @@ public class APIContestController {
     @GetMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
         ContestAPI contestAPI = new ContestAPI();
-        Optional<Contest> contestOptional = contestService.getContest(contestId);
+        Optional<Contest> contestOptional = contestService.getContestById(contestId);
         if (contestOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Contest contest = contestOptional.get();
         contestAPI = contest.toContestAPI();
-
         ResponseEntity<ContestAPI> responseEntity = new ResponseEntity<>(contestAPI, HttpStatus.OK);
         return responseEntity;
     }
