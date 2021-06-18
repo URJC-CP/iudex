@@ -173,7 +173,7 @@ public class ContestService {
 
         if (contest.getListaProblemas().contains(problema)) {
             logger.error("Problem {} already in contest {}", idProblema, idContest);
-            return "PROBLEM DUPLICATED";
+            return "PROBLEM ALREADY IN CONTEST";
         }
 
         contest.addProblem(problema);
@@ -190,7 +190,7 @@ public class ContestService {
 
         if (contestOptional.isEmpty()) {
             logger.error("Contest {} not found", idContest);
-            return "contest NOT FOUND";
+            return "CONTEST NOT FOUND";
         }
         Contest contest = contestOptional.get();
 
