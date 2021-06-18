@@ -12,21 +12,21 @@ public class ResultReviser {
     public void revisar(Result res) {
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion
         //String signalAux[] = res.getSignalFile().split("\n");
-        logger.debug("Review result " + res.getId());
+        logger.debug("Review result {}", res.getId());
         //si hay errores en compilacion no miramos mas
         if (!compareIgnoreExpressions(res.getSignalCompilador(), "0")) {
-            logger.info("Result " + res.getId() + " failed in compiler: " + res.getSalidaCompilador());
-            res.setResultadoRevision("FAILED IN COMPILER" + "\n" + res.getSalidaCompilador());
+            logger.info("Result {} failed in compiler {}", res.getId(), res.getSalidaCompilador());
+            res.setResultadoRevision("FAILED IN COMPILER with " + res.getSalidaCompilador());
         }
         //Si hay errores en la ejecucion buscamos cual es
         else if (!compareIgnoreExpressions(res.getSignalEjecutor(), "0")) {
             //Si el codigo es el 143 significa que ha dado timeout
             if (compareIgnoreExpressions(res.getSignalEjecutor(), "143")) {
-                logger.info("Time limit exceeded for result " + res.getId());
+                logger.info("Time limit exceeded for result {}", res.getId());
                 res.setResultadoRevision("time_limit_exceeded");
             } else {
-                logger.info("Result " + res.getId() + " failed in Runtime: " + res.getSalidaError() + "\nFinished with " + res.getSignalEjecutor());
-                res.setResultadoRevision("run_time_error" + "\n" + res.getSalidaError() + "\n El codigo de salida de error es " + res.getSignalEjecutor());
+                logger.info("Result {} failed in runtime {} with {}" + res.getId(), res.getSalidaError(), res.getSignalEjecutor());
+                res.setResultadoRevision("run_time_error " + res.getSalidaError() + " with " + res.getSignalEjecutor());
             }
         }
         //Si no ejecuta ninguno significa que su ejecucion es correcta
@@ -48,7 +48,7 @@ public class ResultReviser {
             res.setExecMemory(Float.parseFloat(time[1]));
         }
 
-        logger.debug("Finish review result " + res.getId() + "\nResult output is " + res.getResultadoRevision());
+        logger.debug("Finish review result {} with {}", res.getId(), res.getResultadoRevision());
         res.setRevisado(true);
 
     }

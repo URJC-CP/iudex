@@ -32,7 +32,7 @@ public class ContestController {
     public String goToContest(Model model, @RequestParam String contestId) {
         contestId = sanitize(contestId);
 
-        logger.debug("Get contest {0}", contestId);
+        logger.debug("Get contest {}", contestId);
         Optional<Contest> contestOptional = contestService.getContestById(contestId);
         if (contestOptional.isPresent()) {
             Contest contest = contestOptional.get();
@@ -40,11 +40,11 @@ public class ContestController {
             model.addAttribute("teams", teamService.getAllTeams());
             model.addAttribute("problems", problemService.getAllProblemas());
 
-            logger.debug("Show contest {0}", contestId);
+            logger.debug("Show contest {}", contestId);
             return "contest";
 
         } else {
-            logger.error("Contest {0} not found", contestId);
+            logger.error("Contest {} not found", contestId);
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }
@@ -55,14 +55,14 @@ public class ContestController {
     public String deleteConcorso(Model model, @RequestParam String contestId) {
         contestId = sanitize(contestId);
 
-        logger.debug("Delete contest {0}", contestId);
+        logger.debug("Delete contest {}", contestId);
         String salida = contestService.deleteContest(contestId);
 
         if (salida.equals("OK")) {
-            logger.debug("Delete contest {0} success", contestId);
+            logger.debug("Delete contest {} success", contestId);
             return "redirect:/";
         } else {
-            logger.error("Delete contest {0} failed with {1}", contestId, salida);
+            logger.error("Delete contest {} failed with {}", contestId, salida);
             return "404";
         }
     }
@@ -71,14 +71,14 @@ public class ContestController {
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId) {
         contestId = sanitize(contestId);
 
-        logger.debug("Add user {0} to contest {1}", teamId, contestId);
+        logger.debug("Add user {} to contest {}", teamId, contestId);
         String salida = contestService.addTeamToContest(teamId, contestId);
 
         if (salida.equals("OK")) {
-            logger.debug("Add user {0} to contest {1} success", teamId, contestId);
+            logger.debug("Add user {} to contest {} success", teamId, contestId);
             return "redirect:/";
         } else {
-            logger.error("Add user {0} to contest {2} failed with {1}", teamId, salida, contestId);
+            logger.error("Add user {} to contest {} failed with {}", teamId, salida, contestId);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -89,14 +89,14 @@ public class ContestController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
 
-        logger.debug("Delete team {0} from contest {1}", teamId, contestId);
+        logger.debug("Delete team {} from contest {}", teamId, contestId);
         String salida = contestService.deleteTeamFromContest(contestId, teamId);
 
         if (salida.equals("OK")) {
-            logger.debug("Delete team {0} from contest {1} success", teamId, contestId);
+            logger.debug("Delete team {} from contest {} success", teamId, contestId);
             return "redirect:/";
         } else {
-            logger.error("Delete team {0} from contest {1} failed with {2}", teamId, contestId, salida);
+            logger.error("Delete team {} from contest {} failed with {}", teamId, contestId, salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -107,14 +107,14 @@ public class ContestController {
         problemId = sanitize(problemId);
         contestId = sanitize(contestId);
 
-        logger.debug("Add problem {0} to contest {1}", problemId, contestId);
+        logger.debug("Add problem {} to contest {}", problemId, contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
         if (salida.equals("OK")) {
-            logger.debug("Add problem {0} to contest {1} success", problemId, contestId);
+            logger.debug("Add problem {} to contest {} success", problemId, contestId);
             return "redirect:/";
         } else {
-            logger.debug("Add problem {0} to contest {1} failed with {2}", problemId, contestId, salida);
+            logger.debug("Add problem {} to contest {} failed with {}", problemId, contestId, salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -125,14 +125,14 @@ public class ContestController {
         problemId = sanitize(problemId);
         contestId = sanitize(contestId);
 
-        logger.debug("Delete problem {0} from contest {1}", problemId, contestId);
+        logger.debug("Delete problem {} from contest {}", problemId, contestId);
         String salida = contestService.deleteProblemFromContest(contestId, problemId);
 
         if (salida.equals("OK")) {
-            logger.debug("Delete problem {0} from contest {1} success", problemId, contestId);
+            logger.debug("Delete problem {} from contest {} success", problemId, contestId);
             return "redirect:/";
         } else {
-            logger.debug("Delete problem {0} from contest {1} failed with {2}", problemId, contestId, salida);
+            logger.debug("Delete problem {} from contest {} failed with {}", problemId, contestId, salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }

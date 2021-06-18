@@ -18,7 +18,7 @@ public class DockerContainerCPP extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
-        logger.debug("Building CPP container for image {0}", imagenId);
+        logger.debug("Building CPP container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
@@ -42,7 +42,7 @@ public class DockerContainerCPP extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".cpp").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.debug("DOCKERCPP: Running container for result {0} with timeout {1} and memory limit {2}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        logger.debug("DOCKERCPP: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".cpp", result.getCodigo(), "/root");
@@ -83,7 +83,7 @@ public class DockerContainerCPP extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.debug("DOCKERPCPP: Finish running container for result {0} ", result.getId());
+        logger.debug("DOCKERPCPP: Finish running container for result {} ", result.getId());
         return result;
     }
 }

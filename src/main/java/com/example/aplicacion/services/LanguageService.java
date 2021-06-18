@@ -25,6 +25,14 @@ public class LanguageService {
         return languageRepository.findLanguageByNombreLenguaje(name);
     }
 
+    public boolean existsLanguageByName(String name) {
+        return languageRepository.existsLanguageByNombreLenguaje(name);
+    }
+
+    public void saveLanguage(Language language) {
+        languageRepository.save(language);
+    }
+
     public List<Language> getNLanguages() {
         return languageRepository.findAll();
     }

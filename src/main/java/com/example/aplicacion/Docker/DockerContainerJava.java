@@ -22,7 +22,7 @@ public class DockerContainerJava extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
-        logger.debug("Building container for image {0}", imagenId);
+        logger.debug("Building container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = (this.getDefaultStorageLimit());
@@ -47,7 +47,7 @@ public class DockerContainerJava extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=" + nombreClase, "FILENAME2=" + getClassName(), "MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.debug("DOCKER JAVA: Running container for result {0} with timeout {1} and memory limit {2}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        logger.debug("DOCKER JAVA: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
 
@@ -109,7 +109,7 @@ public class DockerContainerJava extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.debug("DOCKER JAVA: Finish running container for result {0} ", result.getId());
+        logger.debug("DOCKER JAVA: Finish running container for result {} ", result.getId());
         return result;
     }
 

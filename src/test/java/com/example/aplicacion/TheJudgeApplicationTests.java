@@ -186,18 +186,18 @@ public class TheJudgeApplicationTests {
         salida = "TEAM NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, badTeamId, badContestId, salida);
 
-        salida = "CONCURSO NOT FOUND";
+        salida = "CONTEST NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
 
         // unnamed empty file without problem name
         filename = ".zip.zip";
-        salida = "Nombre del problema vacio";
+        salida = "PROBLEM NAME NOT SPECIFIED";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
         // unnamed empty file with problem name
         filename = ".zip.zip";
         problemName = "pruba vacio";
-        salida = "No hay casos de prueba";
+        salida = "TEST CASE FILES NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
     }
 
@@ -307,7 +307,7 @@ public class TheJudgeApplicationTests {
 		 */
 
         language = getLanguage("java");
-        salida = "PROBLEM NOT IN CONCURSO";
+        salida = "PROBLEM NOT IN CONTEST";
         testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
     }
 

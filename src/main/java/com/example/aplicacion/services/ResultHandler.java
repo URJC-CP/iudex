@@ -88,10 +88,10 @@ public class ResultHandler {
         } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
         } else {
-            logger.error("Unsupported Operating System. There is no url for " + osName);
+            logger.error("Unsupported Operating System. {}", osName);
             throw new RuntimeException("Unsupported Operating System: " + osName);
         }
-        logger.info("Running docker on: " + osName + "\nURL: " + dockerUrl);
+        logger.info("Running docker on: " + osName);
         return dockerUrl;
     }
 }

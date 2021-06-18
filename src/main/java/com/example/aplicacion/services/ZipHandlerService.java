@@ -38,7 +38,7 @@ public class ZipHandlerService {
 
 
     public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
-        logger.info("Generate problem " + problemName + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
+        logger.info("Generate problem {}", problemName);
         ProblemString problemString = new ProblemString();
 
         //Mapa que se encarga de revisar que toda entrada tenga salida y no haya ninguna con nombre repetido
@@ -49,12 +49,12 @@ public class ZipHandlerService {
             problem.setNombreEjercicio(problemName.trim().split("\\.")[0]);
             if (problem.getNombreEjercicio().trim().equals("")) {
                 logger.error("Problem name is empty");
-                problemString.setSalida("Nombre del problema vacio");
+                problemString.setSalida("PROBLEM NAME NOT SPECIFIED");
                 return problemString;
             }
         }
 
-        logger.info("ZIP DECOMPRESS: New zip folder received to decompress with name: " + problem.getNombreEjercicio());
+        logger.info("ZIP DECOMPRESS: New zip folder received to decompress with name {}", problem.getNombreEjercicio());
 
         //Empezamos a descomprimir
         ZipInputStream zipFile = new ZipInputStream(inputStream);
@@ -100,7 +100,7 @@ public class ZipHandlerService {
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                             entradaVisible.put(filename, convertZipToString(zipFile));
                         }
-                        logger.info("ZIP DECOMPRESS: Add new example testcase for problem " + problem.getNombreEjercicio());
+                        logger.info("ZIP DECOMPRESS: Add new example testcase for problem {}", problem.getNombreEjercicio());
                     }
                     //si es corrección
                     else if (path2.equals("secret")) {
@@ -115,7 +115,7 @@ public class ZipHandlerService {
                             addStringToMap(mapaRevisionEntradas, path2 + "/" + filename, extension);
                             entradaOculta.put(filename, convertZipToString(zipFile));
                         }
-                        logger.info("ZIP DECOMPRESS: Add new testcase for problem " + problem.getNombreEjercicio());
+                        logger.info("ZIP DECOMPRESS: Add new testcase for problem {}", problem.getNombreEjercicio());
                     }
                 }
 
@@ -138,16 +138,16 @@ public class ZipHandlerService {
                     String lenguaje = selectLenguaje(extension);
                     if (lenguaje == null) {
                         //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
-                        logger.error("ZIP HANDLER: Unsupported language " + extension);
+                        logger.error("ZIP HANDLER: Unsupported language {}", extension);
                     } else {
-                        logger.info("ZIP COMPRESS: " + lenguaje + " detected");
+                        logger.info("ZIP COMPRESS: {} detected", lenguaje);
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
                         //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
                         SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, contestId, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.getSubmissionProblemValidators().add(submissionProblemValidator);
-                        logger.info("ZIP COMPRESS: Adding new submission for problem " + problemName);
+                        logger.info("ZIP COMPRESS: Adding new submission for problem {}", problemName);
                     }
                 }
             }
@@ -198,7 +198,7 @@ public class ZipHandlerService {
 
         if (!problem.hasTestCaseFiles()) {
             logger.warn("TestCase files not found");
-            problemString.setSalida("No hay casos de prueba");
+            problemString.setSalida("TEST CASE FILES NOT FOUND");
             return problemString;
         }
 
@@ -212,12 +212,12 @@ public class ZipHandlerService {
         //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
         String checkMap = checkMap(mapaRevisionEntradas);
         if (!checkMap.equals("OK")) {
-            logger.error("Aborting upload, error encountered while uploading: " + checkMap);
+            logger.error("Aborting upload, error encountered while uploading: {}", checkMap);
             problemString.setSalida(checkMap);
         }
 
         problemString.setProblem(problem);
-        logger.info("Finish generate problem " + problem.getNombreEjercicio() + " from zip" + "\nContest: " + contestId + "\nTeam: " + teamId);
+        logger.info("Finish generate problem {} from zip", problem.getNombreEjercicio());
         return problemString;
     }
 
@@ -257,10 +257,10 @@ public class ZipHandlerService {
             if (aux.size() != 2) {
                 //Significa que algo ha fallado
                 if (aux.get(0).endsWith(".in")) {
-                    logger.error("Error encountered while processing input files\nInput " + aux.get(0) + " has no output");
+                    logger.error("Input file {} has no output", aux.get(0));
                     return ("El ZIP tiene fallos, la entrada " + aux.get(0) + " no tiene salida");
                 } else if (aux.get(0).endsWith(".ans")) {
-                    logger.error("Error encountered while processing output files\nInput " + aux.get(0) + " has no input");
+                    logger.error("Output file {} has no input", aux.get(0));
                     return ("El ZIP tiene fallos, la salida " + aux.get(0) + " no tiene entrada");
                 }
             }
@@ -269,9 +269,9 @@ public class ZipHandlerService {
     }
 
     private void borraInNOut(Problem problem) {
-        logger.debug("Delete input/output files from problem " + problem.getId());
+        logger.debug("Delete sample files from problem {}", problem.getId());
         problemService.deleteSamples(problem);
-        logger.debug("Finish delete input/output files from problem " + problem.getId());
+        logger.debug("Finish delete sample files from problem {}", problem.getId());
     }
 
     //clase que coge un zipInput y lo convierte en string a traves del zipentry

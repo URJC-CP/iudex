@@ -22,33 +22,33 @@ public class TeamService {
     private UserService userService;
 
     public TeamString crearTeam(String nickTeam, boolean isUser) {
-        logger.debug("Create team/user " + nickTeam);
+        logger.debug("Create team {}", nickTeam);
         TeamString salida = new TeamString();
 
         Team team = new Team(nickTeam);
         team.setEsUser(isUser);
         if (teamRepository.existsTeamByNombreEquipo(nickTeam)) {
-            logger.error("Team/user " + nickTeam + " duplicated");
+            logger.error("Team {} duplicated", nickTeam);
             salida.setSalida("TEAM NAME DUPLICATED");
             return salida;
         } else {
             teamRepository.save(team);
             salida.setSalida("OK");
             salida.setTeam(team);
-            logger.debug("Finish create team/user " + nickTeam + " id: " + team.getId());
+            logger.debug("Finish create team {} with id {}", nickTeam, team.getId());
             return salida;
         }
     }
 
     public String addUserToTeam(Team team, User user) {
-        logger.debug("Add user " + user.getId() + " to team " + team.getId());
+        logger.debug("Add user {} to team {}", user.getId(), team.getId());
         if (teamRepository.existsTeamByParticipantesContains(user)) {
-            logger.error("User " + user.getId() + " already in team " + team.getId());
-            return "USUARIO YA APUNTADO";
+            logger.error("User {} already in team {}", user.getId(), team.getId());
+            return "USER ALREADY IN TEAM";
         } else {
             team.addUserToTeam(user);
             teamRepository.save(team);
-            logger.debug("Finish add user " + user.getId() + " to team " + team.getId());
+            logger.debug("Finish add user {} to team {} ", user.getId(), team.getId());
             return "OK";
         }
     }
@@ -57,7 +57,7 @@ public class TeamService {
         logger.debug("Delete team " + name);
         Optional<Team> teamOptional = teamRepository.findByNombreEquipo(name);
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + name + " not found");
+            logger.error("Team {} not found", name);
             return "TEAM NOT FOUND";
         }
         Team team = teamOptional.get();
@@ -67,15 +67,15 @@ public class TeamService {
             userService.deleteUserByNickname(team.getNombreEquipo());
         }
         teamRepository.delete(team);
-        logger.debug("Finish delete team/user " + name + "\nTeam/user id: " + team.getId());
+        logger.debug("Finish delete user {} from team {}", name, team.getId());
         return "OK";
     }
 
     public String deleteTeamByTeamId(String teamId) {
-        logger.debug("Delete team/user " + teamId);
+        logger.debug("Delete team {}", teamId);
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             return "TEAM NOT FOUND";
         }
         Team team = teamOptional.get();
@@ -85,7 +85,7 @@ public class TeamService {
             userService.deleteUserByNickname(team.getNombreEquipo());
         }
         teamRepository.delete(team);
-        logger.debug("Finish delete team/user " + teamId);
+        logger.debug("Finish delete team {}", teamId);
         return "OK";
 
     }
@@ -103,12 +103,12 @@ public class TeamService {
     }
 
     public TeamString addUserToTeamUssingIds(String teamId, String userId) {
-        logger.debug("Add user " + userId + " to team " + teamId);
+        logger.debug("Add user {} to team {}", userId, teamId);
         TeamString salida = new TeamString();
 
         Optional<Team> teamOptional = getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
@@ -116,14 +116,14 @@ public class TeamService {
 
         Optional<User> userOptional = userService.getUserById(Long.parseLong(userId));
         if (userOptional.isEmpty()) {
-            logger.error("User " + userId + " not found");
+            logger.error("User {} not found" + userId);
             salida.setSalida("USER NOT FOUND");
             return salida;
         }
         User user = userOptional.get();
 
         if (team.getParticipantes().contains(user)) {
-            logger.error("User " + userId + " already in team " + teamId);
+            logger.error("User {} already in team {}", userId, teamId);
             salida.setSalida("USER ALREADY IN TEAM");
             return salida;
         }
@@ -132,17 +132,17 @@ public class TeamService {
 
         salida.setSalida("OK");
         salida.setTeam(team);
-        logger.debug("Finish add user " + userId + " to team " + teamId);
+        logger.debug("Finish add user {} to team {}", userId, teamId);
         return salida;
     }
 
     public TeamString deleteUserFromTeam(String teamId, String userId) {
-        logger.debug("Delete user " + userId + " from team " + teamId);
+        logger.debug("Delete user {} from team {}", userId, teamId);
         TeamString salida = new TeamString();
 
         Optional<Team> teamOptional = getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
@@ -150,33 +150,33 @@ public class TeamService {
 
         Optional<User> userOptional = userService.getUserById(Long.parseLong(userId));
         if (userOptional.isEmpty()) {
-            logger.error("User " + userId + " not found");
+            logger.error("User {} not found", userId);
             salida.setSalida("USER NOT FOUND");
             return salida;
         }
         User user = userOptional.get();
 
         if (!team.getParticipantes().contains(user)) {
-            logger.error("User " + userId + " already in team " + teamId);
-            salida.setSalida("USER IS NOT IN TEAM");
+            logger.error("User {} already in team {}", userId, teamId);
+            salida.setSalida("USER NOT IN TEAM");
             return salida;
         }
 
         team.getParticipantes().remove(user);
         teamRepository.save(team);
 
-        logger.debug("Finish delete user " + userId + " from team " + teamId);
+        logger.debug("Finish delete user {} from team {}", userId, teamId);
         salida.setSalida("OK");
         return salida;
     }
 
     public TeamString updateTeam(String teamId, Optional<String> teamName) {
-        logger.debug("Update team " + teamId);
+        logger.debug("Update team {}", teamId);
         TeamString salida = new TeamString();
 
         Optional<Team> teamOptional = getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
@@ -184,7 +184,7 @@ public class TeamService {
 
         if (teamName.isPresent()) {
             if (teamRepository.existsTeamByNombreEquipo(teamName.get())) {
-                logger.error("Team " + teamName.get() + " duplicated");
+                logger.error("Team {} duplicated", teamName.get());
                 salida.setSalida("TEAM NAME DUPLICATED");
                 return salida;
             } else {
@@ -196,7 +196,7 @@ public class TeamService {
         teamRepository.save(team);
         salida.setSalida("OK");
         salida.setTeam(team);
-        logger.debug("Finish update team " + teamId);
+        logger.debug("Finish update team {}", teamId);
         return salida;
     }
 }

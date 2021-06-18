@@ -19,7 +19,7 @@ public class DockerContainerPython3 extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
-        logger.debug("Building container for image {0} ", imagenId);
+        logger.debug("Building container for image {} ", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
@@ -37,7 +37,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME2=" + nombreClase + ".py").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.debug("DOCKER PYTHON3: Running container for result {0} with timeout {1} and memory limit {2}" + result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        logger.debug("DOCKER PYTHON3: Running container for result {} with timeout {} and memory limit {}" + result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".py", result.getCodigo(), "/root");

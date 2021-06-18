@@ -69,7 +69,7 @@ public class IndiceController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
 
-        logger.debug("Submit {0} code to problem {1}", lenguaje, problemaAsignado);
+        logger.debug("Submit {} code to problem {}", lenguaje, problemaAsignado);
         String fileName = FilenameUtils.removeExtension(codigo.getOriginalFilename());
         String cod = new String(codigo.getBytes());
 
@@ -78,10 +78,10 @@ public class IndiceController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (salida.equals("OK")) {
-            logger.debug("Run submission {1} success", lenguaje, salida.getSubmission().getId());
+            logger.debug("Run submission {} success", lenguaje, salida.getSubmission().getId());
             return "redirect:/";
         } else {
-            logger.debug("Run submission failed with {0}", salida.getSalida());
+            logger.debug("Run submission failed with {}", salida.getSalida());
             model.addAttribute("error", salida.getSalida());
             return "errorConocido";
         }
@@ -103,13 +103,13 @@ public class IndiceController {
         problemId = sanitize(problemId);
         contestId = sanitize(contestId);
 
-        logger.debug("Add problem {0} to contest {1}", problemId, contestId);
+        logger.debug("Add problem {} to contest {}", problemId, contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
         if (salida.equals("OK")) {
-            logger.debug("Add problem {0} to contest {1} success", problemId, contestId);
+            logger.debug("Add problem {} to contest {} success", problemId, contestId);
         } else {
-            logger.debug("Add problem {0} to contest {1} failed with {2}", problemId, contestId, salida);
+            logger.debug("Add problem {} to contest {} failed with {}", problemId, contestId, salida);
         }
         return "indexOriginal";
     }
@@ -119,14 +119,14 @@ public class IndiceController {
         userNickname = sanitize(userNickname);
         userMail = sanitize(userMail);
 
-        logger.debug("Create user {0}", userNickname);
+        logger.debug("Create user {}", userNickname);
         String salida = userService.crearUsuario(userNickname, userMail).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create user {0} success", userNickname);
+            logger.debug("Create user {} success", userNickname);
             return "redirect:/";
         } else {
-            logger.error("Create user {0} failed with {1} ", userNickname, salida);
+            logger.error("Create user {} failed with {} ", userNickname, salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -138,7 +138,7 @@ public class IndiceController {
         teamId = sanitize(teamId);
         descripcion = sanitize(descripcion);
 
-        logger.debug("Create contest {0}", contestName);
+        logger.debug("Create contest {}", contestName);
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
@@ -146,9 +146,9 @@ public class IndiceController {
         String salida = contestService.creaContest(contestName, teamId, descripcion, startDateTime, endDateTime).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create contest {0} success", contestName);
+            logger.debug("Create contest {} success", contestName);
         } else {
-            logger.error("Create contest {0} failed with {1} ", contestName, salida);
+            logger.error("Create contest {} failed with {} ", contestName, salida);
         }
         return "redirect:/";
     }

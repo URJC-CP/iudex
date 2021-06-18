@@ -37,7 +37,7 @@ public class ProblemService {
     private SubmissionRepository submissionRepository;
 
     public ProblemString addProblem(Problem createdProblem) {
-        logger.debug("Create new problem from problem " + createdProblem.getId());
+        logger.debug("Create new problem from problem {}", createdProblem.getId());
         ProblemString problemString = new ProblemString();
         Problem newProblem = new Problem();
 
@@ -53,18 +53,18 @@ public class ProblemService {
         problemString.setSalida("OK");
         problemString.setProblem(newProblem);
 
-        logger.debug("Create build new problem " + newProblem.getId() + " from problem " + createdProblem.getId());
+        logger.debug("Create new problem {} from problem {}", newProblem.getId(), createdProblem.getId());
         return problemString;
     }
 
     public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Create problem " + nombreProblema + " from zip " + nombreFichero + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Create problem {} from zip {}", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
 
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
@@ -73,8 +73,8 @@ public class ProblemService {
 
         Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
         if (contestOptional.isEmpty()) {
-            logger.error("Contest " + idcontest + " not found");
-            salida.setSalida("CONCURSO NOT FOUND");
+            logger.error("Contest {} not found", idcontest);
+            salida.setSalida("CONTEST NOT FOUND");
             return salida;
         }
         Contest contest = contestOptional.get();
@@ -99,11 +99,11 @@ public class ProblemService {
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
-        if (!(problemString.getSalida() == null)) {
+        if (problemString.getSalida() != null) {
             if (problem != null) {
-                logger.error("Problem " + problem.getId() + " couldn't be saved");
+                logger.error("Save problem {} with name {} failed with {}", problem.getId(), nombreProblema, problemString.getSalida());
             } else {
-                logger.error("Couldn't create problem " + nombreProblema);
+                logger.error("Create problem {} failed with {} ", nombreProblema, problemString.getSalida());
             }
             //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
@@ -118,18 +118,18 @@ public class ProblemService {
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.debug("Finish create problem from zip " + nombreFichero + "\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish create problem {} with name {} from zip {} ", problem.getId(), nombreProblema, nombreFichero);
         return salida;
     }
 
     public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Create problem " + nombreProblema + " from zip " + nombreFichero + " without validate\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Create problem {} without validate", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
 
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
-            logger.error("Team/user " + teamId + " not found");
+            logger.error("Team {} not found", teamId);
             salida.setSalida("TEAM NOT FOUND");
             return salida;
         }
@@ -137,8 +137,8 @@ public class ProblemService {
         problem.setEquipoPropietario(team);
 
         if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
-            logger.error("Contest " + idcontest + " not found");
-            salida.setSalida("CONCURSO NOT FOUND");
+            logger.error("Contest {} not found", idcontest);
+            salida.setSalida("CONTEST NOT FOUND");
             return salida;
         }
         //obtener nombre del problema
@@ -151,41 +151,40 @@ public class ProblemService {
 
         //Verificamos si hubiera dado fallo el problema al guardarse
         //SI FALLA NO SE GUARDA EL PROBLEMA
-        if (!(problemString.getSalida() == null)) {
-            logger.error("Problem " + problem.getId() + " couldn't be saved");
-            //problemRepository.deleteById(problem.getId());
+        if (problemString.getSalida() != null) {
+            logger.error("Save problem {} failed with {}", problem.getId(), problemString.getSalida());
             salida.setSalida(problemString.getSalida());
             return salida;
         }
 
         salida.setProblem(problem);
         salida.setSalida("OK");
-        logger.debug("Finish create problem from zip " + nombreFichero + " without validate\nProblem name: " + problem.getNombreEjercicio() + "\nProblem id" + problem.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish create problem {} from zip {} without validate", problem.getId(), nombreFichero);
         return salida;
     }
 
     public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Update problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nContest: " + idcontest);
+        logger.debug("Update problem {} from zip {}", nombreProblema, nombreFichero);
         ProblemString problemUpdated = new ProblemString();
 
         Optional<Problem> problemOriginalOptional = problemRepository.findProblemById(Long.parseLong(idProblema));
         if (problemOriginalOptional.isEmpty()) {
-            logger.error("Problem " + idProblema + " not found");
+            logger.error("Problem {} not found", idProblema);
             problemUpdated.setSalida("PROBLEM NOT FOUND");
             return problemUpdated;
         }
         Problem problemOriginal = problemOriginalOptional.get();
 
         if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
-            logger.error("Contest " + idcontest + " not found");
-            problemUpdated.setSalida("CONCURSO NOT FOUND");
+            logger.error("Contest {} not found", idcontest);
+            problemUpdated.setSalida("CONTEST NOT FOUND");
             return problemUpdated;
         }
 
         problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
-            logger.error("Couldn't update problem " + problemOriginal.getNombreEjercicio() + "\nProblem id: " + problemOriginal.getId() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+            logger.error("Update problem {} failed with {}", problemOriginal.getNombreEjercicio(), problemUpdated.getSalida());
             return problemUpdated;
         }
 
@@ -206,32 +205,32 @@ public class ProblemService {
         problemRepository.save(problemUpdated.getProblem());
         problemValidatorService.validateProblem(problemUpdated.getProblem());
 
-        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem {} with name {} ", idProblema, problemOriginal.getNombreEjercicio());
         return problemUpdated;
     }
 
     public ProblemString updateProblem2(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Update(v2) problem " + nombreProblema + " from zip " + nombreFichero + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Update(v2) problem {} from zip {}", idProblema, nombreFichero);
         ProblemString problemUpdated = new ProblemString();
 
         Optional<Problem> problemOriginalOptional = problemRepository.findProblemById(Long.parseLong(idProblema));
         if (problemOriginalOptional.isEmpty()) {
-            logger.error("Problem " + idProblema + " not found");
+            logger.error("Problem {} not found", idProblema);
             problemUpdated.setSalida("PROBLEM NOT FOUND");
             return problemUpdated;
         }
         Problem problemOriginal = problemOriginalOptional.get();
 
         if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
-            logger.error("Contest " + idcontest + " not found");
-            problemUpdated.setSalida("CONCURSO NOT FOUND");
+            logger.error("Contest {} not found", idcontest);
+            problemUpdated.setSalida("CONTEST NOT FOUND");
             return problemUpdated;
         }
 
         problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
-            logger.error("Couldn't update(v2) problem " + problemOriginal.getNombreEjercicio() + "\nProblem id: " + idProblema + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+            logger.error("Update problem {} failed with {}", idProblema, problemUpdated.getSalida());
             return problemUpdated;
         }
 
@@ -240,14 +239,14 @@ public class ProblemService {
         problemValidatorService.validateProblem(problemOriginal);
         problemUpdated.setProblem(problemOriginal);
 
-        logger.debug("Finish update problem " + idProblema + "\nProblem name: " + problemOriginal.getNombreEjercicio() + "\nTeam/user: " + teamId + "\nContest: " + idcontest);
+        logger.debug("Finish update problem {} with name {}", idProblema, nombreProblema);
         return problemUpdated;
     }
 
     public String deleteProblem(String problemId) {
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + problemId + " not found");
+            logger.error("Problem {} not found", problemId);
             return "PROBLEM NOT FOUND";
         }
         Problem problem = problemOptional.get();
@@ -256,23 +255,25 @@ public class ProblemService {
     }
 
     public String deleteProblem(Problem problem) {
-        logger.debug("Delete problem " + problem.getId());
+        logger.debug("Delete problem {}", problem.getId());
 
         //Quitamos los problemas del contest
         for (Contest contestAux : problem.getListaContestsPertenece()) {
-            logger.debug("Remove problem " + problem.getId() + " from contest " + contestAux.getId());
+            logger.debug("Remove problem {} from contest {}", problem.getId(), contestAux.getId());
             if (!contestAux.getListaProblemas().remove(problem)) {
-                logger.error("Couldn't remove problem " + problem.getId() + " from contest " + contestAux.getId());
+                logger.error("Remove problem {} from contest {} failed" + problem.getId(), contestAux.getId());
             }
         }
 
         // Quitamos el problema de equipos Intentados
         for (Team teamAux : problem.getListaEquiposIntentados()) {
-            teamAux.getListaProblemasParticipados().remove(problem);
+            if (!teamAux.getListaProblemasParticipados().remove(problem)) {
+                logger.error("Remove problem {} from team {} failed" + problem.getId(), teamAux.getId());
+            }
         }
 
         problemRepository.delete(problem);
-        logger.debug("Finish delete problem " + problem.getId() + "\nProblem name: " + problem.getNombreEjercicio());
+        logger.debug("Finish delete problem {}", problem.getId());
         return "OK";
     }
 
@@ -387,8 +388,8 @@ public class ProblemService {
 
         Optional<Problem> problemOptional = getProblem(idproblem);
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + idproblem + " not found");
-            salida.setSalida("ERROR PROBLEMID NOT FOUND");
+            logger.error("Problem {} not found", idproblem);
+            salida.setSalida("PROBLEM NOT FOUND");
             return salida;
         }
         Problem problem = problemOptional.get();
@@ -399,8 +400,8 @@ public class ProblemService {
         if (teamId.isPresent()) {
             Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId.get()));
             if (teamOptional.isEmpty()) {
-                logger.error("Team/user " + teamId + " not found");
-                salida.setSalida("ERROR TEAM ID NOT FOUND");
+                logger.error("Team {} not found ", teamId);
+                salida.setSalida("TEAM NOT FOUND");
                 return salida;
             }
             Team team = teamOptional.get();
@@ -426,21 +427,18 @@ public class ProblemService {
     }
 
     public String addSampleToProblem(String problemId, String name, String inputText, String outputText, boolean isPublic) {
-        logger.debug("Adding new sample to problem " + problemId);
-        String salida;
+        logger.debug("Adding new sample to problem {}", problemId);
 
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + problemId + " not found!");
-            salida = "PROBLEM NOT FOUND!";
-            return salida;
+            logger.error("Problem {} not found", problemId);
+            return "PROBLEM NOT FOUND";
         }
         Problem problem = problemOptional.get();
 
         if (name.trim().equals("")) {
-            logger.error("Sample name is missing!");
-            salida = "REQUIRED PARAMETER NAME MISSING!";
-            return salida;
+            logger.error("Sample name is missing");
+            return "SAMPLE NAME NOT SPECIFIED";
         }
 
         Sample sample = new Sample(name, inputText, outputText, isPublic);
@@ -448,36 +446,31 @@ public class ProblemService {
         problem.addData(sample);
         problemRepository.save(problem);
 
-        logger.debug("Finish add new sample to problem " + problemId);
-        salida = "OK";
-        return salida;
+        logger.debug("Finish add new sample to problem {}", problemId);
+        return "OK";
     }
 
     public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId, Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
-        logger.debug("Update sample " + sampleId + " from problem " + problemId);
+        logger.debug("Update sample {} from problem {}", sampleId, problemId);
         ProblemString ps = new ProblemString();
-        String salida;
 
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + problemId + " not found!");
-            salida = "PROBLEM NOT FOUND!";
-            return salida;
+            logger.error("Problem {} not found", problemId);
+            return "PROBLEM NOT FOUND";
         }
         Problem problem = problemOptional.get();
 
         Optional<Sample> sampleOptional = sampleRepository.findById(Long.valueOf(sampleId));
         if (sampleOptional.isEmpty()) {
-            logger.error("Sample " + sampleId + " not found!");
-            salida = "SAMPLE NOT FOUND!";
-            return salida;
+            logger.error("Sample {} not found", sampleId);
+            return "SAMPLE NOT FOUND";
         }
         Sample sample = sampleOptional.get();
 
         if (!problem.getData().contains(sample)) {
-            logger.error("Sample " + sampleId + " not in problem " + problemId + "!");
-            salida = "SAMPLE NOT IN PROBLEM!";
-            return salida;
+            logger.error("Sample {} not in problem {}", sampleId, problemId);
+            return "SAMPLE NOT IN PROBLEM";
         }
 
         String name = (nameOptional.isPresent()) ? nameOptional.get() : sample.getName();
@@ -491,42 +484,36 @@ public class ProblemService {
         problem.addData(newSample);
         problemRepository.save(problem);
 
-        logger.debug("Finish update sample " + sampleId + " from problem " + problemId);
-        salida = "OK";
-        return salida;
+        logger.debug("Finish update sample {} from problem {}", sampleId, problemId);
+        return "OK";
     }
 
     public String deleteSampleFromProblem(String problemId, String sampleId) {
-        logger.debug("Adding new sample to problem " + problemId);
-        String salida;
+        logger.debug("Delete sample {} from problem {}", sampleId, problemId);
 
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + problemId + " not found!");
-            salida = "PROBLEM NOT FOUND!";
-            return salida;
+            logger.error("Problem {} not found", problemId);
+            return "PROBLEM NOT FOUND";
         }
         Problem problem = problemOptional.get();
 
         Optional<Sample> sampleOptional = sampleRepository.findById(Long.valueOf(sampleId));
         if (sampleOptional.isEmpty()) {
-            logger.error("Sample " + sampleId + " not found!");
-            salida = "SAMPLE NOT FOUND!";
-            return salida;
+            logger.error("Sample {} not found", sampleId);
+            return "SAMPLE NOT FOUND";
         }
         Sample sample = sampleOptional.get();
 
         if (!problem.getData().contains(sample)) {
-            logger.error("Sample " + sampleId + " not in problem " + problemId + "!");
-            salida = "SAMPLE NOT IN PROBLEM!";
-            return salida;
+            logger.error("Sample {} not in problem {}", sampleId, problemId);
+            return "SAMPLE NOT IN PROBLEM";
         }
 
         problem.removeData(sample);
         problemRepository.save(problem);
 
-        logger.debug("Finish delete sample " + sampleId + " from problem " + problemId);
-        salida = "OK";
-        return salida;
+        logger.debug("Finish delete sample {} from problem {}" + sampleId, problemId);
+        return "OK";
     }
 }

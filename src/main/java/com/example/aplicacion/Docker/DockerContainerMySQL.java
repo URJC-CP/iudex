@@ -21,7 +21,7 @@ public class DockerContainerMySQL extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
-        logger.debug("Building container for image {0}", imagenId);
+        logger.debug("Building container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
@@ -45,7 +45,7 @@ public class DockerContainerMySQL extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.debug("DOCKER MySQL: Running container for result {0} with timeout {1} and memory limit {2}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        logger.debug("DOCKER MySQL: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".sql", result.getCodigo(), "/root");
@@ -107,7 +107,7 @@ public class DockerContainerMySQL extends DockerContainer {
         //logger.info("DOCKER MySQL: EL result "+result.getId() + " ha terminado con senyal "+ signal);
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.debug("DOCKER MySQL: Finish running container for result {0} ", result.getId());
+        logger.debug("DOCKER MySQL: Finish running container for result {} ", result.getId());
         return result;
     }
 }

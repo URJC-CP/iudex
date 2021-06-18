@@ -108,7 +108,7 @@ public class DockerContainer {
 
         //Comprobamos el tamano del String para evitar petar por tamano excesivo, si esta por encima enviamos un "" y notificamos
         if (salida.length() > 100000000) {
-            logger.warn("Folder size is too big : {0}", salida.length());
+            logger.warn("Folder size is too big : {}", salida.length());
             salida = "";
         }
 

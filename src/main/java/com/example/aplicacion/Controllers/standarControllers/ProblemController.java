@@ -47,11 +47,11 @@ public class ProblemController {
         idProblem = sanitize(idProblem);
 
         ModelAndView modelAndView = new ModelAndView();
-        logger.debug("Get problem {0}", idProblem);
+        logger.debug("Get problem {}", idProblem);
 
         Optional<Contest> contestOptional = contestService.getContestById(idContest);
         if (contestOptional.isEmpty()) {
-            logger.error("Contest {0} not found", idContest);
+            logger.error("Contest {} not found", idContest);
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -60,7 +60,7 @@ public class ProblemController {
 
         Optional<Problem> problemOptional = problemService.getProblem(idProblem);
         if (problemOptional.isEmpty()) {
-            logger.error("Problem {0} not found", idProblem);
+            logger.error("Problem {} not found", idProblem);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -68,7 +68,7 @@ public class ProblemController {
         Problem problem = problemOptional.get();
 
         if (!contest.getListaProblemas().contains(problem)) {
-            logger.error("Problem {0} not in contest {1}", idProblem, idContest);
+            logger.error("Problem {} not in contest {}", idProblem, idContest);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -80,7 +80,7 @@ public class ProblemController {
         modelAndView.getModel().put("teams", teamService.getAllTeams());
         modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
 
-        logger.debug("Show problem {0}", idProblem);
+        logger.debug("Show problem {}", idProblem);
         modelAndView.setViewName("problem");
 
         return modelAndView;
@@ -92,11 +92,11 @@ public class ProblemController {
         idContest = sanitize(idContest);
         idProblem = sanitize(idProblem);
 
-        logger.debug("Get problem {0} with pdf", idProblem);
+        logger.debug("Get problem {} with pdf", idProblem);
         Optional<Problem> problemOptional = problemService.getProblem(idProblem);
 
         if (problemOptional.isEmpty()) {
-            logger.error("Problem {0} not found", idProblem);
+            logger.error("Problem {} not found", idProblem);
             return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
@@ -115,7 +115,7 @@ public class ProblemController {
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
-        logger.debug("Return problem {0} with pdf", idProblem);
+        logger.debug("Return problem {} with pdf", idProblem);
         return response;
     }
 
@@ -125,18 +125,18 @@ public class ProblemController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
 
-        logger.debug("Upload problem {0}", problemaName);
+        logger.debug("Upload problem {}", problemaName);
         ModelAndView modelAndView = new ModelAndView();
         ProblemString salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.error("Upload problem {0} failed with {1} ", problemaName, salida.getSalida());
+            logger.error("Upload problem {} failed with {} ", problemaName, salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Upload problem {0} success", problemaName);
+        logger.debug("Upload problem {} success", problemaName);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
@@ -148,18 +148,18 @@ public class ProblemController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
 
-        logger.debug("Update problem {0}", problemId);
+        logger.debug("Update problem {}", problemId);
         ModelAndView modelAndView = new ModelAndView();
         ProblemString salida = problemService.updateProblem2(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.error("Update problem {0} failed with {1} ", problemId, salida.getSalida());
+            logger.error("Update problem {} failed with {} ", problemId, salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Update problem {0} success", problemId);
+        logger.debug("Update problem {} success", problemId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
@@ -168,17 +168,17 @@ public class ProblemController {
     public ModelAndView deleteProblem(@PathVariable String problemId) {
         problemId = sanitize(problemId);
 
-        logger.debug("Delete problem {0}", problemId);
+        logger.debug("Delete problem {}", problemId);
         ModelAndView modelAndView = new ModelAndView();
         String salida = problemService.deleteProblem(problemId);
 
         if (!salida.equals("OK")) {
-            logger.error("Delete problem {0} failed with", problemId, salida);
+            logger.error("Delete problem {} failed with", problemId, salida);
             modelAndView.getModel().put("error", salida);
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        logger.debug("Delete problem {0} success", problemId);
+        logger.debug("Delete problem {} success", problemId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
@@ -190,7 +190,7 @@ public class ProblemController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
 
-        logger.debug("Create {0} submission for problem {1}", lenguaje, problemaAsignado);
+        logger.debug("Create {} submission for problem {}", lenguaje, problemaAsignado);
         ModelAndView modelAndView = new ModelAndView();
 
         String fileNameaux = codigo.getOriginalFilename();
@@ -201,13 +201,13 @@ public class ProblemController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.warn("Submission failed with {0}", salida.getSalida());
+            logger.warn("Submission failed with {}", salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Add submission {0} success for problem ", salida.getSubmission().getId());
+        logger.debug("Add submission {} success for problem ", salida.getSubmission().getId());
         modelAndView.setViewName("redirect:/contest/" + contestId + "/problema/" + problemaAsignado);
         return modelAndView;
     }
@@ -216,12 +216,12 @@ public class ProblemController {
     public ModelAndView deleteSubmission(@RequestParam String submissionId) {
         submissionId = sanitize(submissionId);
 
-        logger.debug("Delete submission {0}", submissionId);
+        logger.debug("Delete submission {}", submissionId);
         ModelAndView modelAndView = new ModelAndView();
 
         String salida = submissionService.deleteSubmission(submissionId);
         if (!salida.equals("OK")) {
-            logger.debug("Delete submission {0} failed with {1}", submissionId, salida);
+            logger.debug("Delete submission {} failed with {}", submissionId, salida);
             modelAndView.getModel().put("error", salida);
             modelAndView.setViewName("errorConocido");
             return modelAndView;
