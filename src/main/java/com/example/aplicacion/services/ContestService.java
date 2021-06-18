@@ -119,7 +119,7 @@ public class ContestService {
             contest.setStartDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(startTimestamp), TimeZone.getDefault().toZoneId()));
         }
 
-        if (startDateTime.isPresent()) {
+        if (endDateTime.isPresent()) {
             long endTimestamp = endDateTime.get();
             contest.setEndDateTime(LocalDateTime.ofInstant(Instant.ofEpochMilli(endTimestamp), TimeZone.getDefault().toZoneId()));
         }
