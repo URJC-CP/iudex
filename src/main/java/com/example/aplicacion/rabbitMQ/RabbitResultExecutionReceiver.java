@@ -15,20 +15,15 @@ public class RabbitResultExecutionReceiver {
     @Autowired
     private ResultHandler resultHandler;
     @Autowired
-    private  RabbitTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private RabbitResultReviserSender rabbitResultReviserSender;
 
 
-
-
-
-
-
     //LIstener que recibe el objeto resultado desde la cola
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME)
-    public void handleMessage2(Result res){
+    public void handleMessage2(Result res) {
 
         //Primero ejecutamos el codigo y guardamos
         try {

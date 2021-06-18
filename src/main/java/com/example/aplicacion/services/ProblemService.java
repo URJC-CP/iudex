@@ -291,7 +291,7 @@ public class ProblemService {
     }
 
     private boolean problemDuplicated(String nombre) {
-        return problemRepository.existsByNombreEjercicio(nombre);
+        return problemRepository.existsProblemByNombreEjercicio(nombre);
     }
 
     public List<Problem> getNProblemas(int n) {

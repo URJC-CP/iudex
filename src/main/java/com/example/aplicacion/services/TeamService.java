@@ -27,7 +27,7 @@ public class TeamService {
 
         Team team = new Team(nickTeam);
         team.setEsUser(isUser);
-        if (teamRepository.existsByNombreEquipo(nickTeam)) {
+        if (teamRepository.existsTeamByNombreEquipo(nickTeam)) {
             logger.error("Team/user " + nickTeam + " duplicated");
             salida.setSalida("TEAM NAME DUPLICATED");
             return salida;
@@ -183,7 +183,7 @@ public class TeamService {
         Team team = teamOptional.get();
 
         if (teamName.isPresent()) {
-            if (teamRepository.existsByNombreEquipo(teamName.get())) {
+            if (teamRepository.existsTeamByNombreEquipo(teamName.get())) {
                 logger.error("Team " + teamName.get() + " duplicated");
                 salida.setSalida("TEAM NAME DUPLICATED");
                 return salida;

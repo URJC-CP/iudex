@@ -28,11 +28,11 @@ public class UserService {
         logger.debug("Create user with name " + nickname + " and mail " + mail);
         UserString userString = new UserString();
         //Comprobamos que el usuario sea unico
-        if (userRepository.existsByNickname(nickname)) {
+        if (userRepository.existsUserByNickname(nickname)) {
             logger.error("User " + nickname + " duplicated");
             userString.setSalida("USER NICKNAME DUPLICATED");
             return userString;
-        } else if (userRepository.existsByEmail(mail)) {
+        } else if (userRepository.existsUserByEmail(mail)) {
             logger.error("User mail " + mail + " duplicated");
             userString.setSalida("USER MAIL DUPLICATED");
             return userString;

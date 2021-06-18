@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 public class RabbitResultExecutionSender {
 
     @Autowired
-    private   RabbitTemplate rabbitTemplate;
+    private RabbitTemplate rabbitTemplate;
 
 
-    public void sendMessage( Result res){
+    public void sendMessage(Result res) {
         final var message = res;
 
         rabbitTemplate.convertAndSend(ConfigureRabbitMq.EXCHANGE_NAME, "dockerExecution.springmesage", message);
