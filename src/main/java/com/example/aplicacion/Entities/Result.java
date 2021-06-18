@@ -5,6 +5,7 @@ import com.example.aplicacion.Pojos.ResultAPI;
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Set;
 
 //Clase que guarda cada uno de los intentos dentro de una submision. Un result por cada entrada y salida esperada.
 @Entity
@@ -16,7 +17,7 @@ public class Result {
     @Lob
     private String codigo;
 
-    @OneToOne
+    @ManyToOne
     private Sample sample;
 
     @Lob
