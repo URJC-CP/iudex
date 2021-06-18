@@ -83,7 +83,7 @@ public class DockerContainer {
             return convertirTarFile(tarArchivo);                                                        //Lo traducimos
 
         } catch (InternalServerErrorException exception) {
-            logger.error("Problem encountered while coping container folder: \n" + exception.getMessage());
+            logger.error(exception.getMessage());
         }
         return "";
     }
@@ -108,7 +108,7 @@ public class DockerContainer {
 
         //Comprobamos el tamano del String para evitar petar por tamano excesivo, si esta por encima enviamos un "" y notificamos
         if (salida.length() > 100000000) {
-            logger.warn("Folder with size " + salida.length() + " has been modified with empty folder");
+            logger.warn("Folder size is too big : {0}", salida.length());
             salida = "";
         }
 

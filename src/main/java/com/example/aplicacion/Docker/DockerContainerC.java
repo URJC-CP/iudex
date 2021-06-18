@@ -18,7 +18,7 @@ public class DockerContainerC extends DockerContainer {
     }
 
     public Result ejecutar(String imagenId) throws IOException {
-        logger.debug("Building container for image " + imagenId);
+        logger.debug("Building C container for image {0}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
         String defaultStorageLimit = this.getDefaultStorageLimit();
@@ -42,7 +42,7 @@ public class DockerContainerC extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".c").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.debug("DOCKER C: Building container for result " + result.getId() + " with timeout " + result.getMaxTimeout() + " and memory limit " + result.getMaxMemory());
+        logger.debug("DOCKER C: Running container for result {0} with timeout {1} and memory limit ", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".c", result.getCodigo(), "/root");
@@ -83,7 +83,7 @@ public class DockerContainerC extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.debug("DOCKER C: Finished running container for result " + result.getId() + " ");
+        logger.debug("DOCKER C: Finish running container for result {0} ", result.getId());
         return result;
     }
 }

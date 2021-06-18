@@ -47,7 +47,7 @@ public class IndiceController {
 
     @GetMapping("/")
     public ModelAndView index() {
-        logger.debug("Get request received for main page");
+        logger.debug("Get main page");
         ModelAndView model = new ModelAndView();
         //Pruebas de rabbit
         model.getModel().put("exercices", problemService.getAllProblemas());
@@ -62,22 +62,19 @@ public class IndiceController {
 
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
-        logger.debug(" Submit answer\nProblem: " + problemaAsignado + ", Language: " + lenguaje
-            + "\nTeam/user: " + teamId + ", Contest: " + contestId);
-        String fileNameaux = codigo.getOriginalFilename();
-        String fileName = FilenameUtils.removeExtension(fileNameaux);
+        logger.debug("Submit {0} code to problem {1}", lenguaje, problemaAsignado);
+        String fileName = FilenameUtils.removeExtension(codigo.getOriginalFilename());
         String cod = new String(codigo.getBytes());
-        //String ent = new String(entrada.getBytes());
 
-        logger.debug("Running Submission...\nProblem: " + problemaAsignado + ", Language: " + lenguaje
-            + "\nTeam: " + teamId + ", Contest: " + contestId);
+        logger.debug("Running submission");
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
-        logger.debug("Submission finished running with " + salida.getSalida());
 
         if (salida.equals("OK")) {
+            logger.debug("Run submission {1} success", lenguaje, salida.getSubmission().getId());
             return "redirect:/";
         } else {
+            logger.debug("Run submission failed with {0}", salida.getSalida());
             model.addAttribute("error", salida.getSalida());
             return "errorConocido";
         }
@@ -85,7 +82,7 @@ public class IndiceController {
 
     @GetMapping("/scoreboard")
     public String subida(Model model) {
-        logger.debug("Get request received for scoreboard");
+        logger.debug("Get scoreboard");
         //Cargamos la BBDD de answer en el scoreboard
         Page<Submission> listSubmiss = submissionService.getNSubmissions(10);
         model.addAttribute("submissions", listSubmiss);
@@ -96,27 +93,27 @@ public class IndiceController {
 
     @PostMapping("/asignaProblemaAContest")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String contestId) {
-        logger.debug("Add problem " + problemId + " to contest " + contestId);
+        logger.debug("Add problem {0} to contest {1}", problemId, contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
         if (salida.equals("OK")) {
-            logger.debug("Add problem " + problemId + " to contest " + contestId + " success");
+            logger.debug("Add problem {0} to contest {1} success", problemId, contestId);
         } else {
-            logger.error("Add problem " + problemId + " to contest " + contestId + " failed with " + salida);
+            logger.debug("Add problem {0} to contest {1} failed with {2}", problemId, contestId, salida);
         }
         return "indexOriginal";
     }
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail) {
-        logger.debug("Create user with " + userNickname + " with " + userMail + " request received");
+        logger.debug("Create user {0}", userNickname);
         String salida = userService.crearUsuario(userNickname, userMail).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create user " + userNickname + " with " + userMail + " success");
+            logger.debug("Create user {0} success", userNickname);
             return "redirect:/";
         } else {
-            logger.error("Create user " + userNickname + " with " + userMail + " failed with " + salida);
+            logger.error("Create user {0} failed with {1} ", userNickname, salida);
             model.addAttribute("error", salida);
             return "errorConocido";
         }
@@ -124,7 +121,7 @@ public class IndiceController {
 
     @PostMapping("/creaContest")
     public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion) {
-        logger.debug("Create contest " + contestName + " request received for team " + teamId);
+        logger.debug("Create contest {0}", contestName);
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
@@ -132,9 +129,9 @@ public class IndiceController {
         String salida = contestService.creaContest(contestName, teamId, descripcion, startDateTime, endDateTime).getSalida();
 
         if (salida.equals("OK")) {
-            logger.debug("Create contest " + contestName + " success for team " + teamId);
+            logger.debug("Create contest {0} success", contestName);
         } else {
-            logger.error("Create contest " + contestName + " for team " + teamId + " failed with " + salida);
+            logger.error("Create contest {0} failed with {1} ", contestName, salida);
         }
         return "redirect:/";
     }
