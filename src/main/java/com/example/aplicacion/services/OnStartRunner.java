@@ -48,13 +48,9 @@ public class OnStartRunner implements ApplicationRunner {
         userService.crearUsuario("pavloXd", "mail1");
         var teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
 
-        //userService.crearUsuario("pavloXD", "mail2");
-        //userService.crearUsuario("pavloXD2", "mail1");
-        //userService.deleteUserByNickname("pavloXD");
-
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-        if (contestService.getContestByName("contestPrueba").isPresent()) {
+        if (contestService.existsContestByName("contestPrueba")) {
             logger.info("Demo contest contestPrueba already exists, skipping creation");
         } else {
             logger.info("Creating demo contest 'contestPrueba' with team 'pavloXd'");
@@ -63,8 +59,7 @@ public class OnStartRunner implements ApplicationRunner {
     }
 
     public void createLanguage(String name, String path) {
-        var existingLanguage = languageRepository.findLanguageByNombreLenguaje(name);
-        if (existingLanguage.isPresent()) {
+        if (languageRepository.existsLanguageByNombreLenguaje(name)) {
             logger.info(String.format("Skipping creation of lang %s, already in Database", name));
             return;
         }

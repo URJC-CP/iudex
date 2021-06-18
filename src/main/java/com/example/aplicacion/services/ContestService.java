@@ -41,7 +41,7 @@ public class ContestService {
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest " + nameContest + "\nTeam: " + teamId + "\nDescription: " + description);
         ContestString salida = new ContestString();
-        if (contestRepository.findContestByNombreContest(nameContest).isPresent()) {
+        if (contestRepository.existsContestByNombreContest(nameContest)) {
             logger.error("Contest name duplicated " + nameContest);
             salida.setSalida("contest NAME DUPLICATED");
             return salida;
@@ -91,12 +91,12 @@ public class ContestService {
 
         //Si namecontest esta presente lo cambiamos
         if (nameContest.isPresent()) {
-            if (contestRepository.findContestByNombreContest(nameContest.get()).isPresent()) {
+            String contestName = nameContest.get();
+            if (contestRepository.existsContestByNombreContest(contestName)) {
                 logger.error("Contest name " + nameContest.get() + " duplicated");
                 salida.setSalida("CONTEST NAME DUPLICATED");
                 return salida;
             }
-            String contestName = nameContest.get();
             contest.setNombreContest(contestName);
         }
 
@@ -341,6 +341,10 @@ public class ContestService {
 
     public Optional<Contest> getContestByName(String contestName) {
         return contestRepository.findContestByNombreContest(contestName);
+    }
+
+    public boolean existsContestByName(String contestName) {
+        return contestRepository.existsContestByNombreContest(contestName);
     }
 
     public List<Contest> getAllContests() {

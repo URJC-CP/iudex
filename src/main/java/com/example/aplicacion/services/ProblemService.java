@@ -136,8 +136,7 @@ public class ProblemService {
         Team team = teamOptional.get();
         problem.setEquipoPropietario(team);
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
-        if (contestOptional.isEmpty()) {
+        if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
             logger.error("Contest " + idcontest + " not found");
             salida.setSalida("CONCURSO NOT FOUND");
             return salida;
@@ -177,8 +176,7 @@ public class ProblemService {
         }
         Problem problemOriginal = problemOriginalOptional.get();
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
-        if (contestOptional.isEmpty()) {
+        if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
             logger.error("Contest " + idcontest + " not found");
             problemUpdated.setSalida("CONCURSO NOT FOUND");
             return problemUpdated;
@@ -224,8 +222,7 @@ public class ProblemService {
         }
         Problem problemOriginal = problemOriginalOptional.get();
 
-        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idcontest));
-        if (contestOptional.isEmpty()) {
+        if (contestRepository.existsContestById(Long.parseLong(idcontest))) {
             logger.error("Contest " + idcontest + " not found");
             problemUpdated.setSalida("CONCURSO NOT FOUND");
             return problemUpdated;
@@ -248,7 +245,6 @@ public class ProblemService {
     }
 
     public String deleteProblem(String problemId) {
-        logger.debug("Delete problem " + problemId);
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {
             logger.error("Problem " + problemId + " not found");
@@ -256,22 +252,7 @@ public class ProblemService {
         }
         Problem problem = problemOptional.get();
 
-        //Quitamos los problemas del contest
-        for (Contest contestAux : problem.getListaContestsPertenece()) {
-            logger.debug("Remove problem " + problemId + " from contest " + contestAux.getId());
-            if (!contestAux.getListaProblemas().remove(problem)) {
-                logger.error("Couldn't remove problem " + problemId + " from contest " + contestAux.getId());
-            }
-        }
-
-        // Quitamos el problema de equipos Intentados
-        for (Team teamAux : problem.getListaEquiposIntentados()) {
-            teamAux.getListaProblemasParticipados().remove(problem);
-        }
-
-        problemRepository.delete(problem);
-        logger.debug("Finish delete problem " + problemId + "\nProblem name: " + problem.getNombreEjercicio());
-        return "OK";
+        return deleteProblem(problem);
     }
 
     public String deleteProblem(Problem problem) {
@@ -283,6 +264,11 @@ public class ProblemService {
             if (!contestAux.getListaProblemas().remove(problem)) {
                 logger.error("Couldn't remove problem " + problem.getId() + " from contest " + contestAux.getId());
             }
+        }
+
+        // Quitamos el problema de equipos Intentados
+        for (Team teamAux : problem.getListaEquiposIntentados()) {
+            teamAux.getListaProblemasParticipados().remove(problem);
         }
 
         problemRepository.delete(problem);
