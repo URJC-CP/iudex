@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -21,6 +23,8 @@ public class APIAdminController {
     @ApiOperation("Get a full Result")
     @GetMapping("/API/v1/result/{resultId}")
     public ResponseEntity<Result> getResult(@PathVariable String resultId) {
+        resultId = sanitize(resultId);
+
         Result result = resultService.getResult(resultId);
         if (result == null) {
             return new ResponseEntity("RESULT NOT FOUND", HttpStatus.NOT_FOUND);

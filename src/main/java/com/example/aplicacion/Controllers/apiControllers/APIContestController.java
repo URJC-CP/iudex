@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @RestController
 @RequestMapping("/API/v1/")
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -30,7 +32,6 @@ public class APIContestController {
     public ResponseEntity<List<ContestAPI>> getAllcontests() {
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();
-
         for (Contest contest : contestList) {
             contestAPIS.add(contest.toContestAPIFull());
         }
@@ -47,13 +48,13 @@ public class APIContestController {
     @ApiOperation("Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
-        ContestAPI contestAPI = new ContestAPI();
+        contestId = sanitize(contestId);
         Optional<Contest> contestOptional = contestService.getContestById(contestId);
         if (contestOptional.isEmpty()) {
             return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Contest contest = contestOptional.get();
-        contestAPI = contest.toContestAPI();
+        ContestAPI contestAPI = contest.toContestAPI();
         ResponseEntity<ContestAPI> responseEntity = new ResponseEntity<>(contestAPI, HttpStatus.OK);
         return responseEntity;
     }
@@ -61,6 +62,10 @@ public class APIContestController {
     @ApiOperation("Create a contest")
     @PostMapping("contest")
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
+        contestName = sanitize(contestName);
+        teamId = sanitize(teamId);
+        descripcion = sanitize(descripcion);
+
         ContestString salida = contestService.creaContest(contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
@@ -72,6 +77,7 @@ public class APIContestController {
     @ApiOperation("Delete a contest")
     @DeleteMapping("contest/{contestId}")
     public ResponseEntity deleteContest(@PathVariable String contestId) {
+        contestId = sanitize(contestId);
         String salida = contestService.deleteContest(contestId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -83,6 +89,11 @@ public class APIContestController {
     @ApiOperation("Update a contest")
     @PutMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
+        contestId = sanitize(contestId);
+        contestName = sanitize(contestName);
+        teamId = sanitize(teamId);
+        descripcion = sanitize(descripcion);
+
         ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity(salida.getContest().toContestAPI(), HttpStatus.CREATED);
@@ -94,6 +105,9 @@ public class APIContestController {
     @ApiOperation("Add Problem to Contest")
     @PutMapping("contest/{contestId}/{problemId}")
     public ResponseEntity addProblemToContest(@PathVariable String problemId, @PathVariable String contestId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -105,6 +119,9 @@ public class APIContestController {
     @ApiOperation("Delete a Problem from a Contest")
     @DeleteMapping("contest/{contestId}/{problemId}")
     public ResponseEntity deleteProblemFromContest(@PathVariable String problemId, @PathVariable String contestId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+
         String salida = contestService.deleteProblemFromContest(contestId, problemId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -116,6 +133,9 @@ public class APIContestController {
     @ApiOperation("Add Team to Contest")
     @PutMapping("contest/{contestId}/team/{teamId}")
     public ResponseEntity addTeamToContest(@PathVariable String contestId, @PathVariable String teamId) {
+        contestId = sanitize(contestId);
+        teamId = sanitize(teamId);
+
         String salida = contestService.addTeamToContest(contestId, teamId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -127,6 +147,9 @@ public class APIContestController {
     @ApiOperation("Bulk add Team to Contest")
     @PutMapping("contest/{contestId}/team/addBulk")
     public ResponseEntity addTeamToContest(@PathVariable String contestId, @RequestParam String[] teamList) {
+        contestId = sanitize(contestId);
+        teamList = sanitize(teamList);
+
         String salida = contestService.addTeamToContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -138,6 +161,9 @@ public class APIContestController {
     @ApiOperation("Delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/{teamId}")
     public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @PathVariable String teamId) {
+        contestId = sanitize(contestId);
+        teamId = sanitize(teamId);
+
         String salida = contestService.deleteTeamFromContest(contestId, teamId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -149,6 +175,9 @@ public class APIContestController {
     @ApiOperation("Bulk delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/removeBulk")
     public ResponseEntity deleteTeamFromContest(@PathVariable String contestId, @RequestParam String[] teamList) {
+        contestId = sanitize(contestId);
+        teamList = sanitize(teamList);
+
         String salida = contestService.deleteTeamFromContest(contestId, teamList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -160,6 +189,9 @@ public class APIContestController {
     @ApiOperation("Add Language to Contest")
     @PostMapping("contest/{contestId}/language")
     public ResponseEntity addLanguageToContest(@PathVariable String contestId, @RequestParam String language) {
+        contestId = sanitize(contestId);
+        language = sanitize(language);
+
         String salida = contestService.addLanguageToContest(contestId, language);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -170,6 +202,9 @@ public class APIContestController {
     @ApiOperation("Delete Language from contest")
     @DeleteMapping("contest/{contestId}/language/{languageId}")
     public ResponseEntity deleteLanguageFromContest(@PathVariable String contestId, @PathVariable String languageId) {
+        contestId = sanitize(contestId);
+        languageId = sanitize(languageId);
+
         String salida = contestService.removeLanguageFromContest(contestId, languageId);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -180,6 +215,9 @@ public class APIContestController {
     @ApiOperation("Set accepted languages of a contest")
     @PostMapping("contest/{contestId}/language/addBulk")
     public ResponseEntity addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam String[] languageList) {
+        contestId = sanitize(contestId);
+        languageList = sanitize(languageList);
+
         String salida = contestService.addAcceptedLanguagesToContest(contestId, languageList);
         if (salida.equals("OK")) {
             return new ResponseEntity(HttpStatus.OK);
@@ -190,6 +228,8 @@ public class APIContestController {
     @ApiOperation("Get scores of a contest")
     @GetMapping("contest/{contestId}/scoreboard")
     public ResponseEntity getScores(@PathVariable String contestId) {
+        contestId = sanitize(contestId);
+
         try {
             List<TeamScore> scores = contestService.getScore(contestId);
             return new ResponseEntity(scores, HttpStatus.OK);
