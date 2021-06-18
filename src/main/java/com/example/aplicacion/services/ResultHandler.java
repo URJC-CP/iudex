@@ -67,9 +67,7 @@ public class ResultHandler {
     }
 
     public String buildImage(File file) {
-        String salida = dockerClient.buildImageCmd().withDockerfile(file)
-            .exec(new BuildImageResultCallback())
-            .awaitImageId();
+        String salida = dockerClient.buildImageCmd().withDockerfile(file).exec(new BuildImageResultCallback()).awaitImageId();
         return salida;
     }
 

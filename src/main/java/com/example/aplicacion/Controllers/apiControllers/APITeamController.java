@@ -42,7 +42,7 @@ public class APITeamController {
             Team team = teamOptional.get();
             return new ResponseEntity<>(team.toTeamAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity("ERROR, TEAM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("TEAM NOT FOUND", HttpStatus.NOT_FOUND);
         }
     }
 

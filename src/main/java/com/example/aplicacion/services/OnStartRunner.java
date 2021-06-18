@@ -19,7 +19,7 @@ import java.util.TimeZone;
 @Component
 public class OnStartRunner implements ApplicationRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 
     @Autowired
     public SubmissionRepository submissionRepository;
@@ -54,7 +54,7 @@ public class OnStartRunner implements ApplicationRunner {
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-        if(contestService.getContestByName("contestPrueba").isPresent()){
+        if (contestService.getContestByName("contestPrueba").isPresent()) {
             logger.info("Demo contest contestPrueba already exists, skipping creation");
         } else {
             logger.info("Creating demo contest 'contestPrueba' with team 'pavloXd'");
@@ -62,9 +62,9 @@ public class OnStartRunner implements ApplicationRunner {
         }
     }
 
-    public void createLanguage(String name, String path){
+    public void createLanguage(String name, String path) {
         var existingLanguage = languageRepository.findLanguageByNombreLenguaje(name);
-        if(existingLanguage.isPresent()){
+        if (existingLanguage.isPresent()) {
             logger.info(String.format("Skipping creation of lang %s, already in Database", name));
             return;
         }
@@ -73,6 +73,6 @@ public class OnStartRunner implements ApplicationRunner {
         String imageId = resultHandler.buildImage(dockerFile);
         Language language = new Language(name, imageId);
         languageRepository.save(language);
-        logger.info(String.format("Finished building %s image %s from %s", name, imageId,dockerFile.getName()));
+        logger.info(String.format("Finished building %s image %s from %s", name, imageId, dockerFile.getName()));
     }
 }

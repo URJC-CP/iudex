@@ -1,7 +1,10 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.*;
+import com.example.aplicacion.Pojos.ContestString;
+import com.example.aplicacion.Pojos.ProblemAPI;
+import com.example.aplicacion.Pojos.ProblemScore;
+import com.example.aplicacion.Pojos.TeamScore;
 import com.example.aplicacion.Repository.ContestRepository;
 import com.example.aplicacion.Repository.ProblemRepository;
 import com.example.aplicacion.Repository.TeamRepository;

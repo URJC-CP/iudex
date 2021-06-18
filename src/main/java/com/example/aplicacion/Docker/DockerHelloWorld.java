@@ -15,14 +15,13 @@ import java.io.*;
 //Clase incial para hacer pruebas TOCA BORRARLA EN UN FUTURO
 public class DockerHelloWorld {
 
+    private static DockerClient dockerClient;
     private File entrada;
     private File codigo;
     private String salidaEstandar;
     private String salidaError;
     private String salidaCompilador;
     private File dockerFile;
-
-    private static DockerClient dockerClient;
 
     public DockerHelloWorld() {
 
@@ -33,9 +32,7 @@ public class DockerHelloWorld {
         //#Construir imagen
         //docker build -t pavlo/pavlo .;
         File dckfl = new File("DOCKERS/Python3/Dockerfile");
-        String imageId = dockerClient.buildImageCmd().withDockerfile(dckfl)
-                .exec(new BuildImageResultCallback())
-                .awaitImageId();
+        String imageId = dockerClient.buildImageCmd().withDockerfile(dckfl).exec(new BuildImageResultCallback()).awaitImageId();
 
         //#Crear contenedor
         //docker create --name cont pavlo/pavlo;
@@ -43,23 +40,7 @@ public class DockerHelloWorld {
         CreateContainerResponse container = dockerClient.createContainerCmd(imageId).exec();
         //System.out.println(container.getId()+"");
 
-        String cont1 = "import java.util.Scanner;\n" +
-                "\n" +
-                "public class codigo {\n" +
-                "\n" +
-                "    public static void main(String[] args) {\n" +
-                "        // Prints \"Hello, World\" to the terminal window.\n" +
-                "        //System.out.println(\"HOLA, mundo\");\n" +
-                "\n" +
-                "        Scanner sc = new Scanner(System.in);\n" +
-                "\n" +
-                "        while(sc.hasNext()){\n" +
-                "            int n = sc.nextInt();\n" +
-                "            System.out.println(n*2);\n" +
-                "        }\n" +
-                "        throw new RuntimeException(\"ERROR PROVOCADO\");\n" +
-                "    }\n" +
-                "}";
+        String cont1 = "import java.util.Scanner;\n" + "\n" + "public class codigo {\n" + "\n" + "    public static void main(String[] args) {\n" + "        // Prints \"Hello, World\" to the terminal window.\n" + "        //System.out.println(\"HOLA, mundo\");\n" + "\n" + "        Scanner sc = new Scanner(System.in);\n" + "\n" + "        while(sc.hasNext()){\n" + "            int n = sc.nextInt();\n" + "            System.out.println(n*2);\n" + "        }\n" + "        throw new RuntimeException(\"ERROR PROVOCADO\");\n" + "    }\n" + "}";
 
         //#Copiar codigo
         //docker cp codigo.java cont:/root;
@@ -70,10 +51,7 @@ public class DockerHelloWorld {
             throw new RuntimeException(e);
         }
 
-        String cont2 = "1\n" +
-                "2\n" +
-                "3\n" +
-                "8";
+        String cont2 = "1\n" + "2\n" + "3\n" + "8";
         //#Copiar entrada
         //docker cp entrada.txt cont:/root;
         try {

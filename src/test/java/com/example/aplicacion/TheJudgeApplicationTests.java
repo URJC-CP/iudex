@@ -401,7 +401,7 @@ public class TheJudgeApplicationTests {
     @DisplayName("Get team with invalid id")
     public void test7() {
         String badTeam = "867";
-        String salida = "ERROR, TEAM NOT FOUND";
+        String salida = "TEAM NOT FOUND";
         testGetTeamWithException(badTeam, salida);
     }
 

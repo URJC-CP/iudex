@@ -32,241 +32,213 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(APIProblemController.class)
 public class TestAPIProblemController {
-	private final JSONConverter jsonConverter = new JSONConverter();
-	@Autowired
-	private MockMvc mockMvc;
-	@MockBean
-	private ProblemService problemService;
-	private Contest contest;
-	private Team owner;
-	private Problem problem;
+    private final JSONConverter jsonConverter = new JSONConverter();
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ProblemService problemService;
+    private Contest contest;
+    private Team owner;
+    private Problem problem;
 
-	@BeforeEach
-	public void init() {
-		contest = new Contest();
-		contest.setId(101);
-		contest.setNombreContest("elConcurso");
-		contest.setDescripcion("concurso de prueba");
+    @BeforeEach
+    public void init() {
+        contest = new Contest();
+        contest.setId(101);
+        contest.setNombreContest("elConcurso");
+        contest.setDescripcion("concurso de prueba");
 
-		owner = new Team();
-		owner.setId(201);
-		owner.setNombreEquipo("propietario");
-		contest.setTeamPropietario(owner);
+        owner = new Team();
+        owner.setId(201);
+        owner.setNombreEquipo("propietario");
+        contest.setTeamPropietario(owner);
 
-		problem = new Problem();
-		problem.setId(244);
-		problem.setNombreEjercicio("Ejercicio de prueba");
-		problem.setEquipoPropietario(owner);
+        problem = new Problem();
+        problem.setId(244);
+        problem.setNombreEjercicio("Ejercicio de prueba");
+        problem.setEquipoPropietario(owner);
 
-		when(problemService.getAllProblemas()).thenReturn(List.of(problem));
-		when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
-	}
+        when(problemService.getAllProblemas()).thenReturn(List.of(problem));
+        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
+    }
 
-	@Test
-	@DisplayName("Get All Problems")
-	public void testAPIGetProblems() throws Exception {
-		String url = "/API/v1/problem";
-		String result = mockMvc.perform(
-			get(url))
-			.andExpect(status().isOk())
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
+    @Test
+    @DisplayName("Get All Problems")
+    public void testAPIGetProblems() throws Exception {
+        String url = "/API/v1/problem";
+        String result = mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
 
-		ProblemAPI problemAPI = problem.toProblemAPI();
-		List<ProblemAPI> problems = List.of(problemAPI);
-		assertEquals(jsonConverter.convertObjectToJSON(problems), result);
-	}
+        ProblemAPI problemAPI = problem.toProblemAPI();
+        List<ProblemAPI> problems = List.of(problemAPI);
+        assertEquals(jsonConverter.convertObjectToJSON(problems), result);
+    }
 
-	@Test
-	@DisplayName("Get All Problems With Pagination")
-	@Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
-	public void testAPIGetProblemsWithPagination() {
-		fail("Not implemented yet!");
-	}
+    @Test
+    @DisplayName("Get All Problems With Pagination")
+    @Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
+    public void testAPIGetProblemsWithPagination() {
+        fail("Not implemented yet!");
+    }
 
-	@Test
-	@DisplayName("Get Selected Problem")
-	public void testAPIGetProblem() throws Exception {
-		String goodProblem = String.valueOf(problem.getId());
-		String badProblem = "745";
+    @Test
+    @DisplayName("Get Selected Problem")
+    public void testAPIGetProblem() throws Exception {
+        String goodProblem = String.valueOf(problem.getId());
+        String badProblem = "745";
 
-		String goodURL = "/API/v1/problem/" + goodProblem;
-		String badURL = "/API/v1/problem/" + badProblem;
+        String goodURL = "/API/v1/problem/" + goodProblem;
+        String badURL = "/API/v1/problem/" + badProblem;
 
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		String salida = "ERROR PROBLEM NOT FOUND";
-		testGetProblem(badURL, status, salida);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "ERROR PROBLEM NOT FOUND";
+        testGetProblem(badURL, status, salida);
 
-		status = HttpStatus.OK;
-		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
-		testGetProblem(goodURL, status, salida);
-	}
+        status = HttpStatus.OK;
+        salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
+        testGetProblem(goodURL, status, salida);
+    }
 
-	@Test
-	private void testGetProblem(String url, HttpStatus status, String salida) throws Exception {
-		String result = mockMvc.perform(
-			get(url))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(salida, result);
-	}
+    @Test
+    private void testGetProblem(String url, HttpStatus status, String salida) throws Exception {
+        String result = mockMvc.perform(get(url)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
+    @Test
 	/*
 	  WARNING:
 		no hay ningun metodo para pasar un objeto como parametro en MockMvc
 		y el controlador no acepta JSON
 	*/
-	@DisplayName("Create problem Using a Problem Object")
-	@Disabled("Create problem Using a Problem Object - Cannot be mocked")
-	public void testAPICreateProblem() throws Exception {
-		fail("Could not send an instance as a param with mock");
-	}
+    @DisplayName("Create problem Using a Problem Object")
+    @Disabled("Create problem Using a Problem Object - Cannot be mocked")
+    public void testAPICreateProblem() throws Exception {
+        fail("Could not send an instance as a param with mock");
+    }
 
-	@Test
-	@DisplayName("Create Problem From Zip")
-	@Disabled("Create Problem From Zip - Cannot be mocked")
-	public void testAPICreateProblemFromZip() throws Exception {
-		fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
-	}
+    @Test
+    @DisplayName("Create Problem From Zip")
+    @Disabled("Create Problem From Zip - Cannot be mocked")
+    public void testAPICreateProblemFromZip() throws Exception {
+        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+    }
 
-	@Test
-	@DisplayName("Update Problem with Multiple Optional Params")
-	@Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
-	public void testAPIUpdateProblem() throws Exception {
-		String badProblem = "534";
-		String goodProblem = String.valueOf(problem.getId());
-		String badProblemName = "";
-		String problemName = problem.getNombreEjercicio();
-		String badTeam = "673";
-		String goodTeam = String.valueOf(owner.getId());
-		String timeout = "timeout";
-		byte[] pdf = new byte[0];
+    @Test
+    @DisplayName("Update Problem with Multiple Optional Params")
+    @Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
+    public void testAPIUpdateProblem() throws Exception {
+        String badProblem = "534";
+        String goodProblem = String.valueOf(problem.getId());
+        String badProblemName = "";
+        String problemName = problem.getNombreEjercicio();
+        String badTeam = "673";
+        String goodTeam = String.valueOf(owner.getId());
+        String timeout = "timeout";
+        byte[] pdf = new byte[0];
 
-		ProblemString ps = new ProblemString();
-		String badURL = "/API/v1/problem/" + badProblem;
-		String goodURL = "/API/v1/problem/" + goodProblem;
+        ProblemString ps = new ProblemString();
+        String badURL = "/API/v1/problem/" + badProblem;
+        String goodURL = "/API/v1/problem/" + goodProblem;
 
-		String salida = "ERROR PROBLEMID NOT FOUND";
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		ps.setSalida(salida);
-		when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(badURL, badProblemName, badTeam, pdf, timeout, status, salida);
+        String salida = "ERROR PROBLEMID NOT FOUND";
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ps.setSalida(salida);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        testUpdateProblemMultipleOptions(badURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-		when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(badURL, problemName, badTeam, pdf, timeout, status, salida);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        testUpdateProblemMultipleOptions(badURL, problemName, badTeam, pdf, timeout, status, salida);
 
-		when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(badURL, badProblemName, goodTeam, pdf, timeout, status, salida);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        testUpdateProblemMultipleOptions(badURL, badProblemName, goodTeam, pdf, timeout, status, salida);
 
-		when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
 
-		salida = "ERROR TEAMID NOT FOUND";
-		ps.setSalida(salida);
-		problem.setNombreEjercicio("");
-		when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		problem.setNombreEjercicio(problemName);
-		testUpdateProblemMultipleOptions(goodURL, badProblemName, badTeam, pdf, timeout, status, salida);
+        salida = "ERROR TEAMID NOT FOUND";
+        ps.setSalida(salida);
+        problem.setNombreEjercicio("");
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        problem.setNombreEjercicio(problemName);
+        testUpdateProblemMultipleOptions(goodURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-		when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		testUpdateProblemMultipleOptions(goodURL, problemName, badTeam, pdf, timeout, status, salida);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        testUpdateProblemMultipleOptions(goodURL, problemName, badTeam, pdf, timeout, status, salida);
 
-		salida = "OK";
-		ps.setProblem(problem);
-		ps.setSalida(salida);
-		status = HttpStatus.OK;
-		when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-		salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
-		testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
-	}
+        salida = "OK";
+        ps.setProblem(problem);
+        ps.setSalida(salida);
+        status = HttpStatus.OK;
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
+        testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
+    }
 
-	private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
-		String result = mockMvc.perform(
-			put(url).characterEncoding("utf8")
-				.param("nombreProblema", problemName)
-				.param("teamId", team)
-				//TODO: pass byte[]
-				.param("pdf", String.valueOf(pdf))
-				.param("timeout", timeout))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
+        String result = mockMvc.perform(put(url).characterEncoding("utf8").param("nombreProblema", problemName).param("teamId", team)
+            //TODO: pass byte[]
+            .param("pdf", String.valueOf(pdf)).param("timeout", timeout)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Update Problem From Zip")
-	@Disabled("Update Problem From Zip - Cannot be mocked")
-	public void testAPIUpdateProblemFromZip() {
-		fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
-	}
+    @Test
+    @DisplayName("Update Problem From Zip")
+    @Disabled("Update Problem From Zip - Cannot be mocked")
+    public void testAPIUpdateProblemFromZip() {
+        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+    }
 
-	@Test
-	@DisplayName("Get PDF from Problem")
-	public void testAPIGetPdfFromProblem() throws Exception {
-		String goodProblem = String.valueOf(problem.getId());
-		String badProblem = "543";
-		String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
-		String badURL = "/API/v1//problem/" + badProblem + "/getPDF";
+    @Test
+    @DisplayName("Get PDF from Problem")
+    public void testAPIGetPdfFromProblem() throws Exception {
+        String goodProblem = String.valueOf(problem.getId());
+        String badProblem = "543";
+        String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
+        String badURL = "/API/v1//problem/" + badProblem + "/getPDF";
 
-		String salida = "ERROR PROBLEMA NO ECONTRADO";
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		testGoToProblem(badURL, status, salida);
+        String salida = "ERROR PROBLEMA NO ECONTRADO";
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        testGoToProblem(badURL, status, salida);
 
-		salida = "";
-		testGoToProblem(goodURL, status, salida);
+        salida = "";
+        testGoToProblem(goodURL, status, salida);
 
-		status = HttpStatus.OK;
-		File pdf = new File("DOCKERS/entrada.in");
-		byte[] contents = Files.readAllBytes(pdf.toPath());
-		problem.setDocumento(contents);
-		salida = Files.readString(pdf.toPath());
-		testGoToProblem(goodURL, status, salida);
-	}
+        status = HttpStatus.OK;
+        File pdf = new File("DOCKERS/entrada.in");
+        byte[] contents = Files.readAllBytes(pdf.toPath());
+        problem.setDocumento(contents);
+        salida = Files.readString(pdf.toPath());
+        testGoToProblem(goodURL, status, salida);
+    }
 
-	private void testGoToProblem(String url, HttpStatus status, String salida) throws Exception {
-		String result = mockMvc.perform(
-			get(url).characterEncoding("utf8"))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testGoToProblem(String url, HttpStatus status, String salida) throws Exception {
+        String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 
-	@Test
-	@DisplayName("Delete problem from all contests")
-	public void testAPIDeleteProblemFromALLContests() throws Exception {
-		String badProblem = "546";
-		String goodProblem = String.valueOf(problem.getId());
+    @Test
+    @DisplayName("Delete problem from all contests")
+    public void testAPIDeleteProblemFromALLContests() throws Exception {
+        String badProblem = "546";
+        String goodProblem = String.valueOf(problem.getId());
 
-		String badURL = "/API/v1/problem/" + badProblem;
-		String goodURL = "/API/v1/problem/" + goodProblem;
+        String badURL = "/API/v1/problem/" + badProblem;
+        String goodURL = "/API/v1/problem/" + goodProblem;
 
-		String salida = "PROBLEM NOT FOUND";
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		when(problemService.deleteProblem(badProblem)).thenReturn(salida);
-		testDeleteProblem(badURL, status, salida);
+        String salida = "PROBLEM NOT FOUND";
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        when(problemService.deleteProblem(badProblem)).thenReturn(salida);
+        testDeleteProblem(badURL, status, salida);
 
-		salida = "OK";
-		status = HttpStatus.OK;
-		when(problemService.deleteProblem(goodProblem)).thenReturn(salida);
-		salida = "";
-		testDeleteProblem(goodURL, status, salida);
-	}
+        salida = "OK";
+        status = HttpStatus.OK;
+        when(problemService.deleteProblem(goodProblem)).thenReturn(salida);
+        salida = "";
+        testDeleteProblem(goodURL, status, salida);
+    }
 
-	private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
-		String result = mockMvc.perform(
-			delete(url))
-			.andExpect(status().is(status.value()))
-			.andDo(print())
-			.andReturn().getResponse()
-			.getContentAsString();
-		assertEquals(salida, result);
-	}
+    private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
+        String result = mockMvc.perform(delete(url)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(salida, result);
+    }
 }
