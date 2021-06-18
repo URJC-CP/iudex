@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @Controller
 public class ContestController {
     Logger logger = LoggerFactory.getLogger(ContestController.class);
@@ -28,24 +30,31 @@ public class ContestController {
     //CONCURSO html
     @GetMapping("/goToContest")
     public String goToContest(Model model, @RequestParam String contestId) {
+        contestId = sanitize(contestId);
+
         logger.debug("Get contest {0}", contestId);
         Optional<Contest> contestOptional = contestService.getContestById(contestId);
-        if (contestOptional.isEmpty()) {
+        if (contestOptional.isPresent()) {
+            Contest contest = contestOptional.get();
+            model.addAttribute("contest", contest);
+            model.addAttribute("teams", teamService.getAllTeams());
+            model.addAttribute("problems", problemService.getAllProblemas());
+
+            logger.debug("Show contest {0}", contestId);
+            return "contest";
+
+        } else {
             logger.error("Contest {0} not found", contestId);
             model.addAttribute("error", "ERROR CONCURSO NO ECONTRADO");
             return "errorConocido";
         }
-        Contest contest = contestOptional.get();
-        model.addAttribute("contest", contest);
-        model.addAttribute("teams", teamService.getAllTeams());
-        model.addAttribute("problems", problemService.getAllProblemas());
 
-        logger.debug("Show contest {0}", contestId);
-        return "contest";
     }
 
     @PostMapping("/deleteContest")
     public String deleteConcorso(Model model, @RequestParam String contestId) {
+        contestId = sanitize(contestId);
+
         logger.debug("Delete contest {0}", contestId);
         String salida = contestService.deleteContest(contestId);
 
@@ -60,6 +69,8 @@ public class ContestController {
 
     @PostMapping("/addUserToContest")
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId) {
+        contestId = sanitize(contestId);
+
         logger.debug("Add user {0} to contest {1}", teamId, contestId);
         String salida = contestService.addTeamToContest(teamId, contestId);
 
@@ -75,6 +86,9 @@ public class ContestController {
 
     @PostMapping("/deleteTeamFromContest")
     public String deleteTeamFromContest(Model model, @RequestParam String teamId, @RequestParam String contestId) {
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
         logger.debug("Delete team {0} from contest {1}", teamId, contestId);
         String salida = contestService.deleteTeamFromContest(contestId, teamId);
 
@@ -90,6 +104,9 @@ public class ContestController {
 
     @PostMapping("/addProblemToContest")
     public String addProblemToContest(Model model, @RequestParam String problemId, @RequestParam String contestId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+
         logger.debug("Add problem {0} to contest {1}", problemId, contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
@@ -105,6 +122,9 @@ public class ContestController {
 
     @PostMapping("/deleteProblemFromContest")
     public String deleteProblemFromContest(Model model, @RequestParam String problemId, @RequestParam String contestId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+
         logger.debug("Delete problem {0} from contest {1}", problemId, contestId);
         String salida = contestService.deleteProblemFromContest(contestId, problemId);
 

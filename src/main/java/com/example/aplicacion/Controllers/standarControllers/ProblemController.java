@@ -22,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @Controller
 public class ProblemController {
 
@@ -41,6 +43,9 @@ public class ProblemController {
 
     @GetMapping("/contest/{idContest}/problema/{idProblem}")
     public ModelAndView goToProblem(@PathVariable String idContest, @PathVariable String idProblem) {
+        idContest = sanitize(idContest);
+        idProblem = sanitize(idProblem);
+
         ModelAndView modelAndView = new ModelAndView();
         logger.debug("Get problem {0}", idProblem);
 
@@ -84,6 +89,9 @@ public class ProblemController {
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
     public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
+        idContest = sanitize(idContest);
+        idProblem = sanitize(idProblem);
+
         logger.debug("Get problem {0} with pdf", idProblem);
         Optional<Problem> problemOptional = problemService.getProblem(idProblem);
 
@@ -113,6 +121,10 @@ public class ProblemController {
 
     @PostMapping("/problemSubida")
     public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
+        problemaName = sanitize(problemaName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
         logger.debug("Upload problem {0}", problemaName);
         ModelAndView modelAndView = new ModelAndView();
         ProblemString salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
@@ -131,6 +143,11 @@ public class ProblemController {
 
     @PostMapping("/problemUpdate")
     public ModelAndView updateProblema(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
+        problemId = sanitize(problemId);
+        problemaName = sanitize(problemaName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
         logger.debug("Update problem {0}", problemId);
         ModelAndView modelAndView = new ModelAndView();
         ProblemString salida = problemService.updateProblem2(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
@@ -149,6 +166,8 @@ public class ProblemController {
 
     @GetMapping("/deleteProblem/{problemId}")
     public ModelAndView deleteProblem(@PathVariable String problemId) {
+        problemId = sanitize(problemId);
+
         logger.debug("Delete problem {0}", problemId);
         ModelAndView modelAndView = new ModelAndView();
         String salida = problemService.deleteProblem(problemId);
@@ -166,6 +185,11 @@ public class ProblemController {
 
     @PostMapping("/createSubmission")
     public ModelAndView crearSubmission(@RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
+        problemaAsignado = sanitize(problemaAsignado);
+        lenguaje = sanitize(lenguaje);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
         logger.debug("Create {0} submission for problem {1}", lenguaje, problemaAsignado);
         ModelAndView modelAndView = new ModelAndView();
 
@@ -190,6 +214,8 @@ public class ProblemController {
 
     @PostMapping("/deleteSubmission")
     public ModelAndView deleteSubmission(@RequestParam String submissionId) {
+        submissionId = sanitize(submissionId);
+
         logger.debug("Delete submission {0}", submissionId);
         ModelAndView modelAndView = new ModelAndView();
 

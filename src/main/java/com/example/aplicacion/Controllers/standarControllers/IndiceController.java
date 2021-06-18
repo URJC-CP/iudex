@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @Controller
 public class IndiceController {
 
@@ -62,6 +64,11 @@ public class IndiceController {
 
     @PostMapping("/answerSubida")
     public String subida(Model model, @RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
+        problemaAsignado = sanitize(problemaAsignado);
+        lenguaje = sanitize(lenguaje);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
         logger.debug("Submit {0} code to problem {1}", lenguaje, problemaAsignado);
         String fileName = FilenameUtils.removeExtension(codigo.getOriginalFilename());
         String cod = new String(codigo.getBytes());
@@ -93,6 +100,9 @@ public class IndiceController {
 
     @PostMapping("/asignaProblemaAContest")
     public String asignaProblemaACcurso(Model model, @RequestParam String problemId, @RequestParam String contestId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+
         logger.debug("Add problem {0} to contest {1}", problemId, contestId);
         String salida = contestService.anyadeProblemaContest(contestId, problemId);
 
@@ -106,6 +116,9 @@ public class IndiceController {
 
     @PostMapping("/creaUsuario")
     public String creaUsuario(Model model, @RequestParam String userNickname, @RequestParam String userMail) {
+        userNickname = sanitize(userNickname);
+        userMail = sanitize(userMail);
+
         logger.debug("Create user {0}", userNickname);
         String salida = userService.crearUsuario(userNickname, userMail).getSalida();
 
@@ -121,6 +134,10 @@ public class IndiceController {
 
     @PostMapping("/creaContest")
     public String creaContest(Model model, @RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion) {
+        contestName = sanitize(contestName);
+        teamId = sanitize(teamId);
+        descripcion = sanitize(descripcion);
+
         logger.debug("Create contest {0}", contestName);
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
