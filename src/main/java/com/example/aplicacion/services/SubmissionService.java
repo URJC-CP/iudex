@@ -57,6 +57,7 @@ public class SubmissionService {
     public SubmissionStringResult creaSubmission(String codigo, String problem, String lenguaje, String fileName, String idContest, String idEquipo) {
         logger.debug("Create submission {} for problem {} of contest {}", fileName, problem, idContest);
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
+
         Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(idContest));
         if (contestOptional.isEmpty()) {
             logger.error("Contest {} not found", idContest);
@@ -139,17 +140,9 @@ public class SubmissionService {
         return submissionStringResult;
     }
 
-    //Constructor para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
-    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idContest, String idEquipo) {
+    //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
+    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idEquipo) {
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
-
-        /*
-        Contest contest = contestRepository.findContestById(Long.valueOf(idContest));
-        if(contest==null){
-            submissionStringResult.setSalida("CONCURSO NOT FOUND");
-            return submissionStringResult;
-        }
-         */
 
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idEquipo));
         if (teamOptional.isEmpty()) {
@@ -171,7 +164,6 @@ public class SubmissionService {
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion
         submission.setProblema(problema);
-        //submission.setContest(contest);
         submission.setTeam(team);
         submission.setEsProblemValidator(true);
         //Guardamos la submission

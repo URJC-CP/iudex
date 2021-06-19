@@ -38,7 +38,7 @@ public class APISubmissionController {
 
     @ApiOperation("Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
-    public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
+    public ResponseEntity getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
         contestId = sanitize(contestId);
         problemId = sanitize(problemId);
 
@@ -59,32 +59,32 @@ public class APISubmissionController {
             for (Submission submission : submissionService.getSubmissionFromProblemAndContest(problem, contest)) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
-            return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+            return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
 
         } else if (problemId.isPresent()) {
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty()) {
-                return new ResponseEntity("Problem not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Problem not found", HttpStatus.NOT_FOUND);
             } else {
                 Problem problem = problemOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
                 for (Submission submission : submissionService.getSubmissionFromProblem(problem)) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
-                return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+                return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
             }
 
         } else if (contestId.isPresent()) {
             Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             if (contestOptional.isEmpty()) {
-                return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
             } else {
                 Contest contest = contestOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
                 for (Submission submission : submissionService.getSubmissionsFromContest(contest)) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
-                return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+                return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
             }
         }
         //SI NO CONTIENE NINGUNO devolvemos todo
@@ -93,7 +93,7 @@ public class APISubmissionController {
             for (Submission submission : submissionService.getAllSubmissions()) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
-            return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+            return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
         }
     }
 

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APIAdminController.class)
-public class TestAPIAdminController {
+class TestAPIAdminController {
     private final JSONConverter jsonConverter = new JSONConverter();
     @Autowired
     private MockMvc mockMvc;
@@ -46,7 +46,7 @@ public class TestAPIAdminController {
 
     @Test
     @DisplayName("Get Result")
-    public void testAPIGetResult() throws Exception {
+    void testAPIGetResult() throws Exception {
         String badResult = "654";
         String goodResult = String.valueOf(result.getId());
         String badURL = "/API/v1/result/" + badResult;
@@ -68,7 +68,7 @@ public class TestAPIAdminController {
 
     @Test
     @DisplayName("Get All Results")
-    public void testAPIGetAllResults() throws Exception {
+    void testAPIGetAllResults() throws Exception {
         String url = "/API/v1/result/";
 
         String salida = "RESULT NOT FOUND";

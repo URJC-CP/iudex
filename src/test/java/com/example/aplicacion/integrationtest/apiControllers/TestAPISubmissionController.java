@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APISubmissionController.class)
-public class TestAPISubmissionController {
+class TestAPISubmissionController {
     private final JSONConverter jsonConverter = new JSONConverter();
 
     @Autowired
@@ -86,7 +86,7 @@ public class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get Submissions with problemId and/or contestId")
-    public void testAPIGetSubmissions() throws Exception {
+    void testAPIGetSubmissions() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "312";
         String goodContest = String.valueOf(contest.getId());
@@ -134,7 +134,7 @@ public class TestAPISubmissionController {
     @Test
     @DisplayName("Get All Submissions with Pagination")
     @Disabled("Get All Submissions with Pagination - Not implemented yet!")
-    public void testAPIGetAllSubmissions() {
+    void testAPIGetAllSubmissions() {
         //String badProblem;
         //String goodProblem;
         //String badContest;
@@ -143,7 +143,7 @@ public class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get Submission with Results")
-    public void testAPIGetSubmission() throws Exception {
+    void testAPIGetSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
         String badURL = "/API/v1/submission/" + badSubmission;
@@ -166,12 +166,12 @@ public class TestAPISubmissionController {
     @Test
     @DisplayName("Add Submission to a Problem and Contest")
     @Disabled("Create Submission - Not implemented yet!")
-    public void testAPICreateSubmission() {
+    void testAPICreateSubmission() {
     }
 
     @Test
     @DisplayName("Delete Submission")
-    public void testAPIDeleteSubmission() throws Exception {
+    void testAPIDeleteSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
         String badURL = "/API/v1/submission/" + badSubmission;

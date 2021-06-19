@@ -467,7 +467,6 @@ public class ContestService {
             Set<Team> hasFirstAC = new HashSet<>();
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
-                //if (entrega.isEsProblemValidator()) continue; // saltar entregas de validación del problema
                 Team equipo = entrega.getTeam();
                 if (hasFirstAC.contains(equipo) || entrega.getResultado().toLowerCase().contains("failed in compiler")) {
                     continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación

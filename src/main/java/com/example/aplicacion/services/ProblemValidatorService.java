@@ -40,10 +40,9 @@ public class ProblemValidatorService {
 
     public void validateProblem(Problem problemA) {
         Optional<Problem> problemOptional = problemRepository.findProblemById(problemA.getId());
-
-        Problem problem = problemOptional.get();
+        Problem problem = problemOptional.orElseThrow();
         //Recorremos la lista de submission y las enviamos
-        if (problem.getSubmissionProblemValidators().size() != 0) {
+        if (!problem.getSubmissionProblemValidators().isEmpty()) {
             for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
@@ -74,11 +73,11 @@ public class ProblemValidatorService {
 
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Optional<Problem> problemOptional = problemRepository.findById(problemId);
-        Problem problem = problemOptional.get();
+        Problem problem = problemOptional.orElseThrow();
         logger.debug("Checking and validating problem {}", problem.getNombreEjercicio());
 
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
-        Boolean estaTerminado = true;
+        boolean estaTerminado = true;
         for (SubmissionProblemValidator submissionProblemValidator1 : problem.getSubmissionProblemValidators()) {
             if (submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()) {
             } else {  //Aun no ha terminado

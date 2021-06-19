@@ -11,7 +11,6 @@ public class ResultReviser {
 
     public void revisar(Result res) {
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion
-        //String signalAux[] = res.getSignalFile().split("\n");
         logger.debug("Review result {}", res.getId());
         //si hay errores en compilacion no miramos mas
         if (!compareIgnoreExpressions(res.getSignalCompilador(), "0")) {
@@ -25,7 +24,7 @@ public class ResultReviser {
                 logger.info("Time limit exceeded for result {}", res.getId());
                 res.setResultadoRevision("time_limit_exceeded");
             } else {
-                logger.info("Result {} failed in runtime {} with {}" + res.getId(), res.getSalidaError(), res.getSignalEjecutor());
+                logger.info("Result {} failed in runtime {} with {}", res.getId(), res.getSalidaError(), res.getSignalEjecutor());
                 res.setResultadoRevision("run_time_error " + res.getSalidaError() + " with " + res.getSignalEjecutor());
             }
         }

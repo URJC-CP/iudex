@@ -29,7 +29,7 @@ public class UserService {
         UserString userString = new UserString();
         //Comprobamos que el usuario sea unico
         if (userRepository.existsUserByNickname(nickname)) {
-            logger.error("User {} duplicated", nickname);
+            logger.error("User nickname duplicated");
             userString.setSalida("USER NICKNAME DUPLICATED");
             return userString;
         } else if (userRepository.existsUserByEmail(mail)) {
@@ -45,7 +45,7 @@ public class UserService {
         if (salidaCreaTeam.equals("OK")) {
             //Sacamos el equipo creado anteriormente
             Optional<Team> teamOptional = teamRepository.findByNombreEquipo(nickname);
-            Team team = teamOptional.get();
+            Team team = teamOptional.orElseThrow();
             user.addTeam(team);
             //Anyadimos el user al equipo
             teamService.addUserToTeam(team, user);
@@ -75,7 +75,7 @@ public class UserService {
         userRepository.delete(user);
         //borramos el equipo del usuario
         Optional<Team> teamOptional = teamRepository.findByNombreEquipo(nickname);
-        Team team = teamOptional.get();
+        Team team = teamOptional.orElseThrow();
         teamRepository.delete(team);
 
         logger.debug("Finish delete user {} with id {}", nickname, user.getId());
@@ -96,7 +96,7 @@ public class UserService {
 
         if (nickname.isPresent()) {
             if (existsUserByNickname(nickname.get())) {
-                logger.error("User {} duplicated", nickname.get());
+                logger.error("User nickname duplicated");
                 userString.setSalida("USER NICKNAME DUPLICATED");
                 return userString;
             }
@@ -105,7 +105,7 @@ public class UserService {
 
         if (mail.isPresent()) {
             if (existsUserByMail(mail.get())) {
-                logger.error("User {} duplicated", nickname.get());
+                logger.error("User mail duplicated");
                 userString.setSalida("USER MAIL DUPLICATED");
                 return userString;
             }

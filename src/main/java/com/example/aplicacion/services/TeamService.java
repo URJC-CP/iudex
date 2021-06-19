@@ -28,14 +28,14 @@ public class TeamService {
         Team team = new Team(nickTeam);
         team.setEsUser(isUser);
         if (teamRepository.existsTeamByNombreEquipo(nickTeam)) {
-            logger.error("Team {} duplicated", nickTeam);
+            logger.error("Team name duplicated");
             salida.setSalida("TEAM NAME DUPLICATED");
             return salida;
         } else {
             teamRepository.save(team);
             salida.setSalida("OK");
             salida.setTeam(team);
-            logger.debug("Finish create team {} with id {}", nickTeam, team.getId());
+            logger.debug("Finish create team {}", nickTeam);
             return salida;
         }
     }

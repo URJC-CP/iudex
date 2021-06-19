@@ -29,7 +29,6 @@ public class SubmissionReviserService {
     @Autowired
     private LanguageRepository languageRepository;
 
-    //Hay que anyadirlo por que da fallo al no obtener todo en la BBDD haciendolo mediante evaluacion perezosa. Esto elimina esa variable de la lista
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission) {

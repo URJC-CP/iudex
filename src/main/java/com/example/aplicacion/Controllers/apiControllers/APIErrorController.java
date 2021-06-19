@@ -13,7 +13,7 @@ public class APIErrorController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleError(RuntimeException e) {
-        logger.error("" + e.toString());
+        logger.error(e.toString());
         return "ERROR GENERAL DEL SISTEMA";
     }
 }

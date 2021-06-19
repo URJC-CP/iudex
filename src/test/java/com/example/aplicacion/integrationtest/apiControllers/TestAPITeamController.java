@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APITeamController.class)
-public class TestAPITeamController {
+class TestAPITeamController {
     private final JSONConverter jsonConverter = new JSONConverter();
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +54,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Get all teams")
-    public void testAPIGetTeams() throws Exception {
+    void testAPIGetTeams() throws Exception {
         String url = "/API/v1/team";
         String salida = jsonConverter.convertObjectToJSON(List.of(team.toTeamAPISimple()));
         String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
@@ -63,7 +63,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Get Team")
-    public void testAPIGetTeam() throws Exception {
+    void testAPIGetTeam() throws Exception {
         String badTeam = "843";
         String goodTeam = String.valueOf(team.getId());
         String badURL = "/API/v1/team/" + badTeam;
@@ -85,7 +85,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Create Team")
-    public void testAPICreateTeam() throws Exception {
+    void testAPICreateTeam() throws Exception {
         String badTeam = "";
         String goodTeam = team.getNombreEquipo();
         String url = "/API/v1/team/";
@@ -113,7 +113,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Delete Team")
-    public void testAPIDeleteTeam() throws Exception {
+    void testAPIDeleteTeam() throws Exception {
         String badTeam = "856";
         String goodTeam = String.valueOf(team.getId());
         String badURL = "/API/v1/team/" + badTeam;
@@ -138,7 +138,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Update Team")
-    public void testAPIUpdateTeam() throws Exception {
+    void testAPIUpdateTeam() throws Exception {
         String badTeam = "834";
         String goodTeam = String.valueOf(team.getId());
         String badURL = "/API/v1/team/" + badTeam;
@@ -178,7 +178,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Add User to Team")
-    public void testAPIAddUser() throws Exception {
+    void testAPIAddUser() throws Exception {
         String badUser = "872";
         String goodUser = String.valueOf(user.getId());
         String badTeam = "667";
@@ -227,7 +227,7 @@ public class TestAPITeamController {
 
     @Test
     @DisplayName("Delete User from Team")
-    public void testAPIDeleteUser() throws Exception {
+    void testAPIDeleteUser() throws Exception {
         String badUser = "872";
         String goodUser = String.valueOf(user.getId());
         String badTeam = "667";

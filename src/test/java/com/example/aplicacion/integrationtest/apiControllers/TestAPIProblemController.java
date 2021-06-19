@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APIProblemController.class)
-public class TestAPIProblemController {
+class TestAPIProblemController {
     private final JSONConverter jsonConverter = new JSONConverter();
     @Autowired
     private MockMvc mockMvc;
@@ -64,7 +64,7 @@ public class TestAPIProblemController {
 
     @Test
     @DisplayName("Get All Problems")
-    public void testAPIGetProblems() throws Exception {
+    void testAPIGetProblems() throws Exception {
         String url = "/API/v1/problem";
         String result = mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
 
@@ -76,13 +76,13 @@ public class TestAPIProblemController {
     @Test
     @DisplayName("Get All Problems With Pagination")
     @Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
-    public void testAPIGetProblemsWithPagination() {
+    void testAPIGetProblemsWithPagination() {
         fail("Not implemented yet!");
     }
 
     @Test
     @DisplayName("Get Selected Problem")
-    public void testAPIGetProblem() throws Exception {
+    void testAPIGetProblem() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "745";
 
@@ -98,7 +98,6 @@ public class TestAPIProblemController {
         testGetProblem(goodURL, status, salida);
     }
 
-    @Test
     private void testGetProblem(String url, HttpStatus status, String salida) throws Exception {
         String result = mockMvc.perform(get(url)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
@@ -112,21 +111,21 @@ public class TestAPIProblemController {
 	*/
     @DisplayName("Create problem Using a Problem Object")
     @Disabled("Create problem Using a Problem Object - Cannot be mocked")
-    public void testAPICreateProblem() throws Exception {
+    void testAPICreateProblem() throws Exception {
         fail("Could not send an instance as a param with mock");
     }
 
     @Test
     @DisplayName("Create Problem From Zip")
     @Disabled("Create Problem From Zip - Cannot be mocked")
-    public void testAPICreateProblemFromZip() throws Exception {
+    void testAPICreateProblemFromZip() throws Exception {
         fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
     }
 
     @Test
     @DisplayName("Update Problem with Multiple Optional Params")
     @Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
-    public void testAPIUpdateProblem() throws Exception {
+    void testAPIUpdateProblem() throws Exception {
         String badProblem = "534";
         String goodProblem = String.valueOf(problem.getId());
         String badProblemName = "";
@@ -184,13 +183,13 @@ public class TestAPIProblemController {
     @Test
     @DisplayName("Update Problem From Zip")
     @Disabled("Update Problem From Zip - Cannot be mocked")
-    public void testAPIUpdateProblemFromZip() {
+    void testAPIUpdateProblemFromZip() {
         fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
     }
 
     @Test
     @DisplayName("Get PDF from Problem")
-    public void testAPIGetPdfFromProblem() throws Exception {
+    void testAPIGetPdfFromProblem() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "543";
         String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
@@ -218,7 +217,7 @@ public class TestAPIProblemController {
 
     @Test
     @DisplayName("Delete problem from all contests")
-    public void testAPIDeleteProblemFromALLContests() throws Exception {
+    void testAPIDeleteProblemFromALLContests() throws Exception {
         String badProblem = "546";
         String goodProblem = String.valueOf(problem.getId());
 

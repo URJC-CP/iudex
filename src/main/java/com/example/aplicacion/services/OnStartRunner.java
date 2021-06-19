@@ -41,7 +41,7 @@ public class OnStartRunner implements ApplicationRunner {
         if (!userService.existsUserByNickname("pavloXd")) {
             userService.crearUsuario("pavloXd", "mail1");
         }
-        String teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
+        var teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();

@@ -22,7 +22,7 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class SmokeTest {
+class SmokeTest {
     //APIControllers
     @Autowired
     APIContestController apiContestController;
@@ -73,7 +73,7 @@ public class SmokeTest {
 
     @Test
     @DisplayName("verificar que la app este desplegada")
-    public void contextLoads() {
+    void contextLoads() {
         //check rabbit
         assertNotNull(reviserReceiver);
         assertNotNull(sender);
@@ -108,21 +108,21 @@ public class SmokeTest {
     @Test
     @DisplayName("Verificar estado inicial de los repositorios")
     @Disabled("No se cumple nunca si se han ejecutado otros tests antes porque la bbdd esta sucia")
-    public void emptyRepositories() {
-        assertEquals(contestRepository.findAll().size(), 1);
+    void emptyRepositories() {
+        assertEquals(1, contestRepository.findAll().size());
         assertTrue(sampleRepository.findAll().isEmpty());
         assertFalse(languageRepository.findAll().isEmpty());
         assertTrue(problemRepository.findAll().isEmpty());
         assertTrue(resultRepository.findAll().isEmpty());
         assertTrue(submissionRepository.findAll().isEmpty());
-        assertEquals(teamRepository.findAll().size(), 1);
-        assertEquals(userRepository.findAll().size(), 1);
+        assertEquals(1, teamRepository.findAll().size());
+        assertEquals(1, userRepository.findAll().size());
     }
 
     // verificar los lenguajes
     @Test
     @DisplayName("Verificar los lenguajes soportados")
-    public void languageTest() {
+    void languageTest() {
         assertNotNull(languageRepository.findLanguageByNombreLenguaje("java"));
         assertNotNull(languageRepository.findLanguageByNombreLenguaje("python"));
         assertNotNull(languageRepository.findLanguageByNombreLenguaje("c"));
@@ -134,14 +134,14 @@ public class SmokeTest {
     @Test
     @DisplayName("Verificar metodo send de rabbit")
     @Disabled("Verificar metodo send de rabbit - Not implemented")
-    public void testSend() {
+    void testSend() {
 
     }
 
     @Test
     @DisplayName("Verificar metodo receive de rabbit")
     @Disabled("Verificar metodo receive de rabbit - Not implemented")
-    public void testReceive() {
+    void testReceive() {
 
     }
 }

@@ -36,8 +36,8 @@ public class ZipHandlerService {
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
-
-    public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String contestId, String teamId) throws Exception {
+    //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
+    public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String teamId) throws Exception {
         logger.info("Generate problem {}", problemName);
         ProblemString problemString = new ProblemString();
 
@@ -62,7 +62,6 @@ public class ZipHandlerService {
 
         //Patron que parsea los path de los archivos
         Pattern p = Pattern.compile("(.+)/(.+)/(.+)\\.(.+)");
-        //Pattern p2 = Pattern.compile("(.+)/(.+)\\.(.+)$");
         Pattern p2 = Pattern.compile("(.+)\\.(.+)$");
 
         Map<String, String> entradaVisible = new HashMap<>();
@@ -77,7 +76,6 @@ public class ZipHandlerService {
             //Si entra significa q es de la categoria /algo/algo/fichero
             if (m.find()) {
                 //Objetemos el primer gruo data
-                //String path = m.group(1);
                 String path1 = m.group(1);
                 String path2 = m.group(2);
                 String filename = m.group(3);
@@ -137,21 +135,19 @@ public class ZipHandlerService {
                     //Buscamos el lenguaje que es analizando la extension
                     String lenguaje = selectLenguaje(extension);
                     if (lenguaje == null) {
-                        //throw new Exception("ZIPHANDLER: " +extension+ "NO es un lenguaje soportado");
                         logger.error("ZIP HANDLER: Unsupported language {}", extension);
                     } else {
                         logger.info("ZIP COMPRESS: {} detected", lenguaje);
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
-                        //Tendremos que crear una submission y comprobar que el resultado de esta sea correcta
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, contestId, teamId);
+                        //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, teamId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.getSubmissionProblemValidators().add(submissionProblemValidator);
                         logger.info("ZIP COMPRESS: Adding new submission for problem {}", problemName);
                     }
                 }
             }
-
             //Si no es de esa carpeta siginfica q esta en la carpeta base
             else {
                 Matcher m2 = p2.matcher(nombreZip);
@@ -181,16 +177,18 @@ public class ZipHandlerService {
         zipFile.close();
 
         // add example testcase
-        for (String key : entradaVisible.keySet()) {
-            String entrada = entradaVisible.get(key);
+        for (Map.Entry<String, String> entry : entradaVisible.entrySet()) {
+            String key = entry.getKey();
+            String entrada = entry.getValue();
             String salida = salidaVisible.get(key);
             Sample sample = new Sample(key, entrada, salida, true);
             problem.addData(sample);
         }
 
         // add correction testcase
-        for (String key : entradaOculta.keySet()) {
-            String entrada = entradaOculta.get(key);
+        for (Map.Entry<String, String> entry : entradaOculta.entrySet()) {
+            String key = entry.getKey();
+            String entrada = entry.getValue();
             String salida = salidaOculta.get(key);
             Sample sample = new Sample(key, entrada, salida, false);
             problem.addData(sample);
@@ -207,7 +205,7 @@ public class ZipHandlerService {
             submissionService.creaResults(submission, problem, submission.getCodigo(), submission.getLanguage());
         }
         //generamos el hash
-        String hash = problem.generaHash();
+        problem.generaHash();
         rellenaSubmissionConProblemHash(problem);
         //Comprobamos que todas las entradas tienen su salida etcetc. SI HAY error, nos lo comunicara el string y cortamos la subida.
         String checkMap = checkMap(mapaRevisionEntradas);
@@ -233,7 +231,7 @@ public class ZipHandlerService {
         } else if (lenguaje.equals("sql")) {
             return "sql";
         } else {
-            logger.warn("Unsupported language detected: " + lenguaje);
+            logger.warn("Unsupported language {}", lenguaje);
             return null;
         }
     }
@@ -251,14 +249,14 @@ public class ZipHandlerService {
     }
 
     //Funcion que checkea que el mapa se haya completado y por lo tanto la entrada sea correcta
-    private String checkMap(Map<String, List<String>> mapa) throws Exception {
+    private String checkMap(Map<String, List<String>> mapa) {
         Collection<List<String>> laux = mapa.values();
         for (List<String> aux : laux) {
             if (aux.size() != 2) {
                 //Significa que algo ha fallado
                 if (aux.get(0).endsWith(".in")) {
                     logger.error("Input file {} has no output", aux.get(0));
-                    return ("El ZIP tiene fallos, la entrada " + aux.get(0) + " no tiene salida");
+                    return ("El ZIP tiene fallos, la entrada {} no tiene salida" + aux.get(0) + " no tiene salida");
                 } else if (aux.get(0).endsWith(".ans")) {
                     logger.error("Output file {} has no input", aux.get(0));
                     return ("El ZIP tiene fallos, la salida " + aux.get(0) + " no tiene entrada");
@@ -291,8 +289,7 @@ public class ZipHandlerService {
     }
 
     private byte[] convertZipToByte(ZipInputStream zipInputStream) throws IOException {
-        byte[] bits = zipInputStream.readAllBytes();
-        return bits;
+        return zipInputStream.readAllBytes();
     }
 
     private void rellenaSubmissionConProblemHash(Problem problem) {
@@ -304,12 +301,12 @@ public class ZipHandlerService {
     private void rellenaElYumlConIni(String configuracion, Problem problem) {
         String[] split = configuracion.split("\\r?\\n");
         Pattern pattern = Pattern.compile("(.+)=(.+)");
-        String propiedad, valor;
+
         for (String aux : split) {
             Matcher m = pattern.matcher(aux);
             if (m.find()) {
-                propiedad = m.group(1);
-                valor = m.group(2);
+                String propiedad = m.group(1);
+                String valor = m.group(2);
                 valor = valor.replace("'", ""); //quitamos las comillas
                 valor = valor.replace("\"", "");
 

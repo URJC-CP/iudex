@@ -94,7 +94,7 @@ public class ProblemService {
             }
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, idcontest, teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -105,7 +105,6 @@ public class ProblemService {
             } else {
                 logger.error("Create problem {} failed with {} ", nombreProblema, problemString.getSalida());
             }
-            //problemRepository.deleteById(problem.getId());
             salida.setSalida(problemString.getSalida());
             return salida;
         }
@@ -146,7 +145,7 @@ public class ProblemService {
             nombreProblema = nombreFichero;
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, idcontest, teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -282,8 +281,8 @@ public class ProblemService {
     }
 
     public List<Problem> getNProblemas(int n) {
-        Pageable firstPageWithTwoElements = PageRequest.of(0, n);
-        return problemRepository.findAll();
+        Pageable pageable = PageRequest.of(0, n);
+        return problemRepository.findAll(pageable).toList();
     }
 
     public Optional<Problem> getProblem(String idProblem) {
@@ -329,16 +328,6 @@ public class ProblemService {
             lista.add(problemEntradaSalidaVisiblesHTML);
         }
         return lista;
-    }
-
-    private void saveAllSamples(Problem problem) {
-        sampleRepository.saveAll(problem.getData());
-    }
-
-    private void saveAllSubmissions(Problem problem) {
-        for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
-            submissionRepository.save(submissionProblemValidator.getSubmission());
-        }
     }
 
     public void deleteSamples(Problem problem) {
@@ -452,7 +441,6 @@ public class ProblemService {
 
     public String updateSampleFromProblem(Optional<String> nameOptional, String problemId, String sampleId, Optional<String> inputTextOptional, Optional<String> outputTextOptional, Optional<Boolean> isPublicOptional) {
         logger.debug("Update sample {} from problem {}", sampleId, problemId);
-        ProblemString ps = new ProblemString();
 
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));
         if (problemOptional.isEmpty()) {

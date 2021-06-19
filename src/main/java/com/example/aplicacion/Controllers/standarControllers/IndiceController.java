@@ -6,7 +6,6 @@ import com.example.aplicacion.services.*;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -27,8 +26,7 @@ import static com.example.aplicacion.utils.Sanitizer.sanitize;
 @Controller
 public class IndiceController {
 
-    private final RabbitTemplate rabbitTemplate;
-    Logger logger = LoggerFactory.getLogger(RabbitTemplate.class);
+    Logger logger = LoggerFactory.getLogger(IndiceController.class);
     @Autowired
     private SubmissionService submissionService;
     @Autowired
@@ -41,11 +39,6 @@ public class IndiceController {
     private UserService userService;
     @Autowired
     private TeamService teamService;
-
-    //Inicio del rabbittemplate
-    public IndiceController(RabbitTemplate rabbitTemplate) {
-        this.rabbitTemplate = rabbitTemplate;
-    }
 
     @GetMapping("/")
     public ModelAndView index() {
@@ -77,7 +70,7 @@ public class IndiceController {
         //Crea la submission
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
-        if (salida.equals("OK")) {
+        if (salida.getSalida().equals("OK")) {
             logger.debug("Run submission {} success", lenguaje, salida.getSubmission().getId());
             return "redirect:/";
         } else {
