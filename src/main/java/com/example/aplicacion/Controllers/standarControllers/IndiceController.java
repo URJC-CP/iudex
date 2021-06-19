@@ -71,10 +71,10 @@ public class IndiceController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (salida.getSalida().equals("OK")) {
-            logger.debug("Run submission {} success", lenguaje, salida.getSubmission().getId());
+            logger.debug("Run submission {} success", salida.getSubmission().getId());
             return "redirect:/";
         } else {
-            logger.debug("Run submission failed with {}", salida.getSalida());
+            logger.debug("Run submission {} failed with {}", salida.getSubmission().getId(), salida.getSalida());
             model.addAttribute("error", salida.getSalida());
             return "errorConocido";
         }
