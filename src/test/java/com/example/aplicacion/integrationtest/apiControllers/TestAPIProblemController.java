@@ -195,7 +195,7 @@ class TestAPIProblemController {
         String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
         String badURL = "/API/v1//problem/" + badProblem + "/getPDF";
 
-        String salida = "ERROR PROBLEMA NO ECONTRADO";
+        String salida = "PROBLEM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGoToProblem(badURL, status, salida);
 
