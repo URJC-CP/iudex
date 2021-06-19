@@ -3,8 +3,10 @@ package com.example.aplicacion.utils;
 import java.util.Optional;
 
 public class Sanitizer {
+    private static final String sanitize_regex = "\n\r\t";
+
     public static String sanitize(String s) {
-        return s.replaceAll("\r\n\t", "_");
+        return s.trim().replaceAll(sanitize_regex, "_");
     }
 
     public static Optional<String> sanitize(Optional<String> op) {

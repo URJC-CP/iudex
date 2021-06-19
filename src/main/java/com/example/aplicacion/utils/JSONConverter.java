@@ -31,8 +31,7 @@ public class JSONConverter {
     public Object convertTreeStringToObject(String jsonString, Class pojoClass) {
         try {
             JsonNode node = objectMapper.readTree(jsonString);
-            Object obj = objectMapper.treeToValue(node, pojoClass);
-            return obj;
+            return objectMapper.treeToValue(node, pojoClass);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
