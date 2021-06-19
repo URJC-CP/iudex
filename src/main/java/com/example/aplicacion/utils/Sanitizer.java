@@ -5,6 +5,8 @@ import java.util.Optional;
 public class Sanitizer {
     private static final String sanitize_regex = "[\n\r\t]";
 
+    private Sanitizer() {}
+
     public static String sanitize(String s) {
         return s.trim().replaceAll(sanitize_regex, "_");
     }

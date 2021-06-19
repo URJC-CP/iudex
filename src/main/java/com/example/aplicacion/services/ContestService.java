@@ -39,11 +39,11 @@ public class ContestService {
     private TeamService teamService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
-        logger.debug("Build contest {} " + nameContest);
+        logger.debug("Build contest {}", nameContest);
         ContestString salida = new ContestString();
         if (contestRepository.existsContestByNombreContest(nameContest)) {
-            logger.error("Contest name duplicated " + nameContest);
-            salida.setSalida("contest NAME DUPLICATED");
+            logger.error("Contest name duplicated ");
+            salida.setSalida("CONTEST NAME DUPLICATED");
             return salida;
         }
 
@@ -138,7 +138,7 @@ public class ContestService {
 
         Optional<Contest> optionalContest = getContestById(idcontest);
         if (optionalContest.isEmpty()) {
-            logger.error("Contest {} not found");
+            logger.error("Contest {} not found", idcontest);
             return "contest NOT FOUND";
         }
         Contest contest = optionalContest.get();
@@ -441,7 +441,7 @@ public class ContestService {
      * @return the score of the contest in json as String
      */
     public List<TeamScore> getScore(String contestId) {
-        logger.debug("Get score of contest ", contestId);
+        logger.debug("Get score of contest {}", contestId);
 
         Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {

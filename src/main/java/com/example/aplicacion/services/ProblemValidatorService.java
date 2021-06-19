@@ -53,7 +53,7 @@ public class ProblemValidatorService {
                     for (Result res : submission.getResults()) {
                         logger.debug("Sending result {} of submission {}", res.getId(), submission.getId());
                         sender.sendMessage(res);
-                        logger.debug("Finish send result {} of submission", res.getId(), submission.getId());
+                        logger.debug("Finish send result {} of submission {}", res.getId(), submission.getId());
                     }
                 } else {
                     logger.error("Unsupported language");

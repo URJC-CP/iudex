@@ -176,7 +176,7 @@ public class SubmissionService {
 
     public void creaResults(Submission submission, Problem problema, String codigo, Language language) {
         int numeroDeResult = 0;
-        logger.debug("Create results for submission {} of problem {}" + submission.getId(), problema.getId());
+        logger.debug("Create results for submission {} of problem {}", submission.getId(), problema.getId());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         for (Sample sample : problema.getData()) {
             Result resAux = new Result(sample, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
@@ -212,7 +212,7 @@ public class SubmissionService {
 
         //Comprobamos que no se este intentando borrar una SUBMISSIOn pertenciente a un SubmissionProblemValidator
         if (submission.isEsProblemValidator()) {
-            logger.error("Submission {} is from problem validator, cannot be deleted from here" + submissionId);
+            logger.error("Submission {} is from problem validator, cannot be deleted from here", submissionId);
             return "SUBMISSION IS FROM PROBLEM VALIDATOR. YOU MUST DELETE THE PROBLEM TO DELETE THIS SUBMISSION";
         }
         submissionRepository.delete(submission);
@@ -226,7 +226,7 @@ public class SubmissionService {
 
         Optional<Submission> submissionOptional = submissionRepository.findSubmissionById(Long.parseLong(submissionId));
         if (submissionOptional.isEmpty()) {
-            logger.error("Submission {} not found" + submissionId);
+            logger.error("Submission {} not found", submissionId);
             return "SUBMISSION NOT FOUND";
         }
         Submission submission = submissionOptional.get();

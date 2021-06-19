@@ -122,7 +122,7 @@ public class ProblemService {
     }
 
     public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
-        logger.debug("Create problem {} without validate", nombreProblema, nombreFichero);
+        logger.debug("Create problem {} from file {} without validate", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
 
@@ -260,14 +260,14 @@ public class ProblemService {
         for (Contest contestAux : problem.getListaContestsPertenece()) {
             logger.debug("Remove problem {} from contest {}", problem.getId(), contestAux.getId());
             if (!contestAux.getListaProblemas().remove(problem)) {
-                logger.error("Remove problem {} from contest {} failed" + problem.getId(), contestAux.getId());
+                logger.error("Remove problem {} from contest {} failed", problem.getId(), contestAux.getId());
             }
         }
 
         // Quitamos el problema de equipos Intentados
         for (Team teamAux : problem.getListaEquiposIntentados()) {
             if (!teamAux.getListaProblemasParticipados().remove(problem)) {
-                logger.error("Remove problem {} from team {} failed" + problem.getId(), teamAux.getId());
+                logger.error("Remove problem {} from team {} failed", problem.getId(), teamAux.getId());
             }
         }
 
@@ -501,7 +501,7 @@ public class ProblemService {
         problem.removeData(sample);
         problemRepository.save(problem);
 
-        logger.debug("Finish delete sample {} from problem {}" + sampleId, problemId);
+        logger.debug("Finish delete sample {} from problem {}", sampleId, problemId);
         return "OK";
     }
 }

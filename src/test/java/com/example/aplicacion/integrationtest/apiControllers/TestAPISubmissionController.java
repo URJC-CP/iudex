@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -135,10 +136,7 @@ class TestAPISubmissionController {
     @DisplayName("Get All Submissions with Pagination")
     @Disabled("Get All Submissions with Pagination - Not implemented yet!")
     void testAPIGetAllSubmissions() {
-        //String badProblem;
-        //String goodProblem;
-        //String badContest;
-        //String goodContest;
+        fail("Not implemented yet");
     }
 
     @Test
@@ -167,6 +165,7 @@ class TestAPISubmissionController {
     @DisplayName("Add Submission to a Problem and Contest")
     @Disabled("Create Submission - Not implemented yet!")
     void testAPICreateSubmission() {
+        fail("Not implemented yet");
     }
 
     @Test

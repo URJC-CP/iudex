@@ -87,9 +87,8 @@ public class ProblemController {
     }
 
     //Controller que devuelve en un HTTP el pdf del problema pedido
-    @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
-    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
-        idContest = sanitize(idContest);
+    @GetMapping("getPDF/problem/{idProblem}")
+    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idProblem) {
         idProblem = sanitize(idProblem);
 
         logger.debug("Get problem {} with pdf", idProblem);
@@ -97,7 +96,7 @@ public class ProblemController {
 
         if (problemOptional.isEmpty()) {
             logger.error("Problem {} not found", idProblem);
-            return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
 
@@ -108,10 +107,6 @@ public class ProblemController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-
-        String filename = problem.getNombreEjercicio() + ".pdf";
-
-        //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
@@ -175,7 +170,7 @@ public class ProblemController {
         String salida = problemService.deleteProblem(problemId);
 
         if (!salida.equals("OK")) {
-            logger.error("Delete problem {} failed with", problemId, salida);
+            logger.error("Delete problem {} failed with {}", problemId, salida);
             modelAndView.getModel().put("error", salida);
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -228,7 +223,7 @@ public class ProblemController {
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        logger.debug("Delete submission ", submissionId);
+        logger.debug("Delete submission {}", submissionId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }

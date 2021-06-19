@@ -20,7 +20,7 @@ public class JSONConverter {
         }
     }
 
-    public Object convertJSONToObject(String json, Class cls) {
+    public Object convertJSONToObject(String json, Class<?> cls) {
         try {
             return objectMapper.readValue(json, cls);
         } catch (IOException e) {
@@ -28,7 +28,7 @@ public class JSONConverter {
         }
     }
 
-    public Object convertTreeStringToObject(String jsonString, Class pojoClass) {
+    public Object convertTreeStringToObject(String jsonString, Class<?> pojoClass) {
         try {
             JsonNode node = objectMapper.readTree(jsonString);
             return objectMapper.treeToValue(node, pojoClass);
