@@ -102,9 +102,10 @@ public class APIProblemController {
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
 
         try {
-            ProblemString salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, filename, file.getInputStream(), teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {

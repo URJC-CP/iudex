@@ -124,10 +124,11 @@ public class ProblemController {
         problemaName = sanitize(problemaName);
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
 
         logger.debug("Upload problem {}", problemaName);
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
             logger.error("Upload problem {} failed with {} ", problemaName, salida.getSalida());
