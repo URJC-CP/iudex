@@ -38,7 +38,7 @@ public class APISubmissionController {
 
     @ApiOperation("Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
-    public ResponseEntity getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
+    public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
         contestId = sanitize(contestId);
         problemId = sanitize(problemId);
 
@@ -64,7 +64,7 @@ public class APISubmissionController {
         } else if (problemId.isPresent()) {
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty()) {
-                return new ResponseEntity<>("Problem not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity("Problem not found", HttpStatus.NOT_FOUND);
             } else {
                 Problem problem = problemOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
@@ -77,7 +77,7 @@ public class APISubmissionController {
         } else if (contestId.isPresent()) {
             Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             if (contestOptional.isEmpty()) {
-                return new ResponseEntity<>("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
+                return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
             } else {
                 Contest contest = contestOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
@@ -112,7 +112,7 @@ public class APISubmissionController {
         Optional<Submission> submissionOptional = submissionService.getSubmission(submissionId);
         if (submissionOptional.isPresent()) {
             Submission submission = submissionOptional.get();
-            return new ResponseEntity(submission.toSubmissionAPIFull(), HttpStatus.OK);
+            return new ResponseEntity<>(submission.toSubmissionAPIFull(), HttpStatus.OK);
         } else {
             return new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
         }
@@ -141,18 +141,18 @@ public class APISubmissionController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
+        return new ResponseEntity<>(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
     @ApiOperation("Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
-    public ResponseEntity deleteSubmission(@PathVariable String submissionId) {
+    public ResponseEntity<String> deleteSubmission(@PathVariable String submissionId) {
         submissionId = sanitize(submissionId);
 
         String salida = submissionService.deleteSubmission(submissionId);
         if (!salida.equals("OK")) {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

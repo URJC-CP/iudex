@@ -49,12 +49,12 @@ public class APIProblemController {
     //GetProblem
     @ApiOperation("Return selected problem")
     @GetMapping("problem/{problemId}")
-    public ResponseEntity getProblem(@PathVariable String problemId) {
+    public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
         problemId = sanitize(problemId);
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
-            return new ResponseEntity<>("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
         return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class APIProblemController {
     //Crea problema desde objeto Problem
     @ApiOperation("Create problem Using a Problem Object")
     @PostMapping("problem")
-    public ResponseEntity createProblem(@RequestParam Problem problem) {
+    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
 
         ProblemString salida = problemService.addProblem(problem);
         if (salida.getSalida().equals("OK")) {
@@ -77,7 +77,7 @@ public class APIProblemController {
     @ApiOperation("Create Problem from Zip")
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "problem/fromZip")
-    public ResponseEntity createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
@@ -88,16 +88,16 @@ public class APIProblemController {
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @ApiOperation("Update problem from ZIP")
     @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
+    public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemId = sanitize(problemId);
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
@@ -109,16 +109,16 @@ public class APIProblemController {
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @ApiOperation("Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
-    public ResponseEntity updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
+    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
         problemId = sanitize(problemId);
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
@@ -128,7 +128,7 @@ public class APIProblemController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -136,12 +136,12 @@ public class APIProblemController {
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @ApiOperation("Get pdf from Problem")
     @GetMapping("problem/{problemId}/getPDF")
-    public ResponseEntity goToProblem2(@PathVariable String problemId) {
+    public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
         problemId = sanitize(problemId);
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
-            return new ResponseEntity<>("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
 
@@ -177,7 +177,7 @@ public class APIProblemController {
         name = sanitize(name);
 
         if (sampleInput.isEmpty() || sampleOutput.isEmpty()) {
-            return new ResponseEntity("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
         }
 
         try {

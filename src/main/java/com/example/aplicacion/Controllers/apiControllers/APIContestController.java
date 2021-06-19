@@ -47,7 +47,7 @@ public class APIContestController {
 
     @ApiOperation("Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
-    public ResponseEntity getContest(@PathVariable String contestId) {
+    public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
         contestId = sanitize(contestId);
 
         Optional<Contest> contestOptional = contestService.getContestById(contestId);
@@ -57,14 +57,14 @@ public class APIContestController {
             return new ResponseEntity<>(contestAPI, HttpStatus.OK);
 
         } else {
-            return new ResponseEntity<>("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
         }
 
     }
 
     @ApiOperation("Create a contest")
     @PostMapping("contest")
-    public ResponseEntity addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
+    public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
         contestName = sanitize(contestName);
         teamId = sanitize(teamId);
         descripcion = sanitize(descripcion);
@@ -73,7 +73,7 @@ public class APIContestController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getContest().toContestAPI(), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -91,7 +91,7 @@ public class APIContestController {
 
     @ApiOperation("Update a contest")
     @PutMapping("contest/{contestId}")
-    public ResponseEntity updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
+    public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         contestId = sanitize(contestId);
         contestName = sanitize(contestName);
         teamId = sanitize(teamId);
@@ -101,7 +101,7 @@ public class APIContestController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getContest().toContestAPI(), HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -230,14 +230,14 @@ public class APIContestController {
 
     @ApiOperation("Get scores of a contest")
     @GetMapping("contest/{contestId}/scoreboard")
-    public ResponseEntity getScores(@PathVariable String contestId) {
+    public ResponseEntity<List<TeamScore>> getScores(@PathVariable String contestId) {
         contestId = sanitize(contestId);
 
         try {
             List<TeamScore> scores = contestService.getScore(contestId);
             return new ResponseEntity<>(scores, HttpStatus.OK);
         } catch (RuntimeException ex) {
-            return new ResponseEntity<>("CONTEST NOT FOUND!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
         }
     }
 }

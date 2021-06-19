@@ -29,7 +29,7 @@ public class APITeamController {
         for (Team team : teamService.getAllTeams()) {
             teamAPIS.add(team.toTeamAPISimple());
         }
-        return new ResponseEntity(teamAPIS, HttpStatus.OK);
+        return new ResponseEntity<>(teamAPIS, HttpStatus.OK);
     }
 
     @ApiOperation("Return Team")
@@ -63,14 +63,14 @@ public class APITeamController {
 
     @ApiOperation("Delete a Team")
     @DeleteMapping("/API/v1/team/{teamId}")
-    public ResponseEntity deleteTeam(@PathVariable String teamId) {
+    public ResponseEntity<String> deleteTeam(@PathVariable String teamId) {
         teamId = sanitize(teamId);
 
         String salida = teamService.deleteTeamByTeamId(teamId);
         if (salida.equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -104,7 +104,7 @@ public class APITeamController {
 
     @ApiOperation("Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
-    public ResponseEntity deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
+    public ResponseEntity<String> deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
         teamId = sanitize(teamId);
         userId = sanitize(userId);
 
@@ -112,7 +112,7 @@ public class APITeamController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 }
