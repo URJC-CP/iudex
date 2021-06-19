@@ -147,10 +147,11 @@ public class ProblemController {
         problemaName = sanitize(problemaName);
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
 
         logger.debug("Update problem {}", problemId);
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.updateProblem2(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.updateProblem2(problemId, filename, file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
             logger.error("Update problem {} failed with {} ", problemId, salida.getSalida());
