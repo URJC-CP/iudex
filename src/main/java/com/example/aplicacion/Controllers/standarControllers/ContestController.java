@@ -70,6 +70,7 @@ public class ContestController {
     @PostMapping("/addUserToContest")
     public String addUserToConcuro(Model model, @RequestParam String teamId, @RequestParam String contestId) {
         contestId = sanitize(contestId);
+        teamId = sanitize(teamId);
 
         logger.debug("Add user {} to contest {}", teamId, contestId);
         String salida = contestService.addTeamToContest(teamId, contestId);

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class Sanitizer {
     public static String sanitize(String s) {
-        return s.replaceAll("\r\n\t", "");
+        return s.replaceAll("\r\n\t", "_");
     }
 
     public static Optional<String> sanitize(Optional<String> op) {
