@@ -3,7 +3,7 @@ package com.example.aplicacion.utils;
 import java.util.Optional;
 
 public class Sanitizer {
-    private static final String sanitize_regex = "[\n\r\t]";
+    private static final String sanitize_regex = "[\n\r\t\f]/g";
 
     private Sanitizer() {}
 
