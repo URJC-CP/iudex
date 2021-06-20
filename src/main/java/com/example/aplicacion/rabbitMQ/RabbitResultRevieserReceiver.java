@@ -38,7 +38,7 @@ public class RabbitResultRevieserReceiver {
         resultRepository.save(res);
 
         Optional<Submission> submissionOptional = submissionRepository.findSubmissionByResults(res);
-        Submission submission = submissionOptional.get();
+        Submission submission = submissionOptional.orElseThrow();
         submission.sumarResultCorregido();
 
         //en caso de que ya se hayan corregido todos mandaremos una senal para que se valide el submission

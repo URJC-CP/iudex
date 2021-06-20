@@ -1,9 +1,6 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.LanguageRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.SubmissionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +16,8 @@ import java.util.TimeZone;
 @Component
 public class OnStartRunner implements ApplicationRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 
-    @Autowired
-    public SubmissionRepository submissionRepository;
-    @Autowired
-    public ProblemRepository problemRepository;
-    @Autowired
-    private LanguageRepository languageRepository;
     @Autowired
     private ResultHandler resultHandler;
     @Autowired
@@ -35,6 +26,8 @@ public class OnStartRunner implements ApplicationRunner {
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
+    @Autowired
+    private LanguageService languageService;
 
 
     @Override
@@ -45,16 +38,14 @@ public class OnStartRunner implements ApplicationRunner {
         createLanguage("cpp", "DOCKERS/CPP/Dockerfile");
         createLanguage("sql", "DOCKERS/MySQL/Dockerfile");
 
-        userService.crearUsuario("pavloXd", "mail1");
+        if (!userService.existsUserByNickname("pavloXd")) {
+            userService.crearUsuario("pavloXd", "mail1");
+        }
         var teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
-
-        //userService.crearUsuario("pavloXD", "mail2");
-        //userService.crearUsuario("pavloXD2", "mail1");
-        //userService.deleteUserByNickname("pavloXD");
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
-        if(contestService.getContestByName("contestPrueba").isPresent()){
+        if (contestService.existsContestByName("contestPrueba")) {
             logger.info("Demo contest contestPrueba already exists, skipping creation");
         } else {
             logger.info("Creating demo contest 'contestPrueba' with team 'pavloXd'");
@@ -62,17 +53,16 @@ public class OnStartRunner implements ApplicationRunner {
         }
     }
 
-    public void createLanguage(String name, String path){
-        var existingLanguage = languageRepository.findLanguageByNombreLenguaje(name);
-        if(existingLanguage.isPresent()){
-            logger.info(String.format("Skipping creation of lang %s, already in Database", name));
+    public void createLanguage(String name, String path) {
+        if (languageService.existsLanguageByName(name)) {
+            logger.info("Skipping creation of lang {}, already in Database", name);
             return;
         }
-        logger.info(String.format("Building %s image at path %s", name, path));
+        logger.info("Building {} image at path {}", name, path);
         File dockerFile = new File(path);
         String imageId = resultHandler.buildImage(dockerFile);
         Language language = new Language(name, imageId);
-        languageRepository.save(language);
-        logger.info(String.format("Finished building %s image %s from %s", name, imageId,dockerFile.getName()));
+        languageService.saveLanguage(language);
+        logger.info("Finished building {} image {} from {}", name, imageId, dockerFile.getName());
     }
 }

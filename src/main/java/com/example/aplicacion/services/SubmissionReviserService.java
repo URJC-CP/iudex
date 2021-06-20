@@ -29,11 +29,10 @@ public class SubmissionReviserService {
     @Autowired
     private LanguageRepository languageRepository;
 
-    //Hay que anyadirlo por que da fallo al no obtener todo en la BBDD haciendolo mediante evaluacion perezosa. Esto elimina esa variable de la lista
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission) {
-        logger.info("Review submission " + submission.getId());
+        logger.info("Review submission {}", submission.getId());
 
         if (checkAccepted(submission)) {
             submission.setResultado("accepted");
@@ -53,7 +52,7 @@ public class SubmissionReviserService {
             //Se valide el problema y pueda usarse en la aplicacion
             problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator);
         }
-        logger.info("Finish review submission " + submission.getId() + " with " + submission.getResultado());
+        logger.info("Finish review submission {} with {}", submission.getId(), submission.getResultado());
     }
 
     //Chekea si esta aceptado

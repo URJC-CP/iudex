@@ -1,5 +1,6 @@
-package com.example.aplicacion.Pojos;
+package com.example.aplicacion.utils;
 
+import com.example.aplicacion.Pojos.TeamScore;
 import com.google.common.primitives.Floats;
 
 import java.util.Comparator;

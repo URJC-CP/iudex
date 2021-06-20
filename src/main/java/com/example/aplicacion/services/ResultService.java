@@ -13,7 +13,7 @@ public class ResultService {
     ResultRepository resultRepository;
 
     public Result getResult(String resultId) {
-        return resultRepository.findResultById(Long.parseLong(resultId)).get();
+        return resultRepository.findResultById(Long.parseLong(resultId)).orElseThrow();
     }
 
     public List<Result> getAllResults() {

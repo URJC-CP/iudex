@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APISubmissionController {
@@ -37,6 +39,8 @@ public class APISubmissionController {
     @ApiOperation("Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
+        contestId = sanitize(contestId);
+        problemId = sanitize(problemId);
 
         //Si tiene los dos devolvemos lo que corresponde
         if (contestId.isPresent() && problemId.isPresent()) {
@@ -55,7 +59,8 @@ public class APISubmissionController {
             for (Submission submission : submissionService.getSubmissionFromProblemAndContest(problem, contest)) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
-            return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+            return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
+
         } else if (problemId.isPresent()) {
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty()) {
@@ -66,8 +71,9 @@ public class APISubmissionController {
                 for (Submission submission : submissionService.getSubmissionFromProblem(problem)) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
-                return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+                return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
             }
+
         } else if (contestId.isPresent()) {
             Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             if (contestOptional.isEmpty()) {
@@ -78,7 +84,7 @@ public class APISubmissionController {
                 for (Submission submission : submissionService.getSubmissionsFromContest(contest)) {
                     submissionAPIS.add(submission.toSubmissionAPI());
                 }
-                return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+                return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
             }
         }
         //SI NO CONTIENE NINGUNO devolvemos todo
@@ -87,7 +93,7 @@ public class APISubmissionController {
             for (Submission submission : submissionService.getAllSubmissions()) {
                 submissionAPIS.add(submission.toSubmissionAPI());
             }
-            return new ResponseEntity(submissionAPIS, HttpStatus.OK);
+            return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
         }
     }
 
@@ -101,17 +107,24 @@ public class APISubmissionController {
     @ApiOperation("Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId) {
+        submissionId = sanitize(submissionId);
+
         Optional<Submission> submissionOptional = submissionService.getSubmission(submissionId);
-        if (submissionOptional.isEmpty()) {
+        if (submissionOptional.isPresent()) {
+            Submission submission = submissionOptional.get();
+            return new ResponseEntity<>(submission.toSubmissionAPIFull(), HttpStatus.OK);
+        } else {
             return new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
         }
-        Submission submission = submissionOptional.get();
-        return new ResponseEntity(submission.toSubmissionAPIFull(), HttpStatus.OK);
     }
 
     @ApiOperation("Create a submission to a problem and contest")
     @PostMapping("/API/v1/submission")
     public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId) {
+        problemId = sanitize(problemId);
+        contestId = sanitize(contestId);
+        lenguaje = sanitize(lenguaje);
+        teamId = sanitize(teamId);
 
         String fileNameaux = codigo.getOriginalFilename();
         String fileName = FilenameUtils.removeExtension(fileNameaux);
@@ -128,16 +141,18 @@ public class APISubmissionController {
             return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
+        return new ResponseEntity<>(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
     @ApiOperation("Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
-    public ResponseEntity deleteSubmission(@PathVariable String submissionId) {
+    public ResponseEntity<String> deleteSubmission(@PathVariable String submissionId) {
+        submissionId = sanitize(submissionId);
+
         String salida = submissionService.deleteSubmission(submissionId);
         if (!salida.equals("OK")) {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @RestController
 @RequestMapping("/API/v1/")
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -48,6 +50,8 @@ public class APIProblemController {
     @ApiOperation("Return selected problem")
     @GetMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
+        problemId = sanitize(problemId);
+
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
             return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
@@ -74,40 +78,51 @@ public class APIProblemController {
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "problem/fromZip")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
-        ProblemString salida;
+        problemName = sanitize(problemName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
+
         try {
-            salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemName, contestId);
+            if (salida.getSalida().equals("OK")) {
+                return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
-        }
-        if (salida.getSalida().equals("OK")) {
-            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
         }
     }
 
     @ApiOperation("Update problem from ZIP")
     @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
+        problemId = sanitize(problemId);
+        problemName = sanitize(problemName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
 
-        ProblemString salida;
         try {
-            salida = problemService.updateProblem(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, filename, file.getInputStream(), teamId, problemName, contestId);
+            if (salida.getSalida().equals("OK")) {
+                return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
         }
-
-        if (salida.getSalida().equals("OK")) {
-            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
-        }
-        //ERROR
-        return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation("Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
+        problemId = sanitize(problemId);
+        problemName = sanitize(problemName);
+        teamId = sanitize(teamId);
+        timeout = sanitize(timeout);
 
         ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
         if (salida.getSalida().equals("OK")) {
@@ -122,115 +137,111 @@ public class APIProblemController {
     @ApiOperation("Get pdf from Problem")
     @GetMapping("problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
-        Optional<Problem> problemOptional = problemService.getProblem(problemId);
+        problemId = sanitize(problemId);
 
+        Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
-            return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
 
         byte[] contents = problem.getDocumento();
         if (contents == null || contents.length == 0) {
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        String filename = problem.getNombreEjercicio() + ".pdf";
-        //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(contents, headers, HttpStatus.OK);
     }
 
     @ApiOperation("Delete problem from all contests")
     @DeleteMapping("problem/{problemId}")
-    public ResponseEntity deleteProblem(@PathVariable String problemId) {
+    public ResponseEntity<String> deleteProblem(@PathVariable String problemId) {
+        problemId = sanitize(problemId);
+
         String salida = problemService.deleteProblem(problemId);
         if (salida.equals("OK")) {
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
         }
     }
 
     @ApiOperation("Add sample to problem")
     @PostMapping("problem/{problemId}/sample")
-    public ResponseEntity addSampleToProblem(@PathVariable String problemId,
-         @RequestParam String name,
-         @RequestPart("entrada") MultipartFile sampleInput,
-         @RequestPart("salida") MultipartFile sampleOutput,
-         @RequestParam boolean isPublic) {
+    public ResponseEntity<String> addSampleToProblem(@PathVariable String problemId, @RequestParam String name, @RequestPart("entrada") MultipartFile sampleInput, @RequestPart("salida") MultipartFile sampleOutput, @RequestParam boolean isPublic) {
+        problemId = sanitize(problemId);
+        name = sanitize(name);
 
         if (sampleInput.isEmpty() || sampleOutput.isEmpty()) {
-            return new ResponseEntity("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
         }
 
-        String inputText;
         try {
-            inputText = new String(sampleInput.getBytes());
-        } catch (IOException e) {
-            return new ResponseEntity("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        }
+            String inputText = new String(sampleInput.getBytes());
+            String outputText = new String(sampleInput.getBytes());
+            String salida = problemService.addSampleToProblem(problemId, name, inputText, outputText, isPublic);
 
-        String outputText;
-        try {
-            outputText = new String(sampleInput.getBytes());
+            if (salida.equals("OK")) {
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
+            }
         } catch (IOException e) {
-            return new ResponseEntity("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            return new ResponseEntity<>("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-
-        String salida = problemService.addSampleToProblem(problemId, name, inputText, outputText, isPublic);
-        if (salida.equals("OK")) {
-            return new ResponseEntity(HttpStatus.OK);
-        }
-        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
     }
+
 
     @ApiOperation("Update sample from problem")
     @PutMapping("problem/{problemId}/sample/{sampleId}")
-    public ResponseEntity updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId,
-          @RequestParam(value= "name", required = false) Optional<String> nameOptional,
-          @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional,
-          @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional,
-          @RequestParam(value= "isPublic", required = false) Optional<Boolean> isPublicOptional) {
+    public ResponseEntity<String> updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId, @RequestParam(value = "name", required = false) Optional<String> nameOptional, @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional, @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional, @RequestParam(value = "isPublic", required = false) Optional<Boolean> isPublicOptional) {
+        problemId = sanitize(problemId);
+        sampleId = sanitize(sampleId);
+        nameOptional = sanitize(nameOptional);
+
         if (nameOptional.isEmpty() && sampleInputOptional.isEmpty() && sampleOutputOptional.isEmpty() && isPublicOptional.isEmpty()) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         Optional<String> inputText = Optional.ofNullable(null);
-        if (sampleInputOptional.isPresent()) {
-            try {
+        try {
+            if (sampleInputOptional.isPresent()) {
                 inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
-            } catch (IOException e) {
-                return new ResponseEntity("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             }
+        } catch (IOException e) {
+            return new ResponseEntity<>("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
         Optional<String> outputText = Optional.ofNullable(null);
-        if (sampleOutputOptional.isPresent()) {
-            try {
+        try {
+            if (sampleOutputOptional.isPresent()) {
                 outputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
-            } catch (IOException e) {
-                return new ResponseEntity("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
             }
+        } catch (IOException e) {
+            return new ResponseEntity<>("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
         String salida = problemService.updateSampleFromProblem(nameOptional, problemId, sampleId, inputText, outputText, isPublicOptional);
         if (salida.equals("OK")) {
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 
     @ApiOperation("Delete sample from problem")
     @DeleteMapping("problem/{problemId}/sample/{sampleId}")
-    public ResponseEntity deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
+    public ResponseEntity<String> deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
+        problemId = sanitize(problemId);
+        sampleId = sanitize(sampleId);
+
         String salida = problemService.deleteSampleFromProblem(problemId, sampleId);
         if (salida.equals("OK")) {
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity(salida, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 }

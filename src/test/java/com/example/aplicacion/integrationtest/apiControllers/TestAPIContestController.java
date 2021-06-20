@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APIContestController.class)
-public class TestAPIContestController {
+class TestAPIContestController {
     private final JSONConverter jsonConverter = new JSONConverter();
     private final String baseURL = "/API/v1/contest";
 
@@ -69,7 +69,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Get All Contests")
-    public void testAPIGetAllContests() throws Exception {
+    void testAPIGetAllContests() throws Exception {
         String url = baseURL;
         String result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
 
@@ -81,7 +81,7 @@ public class TestAPIContestController {
     @Test
     @DisplayName("Get All Contests with Pagination")
     @Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
-    public void testAPIGetAllContestsWithPagination() throws Exception {
+    void testAPIGetAllContestsWithPagination() throws Exception {
         String url = baseURL + "/page";
         Pageable pageable = PageRequest.of(1, 5);
         PageImpl<Contest> page = new PageImpl<>(List.of(contest));
@@ -91,7 +91,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Get One Contest")
-    public void testAPIGetContest() throws Exception {
+    void testAPIGetContest() throws Exception {
         String badContest = "523";
         String goodContest = String.valueOf(contest.getId());
 
@@ -115,7 +115,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Create Contest")
-    public void testAPICreateContest() throws Exception {
+    void testAPICreateContest() throws Exception {
         String url = baseURL;
 
         String badContest = "concurso_falso_123";
@@ -158,7 +158,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Delete Contest")
-    public void testAPIDeleteContest() throws Exception {
+    void testAPIDeleteContest() throws Exception {
         String badURL = baseURL + "/521";
         String goodURL = baseURL + "/" + contest.getId();
 
@@ -185,7 +185,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Update Contest")
-    public void testAPIUpdateContest() throws Exception {
+    void testAPIUpdateContest() throws Exception {
         String badURL = baseURL + "/521";
         String goodURL = baseURL + "/" + contest.getId();
 
@@ -245,7 +245,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Add Problem to Contest")
-    public void testAPIAddProblemToContest() throws Exception {
+    void testAPIAddProblemToContest() throws Exception {
         String badURL = baseURL + "/532/756";
         String badURL2 = baseURL + "/532/" + problem.getId();
         String badURL3 = baseURL + "/" + contest.getId() + "/756";
@@ -286,7 +286,7 @@ public class TestAPIContestController {
 
     @Test
     @DisplayName("Delete Problem From Contest")
-    public void testAPIDeleteProblemFromContest() throws Exception {
+    void testAPIDeleteProblemFromContest() throws Exception {
         String badURL = baseURL + "/531/764";
         String badURL2 = baseURL + "/531/" + problem.getId();
         String badURL3 = baseURL + "/" + contest.getId() + "/764";

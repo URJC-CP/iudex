@@ -3,5 +3,4 @@ package com.example.aplicacion.integrationtest.services;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class TestSubmissionReviserService {
-}
+public class TestSubmissionReviserService {}

@@ -22,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @Controller
 public class ProblemController {
 
@@ -41,21 +43,24 @@ public class ProblemController {
 
     @GetMapping("/contest/{idContest}/problema/{idProblem}")
     public ModelAndView goToProblem(@PathVariable String idContest, @PathVariable String idProblem) {
-        ModelAndView modelAndView = new ModelAndView();
+        idContest = sanitize(idContest);
+        idProblem = sanitize(idProblem);
 
-        logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
-        Optional<Problem> problemOptional = problemService.getProblem(idProblem);
+        ModelAndView modelAndView = new ModelAndView();
+        logger.debug("Get problem {}", idProblem);
+
         Optional<Contest> contestOptional = contestService.getContestById(idContest);
         if (contestOptional.isEmpty()) {
-            logger.error("Contest " + idContest + " not found");
+            logger.error("Contest {} not found", idContest);
             modelAndView.getModel().put("error", "ERROR CONCURSO NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
         Contest contest = contestOptional.get();
 
+        Optional<Problem> problemOptional = problemService.getProblem(idProblem);
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + idProblem + " not found");
+            logger.error("Problem {} not found", idProblem);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO ECONTRADO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -63,7 +68,7 @@ public class ProblemController {
         Problem problem = problemOptional.get();
 
         if (!contest.getListaProblemas().contains(problem)) {
-            logger.error("Problem " + idProblem + " not found in contest " + idContest);
+            logger.error("Problem {} not in contest {}", idProblem, idContest);
             modelAndView.getModel().put("error", "ERROR PROBLEMA NO PERTENECE A CONCURSO");
             modelAndView.setViewName("errorConocido");
             return modelAndView;
@@ -75,21 +80,23 @@ public class ProblemController {
         modelAndView.getModel().put("teams", teamService.getAllTeams());
         modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
 
-        logger.debug("Show problem " + idProblem + " from contest " + idContest);
+        logger.debug("Show problem {}", idProblem);
         modelAndView.setViewName("problem");
 
         return modelAndView;
     }
 
     //Controller que devuelve en un HTTP el pdf del problema pedido
-    @GetMapping("getPDF/contest/{idContest}/problema/{idProblem}")
-    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idContest, @PathVariable String idProblem) {
-        logger.debug("Get request received for problem " + idProblem + " in contest " + idContest);
+    @GetMapping("getPDF/problem/{idProblem}")
+    public ResponseEntity<byte[]> goToProblem2(Model model, @PathVariable String idProblem) {
+        idProblem = sanitize(idProblem);
+
+        logger.debug("Get problem {} with pdf", idProblem);
         Optional<Problem> problemOptional = problemService.getProblem(idProblem);
 
         if (problemOptional.isEmpty()) {
-            logger.error("Problem " + idProblem + " not found");
-            return new ResponseEntity("ERROR PROBLEMA NO ECONTRADO", HttpStatus.NOT_FOUND);
+            logger.error("Problem {} not found", idProblem);
+            return new ResponseEntity("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
 
@@ -100,73 +107,87 @@ public class ProblemController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-
-        String filename = problem.getNombreEjercicio() + ".pdf";
-
-        //headers.setContentDispositionFormData(filename, filename);
         headers.setContentDisposition(ContentDisposition.builder("inline").build());
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         ResponseEntity<byte[]> response = new ResponseEntity<>(contents, headers, HttpStatus.OK);
-        logger.debug("Return pdf of problem " + idProblem + " in contest " + idContest);
+        logger.debug("Return problem {} with pdf", idProblem);
         return response;
     }
 
     @PostMapping("/problemSubida")
     public ModelAndView subidaProblema(Model model, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
-        logger.debug("Upload request received for problem " + problemaName + " in contest " + contestId);
+        problemaName = sanitize(problemaName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
+
+        logger.debug("Upload problem {}", problemaName);
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.addProblemFromZip(file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.error("Upload request failed with " + salida.getSalida() + "\nProblem name: " + problemaName + "\nTeam/user: " + teamId + "\nContest: " + contestId);
+            logger.error("Upload problem {} failed with {} ", problemaName, salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Upload request success\nProblem id: " + salida.getProblem().getId() + "\nProblem name: " + problemaName + "\nTeam/user: " + teamId + "\nContest: " + contestId);
+        logger.debug("Upload problem {} success", problemaName);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
 
     @PostMapping("/problemUpdate")
     public ModelAndView updateProblema(@RequestParam String problemId, @RequestParam MultipartFile file, @RequestParam String problemaName, @RequestParam String teamId, @RequestParam String contestId) throws Exception {
-        logger.debug("Update request received for problem " + problemId + "\nProblem name: " + problemaName + "\nTeam/user: " + teamId + "\nContest: " + contestId);
+        problemId = sanitize(problemId);
+        problemaName = sanitize(problemaName);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+        String filename = sanitize(file.getOriginalFilename());
+
+        logger.debug("Update problem {}", problemId);
         ModelAndView modelAndView = new ModelAndView();
-        ProblemString salida = problemService.updateProblem2(problemId, file.getOriginalFilename(), file.getInputStream(), teamId, problemaName, contestId);
+        ProblemString salida = problemService.updateProblem2(problemId, filename, file.getInputStream(), teamId, problemaName, contestId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.error("Update request failed for problem " + problemId + " with " + salida.getSalida() + "\nProblem name: " + problemaName + "\nTeam/user: " + teamId + "\nContest: " + contestId);
+            logger.error("Update problem {} failed with {} ", problemId, salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Update request success\nProblem id: " + salida.getProblem().getId() + "\nProblem name: " + problemaName + "\nTeam/user: " + teamId + "\nContest: " + contestId);
+        logger.debug("Update problem {} success", problemId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
 
     @GetMapping("/deleteProblem/{problemId}")
     public ModelAndView deleteProblem(@PathVariable String problemId) {
-        logger.debug("Delete request received for problem " + problemId);
+        problemId = sanitize(problemId);
+
+        logger.debug("Delete problem {}", problemId);
         ModelAndView modelAndView = new ModelAndView();
         String salida = problemService.deleteProblem(problemId);
 
         if (!salida.equals("OK")) {
-            logger.error("Delete request failed for problem " + problemId + " with " + salida);
+            logger.error("Delete problem {} failed with {}", problemId, salida);
             modelAndView.getModel().put("error", salida);
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        logger.debug("Delete request success for problem " + problemId);
+        logger.debug("Delete problem {} success", problemId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }
 
     @PostMapping("/createSubmission")
     public ModelAndView crearSubmission(@RequestParam MultipartFile codigo, @RequestParam String problemaAsignado, @RequestParam String lenguaje, @RequestParam String teamId, @RequestParam String contestId) throws IOException {
-        logger.debug("Add submission for problem " + problemaAsignado + " in contest " + contestId + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
+        problemaAsignado = sanitize(problemaAsignado);
+        lenguaje = sanitize(lenguaje);
+        teamId = sanitize(teamId);
+        contestId = sanitize(contestId);
+
+        logger.debug("Create {} submission for problem {}", lenguaje, problemaAsignado);
         ModelAndView modelAndView = new ModelAndView();
 
         String fileNameaux = codigo.getOriginalFilename();
@@ -177,30 +198,32 @@ public class ProblemController {
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemaAsignado, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
-            logger.warn("Submission failed with " + salida.getSalida() + "\nContest: " + contestId + "\nProblem: " + problemaAsignado + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
+            logger.warn("Submission failed with {}", salida.getSalida());
             modelAndView.getModel().put("error", salida.getSalida());
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
 
-        logger.debug("Add submission success for problem " + problemaAsignado + " in contest " + contestId + "\nTeam/user: " + teamId + "\nLanguage: " + lenguaje);
+        logger.debug("Add submission {} success for problem ", salida.getSubmission().getId());
         modelAndView.setViewName("redirect:/contest/" + contestId + "/problema/" + problemaAsignado);
         return modelAndView;
     }
 
     @PostMapping("/deleteSubmission")
     public ModelAndView deleteSubmission(@RequestParam String submissionId) {
-        logger.debug("Delete request received for submission " + submissionId);
+        submissionId = sanitize(submissionId);
+
+        logger.debug("Delete submission {}", submissionId);
         ModelAndView modelAndView = new ModelAndView();
 
         String salida = submissionService.deleteSubmission(submissionId);
         if (!salida.equals("OK")) {
-            logger.debug("Delete request failed for submission " + submissionId + " with " + salida);
+            logger.debug("Delete submission {} failed with {}", submissionId, salida);
             modelAndView.getModel().put("error", salida);
             modelAndView.setViewName("errorConocido");
             return modelAndView;
         }
-        logger.debug("Delete request success for submission " + submissionId);
+        logger.debug("Delete submission {}", submissionId);
         modelAndView.setViewName("redirect:/");
         return modelAndView;
     }

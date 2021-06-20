@@ -1,7 +1,6 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.Docker.*;
-import com.example.aplicacion.Entities.Language;
 import com.example.aplicacion.Entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
@@ -13,15 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
 @Service
 public class ResultHandler {
-
-    private final Map<String, String> imagenes;
     Logger logger = LoggerFactory.getLogger(ResultHandler.class);
     private DockerClient dockerClient;
     @Value("${problem.default.timeout}")
@@ -35,14 +29,13 @@ public class ResultHandler {
 
     public ResultHandler() {
         logger.info("Starting connection with docker");
-        this.imagenes = new HashMap<>();
         dockerClient = DockerClientBuilder.getInstance(getDockerURL()).build();
         logger.info("Connection established with docker");
     }
 
     public void ejecutor(Result res) throws IOException {
-        Language lenguaje = res.getLanguage();
-        switch (lenguaje.getNombreLenguaje()) {
+        String language = res.getLanguage().getNombreLenguaje();
+        switch (language) {
             case "java":
                 new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
@@ -62,15 +55,15 @@ public class ResultHandler {
             case "sql":
                 new DockerContainerMySQL(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
                 break;
+
+            default:
+                throw new RuntimeException("Unsupported language " + language);
         }
 
     }
 
     public String buildImage(File file) {
-        String salida = dockerClient.buildImageCmd().withDockerfile(file)
-            .exec(new BuildImageResultCallback())
-            .awaitImageId();
-        return salida;
+        return dockerClient.buildImageCmd().withDockerfile(file).exec(new BuildImageResultCallback()).awaitImageId();
     }
 
     public DockerClient getDockerClient() {
@@ -90,10 +83,10 @@ public class ResultHandler {
         } else if (osName.startsWith("linux") || osName.startsWith("mac") || osName.startsWith("unix")) { // linux, mac or unix
             dockerUrl = "unix:///var/run/docker.sock";
         } else {
-            logger.error("Unsupported Operating System. There is no url for " + osName);
+            logger.error("Unsupported Operating System. {}", osName);
             throw new RuntimeException("Unsupported Operating System: " + osName);
         }
-        logger.info("Running docker on: " + osName + "\nURL: " + dockerUrl);
+        logger.info("Running docker on {} ", osName);
         return dockerUrl;
     }
 }

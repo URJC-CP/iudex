@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TheJudgeApplicationTests {
+class TheJudgeApplicationTests {
     private final String basePathTestFiles = "/src/main/resources/testfiles";
     private final RestTemplate restTemplate = new RestTemplate();
     private final JSONConverter jsonConverter = new JSONConverter();
@@ -34,7 +34,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Application's initial state")
-    public void test0() {
+    void test0() {
         ResponseEntity<String> response;
         String url = getBaseURL() + "/contest";
         response = restTemplate.getForEntity(url, String.class);
@@ -85,7 +85,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Application basic test - create contest, add problem and do submission")
-    public void test1() {
+    void test1() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
 
@@ -150,7 +150,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get contest with invalid id")
-    public void test2() {
+    void test2() {
         String badContestId = "564";
         String salida = "CONTEST NOT FOUND";
         testGetContestWithException(badContestId, salida);
@@ -174,7 +174,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Create problem from zip with invalid parameters")
-    public void test3() {
+    void test3() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
         String badTeamId = "897";
@@ -186,18 +186,18 @@ public class TheJudgeApplicationTests {
         salida = "TEAM NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, badTeamId, badContestId, salida);
 
-        salida = "CONCURSO NOT FOUND";
+        salida = "CONTEST NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
 
         // unnamed empty file without problem name
         filename = ".zip.zip";
-        salida = "Nombre del problema vacio";
+        salida = "PROBLEM NAME NOT SPECIFIED";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
         // unnamed empty file with problem name
         filename = ".zip.zip";
         problemName = "pruba vacio";
-        salida = "No hay casos de prueba";
+        salida = "TEST CASE FILES NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
     }
 
@@ -253,7 +253,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get problem with invalid id")
-    public void test4() {
+    void test4() {
         String badProblemId = "756";
         String salida = "ERROR PROBLEM NOT FOUND";
         testGetProblemWithException(badProblemId, salida);
@@ -278,7 +278,7 @@ public class TheJudgeApplicationTests {
     //realizar entregas
     @Test
     @DisplayName("Add submission with invalid parameters")
-    public void test5() {
+    void test5() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
         String anotherContestId = getContestId(1);
@@ -307,7 +307,7 @@ public class TheJudgeApplicationTests {
 		 */
 
         language = getLanguage("java");
-        salida = "PROBLEM NOT IN CONCURSO";
+        salida = "PROBLEM NOT IN CONTEST";
         testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
     }
 
@@ -375,7 +375,7 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get submission with invalid id")
-    public void test6() {
+    void test6() {
         String badSubId = "756";
         String salida = "SUBMISSION NOT FOUND";
         testGetSubmissionWithException(badSubId, salida);
@@ -399,9 +399,9 @@ public class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get team with invalid id")
-    public void test7() {
+    void test7() {
         String badTeam = "867";
-        String salida = "ERROR, TEAM NOT FOUND";
+        String salida = "TEAM NOT FOUND";
         testGetTeamWithException(badTeam, salida);
     }
 

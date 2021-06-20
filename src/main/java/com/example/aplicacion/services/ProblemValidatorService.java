@@ -40,31 +40,30 @@ public class ProblemValidatorService {
 
     public void validateProblem(Problem problemA) {
         Optional<Problem> problemOptional = problemRepository.findProblemById(problemA.getId());
-
-        Problem problem = problemOptional.get();
+        Problem problem = problemOptional.orElseThrow();
         //Recorremos la lista de submission y las enviamos
-        if (problem.getSubmissionProblemValidators().size() != 0) {
+        if (!problem.getSubmissionProblemValidators().isEmpty()) {
             for (SubmissionProblemValidator submissionProblemValidator : problem.getSubmissionProblemValidators()) {
 
                 Submission submission = submissionProblemValidator.getSubmission();
-                logger.debug("Validate submission " + submission.getId() + "\nProblem: " + problem.getId() + ", " + problem.getNombreEjercicio());
+                logger.debug("Validate submission {} for problem {}", submission.getId(), problem.getId());
 
                 //Ejecutamos
                 if (submission.getLanguage() != null) {
                     for (Result res : submission.getResults()) {
-                        logger.debug("Send result " + res.getId() + " of submission " + submission.getId());
+                        logger.debug("Sending result {} of submission {}", res.getId(), submission.getId());
                         sender.sendMessage(res);
-                        logger.debug("Finish send result " + res.getId() + " of submission " + submission.getId());
+                        logger.debug("Finish send result {} of submission {}", res.getId(), submission.getId());
                     }
                 } else {
-                    logger.error("Unsupported language " + submission.getLanguage());
+                    logger.error("Unsupported language");
                 }
             }
         }
         //Si es un problema sin submission validamos
         else {
             problem.setValido(true);
-            logger.debug("Finish validate problem " + problem.getNombreEjercicio() + " without test case");
+            logger.debug("Finish validate problem {} without test case", problem.getNombreEjercicio());
             problemRepository.save(problem);
         }
     }
@@ -74,11 +73,11 @@ public class ProblemValidatorService {
 
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Optional<Problem> problemOptional = problemRepository.findById(problemId);
-        Problem problem = problemOptional.get();
-        logger.debug("Check problem " + problem.getNombreEjercicio());
+        Problem problem = problemOptional.orElseThrow();
+        logger.debug("Checking and validating problem {}", problem.getNombreEjercicio());
 
         //Buscamos todas las submssions del problema y en caso de que haya una que no este terminada lo marcamos
-        Boolean estaTerminado = true;
+        boolean estaTerminado = true;
         for (SubmissionProblemValidator submissionProblemValidator1 : problem.getSubmissionProblemValidators()) {
             if (submissionProblemValidator1.getSubmission().isTerminadoDeEjecutarResults()) {
             } else {  //Aun no ha terminado
@@ -92,10 +91,10 @@ public class ProblemValidatorService {
             //En caso de que sea valido lo apuntamos
             if (checkSubmissionResultIsValide(problem)) {
                 problem.setValido(true);
-                logger.debug("Finish validate problem " + problem.getNombreEjercicio());
+                logger.debug("Finish validate problem {}", problem.getNombreEjercicio());
             } else {
                 problem.setValido(false);
-                logger.warn("Invalid problem " + problem.getNombreEjercicio());
+                logger.warn("Invalid problem {}", problem.getNombreEjercicio());
             }
             problemRepository.save(problem);
         }
@@ -119,8 +118,8 @@ public class ProblemValidatorService {
             //Si el resultado esperado es igual al obtenido devolvemos true si no false
             if (!submissionProblemValidator.getExpectedSolution().equals(aux)) {
                 salida = false;
-                logger.info("Unexpected result in submission " + submissionProblemValidator.getSubmission().getId());
-                logger.info("Expected result: " + submissionProblemValidator.getExpectedSolution() + "\nGiven result: " + aux);
+                logger.info("Unexpected result in submission {}", submissionProblemValidator.getSubmission().getId());
+                logger.info("Expected: {} but Given: {}", submissionProblemValidator.getExpectedSolution(), aux);
             }
         }
         return salida;

@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
+    boolean existsSubmissionById(Long id);
+    boolean existsSubmissionByResults(Result res);
+    boolean existsSubmissionByProblemaAndContest(Problem problem, Contest contest);
 
     Optional<Submission> findSubmissionById(long id);
     Optional<Submission> findSubmissionByResults(Result res);
-
     List<Submission> findSubmissionsByProblemaAndContest(Problem problem, Contest contest);
 
     Page<Submission> findAll(Pageable pageable);
