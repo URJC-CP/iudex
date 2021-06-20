@@ -3,12 +3,12 @@ package com.example.aplicacion.utils;
 import java.util.Optional;
 
 public class Sanitizer {
-    private static final String sanitize_regex = "[\n\r\t\f]/g";
+    private static final String SANITIZE_REGEX = "[\n\r\t\f]/g";
 
     private Sanitizer() {}
 
     public static String sanitize(String s) {
-        return s.trim().replaceAll(sanitize_regex, "_");
+        return s.trim().replaceAll(SANITIZE_REGEX, "_");
     }
 
     public static Optional<String> sanitize(Optional<String> op) {
