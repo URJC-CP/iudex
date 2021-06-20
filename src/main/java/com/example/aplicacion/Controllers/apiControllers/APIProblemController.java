@@ -219,7 +219,7 @@ public class APIProblemController {
         Optional<String> outputText = Optional.ofNullable(null);
         try {
             if (sampleOutputOptional.isPresent()) {
-                outputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
+                outputText = Optional.of(new String(sampleOutputOptional.get().getBytes()));
             }
         } catch (IOException e) {
             return new ResponseEntity<>("ERROR IN OUTPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
