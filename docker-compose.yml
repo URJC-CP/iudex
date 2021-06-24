@@ -25,7 +25,7 @@ services:
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://bbdd:3306/testdb?useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=
       - SPRING_RABBITMQ_HOST=rabbit

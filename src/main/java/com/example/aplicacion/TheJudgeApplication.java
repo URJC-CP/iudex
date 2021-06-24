@@ -14,7 +14,6 @@ public class TheJudgeApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(TheJudgeApplication.class, args);
-        //new DockerHelloWorld();
         new ResultHandler();
     }
 
