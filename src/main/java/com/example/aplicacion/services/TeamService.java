@@ -1,10 +1,10 @@
 package com.example.aplicacion.services;
 
 
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Entities.User;
-import com.example.aplicacion.Pojos.TeamString;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.entities.Team;
+import com.example.aplicacion.entities.User;
+import com.example.aplicacion.pojos.TeamString;
+import com.example.aplicacion.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

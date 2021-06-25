@@ -1,6 +1,6 @@
 package com.example.aplicacion.rabbitMQ;
 
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.entities.Result;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

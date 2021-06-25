@@ -1,9 +1,9 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.SubmissionStringResult;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.SubmissionStringResult;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

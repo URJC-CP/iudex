@@ -1,8 +1,8 @@
 package com.example.aplicacion.integrationtest.apiControllers;
 
-import com.example.aplicacion.Controllers.apiControllers.APIAdminController;
-import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Entities.Sample;
+import com.example.aplicacion.controllers.apiControllers.APIAdminController;
+import com.example.aplicacion.entities.Result;
+import com.example.aplicacion.entities.Sample;
 import com.example.aplicacion.services.ResultService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;

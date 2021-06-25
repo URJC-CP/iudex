@@ -1,13 +1,13 @@
 package com.example.aplicacion.smoketest;
 
-import com.example.aplicacion.Controllers.apiControllers.APIContestController;
-import com.example.aplicacion.Controllers.apiControllers.APIProblemController;
-import com.example.aplicacion.Controllers.apiControllers.APISubmissionController;
-import com.example.aplicacion.Controllers.apiControllers.APITeamController;
-import com.example.aplicacion.Controllers.standarControllers.ContestController;
-import com.example.aplicacion.Controllers.standarControllers.IndiceController;
-import com.example.aplicacion.Controllers.standarControllers.ProblemController;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.controllers.apiControllers.APIContestController;
+import com.example.aplicacion.controllers.apiControllers.APIProblemController;
+import com.example.aplicacion.controllers.apiControllers.APISubmissionController;
+import com.example.aplicacion.controllers.apiControllers.APITeamController;
+import com.example.aplicacion.controllers.standarControllers.ContestController;
+import com.example.aplicacion.controllers.standarControllers.IndiceController;
+import com.example.aplicacion.controllers.standarControllers.ProblemController;
+import com.example.aplicacion.repositories.*;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;

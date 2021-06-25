@@ -1,7 +1,7 @@
 package com.example.aplicacion.integrationtest.apiControllers;
 
-import com.example.aplicacion.Controllers.apiControllers.APISubmissionController;
-import com.example.aplicacion.Entities.*;
+import com.example.aplicacion.controllers.apiControllers.APISubmissionController;
+import com.example.aplicacion.entities.*;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.services.SubmissionService;

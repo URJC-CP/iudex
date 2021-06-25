@@ -1,6 +1,6 @@
 package com.example.aplicacion.rabbitMQ;
 
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.services.ResultHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

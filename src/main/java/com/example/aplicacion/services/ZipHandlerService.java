@@ -1,9 +1,9 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.SampleRepository;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.ProblemString;
+import com.example.aplicacion.repositories.ProblemRepository;
+import com.example.aplicacion.repositories.SampleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

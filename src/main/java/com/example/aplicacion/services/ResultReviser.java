@@ -1,6 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.entities.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

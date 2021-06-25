@@ -1,6 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Language;
+import com.example.aplicacion.entities.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

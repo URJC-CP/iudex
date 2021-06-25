@@ -1,6 +1,6 @@
 package com.example.aplicacion.utils;
 
-import com.example.aplicacion.Pojos.TeamScore;
+import com.example.aplicacion.pojos.TeamScore;
 import com.google.common.primitives.Floats;
 
 import java.util.Comparator;

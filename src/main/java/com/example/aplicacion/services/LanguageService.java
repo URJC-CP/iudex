@@ -1,7 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Language;
-import com.example.aplicacion.Repository.LanguageRepository;
+import com.example.aplicacion.entities.Language;
+import com.example.aplicacion.repositories.LanguageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

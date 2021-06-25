@@ -1,11 +1,11 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Entities.SubmissionProblemValidator;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.entities.Problem;
+import com.example.aplicacion.entities.Result;
+import com.example.aplicacion.entities.Submission;
+import com.example.aplicacion.entities.SubmissionProblemValidator;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

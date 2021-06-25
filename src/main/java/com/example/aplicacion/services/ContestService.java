@@ -1,13 +1,13 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ContestString;
-import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.ProblemScore;
-import com.example.aplicacion.Pojos.TeamScore;
-import com.example.aplicacion.Repository.ContestRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.ContestString;
+import com.example.aplicacion.pojos.ProblemAPI;
+import com.example.aplicacion.pojos.ProblemScore;
+import com.example.aplicacion.pojos.TeamScore;
+import com.example.aplicacion.repositories.ContestRepository;
+import com.example.aplicacion.repositories.ProblemRepository;
+import com.example.aplicacion.repositories.TeamRepository;
 import com.example.aplicacion.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

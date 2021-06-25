@@ -1,7 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.*;
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.docker.*;
+import com.example.aplicacion.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;

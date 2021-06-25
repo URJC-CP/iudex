@@ -1,9 +1,9 @@
 package com.example.aplicacion.integrationtest.apiControllers;
 
-import com.example.aplicacion.Controllers.apiControllers.APITeamController;
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Entities.User;
-import com.example.aplicacion.Pojos.TeamString;
+import com.example.aplicacion.controllers.apiControllers.APITeamController;
+import com.example.aplicacion.entities.Team;
+import com.example.aplicacion.entities.User;
+import com.example.aplicacion.pojos.TeamString;
 import com.example.aplicacion.services.TeamService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,11 +1,11 @@
 package com.example.aplicacion.integrationtest.apiControllers;
 
-import com.example.aplicacion.Controllers.apiControllers.APIProblemController;
-import com.example.aplicacion.Entities.Contest;
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.ProblemString;
+import com.example.aplicacion.controllers.apiControllers.APIProblemController;
+import com.example.aplicacion.entities.Contest;
+import com.example.aplicacion.entities.Problem;
+import com.example.aplicacion.entities.Team;
+import com.example.aplicacion.pojos.ProblemAPI;
+import com.example.aplicacion.pojos.ProblemString;
 import com.example.aplicacion.services.ProblemService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,9 +1,9 @@
 package com.example.aplicacion.rabbitMQ;
 
-import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Repository.ResultRepository;
-import com.example.aplicacion.Repository.SubmissionRepository;
+import com.example.aplicacion.entities.Result;
+import com.example.aplicacion.entities.Submission;
+import com.example.aplicacion.repositories.ResultRepository;
+import com.example.aplicacion.repositories.SubmissionRepository;
 import com.example.aplicacion.services.ResultReviser;
 import com.example.aplicacion.services.SubmissionReviserService;
 import org.slf4j.Logger;
