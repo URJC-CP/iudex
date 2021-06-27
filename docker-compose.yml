@@ -12,22 +12,23 @@ services:
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=testdb
-      - MYSQL_USER=sa
-      - MYSQL_PASSWORD=
+      - MYSQL_USER=iudexuser
+      - MYSQL_PASSWORD=iudexpassword
   backend:
     build:
       dockerfile: ./DOCKERS/APP/Dockerfile
       context: .
     container_name: iudex
+    restart: always
     depends_on:
       - bbdd
       - rabbit
     ports:
       - 8080:8080
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_DATASOURCE_URL=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=iudexuser
+      - SPRING_DATASOURCE_PASSWORD=iudexpassword
       - SPRING_RABBITMQ_HOST=rabbit
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
       - LOGGING_LEVEL_ROOT=DEBUG
