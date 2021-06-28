@@ -79,9 +79,8 @@ public class DockerContainer {
         try {
             InputStream isSalida = dockerClient.copyArchiveFromContainerCmd(contAux, pathOrigen).exec();  //Obtenemos el InputStream del contenedor
             TarArchiveInputStream tarArchivo = new TarArchiveInputStream(isSalida);                     //Obtenemos el tar del IS
-            //System.out.println(""+tarArchivo.getRecordSize());
+            logger.debug(String.valueOf(tarArchivo.getRecordSize()));
             return convertirTarFile(tarArchivo);                                                        //Lo traducimos
-
         } catch (InternalServerErrorException exception) {
             logger.error(exception.getMessage());
         }
@@ -98,11 +97,12 @@ public class DockerContainer {
             if (!tarAux.isDirectory()) {
                 //Una vez sabemos que es fichero lo copiamos
                 salida = IOUtils.toString(tarIn);
-
+            /*
                 //DESCOMENTAR PARA GUARDAR EN FICHERO
-                //FileOutputStream fileOutput = new FileOutputStream(fichero);
-                //IOUtils.copy(tarIn, fileOutput);
-                //fileOutput.close();
+                FileOutputStream fileOutput = new FileOutputStream(fichero);
+                IOUtils.copy(tarIn, fileOutput);
+                fileOutput.close();
+            */
             }
         }
 

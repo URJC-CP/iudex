@@ -22,7 +22,6 @@ public class DockerContainerPython3 extends DockerContainer {
         logger.debug("Building container for image {} ", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
-        String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
@@ -32,7 +31,6 @@ public class DockerContainerPython3 extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME2=" + nombreClase + ".py").withHostConfig(hostConfig).withName(nombreDocker).exec();
@@ -51,35 +49,26 @@ public class DockerContainerPython3 extends DockerContainer {
         InspectContainerResponse inspectContainerResponse = null;
         do {
             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+        } while (inspectContainerResponse.getState().getRunning().booleanValue());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
-
-        //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
         String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
-
-        //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
         String salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
-
-        //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
         String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
-        //System.out.println(time);
         result.setSalidaTime(time);
 
         String signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
-        //System.out.println(signal);
         result.setSignalEjecutor(signal);
 
-        //logger.info("DOCKER PYTHON3: EL result "+result.getId() + " ha terminado con senyal "+ signal);
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         logger.debug("DOCKER PYTHON3: Finish running container for result " + result.getId() + " ");

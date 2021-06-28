@@ -3,7 +3,6 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.*;
 import com.example.aplicacion.pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.pojos.ProblemString;
-import com.example.aplicacion.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,22 +18,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class ProblemService {
+public class ProblemService extends BaseService {
     Logger logger = LoggerFactory.getLogger(ProblemService.class);
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private SampleRepository sampleRepository;
+
     @Autowired
     private ZipHandlerService zipHandlerService;
-    @Autowired
-    private ProblemValidatorService problemValidatorService;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private SubmissionRepository submissionRepository;
 
     public ProblemString addProblem(Problem createdProblem) {
         logger.debug("Create new problem from problem {}", createdProblem.getId());
@@ -357,7 +345,7 @@ public class ProblemService {
         oldProblem.setAutor(newProblem.getAutor());
         oldProblem.setSource(newProblem.getSource());
         oldProblem.setLicense(newProblem.getLicense());
-        oldProblem.setRights_owner(newProblem.getRights_owner());
+        oldProblem.setOwnerRights(newProblem.getOwnerRights());
         oldProblem.setDocumento(newProblem.getDocumento());
         oldProblem.setValidation(newProblem.getValidation());
         oldProblem.setValidation_flags(newProblem.getValidation_flags());

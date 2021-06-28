@@ -4,22 +4,16 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.entities.User;
 import com.example.aplicacion.pojos.TeamString;
-import com.example.aplicacion.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TeamService {
+public class TeamService extends BaseService {
     Logger logger = LoggerFactory.getLogger(TeamService.class);
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private UserService userService;
 
     public TeamString crearTeam(String nickTeam, boolean isUser) {
         logger.debug("Create team {}", nickTeam);

@@ -3,25 +3,15 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.entities.User;
 import com.example.aplicacion.pojos.UserString;
-import com.example.aplicacion.repositories.TeamRepository;
-import com.example.aplicacion.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService extends BaseService {
     Logger logger = LoggerFactory.getLogger(UserService.class);
-
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private TeamService teamService;
 
     //Cuando se crea un usuario tambien se creara un equipo con el mismo nombre que el usuario
     public UserString crearUsuario(String nickname, String mail) {

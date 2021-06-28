@@ -14,21 +14,12 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 @Component
-public class OnStartRunner implements ApplicationRunner {
+public class OnStartRunner extends BaseService implements ApplicationRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 
     @Autowired
     private ResultHandler resultHandler;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ContestService contestService;
-    @Autowired
-    private TeamService teamService;
-    @Autowired
-    private LanguageService languageService;
-
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

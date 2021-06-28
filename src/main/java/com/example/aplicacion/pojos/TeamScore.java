@@ -15,7 +15,7 @@ public class TeamScore {
         this(team, new HashMap<>(), 0, 0f);
     }
 
-    public TeamScore(@NotNull TeamAPI team, HashMap<Problem, ProblemScore> scoreMap, int solvedProblems, float score) {
+    public TeamScore(@NotNull TeamAPI team, Map<Problem, ProblemScore> scoreMap, int solvedProblems, float score) {
         this.team = team;
         this.scoreMap = scoreMap;
         this.score = score;

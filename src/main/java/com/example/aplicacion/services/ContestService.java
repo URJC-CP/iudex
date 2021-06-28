@@ -5,13 +5,9 @@ import com.example.aplicacion.pojos.ContestString;
 import com.example.aplicacion.pojos.ProblemAPI;
 import com.example.aplicacion.pojos.ProblemScore;
 import com.example.aplicacion.pojos.TeamScore;
-import com.example.aplicacion.repositories.ContestRepository;
-import com.example.aplicacion.repositories.ProblemRepository;
-import com.example.aplicacion.repositories.TeamRepository;
 import com.example.aplicacion.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,20 +19,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ContestService {
+public class ContestService extends BaseService {
     Logger logger = LoggerFactory.getLogger(ContestService.class);
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private ProblemService problemService;
-    @Autowired
-    private LanguageService languageService;
-    @Autowired
-    private TeamService teamService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);

@@ -43,10 +43,9 @@ public class Problem {
     private String memoryLimit;
     private String autor;
     private String source;
-    private String source_url;
+    private String sourceURL;
     private String license;
-    private String rights_owner;
-    //private String keywords;
+    private String ownerRights;
     private String hashString;
     @Lob
     private byte[] documento;
@@ -114,9 +113,9 @@ public class Problem {
         problemAPI.setMemoryLimit(this.memoryLimit);
         problemAPI.setAutor(this.autor);
         problemAPI.setSource(this.source);
-        problemAPI.setSource_url(this.source_url);
+        problemAPI.setSourceURL(this.sourceURL);
         problemAPI.setLicense(this.license);
-        problemAPI.setRights_owner(this.rights_owner);
+        problemAPI.setOwnerRights(this.ownerRights);
         problemAPI.setColor(this.color);
         problemAPI.setTimeout(this.timeout);
 
@@ -140,9 +139,9 @@ public class Problem {
         problemAPI.setMemoryLimit(this.memoryLimit);
         problemAPI.setAutor(this.autor);
         problemAPI.setSource(this.source);
-        problemAPI.setSource_url(this.source_url);
+        problemAPI.setSourceURL(this.sourceURL);
         problemAPI.setLicense(this.license);
-        problemAPI.setRights_owner(this.rights_owner);
+        problemAPI.setOwnerRights(this.ownerRights);
         problemAPI.setColor(this.color);
         problemAPI.setTimeout(this.timeout);
 
@@ -172,15 +171,6 @@ public class Problem {
         return salida;
     }
 
-    private List<String> convertListSampletoListString(List<Sample> samples) {
-        List<String> salida = new ArrayList<>();
-        for (Sample sample : samples) {
-            salida.add(sample.getInputText());
-            salida.add(sample.getOutputText());
-        }
-        return salida;
-    }
-
     public String generaHash() {
         return this.hashString = hasheaElString(nombreEjercicio + listaToString(datos));
     }
@@ -206,7 +196,7 @@ public class Problem {
     }
 
     public boolean hasTestCaseFiles() {
-        return datos.size() > 0;
+        return !datos.isEmpty();
     }
 
     public Set<Sample> getData() {
@@ -293,12 +283,12 @@ public class Problem {
         this.source = source;
     }
 
-    public String getSource_url() {
-        return source_url;
+    public String getSourceURL() {
+        return sourceURL;
     }
 
-    public void setSource_url(String source_url) {
-        this.source_url = source_url;
+    public void setSourceURL(String sourceURL) {
+        this.sourceURL = sourceURL;
     }
 
     public String getLicense() {
@@ -309,12 +299,12 @@ public class Problem {
         this.license = license;
     }
 
-    public String getRights_owner() {
-        return rights_owner;
+    public String getOwnerRights() {
+        return ownerRights;
     }
 
-    public void setRights_owner(String rights_owner) {
-        this.rights_owner = rights_owner;
+    public void setOwnerRights(String ownerRights) {
+        this.ownerRights = ownerRights;
     }
 
     public String getValidation() {

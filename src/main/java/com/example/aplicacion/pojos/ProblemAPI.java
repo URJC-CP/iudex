@@ -19,9 +19,9 @@ public class ProblemAPI {
 
     private String autor;
     private String source;
-    private String source_url;
+    private String sourceURL;
     private String license;
-    private String rights_owner;
+    private String ownerRights;
 
     private String color;
 
@@ -102,12 +102,12 @@ public class ProblemAPI {
         this.source = source;
     }
 
-    public String getSource_url() {
-        return source_url;
+    public String getSourceURL() {
+        return sourceURL;
     }
 
-    public void setSource_url(String source_url) {
-        this.source_url = source_url;
+    public void setSourceURL(String sourceURL) {
+        this.sourceURL = sourceURL;
     }
 
     public String getLicense() {
@@ -118,12 +118,12 @@ public class ProblemAPI {
         this.license = license;
     }
 
-    public String getRights_owner() {
-        return rights_owner;
+    public String getOwnerRights() {
+        return ownerRights;
     }
 
-    public void setRights_owner(String rights_owner) {
-        this.rights_owner = rights_owner;
+    public void setOwnerRights(String ownerRights) {
+        this.ownerRights = ownerRights;
     }
 
     public List<SampleAPI> getSamples() {

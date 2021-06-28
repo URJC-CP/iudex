@@ -3,7 +3,7 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.entities.Submission;
 import com.example.aplicacion.entities.SubmissionProblemValidator;
-import com.example.aplicacion.repositories.*;
+import com.example.aplicacion.repositories.SubmissionProblemValidatorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +14,11 @@ import java.util.Optional;
 
 //Clase que se encarga de comprobar el resultado de una submission cuando esta ha finalizado
 @Service
-public class SubmissionReviserService {
+public class SubmissionReviserService extends BaseService {
     Logger logger = LoggerFactory.getLogger(SubmissionReviserService.class);
+
     @Autowired
     private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
-    @Autowired
-    private ProblemValidatorService problemValidatorService;
-    @Autowired
-    private SubmissionRepository submissionRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private LanguageRepository languageRepository;
 
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado

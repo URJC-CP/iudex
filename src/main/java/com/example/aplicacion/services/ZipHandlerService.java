@@ -2,8 +2,6 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.entities.*;
 import com.example.aplicacion.pojos.ProblemString;
-import com.example.aplicacion.repositories.ProblemRepository;
-import com.example.aplicacion.repositories.SampleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +20,9 @@ import java.util.zip.ZipInputStream;
 
 //Clase que lee el zip y genera el problema adecuado
 @Service
-public class ZipHandlerService {
+public class ZipHandlerService extends BaseService {
     Logger logger = LoggerFactory.getLogger(ZipHandlerService.class);
 
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private SampleRepository inNOutRepository;
-    @Autowired
-    private SubmissionService submissionService;
-    @Autowired
-    private ProblemService problemService;
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
@@ -346,13 +336,13 @@ public class ZipHandlerService {
             problem.setSource(aux.toString());
         }
         if ((aux = mapa.get("source_url")) != null) {
-            problem.setSource_url(aux.toString());
+            problem.setSourceURL(aux.toString());
         }
         if ((aux = mapa.get("license")) != null) {
             problem.setLicense(aux.toString());
         }
         if ((aux = mapa.get("rights_owner")) != null) {
-            problem.setRights_owner(aux.toString());
+            problem.setOwnerRights(aux.toString());
         }
         //Es un map
         if ((aux = mapa.get("limits")) != null) {

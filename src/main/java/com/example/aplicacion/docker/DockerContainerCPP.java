@@ -21,24 +21,15 @@ public class DockerContainerCPP extends DockerContainer {
         logger.debug("Building CPP container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
-        String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
         String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
         nombreDocker = nombreDocker.replace(":", "");
 
-        String timeout;
-        if (result.getMaxTimeout() != null) {
-            timeout = result.getMaxTimeout();
-        } else {
-            timeout = this.getDefaultTimeout();
-        }
-
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=" + nombreClase, "FILENAME2=" + nombreClase + ".cpp").withHostConfig(hostConfig).withName(nombreDocker).exec();
@@ -56,7 +47,7 @@ public class DockerContainerCPP extends DockerContainer {
         InspectContainerResponse inspectContainerResponse = null;
         do {
             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+        } while (inspectContainerResponse.getState().getRunning().booleanValue());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
@@ -78,8 +69,6 @@ public class DockerContainerCPP extends DockerContainer {
 
         String signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
-
-        //logger.info("DOCKERCPP: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 

@@ -25,7 +25,6 @@ public class DockerContainerJava extends DockerContainer {
         logger.debug("Building container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
-        String defaultStorageLimit = (this.getDefaultStorageLimit());
 
         String nombreClase = getClassName();
         Result result = getResult();
@@ -41,20 +40,15 @@ public class DockerContainerJava extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-
-        //hostConfig.withMemory(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
-
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=" + nombreClase, "FILENAME2=" + getClassName(), "MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
         logger.debug("DOCKER JAVA: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
         //Copiamos el codigo
-
         copiarArchivoAContenedor(container.getId(), nombreClase + ".java", result.getCodigo(), "/root");
 
         //Copiamos la entrada
-
         copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
 
         //Arrancamos el docker
@@ -63,49 +57,28 @@ public class DockerContainerJava extends DockerContainer {
         InspectContainerResponse inspectContainerResponse = null;
         do {
             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
-        /*
-        InspectContainerResponse inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-
-        InspectContainerResponse finalInspectContainerResponse = inspectContainerResponse;
-        BooleanSupplier condicion = ()-> !finalInspectContainerResponse.getState().getRunning();
-        try {
-            waitUntil(condicion, 10000);
-        } catch (TimeoutException e) {
-            //Aqui lo pararemos manualmente
-            logger.error("El contenedor del result "+ result.getId() + " ha finalizado abruptamente su ejeccucion ");
-        }
-         */
+        } while (inspectContainerResponse.getState().getRunning().booleanValue());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
-
-        //System.out.println(salidaEstandar);
         result.setSalidaEstandar(salidaEstandar);
 
         //buscamos la salida Error
         String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
-
-        //System.out.println(salidaError);
         result.setSalidaError(salidaError);
 
         //buscamos la salida Compilador
         String salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
-        //System.out.println(salidaCompilador);
         result.setSalidaCompilador(salidaCompilador);
 
         String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
-        //System.out.println(time);
         result.setSalidaTime(time);
-
 
         String signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);
 
         String signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
         result.setSignalCompilador(signalCompilador);
-
-        //logger.info("DOCKER JAVA: EL result "+result.getId() + " ha terminado con senyal "+ signal);
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 

@@ -24,7 +24,6 @@ public class DockerContainerMySQL extends DockerContainer {
         logger.debug("Building container for image {}", imagenId);
         String defaultCPU = (this.getDefaultCPU());
         Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
-        String defaultStorageLimit = this.getDefaultStorageLimit();
 
         Result result = getResult();
         String nombreClase = result.getFileName();
@@ -41,7 +40,6 @@ public class DockerContainerMySQL extends DockerContainer {
         DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        //hostConfig.withMemory(defaultMemoryLimit).withMemorySwap(defaultMemoryLimit).withStorageOpt(Map.ofEntries(Map.entry("size", defaultStorageLimit))).withCpusetCpus(defaultCPU);
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql").withHostConfig(hostConfig).withName(nombreDocker).exec();
@@ -55,9 +53,6 @@ public class DockerContainerMySQL extends DockerContainer {
 
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
-        //ejecutar instrucciones de la entrega
-        //dockerClient.execStartCmd(container.getId()).withTty(true).exec("mysql -h localhost -u root test <entrada.in && mysql -h localhost -u root test <$FILENAME1 > salidaEstandar.ans 2> salidaError.ans; echo $? >> signalEjecutor.txt");
-
         // TODO chapucero, hardcodeado esperar 10 segundos a que este la bbdd lista, deberia ser cuando este el puerto 3306 ok
         try {
             Thread.sleep(10000);
@@ -86,7 +81,7 @@ public class DockerContainerMySQL extends DockerContainer {
         InspectContainerResponse inspectContainerResponse = null;
         do {
             inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        } while (inspectContainerResponse.getState().getRunning());  //Mientras esta corriendo se hace el do
+        } while (inspectContainerResponse.getState().getRunning().booleanValue());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
@@ -101,10 +96,8 @@ public class DockerContainerMySQL extends DockerContainer {
 
         //para que no de fallo de compilador
         result.setSignalCompilador("0");
-
         result.setSignalEjecutor(signalEjecutor);
 
-        //logger.info("DOCKER MySQL: EL result "+result.getId() + " ha terminado con senyal "+ signal);
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
         logger.debug("DOCKER MySQL: Finish running container for result {} ", result.getId());
