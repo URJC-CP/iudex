@@ -3,17 +3,23 @@ services:
   rabbit:
     container_name: rabbit
     image: rabbitmq:3
+    ports:
+      - "5672:5672"
   bbdd:
     image: mysql:8
     container_name: bbdd
     volumes:
       - db_data:/var/lib/mysql
+      - db_config:/etc/mysql
     restart: always
     environment:
+      - MYSQL_HOST=bbdd
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=testdb
       - MYSQL_USER=iudexuser
       - MYSQL_PASSWORD=iudexpassword
+    ports:
+      - "3306:3306"
   backend:
     build:
       dockerfile: ./DOCKERS/APP/Dockerfile
@@ -21,10 +27,10 @@ services:
     container_name: iudex
     restart: always
     depends_on:
-      - bbdd
       - rabbit
+      - bbdd
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=iudexuser
@@ -34,3 +40,4 @@ services:
       - LOGGING_LEVEL_ROOT=DEBUG
 volumes:
   db_data:
+  db_config:
