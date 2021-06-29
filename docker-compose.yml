@@ -30,7 +30,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=iudexuser
       - SPRING_DATASOURCE_PASSWORD=iudexpassword
       - SPRING_RABBITMQ_HOST=rabbit
+      - SPRING_RABBITMQ_PORT=5672
       - MANAGEMENT_ENDPOINT_HEALTH_SHOW-DETAILS=always
-      - LOGGING_LEVEL_ROOT=DEBUG
+      - LOGGING_LEVEL_ROOT=INFO
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 volumes:
   db_data:
