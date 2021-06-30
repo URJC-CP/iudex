@@ -3,7 +3,6 @@ package com.example.aplicacion.docker;
 import com.example.aplicacion.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +43,10 @@ public class DockerContainerCPP extends DockerContainer {
         //Arrancamos el docker
         dockerClient.startContainerCmd(container.getId()).exec();
         //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-        InspectContainerResponse inspectContainerResponse = null;
+        Boolean isRunning = null;
         do {
-            inspectContainerResponse = dockerClient.inspectContainerCmd(container.getId()).exec();
-        } while (inspectContainerResponse.getState().getRunning().booleanValue());  //Mientras esta corriendo se hace el do
+            isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
+        } while (isRunning != null && isRunning.booleanValue());  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
