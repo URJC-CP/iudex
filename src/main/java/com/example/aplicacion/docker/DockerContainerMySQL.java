@@ -54,7 +54,7 @@ public class DockerContainerMySQL extends DockerContainer {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("context", e);
         }
 
         var executionID = dockerClient.execCreateCmd(container.getId()).withAttachStdout(true).withCmd("bash", "-c", "mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME1 >salidaError.ans 2>&1 && mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME2 >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt").exec().getId();
@@ -62,7 +62,7 @@ public class DockerContainerMySQL extends DockerContainer {
         try {
             dockerClient.execStartCmd(executionID).exec(new ExecStartResultCallback(System.out, System.err)).awaitCompletion();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("context", e);
         }
 
         LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));
