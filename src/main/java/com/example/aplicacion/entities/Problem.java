@@ -13,8 +13,8 @@ import java.util.*;
 @Entity
 public class Problem {
     //DEFAULT VALUES
-    public final String timeoutPropierties = "10";
-    public final String memoryLimitPropierties = "1000";
+    public static final String TIMEOUT_PROPERTIES = "10";
+    public static final String MEMORY_LIMIT_PROPERTIES = "1000";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -72,10 +72,10 @@ public class Problem {
         this.listaEquiposIntentados = new HashSet<>();
         //valores por defecto
         if (timeout == null) {
-            this.timeout = timeoutPropierties;
+            this.timeout = TIMEOUT_PROPERTIES;
         }
         if (memoryLimit == null) {
-            this.memoryLimit = memoryLimitPropierties;
+            this.memoryLimit = MEMORY_LIMIT_PROPERTIES;
         }
     }
 
@@ -91,8 +91,8 @@ public class Problem {
         this.oldSubmissionProblemValidators = new HashSet<>();
         this.listaEquiposIntentados = new HashSet<>();
 
-        this.timeout = timeoutPropierties;
-        this.memoryLimit = memoryLimitPropierties;
+        this.timeout = TIMEOUT_PROPERTIES;
+        this.memoryLimit = MEMORY_LIMIT_PROPERTIES;
         this.hashString = hasheaElString(nombreEjercicio + listaToString(datos));
     }
 
@@ -448,11 +448,11 @@ public class Problem {
     }
 
     public String getTimeoutPropierties() {
-        return timeoutPropierties;
+        return TIMEOUT_PROPERTIES;
     }
 
     public String getMemoryLimitPropierties() {
-        return memoryLimitPropierties;
+        return MEMORY_LIMIT_PROPERTIES;
     }
 
     public Team getEquipoPropietario() {
