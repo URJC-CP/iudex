@@ -348,15 +348,15 @@ public class ProblemService extends BaseService {
         oldProblem.setOwnerRights(newProblem.getOwnerRights());
         oldProblem.setDocumento(newProblem.getDocumento());
         oldProblem.setValidation(newProblem.getValidation());
-        oldProblem.setValidation_flags(newProblem.getValidation_flags());
-        oldProblem.setLimit_time_multiplier(newProblem.getLimit_time_multiplier());
-        oldProblem.setLimit_time_safety_margin(newProblem.getLimit_time_safety_margin());
-        oldProblem.setLimit_memory(newProblem.getLimit_memory());
-        oldProblem.setLimit_output(newProblem.getLimit_output());
+        oldProblem.setValidationFlags(newProblem.getValidationFlags());
+        oldProblem.setLimitTimeMultiplier(newProblem.getLimitTimeMultiplier());
+        oldProblem.setLimitTimeSafetyMargin(newProblem.getLimitTimeSafetyMargin());
+        oldProblem.setLimitMemory(newProblem.getLimitMemory());
+        oldProblem.setLimitOutput(newProblem.getLimitOutput());
         oldProblem.setLimit_code(newProblem.getLimit_code());
-        oldProblem.setLimit_compilation_time(newProblem.getLimit_compilation_time());
-        oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
-        oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
+        oldProblem.setLimitCompilationTime(newProblem.getLimitCompilationTime());
+        oldProblem.setLimitValidationMemory(newProblem.getLimitValidationMemory());
+        oldProblem.setLimitValidationOutput(newProblem.getLimitValidationOutput());
         oldProblem.setColor(newProblem.getColor());
     }
 

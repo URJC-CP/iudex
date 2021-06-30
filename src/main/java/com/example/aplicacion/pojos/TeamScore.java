@@ -1,8 +1,8 @@
 package com.example.aplicacion.pojos;
 
 import com.example.aplicacion.entities.Problem;
-import com.sun.istack.NotNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 public class TeamScore {

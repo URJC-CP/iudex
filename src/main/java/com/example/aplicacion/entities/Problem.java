@@ -50,17 +50,17 @@ public class Problem {
     @Lob
     private byte[] documento;
     private String validation;
-    private String validation_flags;
-    private String limit_time_multiplier;
-    private String limit_time_safety_margin;
-    private String limit_memory;
-    private String limit_output;
-    private String limit_code;
-    private String limit_compilation_time;
-    private String limit_compilation_memory;
-    private String limit_validation_time;
-    private String limit_validation_memory;
-    private String limit_validation_output;
+    private String validationFlags;
+    private String limitTimeMultiplier;
+    private String limitTimeSafetyMargin;
+    private String limitMemory;
+    private String limitOutput;
+    private String limitCode;
+    private String limitCompilationTime;
+    private String limitCompilationMemory;
+    private String limitValidationTime;
+    private String limitValidationMemory;
+    private String limitValidationOutput;
     private String color;
 
     public Problem() {
@@ -315,92 +315,92 @@ public class Problem {
         this.validation = validation;
     }
 
-    public String getValidation_flags() {
-        return validation_flags;
+    public String getValidationFlags() {
+        return validationFlags;
     }
 
-    public void setValidation_flags(String validation_flags) {
-        this.validation_flags = validation_flags;
+    public void setValidationFlags(String validationFlags) {
+        this.validationFlags = validationFlags;
     }
 
-    public String getLimit_memory() {
-        return limit_memory;
+    public String getLimitMemory() {
+        return limitMemory;
     }
 
-    public void setLimit_memory(String limit_memory) {
-        this.limit_memory = limit_memory;
+    public void setLimitMemory(String limitMemory) {
+        this.limitMemory = limitMemory;
     }
 
-    public String getLimit_output() {
-        return limit_output;
+    public String getLimitOutput() {
+        return limitOutput;
     }
 
-    public void setLimit_output(String limit_output) {
-        this.limit_output = limit_output;
+    public void setLimitOutput(String limitOutput) {
+        this.limitOutput = limitOutput;
     }
 
     public String getLimit_code() {
-        return limit_code;
+        return limitCode;
     }
 
     public void setLimit_code(String limit_code) {
-        this.limit_code = limit_code;
+        this.limitCode = limit_code;
     }
 
-    public String getLimit_compilation_time() {
-        return limit_compilation_time;
+    public String getLimitCompilationTime() {
+        return limitCompilationTime;
     }
 
-    public void setLimit_compilation_time(String limit_compilation_time) {
-        this.limit_compilation_time = limit_compilation_time;
+    public void setLimitCompilationTime(String limitCompilationTime) {
+        this.limitCompilationTime = limitCompilationTime;
     }
 
-    public String getLimit_compilation_memory() {
-        return limit_compilation_memory;
+    public String getLimitCompilationMemory() {
+        return limitCompilationMemory;
     }
 
-    public void setLimit_compilation_memory(String limit_compilation_memory) {
-        this.limit_compilation_memory = limit_compilation_memory;
+    public void setLimitCompilationMemory(String limitCompilationMemory) {
+        this.limitCompilationMemory = limitCompilationMemory;
     }
 
-    public String getLimit_validation_time() {
-        return limit_validation_time;
+    public String getLimitValidationTime() {
+        return limitValidationTime;
     }
 
-    public void setLimit_validation_time(String limit_validation_time) {
-        this.limit_validation_time = limit_validation_time;
+    public void setLimitValidationTime(String limitValidationTime) {
+        this.limitValidationTime = limitValidationTime;
     }
 
-    public String getLimit_validation_memory() {
-        return limit_validation_memory;
+    public String getLimitValidationMemory() {
+        return limitValidationMemory;
     }
 
-    public void setLimit_validation_memory(String limit_validation_memory) {
-        this.limit_validation_memory = limit_validation_memory;
+    public void setLimitValidationMemory(String limitValidationMemory) {
+        this.limitValidationMemory = limitValidationMemory;
     }
 
-    public String getLimit_validation_output() {
-        return limit_validation_output;
+    public String getLimitValidationOutput() {
+        return limitValidationOutput;
     }
 
-    public void setLimit_validation_output(String limit_validation_output) {
-        this.limit_validation_output = limit_validation_output;
+    public void setLimitValidationOutput(String limitValidationOutput) {
+        this.limitValidationOutput = limitValidationOutput;
     }
 
-    public String getLimit_time_multiplier() {
-        return limit_time_multiplier;
+    public String getLimitTimeMultiplier() {
+        return limitTimeMultiplier;
     }
 
-    public void setLimit_time_multiplier(String limit_time_multiplier) {
-        this.limit_time_multiplier = limit_time_multiplier;
+    public void setLimitTimeMultiplier(String limitTimeMultiplier) {
+        this.limitTimeMultiplier = limitTimeMultiplier;
     }
 
-    public String getLimit_time_safety_margin() {
-        return limit_time_safety_margin;
+    public String getLimitTimeSafetyMargin() {
+        return limitTimeSafetyMargin;
     }
 
-    public void setLimit_time_safety_margin(String limit_time_safety_margin) {
-        this.limit_time_safety_margin = limit_time_safety_margin;
+    public void setLimitTimeSafetyMargin(String limitTimeSafetyMargin) {
+        this.limitTimeSafetyMargin = limitTimeSafetyMargin;
     }
 
     public Set<SubmissionProblemValidator> getSubmissionProblemValidators() {

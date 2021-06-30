@@ -1,7 +1,6 @@
 package com.example.aplicacion.pojos;
 
-import com.sun.istack.NotNull;
-
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Objects;
 

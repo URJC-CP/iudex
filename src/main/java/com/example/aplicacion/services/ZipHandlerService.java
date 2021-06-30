@@ -348,41 +348,41 @@ public class ZipHandlerService extends BaseService {
         if ((aux = mapa.get("limits")) != null) {
             Map<String, Object> limitsMap = (LinkedHashMap<String, Object>) aux;
             if ((aux = limitsMap.get("time_multiplier")) != null) {
-                problem.setLimit_time_multiplier(aux.toString());
+                problem.setLimitTimeMultiplier(aux.toString());
             }
             if ((aux = limitsMap.get("time_safety_margin")) != null) {
-                problem.setLimit_time_safety_margin(aux.toString());
+                problem.setLimitTimeSafetyMargin(aux.toString());
             }
             if ((aux = limitsMap.get("memory")) != null) {
-                problem.setLimit_memory(aux.toString());
+                problem.setLimitMemory(aux.toString());
             }
             if ((aux = limitsMap.get("output")) != null) {
-                problem.setLimit_output(aux.toString());
+                problem.setLimitOutput(aux.toString());
             }
             if ((aux = limitsMap.get("code")) != null) {
                 problem.setLimit_code(aux.toString());
             }
             if ((aux = limitsMap.get("compilation_time")) != null) {
-                problem.setLimit_compilation_time(aux.toString());
+                problem.setLimitCompilationTime(aux.toString());
             }
             if ((aux = limitsMap.get("compilation_memory")) != null) {
-                problem.setLimit_compilation_memory(aux.toString());
+                problem.setLimitCompilationMemory(aux.toString());
             }
             if ((aux = limitsMap.get("validation_time")) != null) {
-                problem.setLimit_validation_time(aux.toString());
+                problem.setLimitValidationTime(aux.toString());
             }
             if ((aux = limitsMap.get("validation_memory")) != null) {
-                problem.setLimit_validation_memory(aux.toString());
+                problem.setLimitValidationMemory(aux.toString());
             }
             if ((aux = limitsMap.get("validation_output")) != null) {
-                problem.setLimit_validation_output(aux.toString());
+                problem.setLimitValidationOutput(aux.toString());
             }
         }
         if ((aux = mapa.get("validation")) != null) {
             problem.setValidation(aux.toString());
         }
         if ((aux = mapa.get("validator_flags")) != null) {
-            problem.setValidation_flags(aux.toString());
+            problem.setValidationFlags(aux.toString());
         }
     }
 }

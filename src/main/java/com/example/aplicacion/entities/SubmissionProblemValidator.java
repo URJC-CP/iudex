@@ -14,8 +14,8 @@ public class SubmissionProblemValidator {
     private Submission submission;
 
     public SubmissionProblemValidator() {
+        //empty constructor
     }
-
 
     public String getExpectedSolution() {
         return expectedSolution;

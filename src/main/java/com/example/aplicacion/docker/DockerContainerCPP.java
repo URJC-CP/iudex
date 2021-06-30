@@ -4,16 +4,15 @@ import com.example.aplicacion.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class DockerContainerCPP extends DockerContainer {
-    Logger logger = LoggerFactory.getLogger(DockerContainerCPP.class);
 
     public DockerContainerCPP(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
+        logger = LoggerFactory.getLogger(DockerContainerCPP.class);
     }
 
     public Result ejecutar(String imagenId) throws IOException {

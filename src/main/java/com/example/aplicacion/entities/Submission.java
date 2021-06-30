@@ -60,10 +60,9 @@ public class Submission {
         generaHash();
     }
 
-    //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
     @PreRemove
     private void removeContestFromProblemValidator() {
-
+        //Cuando vaya a borrar busca que no tenga una relaccion con problemvalidator, si lo es se desvincula del contest
     }
 
     public SubmissionAPI toSubmissionAPI() {
