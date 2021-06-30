@@ -1,4 +1,4 @@
-package com.example.aplicacion.controllers.apiControllers;
+package com.example.aplicacion.controllers.api_controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

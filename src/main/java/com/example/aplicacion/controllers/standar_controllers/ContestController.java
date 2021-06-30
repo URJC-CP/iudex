@@ -1,4 +1,4 @@
-package com.example.aplicacion.controllers.standarControllers;
+package com.example.aplicacion.controllers.standar_controllers;
 
 import com.example.aplicacion.entities.Contest;
 import com.example.aplicacion.services.ContestService;

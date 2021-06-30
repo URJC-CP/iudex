@@ -1,6 +1,6 @@
-package com.example.aplicacion.integrationtest.apiControllers;
+package com.example.aplicacion.integrationtest.api_controllers;
 
-import com.example.aplicacion.controllers.apiControllers.APIAdminController;
+import com.example.aplicacion.controllers.api_controllers.APIAdminController;
 import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.entities.Sample;
 import com.example.aplicacion.services.ResultService;

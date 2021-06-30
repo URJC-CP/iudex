@@ -1,4 +1,4 @@
-package com.example.aplicacion.controllers.apiControllers;
+package com.example.aplicacion.controllers.api_controllers;
 
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.pojos.TeamAPI;

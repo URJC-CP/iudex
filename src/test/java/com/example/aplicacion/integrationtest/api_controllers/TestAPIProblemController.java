@@ -1,6 +1,6 @@
-package com.example.aplicacion.integrationtest.apiControllers;
+package com.example.aplicacion.integrationtest.api_controllers;
 
-import com.example.aplicacion.controllers.apiControllers.APIProblemController;
+import com.example.aplicacion.controllers.api_controllers.APIProblemController;
 import com.example.aplicacion.entities.Contest;
 import com.example.aplicacion.entities.Problem;
 import com.example.aplicacion.entities.Team;

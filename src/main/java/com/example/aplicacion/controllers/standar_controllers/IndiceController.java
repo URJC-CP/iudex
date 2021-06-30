@@ -1,4 +1,4 @@
-package com.example.aplicacion.controllers.standarControllers;
+package com.example.aplicacion.controllers.standar_controllers;
 
 import com.example.aplicacion.entities.Submission;
 import com.example.aplicacion.pojos.SubmissionStringResult;

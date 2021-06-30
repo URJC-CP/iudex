@@ -1,16 +1,16 @@
 package com.example.aplicacion.smoketest;
 
-import com.example.aplicacion.controllers.apiControllers.APIContestController;
-import com.example.aplicacion.controllers.apiControllers.APIProblemController;
-import com.example.aplicacion.controllers.apiControllers.APISubmissionController;
-import com.example.aplicacion.controllers.apiControllers.APITeamController;
-import com.example.aplicacion.controllers.standarControllers.ContestController;
-import com.example.aplicacion.controllers.standarControllers.IndiceController;
-import com.example.aplicacion.controllers.standarControllers.ProblemController;
-import com.example.aplicacion.repositories.*;
+import com.example.aplicacion.controllers.api_controllers.APIContestController;
+import com.example.aplicacion.controllers.api_controllers.APIProblemController;
+import com.example.aplicacion.controllers.api_controllers.APISubmissionController;
+import com.example.aplicacion.controllers.api_controllers.APITeamController;
+import com.example.aplicacion.controllers.standar_controllers.ContestController;
+import com.example.aplicacion.controllers.standar_controllers.IndiceController;
+import com.example.aplicacion.controllers.standar_controllers.ProblemController;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
 import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
 import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;
+import com.example.aplicacion.repositories.*;
 import com.example.aplicacion.services.OnStartRunner;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

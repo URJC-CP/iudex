@@ -1,6 +1,6 @@
-package com.example.aplicacion.integrationtest.apiControllers;
+package com.example.aplicacion.integrationtest.api_controllers;
 
-import com.example.aplicacion.controllers.apiControllers.APITeamController;
+import com.example.aplicacion.controllers.api_controllers.APITeamController;
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.entities.User;
 import com.example.aplicacion.pojos.TeamString;

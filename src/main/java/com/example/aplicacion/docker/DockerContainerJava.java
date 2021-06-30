@@ -43,7 +43,7 @@ public class DockerContainerJava extends DockerContainer {
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=" + nombreClase, "FILENAME2=" + getClassName(), "MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m").withHostConfig(hostConfig).withName(nombreDocker).exec();
 
-        logger.debug("DOCKER JAVA: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        logger.debug("DOCKER JAVA: Running container for result {} with timeout {} and memory limit {}", result.getId(), timeout, result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".java", result.getCodigo(), "/root");

@@ -42,8 +42,8 @@ public class DockerContainerMySQL extends DockerContainer {
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
 
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + result.getMaxTimeout(), "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql").withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.debug("DOCKER MySQL: Running container for result {} with timeout {} and memory limit {}", result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql").withHostConfig(hostConfig).withName(nombreDocker).exec();
+        logger.debug("DOCKER MySQL: Running container for result {} with timeout {} and memory limit {}", result.getId(), timeout, result.getMaxMemory());
 
         //Copiamos el codigo
         copiarArchivoAContenedor(container.getId(), nombreClase + ".sql", result.getCodigo(), "/root");
