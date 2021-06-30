@@ -10,7 +10,6 @@ services:
     container_name: bbdd
     volumes:
       - db_data:/var/lib/mysql
-      - db_config:/etc/mysql
     restart: always
     environment:
       - MYSQL_HOST=bbdd
@@ -46,4 +45,3 @@ services:
       - logging.level.root=info
 volumes:
   db_data:
-  db_config:
