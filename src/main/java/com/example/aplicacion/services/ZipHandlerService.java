@@ -360,7 +360,7 @@ public class ZipHandlerService extends BaseService {
                 problem.setLimitOutput(aux.toString());
             }
             if ((aux = limitsMap.get("code")) != null) {
-                problem.setLimit_code(aux.toString());
+                problem.setLimitCode(aux.toString());
             }
             if ((aux = limitsMap.get("compilation_time")) != null) {
                 problem.setLimitCompilationTime(aux.toString());

@@ -353,7 +353,7 @@ public class ProblemService extends BaseService {
         oldProblem.setLimitTimeSafetyMargin(newProblem.getLimitTimeSafetyMargin());
         oldProblem.setLimitMemory(newProblem.getLimitMemory());
         oldProblem.setLimitOutput(newProblem.getLimitOutput());
-        oldProblem.setLimit_code(newProblem.getLimit_code());
+        oldProblem.setLimitCode(newProblem.getLimitCode());
         oldProblem.setLimitCompilationTime(newProblem.getLimitCompilationTime());
         oldProblem.setLimitValidationMemory(newProblem.getLimitValidationMemory());
         oldProblem.setLimitValidationOutput(newProblem.getLimitValidationOutput());

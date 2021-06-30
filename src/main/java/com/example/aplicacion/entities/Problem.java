@@ -339,12 +339,12 @@ public class Problem {
         this.limitOutput = limitOutput;
     }
 
-    public String getLimit_code() {
+    public String getLimitCode() {
         return limitCode;
     }
 
-    public void setLimit_code(String limit_code) {
-        this.limitCode = limit_code;
+    public void setLimitCode(String limitCode) {
+        this.limitCode = limitCode;
     }
 
     public String getLimitCompilationTime() {
