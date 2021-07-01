@@ -19,7 +19,7 @@ import java.util.function.BooleanSupplier;
 
 public class DockerContainer {
     private static final Logger logger = LoggerFactory.getLogger(DockerContainer.class);
-    private static DockerClient dockerClient;
+    private static DockerClient dockerClient = null;
     private Result result;
     private String defaultMemoryLimit;
     private String defaultTimeout;

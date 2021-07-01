@@ -87,7 +87,7 @@ public class APISubmissionController {
                 return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
             }
         }
-        //SI NO CONTIENE NINGUNO devolvemos todo
+        //SI NO CONTIENE NINGUNO devolvemos todos
         else {
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();
             for (Submission submission : submissionService.getAllSubmissions()) {

@@ -88,11 +88,11 @@ public class Contest {
         }
         contestAPI.setLenguajesAceptados(lenguajesAceptados);
 
-        List<ProblemAPI> listaProblemas = new ArrayList<>();
+        List<ProblemAPI> problemAPIS = new ArrayList<>();
         for (Problem problem : this.listaProblemas) {
-            listaProblemas.add(problem.toProblemAPI());
+            problemAPIS.add(problem.toProblemAPI());
         }
-        contestAPI.setListaProblemas(listaProblemas);
+        contestAPI.setListaProblemas(problemAPIS);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
         for (Team team : this.listaParticipantes) {

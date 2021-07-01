@@ -115,7 +115,8 @@ public class Submission {
     }
 
     public String generaHash() {
-        return this.hashStringSubmission = hasheaElString(codigo);
+        this.hashStringSubmission = hasheaElString(codigo);
+        return this.hashStringSubmission;
     }
 
     public String hasheaElString(String string) {

@@ -102,7 +102,7 @@ public class ProblemController {
 
         byte[] contents = problem.getDocumento();
         if (contents == null || contents.length == 0) {
-            return new ResponseEntity<byte[]>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         HttpHeaders headers = new HttpHeaders();
