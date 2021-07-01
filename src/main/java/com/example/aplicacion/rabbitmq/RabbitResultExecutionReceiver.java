@@ -1,4 +1,4 @@
-package com.example.aplicacion.rabbitMQ;
+package com.example.aplicacion.rabbitmq;
 
 import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.services.ResultHandler;

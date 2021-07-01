@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.example.aplicacion.utils.Sanitizer.sanitize;
+
 @Service
 public class ContestService {
     private static final Logger logger = LoggerFactory.getLogger(ContestService.class);
@@ -149,7 +151,7 @@ public class ContestService {
         //borramos el contest
         contestRepository.delete(contest);
 
-        logger.debug("Finish delete contest " + idcontest);
+        logger.debug("Finish delete contest {}", idcontest);
         return "OK";
     }
 
@@ -259,6 +261,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String teamId : teamIdList) {
+            teamId = sanitize(teamId);
             String salida = addTeamToContest(contest, teamId);
             // si hay algun problema se detiene la inserción
             if (!salida.equals("OK")) {
@@ -314,6 +317,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String teamId : teamIdList) {
+            teamId = sanitize(teamId);
             String salida = deleteTeamFromContest(contest, teamId);
             if (!salida.equals("OK")) {
                 logger.error("Error while removing team {} from contest {}", teamId, contestId);
@@ -398,6 +402,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String languageName : languageList) {
+            languageName = sanitize(languageName);
             String salida = addLanguageToContest(contest, languageName);
             if (!salida.equals("OK")) {
                 logger.error("Error while adding language {} to contest {}", languageName, contestId);
@@ -462,7 +467,7 @@ public class ContestService {
         logger.debug("Adding data to scoreboard");
         for (Problem problem : contest.getListaProblemas()) {
             ProblemScore first = null;
-            long min_exec_time = -1;
+            long minExecTime = -1;
             Set<Team> hasFirstAC = new HashSet<>();
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
@@ -487,8 +492,8 @@ public class ContestService {
                     problemScore.evaluate();
                     teamScore.updateScore(problemScore.getScore());
 
-                    min_exec_time = (min_exec_time == -1) ? tiempo : Long.min(min_exec_time, tiempo);
-                    first = (min_exec_time == tiempo || first == null) ? problemScore : first;
+                    minExecTime = (minExecTime == -1) ? tiempo : Long.min(minExecTime, tiempo);
+                    first = (minExecTime == tiempo || first == null) ? problemScore : first;
                 }
                 teamScore.addProblemScore(problemScore, problem);
             }

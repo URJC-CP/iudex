@@ -1,4 +1,4 @@
-package com.example.aplicacion.rabbitMQ;
+package com.example.aplicacion.rabbitmq;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

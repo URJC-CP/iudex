@@ -70,7 +70,7 @@ public class DockerContainerPython3 extends DockerContainer {
 
         dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
 
-        logger.debug("DOCKER PYTHON3: Finish running container for result ", result.getId() + " ");
+        logger.debug("DOCKER PYTHON3: Finish running container for result {}", result.getId());
         return result;
     }
 }

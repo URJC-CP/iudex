@@ -7,9 +7,9 @@ import com.example.aplicacion.controllers.api_controllers.APITeamController;
 import com.example.aplicacion.controllers.standar_controllers.ContestController;
 import com.example.aplicacion.controllers.standar_controllers.IndiceController;
 import com.example.aplicacion.controllers.standar_controllers.ProblemController;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
-import com.example.aplicacion.rabbitMQ.RabbitResultRevieserReceiver;
-import com.example.aplicacion.rabbitMQ.RabbitResultReviserSender;
+import com.example.aplicacion.rabbitmq.RabbitResultExecutionSender;
+import com.example.aplicacion.rabbitmq.RabbitResultRevieserReceiver;
+import com.example.aplicacion.rabbitmq.RabbitResultReviserSender;
 import com.example.aplicacion.repositories.*;
 import com.example.aplicacion.services.OnStartRunner;
 import org.junit.jupiter.api.Disabled;
@@ -135,13 +135,13 @@ class SmokeTest {
     @DisplayName("Verificar metodo send de rabbit")
     @Disabled("Verificar metodo send de rabbit - Not implemented")
     void testSend() {
-
+        fail("Not implemented");
     }
 
     @Test
     @DisplayName("Verificar metodo receive de rabbit")
     @Disabled("Verificar metodo receive de rabbit - Not implemented")
     void testReceive() {
-
+        fail("Not implemented");
     }
 }

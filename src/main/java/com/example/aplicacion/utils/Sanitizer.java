@@ -17,11 +17,4 @@ public class Sanitizer {
         }
         return op;
     }
-
-    public static String[] sanitize(String[] sList) {
-        for (int i = 0; i < sList.length; i++) {
-            sList[i] = sanitize(sList[i]);
-        }
-        return sList;
-    }
 }
