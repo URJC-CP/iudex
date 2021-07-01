@@ -16,7 +16,8 @@ import java.io.IOException;
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
 @Service
 public class ResultHandler {
-    Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+
     private DockerClient dockerClient;
     @Value("${problem.default.timeout}")
     private String timeoutTime;

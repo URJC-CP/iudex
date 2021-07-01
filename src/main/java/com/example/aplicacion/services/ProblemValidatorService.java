@@ -5,6 +5,7 @@ import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.entities.Submission;
 import com.example.aplicacion.entities.SubmissionProblemValidator;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.repositories.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,9 +20,12 @@ import java.util.Optional;
 //Clase que valida que el problema introducido sea correcto. Primero ejecuta el problema y luego comprueba que los resultados son los q tienen q ser
 @Service
 
-public class ProblemValidatorService extends BaseService {
+public class ProblemValidatorService {
+    private static final Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
 
-    Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
+    @Autowired
+    private ProblemRepository problemRepository;
+
     @Autowired
     private RabbitTemplate rabbitTemplate;
     @Autowired

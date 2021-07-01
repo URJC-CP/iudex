@@ -3,6 +3,10 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.*;
 import com.example.aplicacion.pojos.ProblemEntradaSalidaVisiblesHTML;
 import com.example.aplicacion.pojos.ProblemString;
+import com.example.aplicacion.repositories.ContestRepository;
+import com.example.aplicacion.repositories.ProblemRepository;
+import com.example.aplicacion.repositories.SampleRepository;
+import com.example.aplicacion.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +22,22 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class ProblemService extends BaseService {
-    Logger logger = LoggerFactory.getLogger(ProblemService.class);
+public class ProblemService {
+    private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
+
+    @Autowired
+    private ContestRepository contestRepository;
+    @Autowired
+    private ProblemRepository problemRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
+    private SampleRepository sampleRepository;
 
     @Autowired
     private ZipHandlerService zipHandlerService;
+    @Autowired
+    private ProblemValidatorService problemValidatorService;
 
     public ProblemString addProblem(Problem createdProblem) {
         logger.debug("Create new problem from problem {}", createdProblem.getId());

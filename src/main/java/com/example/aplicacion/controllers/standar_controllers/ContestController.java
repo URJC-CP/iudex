@@ -19,7 +19,8 @@ import static com.example.aplicacion.utils.Sanitizer.sanitize;
 
 @Controller
 public class ContestController {
-    Logger logger = LoggerFactory.getLogger(ContestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContestController.class);
+
     @Autowired
     private ProblemService problemService;
     @Autowired

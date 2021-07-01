@@ -18,7 +18,7 @@ import java.util.Optional;
 //Clase que se encarga de recibir el result
 @Service
 public class RabbitResultRevieserReceiver {
-    Logger logger = LoggerFactory.getLogger(RabbitResultRevieserReceiver.class);
+    private static final Logger logger = LoggerFactory.getLogger(RabbitResultRevieserReceiver.class);
 
     @Autowired
     private ResultRepository resultRepository;

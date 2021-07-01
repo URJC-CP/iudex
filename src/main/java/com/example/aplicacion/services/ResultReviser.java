@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ResultReviser {
-    Logger logger = LoggerFactory.getLogger(ResultReviser.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultReviser.class);
 
     public void revisar(Result res) {
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion

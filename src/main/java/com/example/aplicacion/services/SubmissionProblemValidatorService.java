@@ -3,10 +3,14 @@ package com.example.aplicacion.services;
 import com.example.aplicacion.entities.Problem;
 import com.example.aplicacion.entities.SubmissionProblemValidator;
 import com.example.aplicacion.pojos.SubmissionStringResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubmissionProblemValidatorService extends BaseService {
+public class SubmissionProblemValidatorService {
+    @Autowired
+    private SubmissionService submissionService;
+
     public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName, String expectedResult, String idEquipo) {
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();
         submissionProblemValidator.setExpectedSolution(expectedResult);

@@ -4,6 +4,7 @@ import com.example.aplicacion.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -12,10 +13,10 @@ import java.util.regex.Pattern;
 
 //Clase que se encarga de lanzar los docker de tipo JAVA
 public class DockerContainerJava extends DockerContainer {
+    private static final Logger logger = LoggerFactory.getLogger(DockerContainerJava.class);
 
     public DockerContainerJava(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
-        logger = LoggerFactory.getLogger(DockerContainerJava.class);
     }
 
     public Result ejecutar(String imagenId) throws IOException {

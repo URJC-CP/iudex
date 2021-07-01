@@ -5,16 +5,17 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class DockerContainerMySQL extends DockerContainer {
+    private static final Logger logger = LoggerFactory.getLogger(DockerContainerMySQL.class);
 
     public DockerContainerMySQL(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
         super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
-        logger = LoggerFactory.getLogger(DockerContainerMySQL.class);
     }
 
     public Result ejecutar(String imagenId) throws IOException {

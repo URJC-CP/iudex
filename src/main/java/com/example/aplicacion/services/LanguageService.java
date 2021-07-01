@@ -1,13 +1,17 @@
 package com.example.aplicacion.services;
 
 import com.example.aplicacion.entities.Language;
+import com.example.aplicacion.repositories.LanguageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class LanguageService extends BaseService {
+public class LanguageService {
+    @Autowired
+    private LanguageRepository languageRepository;
 
     public Optional<Language> getLanguage(String id) {
         return languageRepository.findLanguageById(Long.parseLong(id));

@@ -18,8 +18,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
 
 public class DockerContainer {
+    private static final Logger logger = LoggerFactory.getLogger(DockerContainer.class);
     private static DockerClient dockerClient;
-    Logger logger = LoggerFactory.getLogger(DockerContainer.class);
     private Result result;
     private String defaultMemoryLimit;
     private String defaultTimeout;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APIErrorController {
-    Logger logger = LoggerFactory.getLogger(APIErrorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(APIErrorController.class);
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

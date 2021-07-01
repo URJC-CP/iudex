@@ -5,9 +5,12 @@ import com.example.aplicacion.pojos.ContestString;
 import com.example.aplicacion.pojos.ProblemAPI;
 import com.example.aplicacion.pojos.ProblemScore;
 import com.example.aplicacion.pojos.TeamScore;
+import com.example.aplicacion.repositories.ContestRepository;
+import com.example.aplicacion.repositories.TeamRepository;
 import com.example.aplicacion.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ContestService extends BaseService {
-    Logger logger = LoggerFactory.getLogger(ContestService.class);
+public class ContestService {
+    private static final Logger logger = LoggerFactory.getLogger(ContestService.class);
+
+    @Autowired
+    private ContestRepository contestRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private ProblemService problemService;
+    @Autowired
+    private TeamService teamService;
+    @Autowired
+    private LanguageService languageService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);
@@ -487,7 +502,7 @@ public class ContestService extends BaseService {
         logger.debug("Finish create scoreboard");
         // ordenar team score
         List<TeamScore> scores = new ArrayList<>(teamScoreMap.values());
-        Collections.sort(scores, new TeamScoreComparator());
+        scores.sort(new TeamScoreComparator());
         return scores;
     }
 }

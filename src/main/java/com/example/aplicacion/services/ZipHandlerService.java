@@ -20,9 +20,13 @@ import java.util.zip.ZipInputStream;
 
 //Clase que lee el zip y genera el problema adecuado
 @Service
-public class ZipHandlerService extends BaseService {
-    Logger logger = LoggerFactory.getLogger(ZipHandlerService.class);
+public class ZipHandlerService {
+    private static final Logger logger = LoggerFactory.getLogger(ZipHandlerService.class);
 
+    @Autowired
+    private ProblemService problemService;
+    @Autowired
+    private SubmissionService submissionService;
     @Autowired
     private SubmissionProblemValidatorService submissionProblemValidatorService;
 
