@@ -1,9 +1,9 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.SubmissionStringResult;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.SubmissionStringResult;
 import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -20,22 +20,23 @@ import java.util.Set;
 //This class Sends the proper information to the rabbit queue
 @Service
 public class SubmissionService {
+    private static final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
-    Logger logger = LoggerFactory.getLogger(SubmissionService.class);
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private SubmissionRepository submissionRepository;
+    private ContestRepository contestRepository;
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
-    private ResultRepository resultRepository;
+    private TeamRepository teamRepository;
     @Autowired
     private LanguageRepository languageRepository;
     @Autowired
-    private TeamRepository teamRepository;
+    private SubmissionRepository submissionRepository;
     @Autowired
-    private ContestRepository contestRepository;
+    private ResultRepository resultRepository;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     @Autowired
     private RabbitResultExecutionSender sender;
 
@@ -184,7 +185,7 @@ public class SubmissionService {
             numeroDeResult++;
             submission.addResult(resAux);
         }
-        logger.debug("Finish create results for submission {} of problem {}" + submission.getId(), problema.getId());
+        logger.debug("Finish create results for submission {} of problem {}", submission.getId(), problema.getId());
     }
 
     public void ejecutaSubmission(Submission submission) {

@@ -1,10 +1,10 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Entities.User;
-import com.example.aplicacion.Pojos.UserString;
-import com.example.aplicacion.Repository.TeamRepository;
-import com.example.aplicacion.Repository.UserRepository;
+import com.example.aplicacion.entities.Team;
+import com.example.aplicacion.entities.User;
+import com.example.aplicacion.pojos.UserString;
+import com.example.aplicacion.repositories.TeamRepository;
+import com.example.aplicacion.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,13 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TeamRepository teamRepository;
+
     @Autowired
     private TeamService teamService;
 

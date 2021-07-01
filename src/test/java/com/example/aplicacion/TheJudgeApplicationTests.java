@@ -1,9 +1,9 @@
 package com.example.aplicacion;
 
-import com.example.aplicacion.Pojos.ContestAPI;
-import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.SubmissionAPI;
-import com.example.aplicacion.Pojos.TeamAPI;
+import com.example.aplicacion.pojos.ContestAPI;
+import com.example.aplicacion.pojos.ProblemAPI;
+import com.example.aplicacion.pojos.SubmissionAPI;
+import com.example.aplicacion.pojos.TeamAPI;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

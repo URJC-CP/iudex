@@ -1,7 +1,7 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Docker.*;
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.docker.*;
+import com.example.aplicacion.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
@@ -16,7 +16,8 @@ import java.io.IOException;
 //Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
 @Service
 public class ResultHandler {
-    Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+
     private DockerClient dockerClient;
     @Value("${problem.default.timeout}")
     private String timeoutTime;

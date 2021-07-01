@@ -1,9 +1,12 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ProblemEntradaSalidaVisiblesHTML;
-import com.example.aplicacion.Pojos.ProblemString;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.ProblemEntradaSalidaVisiblesHTML;
+import com.example.aplicacion.pojos.ProblemString;
+import com.example.aplicacion.repositories.ContestRepository;
+import com.example.aplicacion.repositories.ProblemRepository;
+import com.example.aplicacion.repositories.SampleRepository;
+import com.example.aplicacion.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,21 +23,21 @@ import java.util.Set;
 
 @Service
 public class ProblemService {
-    Logger logger = LoggerFactory.getLogger(ProblemService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
+
+    @Autowired
+    private ContestRepository contestRepository;
     @Autowired
     private ProblemRepository problemRepository;
     @Autowired
+    private TeamRepository teamRepository;
+    @Autowired
     private SampleRepository sampleRepository;
+
     @Autowired
     private ZipHandlerService zipHandlerService;
     @Autowired
     private ProblemValidatorService problemValidatorService;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private SubmissionRepository submissionRepository;
 
     public ProblemString addProblem(Problem createdProblem) {
         logger.debug("Create new problem from problem {}", createdProblem.getId());
@@ -357,18 +360,18 @@ public class ProblemService {
         oldProblem.setAutor(newProblem.getAutor());
         oldProblem.setSource(newProblem.getSource());
         oldProblem.setLicense(newProblem.getLicense());
-        oldProblem.setRights_owner(newProblem.getRights_owner());
+        oldProblem.setOwnerRights(newProblem.getOwnerRights());
         oldProblem.setDocumento(newProblem.getDocumento());
         oldProblem.setValidation(newProblem.getValidation());
-        oldProblem.setValidation_flags(newProblem.getValidation_flags());
-        oldProblem.setLimit_time_multiplier(newProblem.getLimit_time_multiplier());
-        oldProblem.setLimit_time_safety_margin(newProblem.getLimit_time_safety_margin());
-        oldProblem.setLimit_memory(newProblem.getLimit_memory());
-        oldProblem.setLimit_output(newProblem.getLimit_output());
-        oldProblem.setLimit_code(newProblem.getLimit_code());
-        oldProblem.setLimit_compilation_time(newProblem.getLimit_compilation_time());
-        oldProblem.setLimit_validation_memory(newProblem.getLimit_validation_memory());
-        oldProblem.setLimit_validation_output(newProblem.getLimit_validation_output());
+        oldProblem.setValidationFlags(newProblem.getValidationFlags());
+        oldProblem.setLimitTimeMultiplier(newProblem.getLimitTimeMultiplier());
+        oldProblem.setLimitTimeSafetyMargin(newProblem.getLimitTimeSafetyMargin());
+        oldProblem.setLimitMemory(newProblem.getLimitMemory());
+        oldProblem.setLimitOutput(newProblem.getLimitOutput());
+        oldProblem.setLimitCode(newProblem.getLimitCode());
+        oldProblem.setLimitCompilationTime(newProblem.getLimitCompilationTime());
+        oldProblem.setLimitValidationMemory(newProblem.getLimitValidationMemory());
+        oldProblem.setLimitValidationOutput(newProblem.getLimitValidationOutput());
         oldProblem.setColor(newProblem.getColor());
     }
 

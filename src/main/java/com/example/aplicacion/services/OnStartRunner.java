@@ -1,6 +1,6 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Language;
+import com.example.aplicacion.entities.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +15,19 @@ import java.util.TimeZone;
 
 @Component
 public class OnStartRunner implements ApplicationRunner {
-
     private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 
-    @Autowired
-    private ResultHandler resultHandler;
-    @Autowired
-    private UserService userService;
     @Autowired
     private ContestService contestService;
     @Autowired
     private TeamService teamService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private LanguageService languageService;
 
+    @Autowired
+    private ResultHandler resultHandler;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

@@ -1,13 +1,13 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Result;
+import com.example.aplicacion.entities.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResultReviser {
-    Logger logger = LoggerFactory.getLogger(ResultReviser.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResultReviser.class);
 
     public void revisar(Result res) {
         //SIGNAL: el primer valor es la salida del compilador y el segundo es la salida de la ejecucion

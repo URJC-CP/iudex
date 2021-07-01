@@ -1,13 +1,12 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.*;
-import com.example.aplicacion.Pojos.ContestString;
-import com.example.aplicacion.Pojos.ProblemAPI;
-import com.example.aplicacion.Pojos.ProblemScore;
-import com.example.aplicacion.Pojos.TeamScore;
-import com.example.aplicacion.Repository.ContestRepository;
-import com.example.aplicacion.Repository.ProblemRepository;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.entities.*;
+import com.example.aplicacion.pojos.ContestString;
+import com.example.aplicacion.pojos.ProblemAPI;
+import com.example.aplicacion.pojos.ProblemScore;
+import com.example.aplicacion.pojos.TeamScore;
+import com.example.aplicacion.repositories.ContestRepository;
+import com.example.aplicacion.repositories.TeamRepository;
 import com.example.aplicacion.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,19 +23,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class ContestService {
-    Logger logger = LoggerFactory.getLogger(ContestService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContestService.class);
+
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
     private TeamRepository teamRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
+
     @Autowired
     private ProblemService problemService;
     @Autowired
-    private LanguageService languageService;
-    @Autowired
     private TeamService teamService;
+    @Autowired
+    private LanguageService languageService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);
@@ -503,7 +502,7 @@ public class ContestService {
         logger.debug("Finish create scoreboard");
         // ordenar team score
         List<TeamScore> scores = new ArrayList<>(teamScoreMap.values());
-        Collections.sort(scores, new TeamScoreComparator());
+        scores.sort(new TeamScoreComparator());
         return scores;
     }
 }

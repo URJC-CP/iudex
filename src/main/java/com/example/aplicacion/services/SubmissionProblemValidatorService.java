@@ -1,30 +1,13 @@
 package com.example.aplicacion.services;
 
-import com.example.aplicacion.Entities.Problem;
-import com.example.aplicacion.Entities.SubmissionProblemValidator;
-import com.example.aplicacion.Pojos.SubmissionStringResult;
-import com.example.aplicacion.Repository.*;
+import com.example.aplicacion.entities.Problem;
+import com.example.aplicacion.entities.SubmissionProblemValidator;
+import com.example.aplicacion.pojos.SubmissionStringResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SubmissionProblemValidatorService {
-    @Autowired
-    private SubmissionRepository submissionRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private ResultRepository resultRepository;
-    @Autowired
-    private LanguageRepository languageRepository;
-    @Autowired
-    private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
-    @Autowired
-    private ContestService contestService;
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private TeamRepository teamRepository;
     @Autowired
     private SubmissionService submissionService;
 

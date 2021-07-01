@@ -1,10 +1,10 @@
 package com.example.aplicacion.services;
 
 
-import com.example.aplicacion.Entities.Team;
-import com.example.aplicacion.Entities.User;
-import com.example.aplicacion.Pojos.TeamString;
-import com.example.aplicacion.Repository.TeamRepository;
+import com.example.aplicacion.entities.Team;
+import com.example.aplicacion.entities.User;
+import com.example.aplicacion.pojos.TeamString;
+import com.example.aplicacion.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +15,11 @@ import java.util.Optional;
 
 @Service
 public class TeamService {
-    Logger logger = LoggerFactory.getLogger(TeamService.class);
+    private static final Logger logger = LoggerFactory.getLogger(TeamService.class);
+
     @Autowired
     private TeamRepository teamRepository;
+
     @Autowired
     private UserService userService;
 
@@ -30,14 +32,13 @@ public class TeamService {
         if (teamRepository.existsTeamByNombreEquipo(nickTeam)) {
             logger.error("Team name duplicated");
             salida.setSalida("TEAM NAME DUPLICATED");
-            return salida;
         } else {
             teamRepository.save(team);
             salida.setSalida("OK");
             salida.setTeam(team);
             logger.debug("Finish create team {}", nickTeam);
-            return salida;
         }
+        return salida;
     }
 
     public String addUserToTeam(Team team, User user) {

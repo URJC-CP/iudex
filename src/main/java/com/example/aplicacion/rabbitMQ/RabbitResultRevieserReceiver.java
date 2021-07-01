@@ -1,13 +1,11 @@
 package com.example.aplicacion.rabbitMQ;
 
-import com.example.aplicacion.Entities.Result;
-import com.example.aplicacion.Entities.Submission;
-import com.example.aplicacion.Repository.ResultRepository;
-import com.example.aplicacion.Repository.SubmissionRepository;
+import com.example.aplicacion.entities.Result;
+import com.example.aplicacion.entities.Submission;
+import com.example.aplicacion.repositories.ResultRepository;
+import com.example.aplicacion.repositories.SubmissionRepository;
 import com.example.aplicacion.services.ResultReviser;
 import com.example.aplicacion.services.SubmissionReviserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +16,6 @@ import java.util.Optional;
 //Clase que se encarga de recibir el result
 @Service
 public class RabbitResultRevieserReceiver {
-    Logger logger = LoggerFactory.getLogger(RabbitResultRevieserReceiver.class);
-
     @Autowired
     private ResultRepository resultRepository;
     @Autowired
