@@ -4,7 +4,7 @@ import com.example.aplicacion.entities.Problem;
 import com.example.aplicacion.entities.Result;
 import com.example.aplicacion.entities.Submission;
 import com.example.aplicacion.entities.SubmissionProblemValidator;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.rabbitmq.RabbitResultExecutionSender;
 import com.example.aplicacion.repositories.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

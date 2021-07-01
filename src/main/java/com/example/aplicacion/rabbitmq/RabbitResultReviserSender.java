@@ -1,4 +1,4 @@
-package com.example.aplicacion.rabbitMQ;
+package com.example.aplicacion.rabbitmq;
 
 import com.example.aplicacion.entities.Result;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

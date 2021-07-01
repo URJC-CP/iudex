@@ -55,7 +55,7 @@ public class TeamService {
     }
 
     public String deleteTeamByName(String name) {
-        logger.debug("Delete team " + name);
+        logger.debug("Delete team {}", name);
         Optional<Team> teamOptional = teamRepository.findByNombreEquipo(name);
         if (teamOptional.isEmpty()) {
             logger.error("Team {} not found", name);
@@ -117,7 +117,7 @@ public class TeamService {
 
         Optional<User> userOptional = userService.getUserById(Long.parseLong(userId));
         if (userOptional.isEmpty()) {
-            logger.error("User {} not found" + userId);
+            logger.error("User {} not found", userId);
             salida.setSalida("USER NOT FOUND");
             return salida;
         }

@@ -2,7 +2,7 @@ package com.example.aplicacion.services;
 
 import com.example.aplicacion.entities.*;
 import com.example.aplicacion.pojos.SubmissionStringResult;
-import com.example.aplicacion.rabbitMQ.RabbitResultExecutionSender;
+import com.example.aplicacion.rabbitmq.RabbitResultExecutionSender;
 import com.example.aplicacion.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class SubmissionService {
         //Creamos la submission
         submissionStringResult = creaSubmission(codigo, problem, lenguaje, fileName, idContest, idEquipo);
         if (!submissionStringResult.getSalida().equals("OK")) {
-            logger.error("Create and run submission {} failed with {}" + fileName, submissionStringResult.getSalida());
+            logger.error("Create and run submission {} failed with {}", fileName, submissionStringResult.getSalida());
             return submissionStringResult;
         }
         //ejecutamos
@@ -255,7 +255,7 @@ public class SubmissionService {
             return "SUBMISSION NOT IN PROBLEM";
         }
         if (submission.getContest().equals(contest)) {
-            logger.error("Submission " + submissionId + " not in contest " + contestId);
+            logger.error("Submission {} not in contest {}", submissionId, contestId);
             return "SUBMISSION NOT IN CONTEST";
         }
         logger.debug("Finish delete submission {} from problem {} of contest {}", submissionId, problemId, contestId);

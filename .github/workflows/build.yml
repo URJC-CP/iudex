@@ -29,6 +29,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      #- name: Start RabbitMQ container
+      #  run: docker run -p 5672:5672 -d --name conejito rabbitmq:3
+      #- name: Start MySQL container
+      #  run: docker run -p 3306:3306 --name bbdd -e MYSQL_HOST=localhost -e MYSQL_HOST=bbdd -e MYSQL_USER=iudexuser -e MYSQL_PASSWORD=iudexpassword -e MYSQL_DATABASE=testdb -e MYSQL_RANDOM_ROOT_PASSWORD=yes -d mysql:8
+      #- name: Connect to database
+      #  run:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

@@ -151,7 +151,6 @@ public class APIContestController {
     @PutMapping("contest/{contestId}/team/addBulk")
     public ResponseEntity<String> addTeamToContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         contestId = sanitize(contestId);
-        teamList = sanitize(teamList);
 
         String salida = contestService.addTeamToContest(contestId, teamList);
         if (salida.equals("OK")) {
@@ -179,7 +178,6 @@ public class APIContestController {
     @DeleteMapping("contest/{contestId}/team/removeBulk")
     public ResponseEntity<String> deleteTeamFromContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         contestId = sanitize(contestId);
-        teamList = sanitize(teamList);
 
         String salida = contestService.deleteTeamFromContest(contestId, teamList);
         if (salida.equals("OK")) {
@@ -219,7 +217,6 @@ public class APIContestController {
     @PostMapping("contest/{contestId}/language/addBulk")
     public ResponseEntity<String> addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam String[] languageList) {
         contestId = sanitize(contestId);
-        languageList = sanitize(languageList);
 
         String salida = contestService.addAcceptedLanguagesToContest(contestId, languageList);
         if (salida.equals("OK")) {
