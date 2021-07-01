@@ -156,7 +156,7 @@ public class ContestService {
     }
 
     public String anyadeProblemaContest(String idContest, String idProblema) {
-        logger.debug("Add problem " + idProblema + " to contest " + idContest);
+        logger.debug("Add problem {} to contest {}", idProblema, idContest);
         Optional<Contest> contestOptional = getContestById(idContest);
         Optional<Problem> problemOptional = problemService.getProblem(idProblema);
 
@@ -269,7 +269,7 @@ public class ContestService {
                 throw new RuntimeException(salida);
             }
         }
-        logger.debug("Finish adding teams to contest " + contestId);
+        logger.debug("Finish adding teams to contest {}", contestId);
         return "OK";
     }
 
@@ -288,7 +288,7 @@ public class ContestService {
 
         Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
         if (teamOptional.isEmpty()) {
-            logger.error("Team {} not found" + teamId);
+            logger.error("Team {} not found", teamId);
             return "TEAM NOT FOUND";
         }
         Team team = teamOptional.get();
@@ -363,7 +363,7 @@ public class ContestService {
     }
 
     public String removeLanguageFromContest(String contestId, String languageId) {
-        logger.debug("Delete language " + languageId + " from contest " + contestId);
+        logger.debug("Delete language {} from contest {}", languageId, contestId);
 
         Optional<Contest> contestOptional = getContestById(contestId);
         if (contestOptional.isEmpty()) {
