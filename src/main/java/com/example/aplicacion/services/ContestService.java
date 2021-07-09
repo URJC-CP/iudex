@@ -459,7 +459,7 @@ public class ContestService {
         for (Team equipo : contest.getListaParticipantes()) {
             TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo.toTeamAPISimple()));
             for (Problem problem : contest.getListaProblemas()) {
-                teamScore.addProblemScore(new ProblemScore(problem.toProblemAPISimple()), problem);
+                teamScore.addProblemScore(problem, new ProblemScore(problem.toProblemAPISimple()));
             }
             teamScoreMap.put(equipo, teamScore);
         }
@@ -495,7 +495,7 @@ public class ContestService {
                     minExecTime = (minExecTime == -1) ? tiempo : Long.min(minExecTime, tiempo);
                     first = (minExecTime == tiempo || first == null) ? problemScore : first;
                 }
-                teamScore.addProblemScore(problemScore, problem);
+                teamScore.addProblemScore(problem, problemScore);
             }
 
             // actualizar el primer equipo en resolver el problema

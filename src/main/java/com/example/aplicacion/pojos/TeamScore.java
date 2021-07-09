@@ -50,7 +50,7 @@ public class TeamScore {
         this.scoreMap = scoreMap;
     }
 
-    public void addProblemScore(ProblemScore score, Problem problem) {
+    public void addProblemScore(Problem problem, ProblemScore score) {
         if (score == null) {
             throw new RuntimeException("Error! Wrong parameter!");
         }
