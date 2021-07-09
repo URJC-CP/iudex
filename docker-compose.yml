@@ -6,7 +6,7 @@ services:
     ports:
       - 5672
   bbdd:
-    image: mariadb:10
+    image: mysql:8
     container_name: bbdd
     volumes:
       - db_data:/var/lib/mysql

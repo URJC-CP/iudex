@@ -1,4 +1,4 @@
-FROM mariadb:10
+FROM mysql:8
 WORKDIR /root
 
 #RUN apk add --no-cache bash
