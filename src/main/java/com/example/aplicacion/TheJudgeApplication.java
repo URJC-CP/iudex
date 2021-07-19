@@ -19,6 +19,6 @@ public class TheJudgeApplication {
 
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.example.aplicacion.Controllers.apiControllers")).paths(PathSelectors.any()).build();
+        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.example.aplicacion.controllers.api_controllers")).paths(PathSelectors.any()).build();
     }
 }
