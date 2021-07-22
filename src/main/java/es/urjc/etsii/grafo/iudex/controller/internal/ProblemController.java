@@ -23,8 +23,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.util.Sanitizer.sanitize;
-
 @Controller
 public class ProblemController {
     private static final Logger logger = LoggerFactory.getLogger(ProblemController.class);

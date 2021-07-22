@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.util.Sanitizer.sanitize;
-
 @Controller
 public class ContestController {
     private static final Logger logger = LoggerFactory.getLogger(ContestController.class);

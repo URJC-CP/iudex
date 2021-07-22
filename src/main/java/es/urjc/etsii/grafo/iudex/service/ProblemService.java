@@ -1,12 +1,12 @@
 package es.urjc.etsii.grafo.iudex.service;
 
+import es.urjc.etsii.grafo.iudex.entity.*;
 import es.urjc.etsii.grafo.iudex.pojo.ProblemEntradaSalidaVisiblesHTML;
 import es.urjc.etsii.grafo.iudex.pojo.ProblemString;
 import es.urjc.etsii.grafo.iudex.repository.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repository.ProblemRepository;
 import es.urjc.etsii.grafo.iudex.repository.SampleRepository;
 import es.urjc.etsii.grafo.iudex.repository.TeamRepository;
-import es.urjc.etsii.grafo.iudex.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

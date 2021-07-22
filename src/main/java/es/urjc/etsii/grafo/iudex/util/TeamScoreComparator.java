@@ -1,7 +1,7 @@
 package es.urjc.etsii.grafo.iudex.util;
 
-import es.urjc.etsii.grafo.iudex.pojo.TeamScore;
 import com.google.common.primitives.Floats;
+import es.urjc.etsii.grafo.iudex.pojo.TeamScore;
 
 import java.util.Comparator;
 

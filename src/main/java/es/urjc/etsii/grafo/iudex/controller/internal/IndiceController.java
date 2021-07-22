@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 
-import static es.urjc.etsii.grafo.iudex.util.Sanitizer.sanitize;
-
 @Controller
 public class IndiceController {
     private static final Logger logger = LoggerFactory.getLogger(IndiceController.class);

@@ -7,8 +7,8 @@ import es.urjc.etsii.grafo.iudex.pojo.ProblemScore;
 import es.urjc.etsii.grafo.iudex.pojo.TeamScore;
 import es.urjc.etsii.grafo.iudex.repository.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repository.TeamRepository;
-import es.urjc.etsii.grafo.iudex.util.TeamScoreComparator;
 import es.urjc.etsii.grafo.iudex.util.Sanitizer;
+import es.urjc.etsii.grafo.iudex.util.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static es.urjc.etsii.grafo.iudex.util.Sanitizer.sanitize;
 
 @Service
 public class ContestService {

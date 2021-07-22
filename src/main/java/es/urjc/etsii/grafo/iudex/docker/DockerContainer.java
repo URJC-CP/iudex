@@ -1,8 +1,8 @@
 package es.urjc.etsii.grafo.iudex.docker;
 
-import es.urjc.etsii.grafo.iudex.entity.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
+import es.urjc.etsii.grafo.iudex.entity.Result;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;

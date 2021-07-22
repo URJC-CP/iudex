@@ -1,8 +1,8 @@
 package es.urjc.etsii.grafo.iudex.entity;
 
+import com.google.common.hash.Hashing;
 import es.urjc.etsii.grafo.iudex.pojo.ResultAPI;
 import es.urjc.etsii.grafo.iudex.pojo.SubmissionAPI;
-import com.google.common.hash.Hashing;
 
 import javax.persistence.*;
 import java.nio.charset.StandardCharsets;
