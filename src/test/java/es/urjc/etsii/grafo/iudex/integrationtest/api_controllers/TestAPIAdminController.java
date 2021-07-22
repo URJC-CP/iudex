@@ -52,7 +52,7 @@ class TestAPIAdminController {
         String badURL = "/API/v1/result/" + badResult;
         String goodURL = "/API/v1/result/" + goodResult;
 
-        String salida = "RESULT NOT FOUND";
+        String salida = ""; // Status 404 with no body
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetResult(badURL, status, salida);
 
@@ -71,7 +71,7 @@ class TestAPIAdminController {
     void testAPIGetAllResults() throws Exception {
         String url = "/API/v1/result/";
 
-        String salida = "RESULT NOT FOUND";
+        String salida = ""; // Status 404 with no body
         HttpStatus status = HttpStatus.NOT_FOUND;
         when(resultService.getAllResults()).thenReturn(null);
         testGetResult(url, status, salida);

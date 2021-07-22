@@ -273,7 +273,7 @@ public class ZipHandlerService {
 
         String linea;
         while ((linea = reader.readLine()) != null) {
-            salida.append(linea + "\n");
+            salida.append(linea).append("\n");
         }
         //borramos el ultimo salto de linea
         if (salida.length() >= 1) {

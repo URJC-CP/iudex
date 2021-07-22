@@ -25,7 +25,7 @@ public class APIAdminController {
 
         Result result = resultService.getResult(resultId);
         if (result == null) {
-            return new ResponseEntity("RESULT NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -35,7 +35,7 @@ public class APIAdminController {
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();
         if (resultList == null) {
-            return new ResponseEntity("RESULT NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(resultList, HttpStatus.OK);
     }

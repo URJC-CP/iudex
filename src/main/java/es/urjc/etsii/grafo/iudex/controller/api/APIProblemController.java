@@ -206,7 +206,7 @@ public class APIProblemController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Optional<String> inputText = Optional.ofNullable(null);
+        Optional<String> inputText = Optional.empty();
         try {
             if (sampleInputOptional.isPresent()) {
                 inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
@@ -215,7 +215,7 @@ public class APIProblemController {
             return new ResponseEntity<>("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
-        Optional<String> outputText = Optional.ofNullable(null);
+        Optional<String> outputText = Optional.empty();
         try {
             if (sampleOutputOptional.isPresent()) {
                 outputText = Optional.of(new String(sampleOutputOptional.get().getBytes()));
