@@ -118,13 +118,20 @@ public class APIProblemController {
 
     @ApiOperation("Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
-    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestParam(required = false) Optional<byte[]> pdf) {
+    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName,
+                                                    @RequestParam(required = false) Optional<String> teamId,
+                                                    @RequestParam(required = false) Optional<String> timeout,
+                                                    @RequestPart(name="pdf", required=false) MultipartFile pdf) throws IOException {
         problemId = sanitize(problemId);
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
         timeout = sanitize(timeout);
-
-        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
+        byte[] pdfBytes = null;
+        if(pdf!=null){
+            pdfBytes = pdf.getBytes();
+        }
+        Optional<byte[]> optPdfBytes = Optional.ofNullable(pdfBytes);
+        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, optPdfBytes, timeout);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
