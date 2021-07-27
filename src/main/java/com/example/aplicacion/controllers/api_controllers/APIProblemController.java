@@ -54,7 +54,7 @@ public class APIProblemController {
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
-            return new ResponseEntity("ERROR PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
         return new ResponseEntity<>(problem.toProblemAPIFull(), HttpStatus.OK);
@@ -69,7 +69,7 @@ public class APIProblemController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -88,10 +88,10 @@ public class APIProblemController {
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
-                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -109,25 +109,22 @@ public class APIProblemController {
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
-                return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            return new ResponseEntity("ERROR IN FILE", HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @ApiOperation("Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
-    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName,
-                                                    @RequestParam(required = false) Optional<String> teamId,
-                                                    @RequestParam(required = false) Optional<String> timeout,
-                                                    @RequestPart(name="pdf", required=false) MultipartFile pdf) throws IOException {
+    public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestPart(name = "pdf", required = false) MultipartFile pdf) throws IOException {
         problemId = sanitize(problemId);
         problemName = sanitize(problemName);
         teamId = sanitize(teamId);
         timeout = sanitize(timeout);
         byte[] pdfBytes = null;
-        if(pdf!=null){
+        if (pdf != null) {
             pdfBytes = pdf.getBytes();
         }
         Optional<byte[]> optPdfBytes = Optional.ofNullable(pdfBytes);
@@ -135,7 +132,7 @@ public class APIProblemController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -148,7 +145,7 @@ public class APIProblemController {
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
-            return new ResponseEntity("PROBLEM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         Problem problem = problemOptional.get();
 
@@ -214,7 +211,7 @@ public class APIProblemController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Optional<String> inputText = Optional.ofNullable(null);
+        Optional<String> inputText = Optional.empty();
         try {
             if (sampleInputOptional.isPresent()) {
                 inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
@@ -223,7 +220,7 @@ public class APIProblemController {
             return new ResponseEntity<>("ERROR IN INPUT FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
-        Optional<String> outputText = Optional.ofNullable(null);
+        Optional<String> outputText = Optional.empty();
         try {
             if (sampleOutputOptional.isPresent()) {
                 outputText = Optional.of(new String(sampleOutputOptional.get().getBytes()));

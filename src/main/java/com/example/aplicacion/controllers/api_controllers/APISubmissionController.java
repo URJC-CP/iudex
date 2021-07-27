@@ -47,13 +47,13 @@ public class APISubmissionController {
             Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty() || contestOptional.isEmpty()) {
-                return new ResponseEntity("Problem or contest not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             Contest contest = contestOptional.get();
             Problem problem = problemOptional.get();
 
             if (!contest.getListaProblemas().contains(problem)) {
-                return new ResponseEntity("PROBLEM NOT IN THE CONTEST", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();
             for (Submission submission : submissionService.getSubmissionFromProblemAndContest(problem, contest)) {
@@ -64,7 +64,7 @@ public class APISubmissionController {
         } else if (problemId.isPresent()) {
             Optional<Problem> problemOptional = problemService.getProblem(problemId.get());
             if (problemOptional.isEmpty()) {
-                return new ResponseEntity("Problem not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 Problem problem = problemOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
@@ -77,7 +77,7 @@ public class APISubmissionController {
         } else if (contestId.isPresent()) {
             Optional<Contest> contestOptional = contestService.getContestById(contestId.get());
             if (contestOptional.isEmpty()) {
-                return new ResponseEntity("CONTEST NOT FOUND", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 Contest contest = contestOptional.get();
                 List<SubmissionAPI> submissionAPIS = new ArrayList<>();
@@ -114,7 +114,7 @@ public class APISubmissionController {
             Submission submission = submissionOptional.get();
             return new ResponseEntity<>(submission.toSubmissionAPIFull(), HttpStatus.OK);
         } else {
-            return new ResponseEntity("SUBMISSION NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -132,13 +132,13 @@ public class APISubmissionController {
         try {
             cod = new String(codigo.getBytes());
         } catch (IOException e) {
-            return new ResponseEntity("ERROR IN FILE", HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
 
         SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
