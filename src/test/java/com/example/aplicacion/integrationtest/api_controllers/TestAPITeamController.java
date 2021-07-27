@@ -69,7 +69,7 @@ class TestAPITeamController {
         String badURL = "/API/v1/team/" + badTeam;
         String goodURL = "/API/v1/team/" + goodTeam;
 
-        String salida = "TEAM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "TEAM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetTeam(badURL, status, salida);
 
@@ -91,7 +91,7 @@ class TestAPITeamController {
         String url = "/API/v1/team/";
 
         TeamString ts = new TeamString();
-        String salida = "TEAM NAME DUPLICATED";
+        String salida = ""; // Status 404 with no body - "TEAM NAME DUPLICATED";
         ts.setSalida(salida);
         HttpStatus status = HttpStatus.NOT_FOUND;
         when(teamService.crearTeam(badTeam, false)).thenReturn(ts);
@@ -120,7 +120,7 @@ class TestAPITeamController {
         String goodURL = "/API/v1/team/" + goodTeam;
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "TEAM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "TEAM NOT FOUND";
         when(teamService.deleteTeamByTeamId(badTeam)).thenReturn(salida);
         testDeleteTeam(badURL, status, salida);
 
@@ -148,7 +148,7 @@ class TestAPITeamController {
         String goodTeamName = team.getNombreEquipo();
         TeamString ts = new TeamString();
 
-        String salida = "TEAM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "TEAM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ts.setSalida(salida);
         when(teamService.updateTeam(badTeam, Optional.of(badTeamName))).thenReturn(ts);
@@ -157,7 +157,7 @@ class TestAPITeamController {
         when(teamService.updateTeam(badTeam, Optional.of(goodTeamName))).thenReturn(ts);
         testUpdateTeam(badURL, goodTeamName, status, salida);
 
-        salida = "TEAM NAME DUPLICATED";
+        salida = ""; // Status 404 with no body - "TEAM NAME DUPLICATED";
         ts.setSalida(salida);
         when(teamService.updateTeam(goodTeam, Optional.of(badTeamName))).thenReturn(ts);
         testUpdateTeam(goodURL, badTeamName, status, salida);
@@ -190,7 +190,7 @@ class TestAPITeamController {
         String goodURL = "/API/v1/team/" + goodTeam + "/" + goodUser;
         TeamString ts = new TeamString();
 
-        String salida = "TEAM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "TEAM NOT FOUND";
         ts.setSalida(salida);
         HttpStatus status = HttpStatus.NOT_FOUND;
 
@@ -200,7 +200,7 @@ class TestAPITeamController {
         when(teamService.addUserToTeamUssingIds(badTeam, goodUser)).thenReturn(ts);
         testAddUser(badURL2, status, salida);
 
-        salida = "USER NOT FOUND";
+        salida = ""; // Status 404 with no body - "USER NOT FOUND";
         ts.setSalida(salida);
         when(teamService.addUserToTeamUssingIds(goodTeam, badUser)).thenReturn(ts);
         testAddUser(badURL3, status, salida);
@@ -213,7 +213,7 @@ class TestAPITeamController {
         salida = jsonConverter.convertObjectToJSON(team.toTeamAPI());
         testAddUser(goodURL, status, salida);
 
-        salida = "USER ALREADY IN TEAM";
+        salida = ""; // Status 404 with no body - "USER ALREADY IN TEAM";
         status = HttpStatus.NOT_FOUND;
         ts.setSalida(salida);
         when(teamService.addUserToTeamUssingIds(goodTeam, goodUser)).thenReturn(ts);
@@ -239,7 +239,7 @@ class TestAPITeamController {
         String goodURL = "/API/v1/team/" + goodTeam + "/" + goodUser;
         TeamString ts = new TeamString();
 
-        String salida = "TEAM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "TEAM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ts.setSalida(salida);
 
@@ -249,12 +249,12 @@ class TestAPITeamController {
         when(teamService.deleteUserFromTeam(badTeam, goodUser)).thenReturn(ts);
         testDeleteUser(badURL2, status, salida);
 
-        salida = "USER NOT FOUND";
+        salida = ""; // Status 404 with no body - "USER NOT FOUND";
         ts.setSalida(salida);
         when(teamService.deleteUserFromTeam(goodTeam, badUser)).thenReturn(ts);
         testDeleteUser(badURL3, status, salida);
 
-        salida = "USER IS NOT IN TEAM";
+        salida = ""; // Status 404 with no body - "USER IS NOT IN TEAM";
         ts.setSalida(salida);
         when(teamService.deleteUserFromTeam(goodTeam, goodUser)).thenReturn(ts);
         testDeleteUser(goodURL, status, salida);

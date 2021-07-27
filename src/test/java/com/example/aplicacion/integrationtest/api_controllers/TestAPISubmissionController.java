@@ -94,19 +94,18 @@ class TestAPISubmissionController {
         String badContest = "654";
         String url = "/API/v1/submissions/";
 
-        String salida = "Problem or contest not found";
+        String salida = ""; // Status 404 with no body - "Problem or contest not found";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetSubmissions(url, badContest, badProblem, status, salida);
         testGetSubmissions(url, badContest, goodProblem, status, salida);
         testGetSubmissions(url, goodContest, badProblem, status, salida);
 
-        salida = "Problem not found";
+        salida = ""; // Status 404 with no body - "Problem not found";
         testGetSubmissionsWithProblemId(url, badProblem, status, salida);
 
-        salida = "CONTEST NOT FOUND";
+        salida = ""; // Status 404 with no body - "CONTEST NOT FOUND";
         testGetSubmissionsWithContestId(url, badContest, status, salida);
 
-        //salida = "OK";
         status = HttpStatus.OK;
         salida = jsonConverter.convertObjectToJSON(List.of(submission.toSubmissionAPI()));
         testGetSubmissionsWithProblemId(url, goodProblem, status, salida);
@@ -147,7 +146,7 @@ class TestAPISubmissionController {
         String badURL = "/API/v1/submission/" + badSubmission;
         String goodURL = "/API/v1/submission/" + goodSubmission;
 
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = ""; // Status 404 with no body - "SUBMISSION NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetSubmission(badURL, status, salida);
 
@@ -176,12 +175,12 @@ class TestAPISubmissionController {
         String badURL = "/API/v1/submission/" + badSubmission;
         String goodURL = "/API/v1/submission/" + goodSubmission;
 
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = ""; // Status 404 with no body - "SUBMISSION NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         when(submissionService.deleteSubmission(badSubmission)).thenReturn(salida);
         testDeleteSubmission(badURL, status, salida);
 
-        salida = "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
+        salida = ""; // Status 404 with no body - "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
         when(submissionService.deleteSubmission(goodSubmission)).thenReturn(salida);
         submission.setEsProblemValidator(true);
         testDeleteSubmission(goodURL, status, salida);

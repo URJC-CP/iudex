@@ -90,7 +90,7 @@ class TestAPIProblemController {
         String badURL = "/API/v1/problem/" + badProblem;
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "ERROR PROBLEM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "ERROR PROBLEM NOT FOUND";
         testGetProblem(badURL, status, salida);
 
         status = HttpStatus.OK;
@@ -139,7 +139,7 @@ class TestAPIProblemController {
         String badURL = "/API/v1/problem/" + badProblem;
         String goodURL = "/API/v1/problem/" + goodProblem;
 
-        String salida = "ERROR PROBLEMID NOT FOUND";
+        String salida = ""; // Status 404 with no body - "ERROR PROBLEMID NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ps.setSalida(salida);
         when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
@@ -154,7 +154,7 @@ class TestAPIProblemController {
         when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
 
-        salida = "ERROR TEAMID NOT FOUND";
+        salida = ""; // Status 404 with no body - "ERROR TEAM NOT FOUND";
         ps.setSalida(salida);
         problem.setNombreEjercicio("");
         when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
@@ -195,7 +195,7 @@ class TestAPIProblemController {
         String goodURL = "/API/v1//problem/" + goodProblem + "/getPDF";
         String badURL = "/API/v1//problem/" + badProblem + "/getPDF";
 
-        String salida = "PROBLEM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "PROBLEM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGoToProblem(badURL, status, salida);
 
@@ -224,7 +224,7 @@ class TestAPIProblemController {
         String badURL = "/API/v1/problem/" + badProblem;
         String goodURL = "/API/v1/problem/" + goodProblem;
 
-        String salida = "PROBLEM NOT FOUND";
+        String salida = ""; // Status 404 with no body - "PROBLEM NOT FOUND";
         HttpStatus status = HttpStatus.NOT_FOUND;
         when(problemService.deleteProblem(badProblem)).thenReturn(salida);
         testDeleteProblem(badURL, status, salida);
