@@ -152,7 +152,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get contest with invalid id")
     void test2() {
         String badContestId = "564";
-        String salida = "CONTEST NOT FOUND";
+        String salida = "no body"; // Status 404 with no body - "CONTEST NOT FOUND";
         testGetContestWithException(badContestId, salida);
     }
 
@@ -183,21 +183,21 @@ class TheJudgeApplicationTests {
 
         String filename = "primavera.zip";
         String problemName = "";
-        salida = "TEAM NOT FOUND";
+        salida = "no body"; // Status 404 with no body - "TEAM NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, badTeamId, badContestId, salida);
 
-        salida = "CONTEST NOT FOUND";
+        salida = "no body"; // Status 404 with no body - "CONTEST NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
 
         // unnamed empty file without problem name
         filename = ".zip.zip";
-        salida = "PROBLEM NAME NOT SPECIFIED";
+        salida = "no body"; // Status 404 with no body - "PROBLEM NAME NOT SPECIFIED";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
         // unnamed empty file with problem name
         filename = ".zip.zip";
         problemName = "pruba vacio";
-        salida = "TEST CASE FILES NOT FOUND";
+        salida = "no body"; // Status 404 with no body - "TEST CASE FILES NOT FOUND";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
     }
 
@@ -255,7 +255,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get problem with invalid id")
     void test4() {
         String badProblemId = "756";
-        String salida = "ERROR PROBLEM NOT FOUND";
+        String salida = "no body"; // Status 404 with no body - "ERROR PROBLEM NOT FOUND";
         testGetProblemWithException(badProblemId, salida);
     }
 
@@ -291,13 +291,13 @@ class TheJudgeApplicationTests {
         // all okay
         String codeFile = "vacio.java";
         String language = "";
-        String salida = "CONTEST NOT FOUND";
+        String salida = "no body"; // Status 404 with no body - "CONTEST NOT FOUND";
         testAddSubmissionWithException(badContestId, badProblemId, badTeamId, language, codeFile, salida);
 
-        salida = "PROBLEM NOT FOUND";
+        salida = "no body"; // Status 404 with no body - "PROBLEM NOT FOUND";
         testAddSubmissionWithException(contestId, badProblemId, badTeamId, language, codeFile, salida);
 
-        salida = "TEAM NOT FOUND";
+        salida = "no body"; // Status 404 with no body - "TEAM NOT FOUND";
         testAddSubmissionWithException(contestId, problemId, badTeamId, language, codeFile, salida);
 
 		/*
@@ -307,7 +307,7 @@ class TheJudgeApplicationTests {
 		 */
 
         language = getLanguage("java");
-        salida = "PROBLEM NOT IN CONTEST";
+        salida = "no body"; // Status 404 with no body - "PROBLEM NOT IN CONTEST";
         testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
     }
 
@@ -377,7 +377,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get submission with invalid id")
     void test6() {
         String badSubId = "756";
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = "no body"; // Status 404 with no body - "SUBMISSION NOT FOUND";
         testGetSubmissionWithException(badSubId, salida);
     }
 
@@ -401,7 +401,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get team with invalid id")
     void test7() {
         String badTeam = "867";
-        String salida = "TEAM NOT FOUND";
+        String salida = "no body"; // Status 404 with no body - "TEAM NOT FOUND";
         testGetTeamWithException(badTeam, salida);
     }
 

@@ -41,7 +41,7 @@ public class APITeamController {
             Team team = teamOptional.get();
             return new ResponseEntity<>(team.toTeamAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity("TEAM NOT FOUND", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -56,7 +56,7 @@ public class APITeamController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -83,7 +83,7 @@ public class APITeamController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -97,7 +97,7 @@ public class APITeamController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getTeam().toTeamAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
