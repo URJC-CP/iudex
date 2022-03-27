@@ -25,19 +25,22 @@ import java.util.Set;
 public class ProblemService {
     private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
 
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private SampleRepository sampleRepository;
+    private final ContestRepository contestRepository;
+    private final ProblemRepository problemRepository;
+    private final TeamRepository teamRepository;
+    private final SampleRepository sampleRepository;
 
-    @Autowired
-    private ZipHandlerService zipHandlerService;
-    @Autowired
-    private ProblemValidatorService problemValidatorService;
+    private final ZipHandlerService zipHandlerService;
+    private final ProblemValidatorService problemValidatorService;
+
+    public ProblemService(ContestRepository contestRepository, ProblemRepository problemRepository, TeamRepository teamRepository, SampleRepository sampleRepository, ZipHandlerService zipHandlerService, ProblemValidatorService problemValidatorService) {
+        this.contestRepository = contestRepository;
+        this.problemRepository = problemRepository;
+        this.teamRepository = teamRepository;
+        this.sampleRepository = sampleRepository;
+        this.zipHandlerService = zipHandlerService;
+        this.problemValidatorService = problemValidatorService;
+    }
 
     public ProblemString addProblem(Problem createdProblem) {
         logger.debug("Create new problem from problem {}", createdProblem.getId());

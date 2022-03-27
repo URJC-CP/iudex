@@ -23,12 +23,13 @@ import java.util.zip.ZipInputStream;
 public class ZipHandlerService {
     private static final Logger logger = LoggerFactory.getLogger(ZipHandlerService.class);
 
-    @Autowired
-    private ProblemService problemService;
-    @Autowired
-    private SubmissionService submissionService;
-    @Autowired
-    private SubmissionProblemValidatorService submissionProblemValidatorService;
+    private final SubmissionService submissionService;
+    private final SubmissionProblemValidatorService submissionProblemValidatorService;
+
+    public ZipHandlerService(SubmissionService submissionService, SubmissionProblemValidatorService submissionProblemValidatorService) {
+        this.submissionService = submissionService;
+        this.submissionProblemValidatorService = submissionProblemValidatorService;
+    }
 
     //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
     public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String teamId) throws Exception {
@@ -258,12 +259,6 @@ public class ZipHandlerService {
             }
         }
         return "OK";
-    }
-
-    private void borraInNOut(Problem problem) {
-        logger.debug("Delete sample files from problem {}", problem.getId());
-        problemService.deleteSamples(problem);
-        logger.debug("Finish delete sample files from problem {}", problem.getId());
     }
 
     //clase que coge un zipInput y lo convierte en string a traves del zipentry
