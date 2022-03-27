@@ -3,7 +3,7 @@ package com.example.aplicacion.controllers.standar_controllers;
 import com.example.aplicacion.entities.Contest;
 import com.example.aplicacion.services.ContestService;
 import com.example.aplicacion.services.ProblemService;
-import com.example.aplicacion.services.TeamService;
+import com.example.aplicacion.services.UserAndTeamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class ContestController {
     @Autowired
     private ContestService contestService;
     @Autowired
-    private TeamService teamService;
+    private UserAndTeamService teamService;
 
     //CONCURSO html
     @GetMapping("/goToContest")

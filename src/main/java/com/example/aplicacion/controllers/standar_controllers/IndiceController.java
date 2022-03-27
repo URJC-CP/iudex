@@ -36,9 +36,8 @@ public class IndiceController {
     @Autowired
     private ContestService contestService;
     @Autowired
-    private UserService userService;
-    @Autowired
-    private TeamService teamService;
+    private UserAndTeamService userService;
+
 
     @GetMapping("/")
     public ModelAndView index() {
@@ -48,7 +47,7 @@ public class IndiceController {
         model.getModel().put("exercices", problemService.getAllProblemas());
         model.getModel().put("languages", languageService.getNLanguages());
         model.getModel().put("contests", contestService.getAllContests());
-        model.getModel().put("teams", teamService.getAllTeams());
+        model.getModel().put("teams", userService.getAllTeams());
         model.setViewName("indexOriginal");
         //return new RedirectView()
         logger.debug("Show main page");

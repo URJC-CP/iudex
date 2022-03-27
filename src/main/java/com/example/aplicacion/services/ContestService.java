@@ -35,7 +35,7 @@ public class ContestService {
     @Autowired
     private ProblemService problemService;
     @Autowired
-    private TeamService teamService;
+    private UserAndTeamService teamService;
     @Autowired
     private LanguageService languageService;
 

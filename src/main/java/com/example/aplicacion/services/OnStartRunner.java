@@ -20,9 +20,8 @@ public class OnStartRunner implements ApplicationRunner {
     @Autowired
     private ContestService contestService;
     @Autowired
-    private TeamService teamService;
-    @Autowired
-    private UserService userService;
+    private UserAndTeamService userAndTeamService;
+
     @Autowired
     private LanguageService languageService;
 
@@ -37,10 +36,10 @@ public class OnStartRunner implements ApplicationRunner {
         createLanguage("cpp", "DOCKERS/CPP/Dockerfile");
         createLanguage("sql", "DOCKERS/MySQL/Dockerfile");
 
-        if (!userService.existsUserByNickname("pavloXd")) {
-            userService.crearUsuario("pavloXd", "mail1");
+        if (!userAndTeamService.existsUserByNickname("pavloXd")) {
+            userAndTeamService.crearUsuario("pavloXd", "mail1");
         }
-        var teamId = Long.toString(teamService.getTeamByNick("pavloXd").orElseThrow().getId());
+        var teamId = Long.toString(userAndTeamService.getTeamByNick("pavloXd").orElseThrow().getId());
 
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();

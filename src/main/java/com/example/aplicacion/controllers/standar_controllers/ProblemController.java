@@ -37,9 +37,7 @@ public class ProblemController {
     @Autowired
     private ContestService contestService;
     @Autowired
-    private UserService userService;
-    @Autowired
-    private TeamService teamService;
+    private UserAndTeamService userService;
 
     @GetMapping("/contest/{idContest}/problema/{idProblem}")
     public ModelAndView goToProblem(@PathVariable String idContest, @PathVariable String idProblem) {
@@ -77,7 +75,7 @@ public class ProblemController {
         modelAndView.getModel().put("problem", problem);
         modelAndView.getModel().put("contest", contest);
         modelAndView.getModel().put("languages", languageService.getNLanguages());
-        modelAndView.getModel().put("teams", teamService.getAllTeams());
+        modelAndView.getModel().put("teams", userService.getAllTeams());
         modelAndView.getModel().put("ejemplos", problemService.getProblemEntradaSalidaVisiblesHTML(problem));
 
         logger.debug("Show problem {}", idProblem);

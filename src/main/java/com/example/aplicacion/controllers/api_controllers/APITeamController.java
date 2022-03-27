@@ -3,7 +3,7 @@ package com.example.aplicacion.controllers.api_controllers;
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.pojos.TeamAPI;
 import com.example.aplicacion.pojos.TeamString;
-import com.example.aplicacion.services.TeamService;
+import com.example.aplicacion.services.UserAndTeamService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import static com.example.aplicacion.utils.Sanitizer.sanitize;
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APITeamController {
     @Autowired
-    TeamService teamService;
+    UserAndTeamService teamService;
 
     @ApiOperation("Return all Teams")
     @GetMapping("/API/v1/team")

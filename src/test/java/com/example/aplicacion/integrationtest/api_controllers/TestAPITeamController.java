@@ -4,7 +4,7 @@ import com.example.aplicacion.controllers.api_controllers.APITeamController;
 import com.example.aplicacion.entities.Team;
 import com.example.aplicacion.entities.User;
 import com.example.aplicacion.pojos.TeamString;
-import com.example.aplicacion.services.TeamService;
+import com.example.aplicacion.services.UserAndTeamService;
 import com.example.aplicacion.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ class TestAPITeamController {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private TeamService teamService;
+    private UserAndTeamService teamService;
     private Team team;
     private User user;
 

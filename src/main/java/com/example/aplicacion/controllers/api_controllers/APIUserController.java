@@ -2,7 +2,7 @@ package com.example.aplicacion.controllers.api_controllers;
 
 import com.example.aplicacion.pojos.UserAPI;
 import com.example.aplicacion.pojos.UserString;
-import com.example.aplicacion.services.UserService;
+import com.example.aplicacion.services.UserAndTeamService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import static com.example.aplicacion.utils.Sanitizer.sanitize;
 @CrossOrigin(methods = {RequestMethod.POST})
 public class APIUserController {
     @Autowired
-    UserService userService;
+    UserAndTeamService userService;
 
     @ApiOperation("Creates a User")
     @PostMapping("/API/v1/user")
