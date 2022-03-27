@@ -1,0 +1,42 @@
+<nb-layout-column start>
+
+  <br>  <br>
+
+  <div>
+    <h2 i18n="@@createContest" align="center">Create Contest</h2>
+
+    <nb-card>
+      <nb-card-body>
+
+        <div>
+          <br>
+          <p i18n="@@nameColumn">Name:</p>
+          <input nbInput [(ngModel)]='contestName' type="text" required>
+          <br><br>
+          <p i18n="@@descriptionColumn">Description:</p>
+          <input nbInput [(ngModel)]='contestDescription' type="text" required>
+          <br><br>
+          <p i18n="@@startDateContest">Start</p>
+          <input nbInput [(ngModel)]='startDateContest' type="datetime-local" required>
+          <br><br>
+          <p i18n="@@endDateContest">End</p>
+          <input nbInput [(ngModel)]='endDateContest' type="datetime-local" required>
+        </div>
+
+
+        <div style="float: bottom">
+          <br><br>
+          <button nbButton fullWidth (click)="save()" status="primary" size="large" i18n="@@saveContest">Save Contest</button>
+        </div>
+      </nb-card-body>
+
+    </nb-card>
+
+
+
+  </div>
+</nb-layout-column>
+
+
+
+

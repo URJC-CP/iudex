@@ -1,0 +1,15 @@
+  <nb-layout-column start>
+
+    <div>
+      <h2 i18n="@@publicProblemsText" align="center">Public Problems</h2>
+      <p i18n="@@publicProblemsTextSub" align="center">Problemas públicos disponibles</p>
+      <ng2-smart-table id="smartTable" [settings]="settingsTable" [source]="localDataSource"
+                       (userRowSelect)="selectedProblemFromTable($event)"
+      ></ng2-smart-table>
+    </div>
+
+  </nb-layout-column>
+
+
+
+

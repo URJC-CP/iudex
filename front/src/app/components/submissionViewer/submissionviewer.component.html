@@ -1,0 +1,90 @@
+<nb-layout-column start>
+
+  <br>  <br>
+
+  <h1 i18n="@@submissionViewerTitle" id="title" class="title" align="center">Submission {{actualSubmission.id}}</h1>
+
+  <div>
+
+    <nb-accordion multi>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@idColumn">Id</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.id}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@problemColumn">Problem</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          <a href="javascript:void(0);" (click)="viewProblemDetails($event)">{{actualSubmission.problem.id}} - {{actualSubmission.problem.nombreEjercicio}}</a>
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@languageColumn">Language</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.language.nombreLenguaje}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@teamColumn">Team</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.team.nombreEquipo}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@dateColumn">Date</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{submissionDate}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@numberTestCasesColumn">Number of test cases revised</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.numeroResultCorregidos}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@execTimeColumn">Execution Duration</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.execSubmissionTime}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item>
+        <nb-accordion-item-header i18n="@@execMemColumn">Execution Memory</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          {{actualSubmission.execSubmissionMemory}}
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+    </nb-accordion>
+
+    <br>
+
+    <h2 i18n="@@problemViewerTestCases" id="testCases" class="title" align="center">Test cases</h2>
+      <app-pie-chart style="height: 300px; width: 300px;margin-right:50px " [pieChartData]="pieChartData" [pieChartLabels]="pieChartLabels"></app-pie-chart>
+
+    <div style="display: inline-block; height: 250px; width: 250px; align-content: center">
+    <table style="border:#222b45 solid 3px">
+        <tr align="center" style="background-color: lightblue; border:#222b45 solid 3px">
+          <th i18n="@@problemViewerTestCases" width="100">Test Case</th>
+          <th i18n="@@resultColumn" width="100">Result</th>
+        </tr>
+        <tr align="center" *ngFor="let testCaseResult of testCasesResults;" style="border:#222b45 solid 3px">
+          <th style="background-color: lightblue;">{{testCaseResult.numeroCasoDePrueba}}</th>
+          <th *ngIf="checkValue(testCaseResult.resultadoRevision, 'ok')" style="background-color: rgba(0,255,0,0.3);">OK</th>
+          <th *ngIf="checkValue(testCaseResult.resultadoRevision, 'ko')" style="background-color: rgba(255,0,0,0.3)">KO</th>
+          <td *ngIf="checkValue(testCaseResult.resultadoRevision, '')" style="background-color: rgba(175,175,175,0.3);" i18n="@@notEvaluatedText">-</td>
+
+        </tr>
+      </table>
+    </div>
+    <br>
+
+      <h2 i18n="@@submissionViewerCode" class="title" align="center">Código enviado</h2>
+      <ngx-monaco-editor style="height: 500px" class="textEditorContainer" [options]="editorOptions" [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
+
+  </div>
+</nb-layout-column>
+
+
+
+

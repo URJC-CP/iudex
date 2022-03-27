@@ -1,0 +1,38 @@
+<nb-layout-column start>
+
+  <br>  <br>
+  <div>
+    <h2 i18n="@@problemViewerTestCases" id="testCases" class="title" align="center">Test cases {{actualProblem.nombreEjercicio}}</h2>
+    <nb-card>
+      <nb-card-body>
+        <p i18n="@@deleteTestCaseSelect">Select</p>
+        <nb-select (selectedChange)="onChangeSelectTestCasesToDelete($event)" [(ngModel)]="selectedTestCase">
+          <nb-option *ngFor="let testCase of testCases" [value]="testCase">{{testCase.id}} - {{testCase.name}}</nb-option>
+        </nb-select>
+        <div [hidden]="selectedTestCaseId == ''">
+         <h3 i18n="@@testCaseHeader" align="center">Test Case {{selectedTestCaseId}}</h3>
+         <p>Id:</p>
+         <p style="white-space:pre; font-family: 'Monospace'">{{selectedTestCaseId}}</p>
+         <p i18n="@@studentMenuProblemName">Name:</p>
+         <p style="white-space:pre; font-family: 'Monospace'">{{selectedTestCaseName}}</p>
+         <p i18n="@@testCaseBodyInput">Input:</p>
+         <p style="white-space:pre; font-family: 'Monospace'">{{selectedTestCaseInput}}</p>
+         <p i18n="@@testCaseBodyOutput">Output:</p>
+         <p style="white-space:pre; font-family: 'Monospace'">{{selectedTestCaseOutput}}</p>
+        </div>
+     </nb-card-body>
+    </nb-card>
+    <br>
+
+    <div [hidden]="isPublic">
+      <div align="center" [hidden]="isStudent">
+        <button nbButton (click)="deleteTestCase()" style="margin:4px;" status="danger" size="medium" i18n="@@deleteTestCase">Delete</button>
+      </div>
+    </div>
+  </div>
+
+</nb-layout-column>
+
+
+
+
