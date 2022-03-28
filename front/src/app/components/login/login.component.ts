@@ -16,7 +16,7 @@ export class LoginComponent {
   userDto:UserDto;
 
   // TODO: FIX this, should be in the environment, and use relative paths
-  API_URL_HEAD = 'http://localhost:8080/api/v1/';
+  API_URL_HEAD = 'http://localhost:8080/API/v1/';
 
   constructor(private router:Router, private http: HttpClient) { }
 

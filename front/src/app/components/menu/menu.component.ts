@@ -17,7 +17,7 @@ const PREDIFINED_PUBLIC_CONTEST_ID = "7";
 
 export class MenuComponent {
   // TODO: FIX this, should be in the environment, and use relative paths
-  API_URL_HEAD = 'http://localhost:8080/api/v1/';
+  API_URL_HEAD = 'http://localhost:8080/API/v1/';
   problemIdSelected:string;
   contestId:string;
   currentContest:ContestApiDTO;
