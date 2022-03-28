@@ -1,0 +1,47 @@
+  <nb-layout-column start>
+    <br>  <br>    <br>  <br>
+    <h1 i18n="@@login" id="title" class="title" align="center">Login</h1>
+    <p i18n="@@loginSub" class="sub-title">Hello! Log in with your username.</p>
+
+      <div class="form-control-group">
+        <label class="label" for="input-email" i18n="@@loginUser">Username:</label>
+        <input nbInput
+               fullWidth
+               #emailInput
+               name="email"
+               id="input-email"
+               pattern=".+@.+\..+"
+               placeholder=""
+               fieldSize="large"
+               autofocus>
+      </div>
+    <br>  <br>
+
+    <div class="form-control-group">
+      <label class="label" for="input-password" i18n="@@loginPass">Password:</label>
+        <input nbInput
+               fullWidth
+               #passwordInput
+               name="password"
+               type="password"
+               id="input-password"
+               placeholder=""
+               fieldSize="large">
+      </div>
+    <br>  <br>
+
+      <button nbButton
+              fullWidth
+              (click)="login()"
+              status="primary"
+              size="large"
+              i18n="@@loginButton"
+      >
+        Log In
+      </button>
+    <br>  <br>
+    </nb-layout-column>
+
+
+
+

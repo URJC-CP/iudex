@@ -1,0 +1,29 @@
+<nb-layout-column start>
+
+  <br>  <br>
+
+  <h1 i18n="@@resolveProblem" id="title" class="title" align="center">Resolve problem : {{actualProblem.nombreEjercicio}}</h1>
+  <nb-card>
+    <nb-card-body>
+      <div>
+        <p i18n="@@selectCodeLang">Select code language: </p>
+        <nb-select name="userLanguage"  class="userLanguage" [(ngModel)]="userLanguage" (selectedChange)="changeLanguage($event)">
+          <nb-option *ngFor="let lang of availableLanguages" value="{{lang}}">
+            {{lang}}
+          </nb-option>
+        </nb-select>
+
+        <p i18n="@@uploadCode">Upload code file or paste it at the editor...</p>
+        <input nbInput (change)="filefunct($event)" [(ngModel)]='codeFile' type="file" accept=".pas, .java" required>
+        <br>
+        <ngx-monaco-editor style="height: 500px" class="textEditorContainer" [options]="editorOptions" [(ngModel)]="code" (init)="editorInit($event)"></ngx-monaco-editor>
+        <br>
+        <button nbButton fullWidth (click)="sendSubmission()" status="primary" size="large" i18n="@@sendSubmission">Send Submission</button>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</nb-layout-column>
+
+
+
+

@@ -1,0 +1,50 @@
+<nb-layout-column start>
+
+  <br>  <br>
+
+  <div>
+    <h2 i18n="@@editProblemWithProblemName" align="center">Edit Problem {{actualProblem.nombreEjercicio}}</h2>
+
+    <nb-card>
+      <nb-card-body>
+        <p i18n="@@editProblemSub">Edit Problem Sub</p>
+        <nb-select (selectedChange)="onChangeRadioGroup($event)">
+          <nb-option value="zip" i18n="@@byZip">Option 1</nb-option>
+          <nb-option value="fields" i18n="@@byFields">Option 2</nb-option>
+        </nb-select>
+
+        <div [hidden]="hideEditByZipOption">
+          <br>
+          <p i18n="@@teacherMenuAddProblSelectZip" >Select a Zip File:</p>
+          <input nbInput (change)="manageZipFile($event)" [(ngModel)]='zipFileToCreateProblem' type="file" accept=".zip" required>
+        </div>
+
+        <div [hidden]="hideEditByFieldsOption">
+          <br>
+          <p i18n="@@studentMenuProblemName">Name:</p>
+          <input nbInput [(ngModel)]='problemName' type="text" required>
+          <br><br>
+          <p i18n="@@problemEditorSelectPDF">Select a PDF File:</p>
+          <input nbInput (change)="managePdfFile($event)" type="file" accept=".pdf" required>
+          <br><br>
+          <p i18n="@@timeoutInput">Timeout:</p>
+          <input nbInput [(ngModel)]='problemTimeout' type="text" required>
+        </div>
+
+
+        <div style="float: bottom" [hidden]="hideSaveButton">
+          <br><br>
+          <button nbButton fullWidth (click)="save()" status="primary" size="large" i18n="@@teacherMenuSaveProblem">Save Problem</button>
+        </div>
+      </nb-card-body>
+
+    </nb-card>
+
+
+
+  </div>
+</nb-layout-column>
+
+
+
+

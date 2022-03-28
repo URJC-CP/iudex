@@ -1,0 +1,102 @@
+  <nb-layout-column start>
+
+    <br>  <br>
+
+    <h1 i18n="@@teacherMenuTitle" id="title" class="title" align="center">Menu of contest : {{currentContest.nombreContest}} </h1>
+
+    <br>  <br>
+
+    <nb-card>
+      <nb-card-header i18n="@@cardHeaderOptions">Options</nb-card-header>
+      <nb-card-body class="buttons-rows">
+        <button nbButton hero status="primary" style="margin: 10px" (click)="showAllProblems()" i18n="@@problemsText">Show Problems</button>
+        <button [hidden]="isStudent" nbButton hero status="primary" style="margin: 10px"(click)="showCreateProblemWindow()" i18n="@@teacherMenuNewProbl">Create Problem</button>
+        <button nbButton hero status="primary" style="margin: 10px"(click)="showSubmissions()" i18n="@@submissionText">Submissions</button>
+        <button [hidden]="isStudent" nbButton hero status="primary" style="margin: 10px"(click)="showAddProblemToContest()" i18n="@@teacherMenuAddExistProbToContest">Add Problem To Contest</button>
+        <button nbButton hero status="primary" style="margin: 10px"(click)="showRanking()" >Ranking</button>
+
+      </nb-card-body>
+    </nb-card>
+
+    <br>  <br>
+    <div [hidden]="hiddenAllProblems">
+      <h2 i18n="@@problemsText" align="center">All Problems</h2>
+      <p i18n="@@teacherMenuAllProblemsSub" align="center">You can sort, search, remove or edit problems with this table.</p>
+      <ng2-smart-table id="smartTable" [hidden]="isStudent" [settings]="settingsTable" [source]="localDataSource"
+                       (deleteConfirm)="deleteFromTable($event)"
+                       (userRowSelect)="selectedProblemFromTable($event)"
+      ></ng2-smart-table>
+      <ng2-smart-table id="smartTableStudent" [hidden]="!isStudent" [settings]="settingsTableStudent" [source]="localDataSource"
+                       (userRowSelect)="selectedProblemFromTable($event)"
+      ></ng2-smart-table>
+    </div>
+
+    <div [hidden]="hiddenAddProblems">
+      <h2 i18n="@@teacherMenuNewProbl" align="center">New Problem</h2>
+      <p i18n="@@teacherMenuNewProbSub"  align="center">Create a new problem from a Zip file</p>
+
+      <nb-card>
+        <nb-card-body>
+          <div>
+            <br>
+            <p i18n="@@teacherMenuAddProblSelectZip" >Select a Zip File:</p>
+            <input nbInput (change)="manageZipFile($event)" [(ngModel)]='zipFileToCreateProblem' type="file" accept=".zip" required>
+            <br><br>
+
+            <p i18n="@@teacherMenuAddProbMakePublicTitle" >Public?</p>
+            <nb-checkbox (checkedChange)="updateCheckBoxValue($event)" i18n="@@teacherMenuAddProbMakePublic">Toggle me</nb-checkbox>
+
+          </div>
+          <br>
+          <div style="float: bottom">
+            <br>
+            <button nbButton fullWidth (click)="save()" status="primary" size="large" i18n="@@teacherMenuSaveProblem">Save Problem</button>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <div [hidden]="hiddenSubmissions">
+      <h2 i18n="@@submissionText" align="center">Submissions</h2>
+      <p i18n="@@teacherMenuSubmissionsSub" align="center">You can view all submissions of a contest, also you can sort and search the results by column</p>
+      <p i18n="@@teacherMenuSubmissionsSub2" align="center">Auto</p>
+
+      <nb-card>
+        <nb-card-body>
+          <br>
+          <div style="float: bottom">
+            <ng2-smart-table [settings]="settingsAllSubmissionsTable" [source]="submissionsList"
+                             (deleteConfirm)="deleteSubmissionFromTable($event)"
+                             (userRowSelect)="selectedSubmissionFromTable($event)"
+            ></ng2-smart-table>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <div [hidden]="hiddenAddExistingProblemToContest">
+      <h2 i18n="@@teacherMenuAddExistProbToContest" align="center">Add Existing Problem to Contest</h2>
+      <p i18n="@@teacherMenuAddExistProbToContestSub" align="center">Select the problem that you want to add into the actual contest.</p>
+      <nb-card>
+        <nb-card-body>
+          <p i18n="@@selectProblem">Select problem: </p>
+          <nb-select id="selectProblemToAdd" name="problems" [(ngModel)]="problemIdSelected">
+            <nb-option *ngFor="let problem of problemsOutOfActualContest" value="{{problem.id}}">
+              {{problem.nombreEjercicio}}
+            </nb-option>
+          </nb-select>
+
+          <button nbButton hero status="primary" style="margin: 10px; align:center"(click)="addProblemToContest()" i18n="@@teacherMenuAddExistProbToContest">Add Problem To Contest</button>
+
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <div [hidden]="hiddenRanking">
+      <ranking-component [contestIdRanking]="contestId"></ranking-component>
+    </div>
+  </nb-layout-column>
+
+
+
+
