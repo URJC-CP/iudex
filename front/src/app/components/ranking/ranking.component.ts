@@ -36,7 +36,7 @@ export class RankingComponent {
       this.problemsInContest = thisContest.listaProblemas;
     });
 
-    this.contestApiService.getScoreboardMock(this.contestIdRanking).subscribe(response => {
+    this.contestApiService.getScoreboard(this.contestIdRanking).subscribe(response => {
       this.teamScores = response;
       console.debug("response scoreboard" + this.teamScores);
 

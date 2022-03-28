@@ -14,6 +14,10 @@ export class LoginComponent {
   email:String;
   password:String;
   userDto:UserDto;
+
+  // TODO: FIX this, should be in the environment, and use relative paths
+  API_URL_HEAD = 'http://localhost:8080/api/v1/';
+
   constructor(private router:Router, private http: HttpClient) { }
 
   login(){
@@ -22,7 +26,7 @@ export class LoginComponent {
     this.password = this.passwordInput.nativeElement.value;
 
     if(this.email.length && this.password.length > 0)  {
-      this.http.get('http://localhost:9897/apimock/login/' + this.email).subscribe((response:UserDto) =>
+      this.http.get(this.API_URL_HEAD + 'login/' + this.email).subscribe((response:UserDto) =>
         {
           this.userDto = response;
           console.log("UserDto mapped: {" + this.userDto.name + ', ' + this.userDto.surname + ", " + this.userDto.role + " }" );

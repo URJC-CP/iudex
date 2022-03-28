@@ -11,7 +11,10 @@ import {ContestApiService} from '../../services/contestapi.service';
 })
 
 export class PublicProblemsComponent {
-  API_URL_HEAD = 'http://localhost:4200/api/';
+
+  // TODO: FIX this, should be in the environment, and use relative paths
+  API_URL_HEAD = 'http://localhost:8080/api/v1/';
+
   problemIdSelected:string;
   contestId:string = "8"; //id contest public por defecto
   currentContest:ContestApiDTO;
