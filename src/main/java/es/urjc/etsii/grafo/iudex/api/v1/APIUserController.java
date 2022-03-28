@@ -27,7 +27,7 @@ public class APIUserController {
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getUser().toUserAPI(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(salida.getSalida(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

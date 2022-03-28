@@ -94,16 +94,16 @@ class TestAPISubmissionController {
         String badContest = "654";
         String url = "/API/v1/submissions/";
 
-        String salida = "Problem or contest not found";
+        String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetSubmissions(url, badContest, badProblem, status, salida);
         testGetSubmissions(url, badContest, goodProblem, status, salida);
         testGetSubmissions(url, goodContest, badProblem, status, salida);
 
-        salida = "Problem not found";
+        salida = "";
         testGetSubmissionsWithProblemId(url, badProblem, status, salida);
 
-        salida = "CONTEST NOT FOUND";
+        salida = "";
         testGetSubmissionsWithContestId(url, badContest, status, salida);
 
         //salida = "OK";
@@ -147,7 +147,7 @@ class TestAPISubmissionController {
         String badURL = "/API/v1/submission/" + badSubmission;
         String goodURL = "/API/v1/submission/" + goodSubmission;
 
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
         testGetSubmission(badURL, status, salida);
 
@@ -176,12 +176,12 @@ class TestAPISubmissionController {
         String badURL = "/API/v1/submission/" + badSubmission;
         String goodURL = "/API/v1/submission/" + goodSubmission;
 
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
         when(submissionService.deleteSubmission(badSubmission)).thenReturn(salida);
         testDeleteSubmission(badURL, status, salida);
 
-        salida = "SUBMISSION IS FROM PROBLEM VALIDATOR YOU CANT DELETE IT FROM HERE. IT CAN ONLY BE DELETED BY DELETING THE PROBLEM";
+        salida = "";
         when(submissionService.deleteSubmission(goodSubmission)).thenReturn(salida);
         submission.setEsProblemValidator(true);
         testDeleteSubmission(goodURL, status, salida);

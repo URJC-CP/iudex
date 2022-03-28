@@ -99,7 +99,7 @@ class TestAPIContestController {
         String goodURL = baseURL + "/" + goodContest;
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "CONTEST NOT FOUND";
+        String salida = "";
         testGetContest(badURL, status, salida);
 
         status = HttpStatus.OK;
@@ -130,14 +130,14 @@ class TestAPIContestController {
         long startDateTime = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTime = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
 
-        String salida = "contest NAME DUPLICATED";
+        String salida = "";
         cs.setSalida(salida);
         when(contestService.creaContest(badContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
         testAddContest(url, badContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
         when(contestService.creaContest(badContest, goodTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
         testAddContest(url, badContest, goodTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
 
-        salida = "TEAM NOT FOUND";
+        salida = "";
         cs.setSalida(salida);
         when(contestService.creaContest(goodContest, badTeam, Optional.of(description), startDateTime, endDateTime)).thenReturn(cs);
         testAddContest(url, goodContest, badTeam, description, String.valueOf(startDateTime), String.valueOf(endDateTime), status, salida);
@@ -165,7 +165,7 @@ class TestAPIContestController {
         String badContest = "521";
         String goodContest = String.valueOf(contest.getId());
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "contest NOT FOUND";
+        String salida = "";
 
         when(contestService.deleteContest(badContest)).thenReturn(salida);
         testDeleteContest(badURL, status, salida);
@@ -199,7 +199,7 @@ class TestAPIContestController {
 
         ContestString cs = new ContestString();
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "CONTEST ID DOES NOT EXIST";
+        String salida = "";
 
         long startDateTimeLong = LocalDateTime.now().atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
         long endDateTimeLong = LocalDateTime.now().plusDays(1).atZone(TimeZone.getDefault().toZoneId()).toInstant().toEpochMilli();
@@ -216,7 +216,7 @@ class TestAPIContestController {
         when(contestService.updateContest(badContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
         testUpdateContest(badURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-        salida = "CONTEST NAME DUPLICATED";
+        salida = "";
         cs.setSalida(salida);
         when(contestService.updateContest(goodContest, badName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
         testUpdateContest(goodURL, badName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
@@ -224,7 +224,7 @@ class TestAPIContestController {
         when(contestService.updateContest(goodContest, badName, goodTeam, description, startDateTime, endDateTime)).thenReturn(cs);
         testUpdateContest(goodURL, badName.get(), goodTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
 
-        salida = "TEAM NOT FOUND";
+        salida = "";
         cs.setSalida(salida);
         when(contestService.updateContest(goodContest, goodName, badTeam, description, startDateTime, endDateTime)).thenReturn(cs);
         testUpdateContest(goodURL, goodName.get(), badTeam.get(), description.get(), String.valueOf(startDateTime.get()), String.valueOf(endDateTime.get()), status, salida);
@@ -257,17 +257,17 @@ class TestAPIContestController {
         String goodProblem = String.valueOf(problem.getId());
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "contest NOT FOUND";
+        String salida = "";
         when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL, status, salida);
         when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
         testAddProblem(badURL2, status, salida);
 
-        salida = "PROBLEM NOT FOUND";
+        salida = "";
         when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL3, status, salida);
 
-        salida = "PROBLEM DUPLICATED";
+        salida = "";
         when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL3, status, salida);
 
@@ -298,17 +298,17 @@ class TestAPIContestController {
         String goodProblem = String.valueOf(problem.getId());
 
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String salida = "contest NOT FOUND";
+        String salida = "";
         when(contestService.deleteProblemFromContest(badContest, badProblem)).thenReturn(salida);
         testDeleteProblem(badURL, status, salida);
         when(contestService.deleteProblemFromContest(badContest, goodProblem)).thenReturn(salida);
         testDeleteProblem(badURL2, status, salida);
 
-        salida = "PROBLEM NOT FOUND";
+        salida = "";
         when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
         testDeleteProblem(badURL3, status, salida);
 
-        salida = "PROBLEM NOT IN CONCURSO";
+        salida = "";
         when(contestService.deleteProblemFromContest(goodContest, badProblem)).thenReturn(salida);
         testDeleteProblem(badURL3, status, salida);
 
