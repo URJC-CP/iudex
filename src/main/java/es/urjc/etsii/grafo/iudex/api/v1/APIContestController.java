@@ -5,7 +5,8 @@ import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class APIContestController {
     @Autowired
     ContestService contestService;
 
-    @ApiOperation("Return all contests")
+    @Operation( summary = "Return all contests")
     @GetMapping("contest")
     public ResponseEntity<List<ContestAPI>> getAllcontests() {
         List<Contest> contestList = contestService.getAllContests();
@@ -38,14 +39,14 @@ public class APIContestController {
         return new ResponseEntity<>(contestAPIS, HttpStatus.OK);
     }
 
-    @ApiOperation("Return Page Contest")
+    @Operation( summary = "Return Page Contest")
     @GetMapping("contest/page")
     public ResponseEntity<Page<ContestAPI>> getAllContestPage(Pageable pageable) {
         Page<ContestAPI> salida = contestService.getContestPage(pageable).map(Contest::toContestAPI);
         return new ResponseEntity<>(salida, HttpStatus.OK);
     }
 
-    @ApiOperation("Return selected contest with full Problems")
+    @Operation( summary = "Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
         contestId = sanitize(contestId);
@@ -62,7 +63,7 @@ public class APIContestController {
 
     }
 
-    @ApiOperation("Create a contest")
+    @Operation( summary = "Create a contest")
     @PostMapping("contest")
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
         contestName = sanitize(contestName);
@@ -77,7 +78,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Delete a contest")
+    @Operation( summary = "Delete a contest")
     @DeleteMapping("contest/{contestId}")
     public ResponseEntity<String> deleteContest(@PathVariable String contestId) {
         contestId = sanitize(contestId);
@@ -89,7 +90,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Update a contest")
+    @Operation( summary = "Update a contest")
     @PutMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         contestId = sanitize(contestId);
@@ -105,7 +106,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Add Problem to Contest")
+    @Operation( summary = "Add Problem to Contest")
     @PutMapping("contest/{contestId}/{problemId}")
     public ResponseEntity<String> addProblemToContest(@PathVariable String problemId, @PathVariable String contestId) {
         problemId = sanitize(problemId);
@@ -119,7 +120,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Delete a Problem from a Contest")
+    @Operation( summary = "Delete a Problem from a Contest")
     @DeleteMapping("contest/{contestId}/{problemId}")
     public ResponseEntity<String> deleteProblemFromContest(@PathVariable String problemId, @PathVariable String contestId) {
         problemId = sanitize(problemId);
@@ -133,7 +134,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Add Team to Contest")
+    @Operation( summary = "Add Team to Contest")
     @PutMapping("contest/{contestId}/team/{teamId}")
     public ResponseEntity<String> addTeamToContest(@PathVariable String contestId, @PathVariable String teamId) {
         contestId = sanitize(contestId);
@@ -147,7 +148,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Bulk add Team to Contest")
+    @Operation( summary = "Bulk add Team to Contest")
     @PutMapping("contest/{contestId}/team/addBulk")
     public ResponseEntity<String> addTeamToContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         contestId = sanitize(contestId);
@@ -160,7 +161,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Delete Team From Contest")
+    @Operation( summary = "Delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/{teamId}")
     public ResponseEntity<String> deleteTeamFromContest(@PathVariable String contestId, @PathVariable String teamId) {
         contestId = sanitize(contestId);
@@ -174,7 +175,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Bulk delete Team From Contest")
+    @Operation( summary = "Bulk delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/removeBulk")
     public ResponseEntity<String> deleteTeamFromContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         contestId = sanitize(contestId);
@@ -187,7 +188,7 @@ public class APIContestController {
         }
     }
 
-    @ApiOperation("Add Language to Contest")
+    @Operation( summary = "Add Language to Contest")
     @PostMapping("contest/{contestId}/language")
     public ResponseEntity<String> addLanguageToContest(@PathVariable String contestId, @RequestParam String language) {
         contestId = sanitize(contestId);
@@ -200,7 +201,7 @@ public class APIContestController {
         return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation("Delete Language from contest")
+    @Operation( summary = "Delete Language from contest")
     @DeleteMapping("contest/{contestId}/language/{languageId}")
     public ResponseEntity<String> deleteLanguageFromContest(@PathVariable String contestId, @PathVariable String languageId) {
         contestId = sanitize(contestId);
@@ -213,7 +214,7 @@ public class APIContestController {
         return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation("Set accepted languages of a contest")
+    @Operation( summary = "Set accepted languages of a contest")
     @PostMapping("contest/{contestId}/language/addBulk")
     public ResponseEntity<String> addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam String[] languageList) {
         contestId = sanitize(contestId);
@@ -225,7 +226,7 @@ public class APIContestController {
         return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation("Get scores of a contest")
+    @Operation( summary = "Get scores of a contest")
     @GetMapping("contest/{contestId}/scoreboard")
     public ResponseEntity<List<TeamScore>> getScores(@PathVariable String contestId) {
         contestId = sanitize(contestId);

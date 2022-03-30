@@ -1,12 +1,13 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.io.IOException;
 
@@ -20,7 +21,7 @@ public class FakeUserLogin {
 
 
     //Get all problems in DB
-    @ApiOperation("Fake login, pending the real thing implementation")
+    @Operation( summary = "Fake login, pending the real thing implementation")
     @GetMapping("/login/{user}")
     public ResponseEntity<Object> problems(@PathVariable String user) throws IOException {
 
