@@ -11,6 +11,7 @@ RUN mvn clean package -Dmaven.test.skip
 
 FROM openjdk:17-jdk
 WORKDIR /app
+COPY DOCKERS DOCKERS 
 COPY --from=MAVEN_BUILD /app/target/demo-0.0.1-SNAPSHOT.jar /app.jar
 
 
