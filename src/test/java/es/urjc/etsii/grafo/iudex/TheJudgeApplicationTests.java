@@ -152,7 +152,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get contest with invalid id")
     void test2() {
         String badContestId = "564";
-        String salida = "CONTEST NOT FOUND";
+        String salida = "no body";
         testGetContestWithException(badContestId, salida);
     }
 
@@ -183,21 +183,21 @@ class TheJudgeApplicationTests {
 
         String filename = "primavera.zip";
         String problemName = "";
-        salida = "TEAM NOT FOUND";
+        salida = "no body";
         testCreateProblemFromZipWithException(filename, problemName, badTeamId, badContestId, salida);
 
-        salida = "CONTEST NOT FOUND";
+        salida = "no body";
         testCreateProblemFromZipWithException(filename, problemName, teamId, badContestId, salida);
 
         // unnamed empty file without problem name
         filename = ".zip.zip";
-        salida = "PROBLEM NAME NOT SPECIFIED";
+        salida = "no body";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
 
         // unnamed empty file with problem name
         filename = ".zip.zip";
         problemName = "pruba vacio";
-        salida = "TEST CASE FILES NOT FOUND";
+        salida = "no body";
         testCreateProblemFromZipWithException(filename, problemName, teamId, contestId, salida);
     }
 
@@ -255,7 +255,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get problem with invalid id")
     void test4() {
         String badProblemId = "756";
-        String salida = "ERROR PROBLEM NOT FOUND";
+        String salida = "no body";
         testGetProblemWithException(badProblemId, salida);
     }
 
@@ -291,13 +291,13 @@ class TheJudgeApplicationTests {
         // all okay
         String codeFile = "vacio.java";
         String language = "";
-        String salida = "CONTEST NOT FOUND";
+        String salida = "no body";
         testAddSubmissionWithException(badContestId, badProblemId, badTeamId, language, codeFile, salida);
 
-        salida = "PROBLEM NOT FOUND";
+        salida = "no body";
         testAddSubmissionWithException(contestId, badProblemId, badTeamId, language, codeFile, salida);
 
-        salida = "TEAM NOT FOUND";
+        salida = "no body";
         testAddSubmissionWithException(contestId, problemId, badTeamId, language, codeFile, salida);
 
 		/*
@@ -307,27 +307,20 @@ class TheJudgeApplicationTests {
 		 */
 
         language = getLanguage("java");
-        salida = "PROBLEM NOT IN CONTEST";
+        salida = "no body";
         testAddSubmissionWithException(anotherContestId, problemId, teamId, language, codeFile, salida);
     }
 
     private String getLanguage(String language) {
         language = language.toLowerCase().trim();
-        switch (language) {
-            case "java":
-                return "1";
-            case "python":
-                return "2";
-            case "c":
-                return "3";
-            case "cpp":
-            case "c++":
-                return "4";
-            case "sql":
-                return "5";
-            default:
-                return "1023";
-        }
+        return switch (language) {
+            case "java" -> "1";
+            case "python" -> "2";
+            case "c" -> "3";
+            case "cpp", "c++" -> "4";
+            case "sql" -> "5";
+            default -> "1023";
+        };
     }
 
     private void testAddSubmission(String contestId, String problemId, String teamId, String language, String codeFileName) {
@@ -377,7 +370,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get submission with invalid id")
     void test6() {
         String badSubId = "756";
-        String salida = "SUBMISSION NOT FOUND";
+        String salida = "no body";
         testGetSubmissionWithException(badSubId, salida);
     }
 
@@ -401,7 +394,7 @@ class TheJudgeApplicationTests {
     @DisplayName("Get team with invalid id")
     void test7() {
         String badTeam = "867";
-        String salida = "TEAM NOT FOUND";
+        String salida = "no body";
         testGetTeamWithException(badTeam, salida);
     }
 
