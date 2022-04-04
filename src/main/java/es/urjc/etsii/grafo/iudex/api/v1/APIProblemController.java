@@ -4,7 +4,8 @@ import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +30,7 @@ public class APIProblemController {
     ProblemService problemService;
 
     //Get all problems in DB
-    @ApiOperation("Return All Problems")
+    @Operation( summary = "Return All Problems")
     @GetMapping("problem")
     public ResponseEntity<List<ProblemAPI>> problems() {
         List<Problem> problems = problemService.getAllProblemas();
@@ -40,14 +41,14 @@ public class APIProblemController {
         return new ResponseEntity<>(salida, HttpStatus.OK);
     }
 
-    @ApiOperation("Return Page of all Problems")
+    @Operation( summary = "Return Page of all Problems")
     @GetMapping("problem/page")
     public ResponseEntity<Page<ProblemAPI>> getAllProblemPage(Pageable pageable) {
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
     }
 
     //GetProblem
-    @ApiOperation("Return selected problem")
+    @Operation( summary = "Return selected problem")
     @GetMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
         problemId = sanitize(problemId);
@@ -61,7 +62,7 @@ public class APIProblemController {
     }
 
     //Crea problema desde objeto Problem
-    @ApiOperation("Create problem Using a Problem Object")
+    @Operation( summary = "Create problem Using a Problem Object")
     @PostMapping("problem")
     public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
 
@@ -74,7 +75,7 @@ public class APIProblemController {
     }
 
     //Crea problema y devuelve el problema. Necesita team y contest
-    @ApiOperation("Create Problem from Zip")
+    @Operation( summary = "Create Problem from Zip")
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "problem/fromZip")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
@@ -95,7 +96,7 @@ public class APIProblemController {
         }
     }
 
-    @ApiOperation("Update problem from ZIP")
+    @Operation( summary = "Update problem from ZIP")
     @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemId = sanitize(problemId);
@@ -116,7 +117,7 @@ public class APIProblemController {
         }
     }
 
-    @ApiOperation("Update a problem with Request Param")
+    @Operation( summary = "Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestPart(name = "pdf", required = false) MultipartFile pdf) throws IOException {
         problemId = sanitize(problemId);
@@ -138,7 +139,7 @@ public class APIProblemController {
 
     //Devuelve el pdf del problema
     //Controller que devuelve en un HTTP el pdf del problema pedido
-    @ApiOperation("Get pdf from Problem")
+    @Operation( summary = "Get pdf from Problem")
     @GetMapping("problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
         problemId = sanitize(problemId);
@@ -161,7 +162,7 @@ public class APIProblemController {
         return new ResponseEntity<>(contents, headers, HttpStatus.OK);
     }
 
-    @ApiOperation("Delete problem from all contests")
+    @Operation( summary = "Delete problem from all contests")
     @DeleteMapping("problem/{problemId}")
     public ResponseEntity<String> deleteProblem(@PathVariable String problemId) {
         problemId = sanitize(problemId);
@@ -174,7 +175,7 @@ public class APIProblemController {
         }
     }
 
-    @ApiOperation("Add sample to problem")
+    @Operation( summary = "Add sample to problem")
     @PostMapping("problem/{problemId}/sample")
     public ResponseEntity<String> addSampleToProblem(@PathVariable String problemId, @RequestParam String name, @RequestPart("entrada") MultipartFile sampleInput, @RequestPart("salida") MultipartFile sampleOutput, @RequestParam boolean isPublic) {
         problemId = sanitize(problemId);
@@ -200,7 +201,7 @@ public class APIProblemController {
     }
 
 
-    @ApiOperation("Update sample from problem")
+    @Operation( summary = "Update sample from problem")
     @PutMapping("problem/{problemId}/sample/{sampleId}")
     public ResponseEntity<String> updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId, @RequestParam(value = "name", required = false) Optional<String> nameOptional, @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional, @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional, @RequestParam(value = "isPublic", required = false) Optional<Boolean> isPublicOptional) {
         problemId = sanitize(problemId);
@@ -236,7 +237,7 @@ public class APIProblemController {
         return new ResponseEntity<>(salida, HttpStatus.NOT_FOUND);
     }
 
-    @ApiOperation("Delete sample from problem")
+    @Operation( summary = "Delete sample from problem")
     @DeleteMapping("problem/{problemId}/sample/{sampleId}")
     public ResponseEntity<String> deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
         problemId = sanitize(problemId);

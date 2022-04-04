@@ -8,7 +8,8 @@ import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public class APISubmissionController {
     @Autowired
     ProblemService problemService;
 
-    @ApiOperation("Get List of submission given problem, contest or both at the same time")
+    @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
         contestId = sanitize(contestId);
@@ -97,14 +98,14 @@ public class APISubmissionController {
         }
     }
 
-    @ApiOperation("Return Page of all submissions")
+    @Operation( summary = "Return Page of all submissions")
     @GetMapping("/API/v1/submission/page")
     public ResponseEntity<Page<SubmissionAPI>> getAllSubmisionPage(Pageable pageable) {
         return new ResponseEntity<>(submissionService.getSubmissionsPage(pageable).map(Submission::toSubmissionAPI), HttpStatus.OK);
     }
 
 
-    @ApiOperation("Get submission with results")
+    @Operation( summary = "Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId) {
         submissionId = sanitize(submissionId);
@@ -118,7 +119,7 @@ public class APISubmissionController {
         }
     }
 
-    @ApiOperation("Create a submission to a problem and contest")
+    @Operation( summary = "Create a submission to a problem and contest")
     @PostMapping("/API/v1/submission")
     public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId) {
         problemId = sanitize(problemId);
@@ -144,7 +145,7 @@ public class APISubmissionController {
         return new ResponseEntity<>(salida.getSubmission().toSubmissionAPIFull(), HttpStatus.OK);
     }
 
-    @ApiOperation("Delete API")
+    @Operation( summary = "Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<String> deleteSubmission(@PathVariable String submissionId) {
         submissionId = sanitize(submissionId);

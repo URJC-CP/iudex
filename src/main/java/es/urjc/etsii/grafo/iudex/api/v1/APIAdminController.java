@@ -2,7 +2,8 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class APIAdminController {
     @Autowired
     ResultService resultService;
 
-    @ApiOperation("Get a full Result")
+    @Operation( summary = "Get a full Result")
     @GetMapping("/API/v1/result/{resultId}")
     public ResponseEntity<Result> getResult(@PathVariable String resultId) {
         resultId = sanitize(resultId);
@@ -31,7 +32,7 @@ public class APIAdminController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @ApiOperation("Get all Results")
+    @Operation( summary = "Get all Results")
     @GetMapping("/API/v1/result/")
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();

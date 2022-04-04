@@ -4,7 +4,9 @@ import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
-import io.swagger.annotations.ApiOperation;
+
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class APITeamController {
     @Autowired
     UserAndTeamService teamService;
 
-    @ApiOperation("Return all Teams")
+    @Operation( summary = "Return all Teams")
     @GetMapping("/API/v1/team")
     public ResponseEntity<List<TeamAPI>> getteams() {
         List<TeamAPI> teamAPIS = new ArrayList<>();
@@ -32,7 +34,7 @@ public class APITeamController {
         return new ResponseEntity<>(teamAPIS, HttpStatus.OK);
     }
 
-    @ApiOperation("Return Team")
+    @Operation( summary = "Return Team")
     @GetMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> getTeam(@PathVariable String teamId) {
         teamId = sanitize(teamId);
@@ -46,7 +48,7 @@ public class APITeamController {
         }
     }
 
-    @ApiOperation("Creates a Team")
+    @Operation( summary = "Creates a Team")
     @PostMapping("/API/v1/team")
     public ResponseEntity<TeamAPI> createTeam(@RequestParam String nombreEquipo) {
         nombreEquipo = sanitize(nombreEquipo);
@@ -61,7 +63,7 @@ public class APITeamController {
         }
     }
 
-    @ApiOperation("Delete a Team")
+    @Operation( summary = "Delete a Team")
     @DeleteMapping("/API/v1/team/{teamId}")
     public ResponseEntity<String> deleteTeam(@PathVariable String teamId) {
         teamId = sanitize(teamId);
@@ -74,7 +76,7 @@ public class APITeamController {
         }
     }
 
-    @ApiOperation("Update a Team")
+    @Operation( summary = "Update a Team")
     @PutMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName) {
         teamId = sanitize(teamId);
@@ -88,7 +90,7 @@ public class APITeamController {
         }
     }
 
-    @ApiOperation("Add user to Team")
+    @Operation( summary = "Add user to Team")
     @PutMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId) {
         teamId = sanitize(teamId);
@@ -102,7 +104,7 @@ public class APITeamController {
         }
     }
 
-    @ApiOperation("Delete user from team")
+    @Operation( summary = "Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<String> deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
         teamId = sanitize(teamId);
