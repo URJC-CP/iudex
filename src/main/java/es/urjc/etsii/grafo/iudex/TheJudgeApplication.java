@@ -19,7 +19,6 @@ public class TheJudgeApplication {
     @Bean
     public OpenAPI api() {
         return new OpenAPI().info(new Info().title("JudgeApi")
-        .description("Next generation competitive programming judge")
-        .version("v0.0.1-SNAPSHOT"));
+        .description("Next generation competitive programming judge"));
     }
 }
