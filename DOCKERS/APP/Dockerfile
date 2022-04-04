@@ -1,8 +1,10 @@
+
 FROM maven:3.8.4-openjdk-17 AS MAVEN_BUILD
 WORKDIR /app
 
 COPY pom.xml .
-RUN mvn clean package -Dmaven.main.skip -Dmaven.test.skip && rm -r target 
+RUN mvn dependency:go-offline --no-transfer-progress -B
+
 
 COPY src ./src
 RUN mvn clean package -Dmaven.test.skip
