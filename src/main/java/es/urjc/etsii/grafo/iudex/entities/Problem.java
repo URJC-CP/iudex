@@ -34,8 +34,8 @@ public class Problem {
     private Team equipoPropietario;
     @ManyToMany(mappedBy = "listaProblemasParticipados")
     private Set<Team> listaEquiposIntentados;
-    @ManyToMany(mappedBy = "listaProblemas")
-    private Set<Contest> listaContestsPertenece;
+    @OneToMany(mappedBy = "listaProblemas")
+    Set<ContestProblem> listaProblemas;
     private boolean valido;
     private long timestamp = Instant.now().toEpochMilli();
     private int numeroSubmissions;
@@ -67,7 +67,7 @@ public class Problem {
         this.datos = new HashSet<>();
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaContestsPertenece = new HashSet<>();
+        this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
         this.listaEquiposIntentados = new HashSet<>();
         //valores por defecto
@@ -87,7 +87,7 @@ public class Problem {
 
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaContestsPertenece = new HashSet<>();
+        this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
         this.listaEquiposIntentados = new HashSet<>();
 
@@ -479,12 +479,13 @@ public class Problem {
         this.documento = documento;
     }
 
-    public Set<Contest> getListaContestsPertenece() {
-        return listaContestsPertenece;
+
+    public Set<ContestProblem> getListaProblemas() {
+        return listaProblemas;
     }
 
-    public void setListaContestsPertenece(Set<Contest> listaContestsPertenece) {
-        this.listaContestsPertenece = listaContestsPertenece;
+    public void setListaProblemas(Set<ContestProblem> listaProblemas) {
+        this.listaProblemas = listaProblemas;
     }
 
     public Set<SubmissionProblemValidator> getOldSubmissionProblemValidators() {
