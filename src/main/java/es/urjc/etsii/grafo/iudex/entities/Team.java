@@ -41,7 +41,7 @@ public class Team {
     private long timestamp = Instant.now().toEpochMilli();
 
     public Team() {
-        this(null)
+        this(null);
     }
 
     public Team(String nombreEquipo) {
