@@ -32,8 +32,8 @@ public class Problem {
     private Set<Submission> submissions;
     @ManyToOne
     private Team equipoPropietario;
-    @ManyToMany(mappedBy = "listaProblemasParticipados")
-    private Set<Team> listaEquiposIntentados;
+    @OneToMany(mappedBy = "listaProblemasParticipados")
+    private Set<TeamsProblems> listaProblemasParticipados;
     @OneToMany(mappedBy = "listaProblemas")
     Set<ContestProblem> listaProblemas;
     private boolean valido;
@@ -69,7 +69,7 @@ public class Problem {
         this.submissions = new HashSet<>();
         this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
-        this.listaEquiposIntentados = new HashSet<>();
+        this.listaProblemasParticipados = new HashSet<>();
         //valores por defecto
         if (timeout == null) {
             this.timeout = TIMEOUT_PROPERTIES;
@@ -89,7 +89,7 @@ public class Problem {
         this.submissions = new HashSet<>();
         this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
-        this.listaEquiposIntentados = new HashSet<>();
+        this.listaProblemasParticipados = new HashSet<>();
 
         this.timeout = TIMEOUT_PROPERTIES;
         this.memoryLimit = MEMORY_LIMIT_PROPERTIES;
@@ -463,12 +463,12 @@ public class Problem {
         this.equipoPropietario = equipoPropietario;
     }
 
-    public Set<Team> getListaEquiposIntentados() {
-        return listaEquiposIntentados;
+    public Set<TeamsProblems> getListaProblemasParticipados() {
+        return listaProblemasParticipados;
     }
 
-    public void setListaEquiposIntentados(Set<Team> listaEquiposIntentados) {
-        this.listaEquiposIntentados = listaEquiposIntentados;
+    public void setListaProblemasParticipados(Set<TeamsProblems> listaProblemasParticipados) {
+        this.listaProblemasParticipados = listaProblemasParticipados;
     }
 
     public byte[] getDocumento() {

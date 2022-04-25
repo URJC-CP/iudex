@@ -6,22 +6,30 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-public class ContestTeams {
+public class TeamUser {
 
     @Id
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "contest_id")
-    Contest contest;
-
-    @ManyToOne
     @JoinColumn(name = "team_id")
     Team teams;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    User user;
 
     LocalDateTime registeredAt;
 
     int grade;
+
+    public TeamUser(Long id, Team teams, User user, LocalDateTime registeredAt, int grade) {
+        this.id = id;
+        this.teams = teams;
+        this.user = user;
+        this.registeredAt = registeredAt;
+        this.grade = grade;
+    }
 
     public Long getId() {
         return id;
@@ -31,20 +39,20 @@ public class ContestTeams {
         this.id = id;
     }
 
-    public Contest getContest() {
-        return contest;
-    }
-
-    public void setContest(Contest contest) {
-        this.contest = contest;
-    }
-
     public Team getTeams() {
         return teams;
     }
 
     public void setTeams(Team teams) {
         this.teams = teams;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getRegisteredAt() {
@@ -63,23 +71,15 @@ public class ContestTeams {
         this.grade = grade;
     }
 
-    public ContestTeams(Long id, Contest contest, Team teams, LocalDateTime registeredAt, int grade) {
-        this.id = id;
-        this.contest = contest;
-        this.teams = teams;
-        this.registeredAt = registeredAt;
-        this.grade = grade;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((contest == null) ? 0 : contest.hashCode());
         result = prime * result + grade;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((registeredAt == null) ? 0 : registeredAt.hashCode());
         result = prime * result + ((teams == null) ? 0 : teams.hashCode());
+        result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
     }
 
@@ -91,12 +91,7 @@ public class ContestTeams {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ContestTeams other = (ContestTeams) obj;
-        if (contest == null) {
-            if (other.contest != null)
-                return false;
-        } else if (!contest.equals(other.contest))
-            return false;
+        TeamUser other = (TeamUser) obj;
         if (grade != other.grade)
             return false;
         if (id == null) {
@@ -114,10 +109,13 @@ public class ContestTeams {
                 return false;
         } else if (!teams.equals(other.teams))
             return false;
+        if (user == null) {
+            if (other.user != null)
+                return false;
+        } else if (!user.equals(other.user))
+            return false;
         return true;
     }
-
-    
     
     
 }

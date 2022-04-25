@@ -16,8 +16,8 @@ public class Team {
     @Column(unique = true)
     private String nombreEquipo;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
-    private Set<User> participantes;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
+    private Set<TeamUser> participantes;
     private boolean esUser;
     
     @OneToMany(mappedBy = "contest")
@@ -41,7 +41,7 @@ public class Team {
     private long timestamp = Instant.now().toEpochMilli();
 
     public Team() {
-        this(null);
+        
     }
 
     public Team(String nombreEquipo) {
@@ -59,8 +59,8 @@ public class Team {
         teamAPI.setId(this.id);
         teamAPI.setNombreEquipo(this.nombreEquipo);
         List<UserAPI> userAPIS = new ArrayList<>();
-        for (User user : participantes) {
-            userAPIS.add(user.toUserAPISimple());
+        for (TeamUser user : participantes) {
+            userAPIS.add(user.getUser().toUserAPISimple());
         }
         teamAPI.setParticipantes(userAPIS);
         teamAPI.setListaDeSubmissions(submissionToSubmissionAPI(this.listaDeSubmissions));
@@ -111,11 +111,11 @@ public class Team {
         this.nombreEquipo = nombreEquipo;
     }
 
-    public Set<User> getParticipantes() {
+    public Set<TeamUser> getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(Set<User> participantes) {
+    public void setParticipantes(Set<TeamUser> participantes) {
         this.participantes = participantes;
     }
 
@@ -143,11 +143,11 @@ public class Team {
         this.listaProblemasParticipados = listaProblemasParticipados;
     }
 
-    public void addUserToTeam(User user) {
+    public void addUserToTeam(TeamUser user) {
         this.participantes.add(user);
     }
 
-    public void removeUserFromTeam(User user) {
+    public void removeUserFromTeam(TeamUser user) {
         this.participantes.remove(user);
     }
 
