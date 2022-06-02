@@ -33,10 +33,10 @@ Documentación
 Pronto se hará una documentación sobre sobre la instalación, los requisitos y arquitectura del sistema.
 Los trabajos realizados sobre iudex se pueden observar en los siguientes enlaces:
 
-* [1. Arquitectura de iudex basada en contenedores](./docs/1. Arquitectura de iudex basada en contenedores.pdf)
-* [2. Plataforma de análisis automática de código](./docs/2. Plataforma de análisis automática de código.pdf)
-* [3. Nuevas Funcionalidades](./docs/3. Nuevas Funcionalidades.pdf)
-* [4. Interfaz Web](./docs/4. Interfaz Web.pdf)
+* [1. Arquitectura de iudex basada en contenedores](https://github.com/URJC-CP/iudex/blob/master/docs/1.%20Arquitectura%20de%20iudex%20basada%20en%20contenedores.pdf)
+* [2. Plataforma de análisis automática de código](https://github.com/URJC-CP/iudex/blob/master/docs/2.%20Plataforma%20de%20an%C3%A1lisis%20autom%C3%A1tica%20de%20c%C3%B3digo.pdf)
+* [3. Nuevas Funcionalidades](https://github.com/URJC-CP/iudex/blob/master/docs/3.%20Nuevas%20Funcionalidades.pdf)
+* [4. Interfaz Web](https://github.com/URJC-CP/iudex/blob/master/docs/4.%20Interfaz%20Web.pdf)
 
 Estructura del proyecto de GitHub
 -------------
