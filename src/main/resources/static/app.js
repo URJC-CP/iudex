@@ -45,16 +45,6 @@ let currentRepetitions;
 //                                      |                                                                                                                      |
 //                                      \______________________________________________________________________________________________________________________/
 
-
-// Store events in queue until previous events have been processed
-function interceptor(event) {
-    if (isUpToDate) {
-        onMessage(event);
-    } else {
-        event_queue.push(event);
-    }
-}
-
 function onMessage(event) {
     console.log(event);
 }
@@ -63,8 +53,9 @@ function  connectAndSubscribe(callback) {
     const brokerURL = "ws://" + window.location.host + "/websocket";
     stompClient = new StompJs.Client({brokerURL: brokerURL});
     stompClient.reconnectDelay = 1000;
+   
     stompClient.onConnect = function () {
-        // Subscribe to live event feed from Mork
+        stompClient.onMessage(Event);
         const subscription = stompClient.subscribe('/topic/events', function (event) {
             const payload = JSON.parse(event.body);
             callback(payload);
