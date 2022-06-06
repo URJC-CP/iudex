@@ -11,6 +11,7 @@ public class JudgeEvent extends ApplicationEvent{
     private static AtomicInteger nextEventId = new AtomicInteger(0);
 
     private final int eventId;
+
     private final String originThread;
 
 
