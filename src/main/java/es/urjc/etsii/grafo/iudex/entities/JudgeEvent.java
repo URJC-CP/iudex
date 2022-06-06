@@ -11,13 +11,13 @@ public class JudgeEvent extends ApplicationEvent{
     private static AtomicInteger nextEventId = new AtomicInteger(0);
 
     private final int eventId;
-    private final String problemName;
+    private final String originThread;
 
 
     public JudgeEvent() {
         super(EventPublisher.class);
         this.eventId = nextEventId.getAndIncrement();
-        this.problemName = Thread.currentThread().getName();
+        this.originThread = Thread.currentThread().getName();
     }
 
 }
