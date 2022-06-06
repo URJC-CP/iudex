@@ -3,19 +3,13 @@ package es.urjc.etsii.grafo.iudex.services.events;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import com.rabbitmq.client.AMQP.Basic.Publish;
-
 import es.urjc.etsii.grafo.iudex.entities.JudgeEvent;
-import es.urjc.etsii.grafo.iudex.services.events.types.ExecutionEndedEvent;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
 @Component
 public class EventPublisher {
     private static final Logger log = Logger.getLogger(EventPublisher.class.getName());
-    private static final int MAX_QUEUE_SIZE = 10_000;
     private static EventPublisher eventPublisher;
 
     /**
