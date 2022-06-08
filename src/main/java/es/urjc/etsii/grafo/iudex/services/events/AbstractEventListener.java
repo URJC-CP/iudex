@@ -1,6 +1,6 @@
 package es.urjc.etsii.grafo.iudex.services.events;
 
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.stereotype.Service;
 
 @Service
 public abstract class AbstractEventListener {

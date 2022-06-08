@@ -1,14 +1,13 @@
 package es.urjc.etsii.grafo.iudex.services.events;
 
-import org.jvnet.hk2.annotations.Service;
+
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import es.urjc.etsii.grafo.iudex.entities.JudgeEvent;
 
 import java.util.logging.Logger;
 
-@Component
 @Service
 public class EventPublisher {
     private static final Logger log = Logger.getLogger(EventPublisher.class.getName());

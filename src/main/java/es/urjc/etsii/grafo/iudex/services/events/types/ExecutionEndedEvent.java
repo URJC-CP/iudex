@@ -1,10 +1,9 @@
 package es.urjc.etsii.grafo.iudex.services.events.types;
 
-import org.jvnet.hk2.annotations.Service;
 
 import es.urjc.etsii.grafo.iudex.entities.JudgeEvent;
 
-@Service
+
 public class ExecutionEndedEvent extends JudgeEvent {
         private final long executionTime;
     
