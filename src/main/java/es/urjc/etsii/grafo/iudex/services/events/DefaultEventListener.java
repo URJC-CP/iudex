@@ -1,7 +1,8 @@
 package es.urjc.etsii.grafo.iudex.services.events;
 
-import org.jvnet.hk2.annotations.Service;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import es.urjc.etsii.grafo.iudex.entities.JudgeEvent;
 
