@@ -1,11 +1,13 @@
 package es.urjc.etsii.grafo.iudex.services.events;
 
+import org.jvnet.hk2.annotations.Service;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import es.urjc.etsii.grafo.iudex.entities.JudgeEvent;
 
 import java.util.logging.Logger;
 
+@Service
 public class DefaultEventListener  extends AbstractEventListener {
     private static Logger log = Logger.getLogger(DefaultEventListener.class.getName());
 
