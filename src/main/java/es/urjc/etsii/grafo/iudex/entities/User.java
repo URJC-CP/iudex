@@ -24,7 +24,7 @@ public class User {
 
     private long timestamp = Instant.now().toEpochMilli();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private Set<TeamUser> equiposParticipantes;
 
 

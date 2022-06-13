@@ -1,15 +1,16 @@
 package es.urjc.etsii.grafo.iudex.entities;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+@Entity
 public class ContestTeams {
 
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "contest_id")
@@ -21,7 +22,9 @@ public class ContestTeams {
 
     LocalDateTime registeredAt;
 
-    int grade;
+    public ContestTeams() {
+
+    }
 
     public Long getId() {
         return id;
@@ -55,69 +58,22 @@ public class ContestTeams {
         this.registeredAt = registeredAt;
     }
 
-    public int getGrade() {
-        return grade;
-    }
-
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-
     public ContestTeams(Long id, Contest contest, Team teams, LocalDateTime registeredAt, int grade) {
         this.id = id;
         this.contest = contest;
         this.teams = teams;
         this.registeredAt = registeredAt;
-        this.grade = grade;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContestTeams)) return false;
+        ContestTeams that = (ContestTeams) o;
+        return getContest().equals(that.getContest()) && getTeams().equals(that.getTeams());
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((contest == null) ? 0 : contest.hashCode());
-        result = prime * result + grade;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((registeredAt == null) ? 0 : registeredAt.hashCode());
-        result = prime * result + ((teams == null) ? 0 : teams.hashCode());
-        return result;
+        return Objects.hash(getContest(), getTeams());
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ContestTeams other = (ContestTeams) obj;
-        if (contest == null) {
-            if (other.contest != null)
-                return false;
-        } else if (!contest.equals(other.contest))
-            return false;
-        if (grade != other.grade)
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (registeredAt == null) {
-            if (other.registeredAt != null)
-                return false;
-        } else if (!registeredAt.equals(other.registeredAt))
-            return false;
-        if (teams == null) {
-            if (other.teams != null)
-                return false;
-        } else if (!teams.equals(other.teams))
-            return false;
-        return true;
-    }
-
-    
-    
-    
 }

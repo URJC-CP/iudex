@@ -29,7 +29,7 @@ public class Contest {
     @OneToMany(mappedBy= "lenguajes")
     private Set<ContestLanguages> lenguajes;
 
-    @OneToMany(mappedBy = "listaContestsParticipados")
+    @OneToMany(mappedBy = "contest")
     private Set<ContestTeams> listaContestsParticipados;
 
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)

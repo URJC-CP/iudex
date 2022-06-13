@@ -18,6 +18,7 @@ public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true)
     private String nombreEjercicio;
 
@@ -28,13 +29,13 @@ public class Problem {
     private Set<SubmissionProblemValidator> submissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<SubmissionProblemValidator> oldSubmissionProblemValidators;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problema")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problem")
     private Set<Submission> submissions;
     @ManyToOne
     private Team equipoPropietario;
-    @OneToMany(mappedBy = "listaProblemasParticipados")
+    @OneToMany(mappedBy = "problem")
     private Set<TeamsProblems> listaProblemasParticipados;
-    @OneToMany(mappedBy = "listaProblemas")
+    @OneToMany(mappedBy = "problem")
     Set<ContestProblem> listaProblemas;
     private boolean valido;
     private long timestamp = Instant.now().toEpochMilli();

@@ -1,15 +1,15 @@
 package es.urjc.etsii.grafo.iudex.entities;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+@Entity
 public class ContestLanguages {
-
     @Id
-    Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "contest_id")
@@ -21,16 +21,15 @@ public class ContestLanguages {
 
     LocalDateTime registeredAt;
 
-    int grade;
-
-    public ContestLanguages(Long id, Contest contest, Language lenguajes, LocalDateTime registeredAt, int grade) {
+    public ContestLanguages(Long id, Contest contest, Language lenguajes, LocalDateTime registeredAt) {
         this.id = id;
         this.contest = contest;
         this.lenguajes = lenguajes;
         this.registeredAt = registeredAt;
-        this.grade = grade;
     }
+    public ContestLanguages() {
 
+    }
     public Long getId() {
         return id;
     }
@@ -63,59 +62,16 @@ public class ContestLanguages {
         this.registeredAt = registeredAt;
     }
 
-    public int getGrade() {
-        return grade;
-    }
-
-    public void setGrade(int grade) {
-        this.grade = grade;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContestLanguages)) return false;
+        ContestLanguages that = (ContestLanguages) o;
+        return Objects.equals(getContest(), that.getContest()) && Objects.equals(getLenguajes(), that.getLenguajes());
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((contest == null) ? 0 : contest.hashCode());
-        result = prime * result + grade;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((lenguajes == null) ? 0 : lenguajes.hashCode());
-        result = prime * result + ((registeredAt == null) ? 0 : registeredAt.hashCode());
-        return result;
+        return Objects.hash(getContest(), getLenguajes());
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ContestLanguages other = (ContestLanguages) obj;
-        if (contest == null) {
-            if (other.contest != null)
-                return false;
-        } else if (!contest.equals(other.contest))
-            return false;
-        if (grade != other.grade)
-            return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (lenguajes == null) {
-            if (other.lenguajes != null)
-                return false;
-        } else if (!lenguajes.equals(other.lenguajes))
-            return false;
-        if (registeredAt == null) {
-            if (other.registeredAt != null)
-                return false;
-        } else if (!registeredAt.equals(other.registeredAt))
-            return false;
-        return true;
-    }
-
-    
 }

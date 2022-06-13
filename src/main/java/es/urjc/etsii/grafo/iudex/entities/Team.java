@@ -16,7 +16,7 @@ public class Team {
     @Column(unique = true)
     private String nombreEquipo;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teams")
     private Set<TeamUser> participantes;
     private boolean esUser;
     
@@ -26,16 +26,16 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<Submission> listaDeSubmissions;
 
-    @OneToMany(mappedBy = "equipoPropietario")
+    @OneToMany(mappedBy = "teams")
     private Set<TeamsProblems> listaProblemasCreados;
 
-    @OneToMany(mappedBy = "listaProblemasParticipados")
+    @OneToMany(mappedBy = "teams")
     private Set<TeamsProblems> listaProblemasParticipados;
 
-    @OneToMany(mappedBy = "listaContestsParticipados")
+    @OneToMany(mappedBy = "teams")
     private Set<ContestTeams> listaContestsParticipados;
 
-    @OneToMany(mappedBy = "teamPropietario")
+    @OneToMany(mappedBy = "teams")
     private Set<ContestTeams> listaContestsCreados;
 
     private long timestamp = Instant.now().toEpochMilli();
