@@ -22,8 +22,7 @@ public class TeamUser {
 
     LocalDateTime registeredAt;
 
-    public TeamUser(Long id, Team teams, User user, LocalDateTime registeredAt, int grade) {
-        this.id = id;
+    public TeamUser(Team teams, User user, LocalDateTime registeredAt) {
         this.teams = teams;
         this.user = user;
         this.registeredAt = registeredAt;

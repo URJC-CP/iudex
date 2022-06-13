@@ -48,8 +48,7 @@ public class ContestProblem {
         this.registeredAt = registeredAt;
     }
 
-    public ContestProblem(Long id, Contest contest, Problem problem, LocalDateTime registeredAt) {
-        this.id = id;
+    public ContestProblem(Contest contest, Problem problem, LocalDateTime registeredAt) {
         this.contest = contest;
         this.problem = problem;
         this.registeredAt = registeredAt;

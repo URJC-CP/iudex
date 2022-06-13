@@ -54,8 +54,7 @@ public class TeamsProblems {
         this.registeredAt = registeredAt;
     }
 
-    public TeamsProblems(Long id, Team teams, Problem problem, LocalDateTime registeredAt) {
-        this.id = id;
+    public TeamsProblems(Team teams, Problem problem, LocalDateTime registeredAt) {
         this.teams = teams;
         this.problem = problem;
         this.registeredAt = registeredAt;

@@ -6,7 +6,7 @@ import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
-public class ContestLanguages {
+public class  ContestLanguages {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -21,8 +21,7 @@ public class ContestLanguages {
 
     LocalDateTime registeredAt;
 
-    public ContestLanguages(Long id, Contest contest, Language lenguajes, LocalDateTime registeredAt) {
-        this.id = id;
+    public ContestLanguages(Contest contest, Language lenguajes, LocalDateTime registeredAt) {
         this.contest = contest;
         this.lenguajes = lenguajes;
         this.registeredAt = registeredAt;
