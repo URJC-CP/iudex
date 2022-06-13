@@ -337,7 +337,7 @@ public class ContestService {
     }
 
     public List<ProblemAPI> getProblemsFromConcurso(Contest contest) {
-        return contest.getListaProblemas().stream().map(x -> x.toProblemAPI()).collect(Collectors.toList());
+        return contest.getListaProblemas().stream().map(x -> x.getProblem().toProblemAPI()).collect(Collectors.toList());
     }
 
     public Optional<Contest> getContestById(String idContest) {
