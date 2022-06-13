@@ -58,7 +58,7 @@ public class ContestTeams {
         this.registeredAt = registeredAt;
     }
 
-    public ContestTeams(Contest contest, Team teams, LocalDateTime registeredAt, int grade) {
+    public ContestTeams(Contest contest, Team teams, LocalDateTime registeredAt) {
         this.contest = contest;
         this.teams = teams;
         this.registeredAt = registeredAt;

@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.services;
 
 import es.urjc.etsii.grafo.iudex.entities.Team;
+import es.urjc.etsii.grafo.iudex.entities.TeamUser;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.pojos.UserString;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +50,13 @@ public class UserAndTeamService {
             //Sacamos el equipo creado anteriormente
             Optional<Team> teamOptional = teamRepository.findByNombreEquipo(nickname);
             Team team = teamOptional.orElseThrow();
-            user.addTeam(team);
+
+            TeamUser teamUser = new TeamUser(team,user, LocalDateTime.now());
+
+            user.addTeam(teamUser);
+
             //Anyadimos el user al equipo
+
             addUserToTeam(team, user);
             userRepository.save(user);
         } else {
@@ -154,12 +161,13 @@ public class UserAndTeamService {
     }
 
     public String addUserToTeam(Team team, User user) {
+        TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
         logger.debug("Add user {} to team {}", user.getId(), team.getId());
         if (teamRepository.existsTeamByParticipantesContains(user)) {
             logger.error("User {} already in team {}", user.getId(), team.getId());
             return "USER ALREADY IN TEAM";
         } else {
-            team.addUserToTeam(user);
+            team.addUserToTeam(teamUser);
             teamRepository.save(team);
             logger.debug("Finish add user {} to team {} ", user.getId(), team.getId());
             return "OK";
@@ -235,12 +243,15 @@ public class UserAndTeamService {
         }
         User user = userOptional.get();
 
-        if (team.getParticipantes().contains(user)) {
+        TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
+
+        if (team.getParticipantes().contains(teamUser)) {
             logger.error("User {} already in team {}", userId, teamId);
             salida.setSalida("USER ALREADY IN TEAM");
             return salida;
         }
-        team.getParticipantes().add(user);
+
+        team.getParticipantes().add(teamUser);
         teamRepository.save(team);
 
         salida.setSalida("OK");
@@ -269,13 +280,15 @@ public class UserAndTeamService {
         }
         User user = userOptional.get();
 
-        if (!team.getParticipantes().contains(user)) {
+        TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
+
+        if (!team.getParticipantes().contains(teamUser)) {
             logger.error("User {} already in team {}", userId, teamId);
             salida.setSalida("USER NOT IN TEAM");
             return salida;
         }
 
-        team.getParticipantes().remove(user);
+        team.getParticipantes().remove(teamUser);
         teamRepository.save(team);
 
         logger.debug("Finish delete user {} from team {}", userId, teamId);

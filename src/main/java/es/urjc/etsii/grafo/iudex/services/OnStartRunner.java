@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 @Component
+@Service
 public class OnStartRunner implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 

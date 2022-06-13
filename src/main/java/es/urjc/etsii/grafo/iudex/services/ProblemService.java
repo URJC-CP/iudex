@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,6 @@ import java.util.Set;
 @Service
 public class ProblemService {
     private static final Logger logger = LoggerFactory.getLogger(ProblemService.class);
-
     private final ContestRepository contestRepository;
     private final ProblemRepository problemRepository;
     private final TeamRepository teamRepository;
@@ -91,10 +91,13 @@ public class ProblemService {
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
         Optional<Problem> problemOptional = problemRepository.findProblemByNombreEjercicio(nombreProblema);
+
+        ContestProblem contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+
         if (problemOptional.isPresent()) {
             problem = problemOptional.get();
             //si el problema esta almacendo en el concurso
-            if (contest.getListaProblemas().contains(problem)) {
+            if (contest.getListaProblemas().contains(contestProblem)) {
                 return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
             }
         }
@@ -114,8 +117,10 @@ public class ProblemService {
             return salida;
         }
 
-        contest.addProblem(problem);
-        problem.getListaContestsPertenece().add(contest);
+        ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
+
+        contest.addProblem(contestProblem);
+        contestProblem.getContest().getListaContestsParticipados().add(contestTeams);
         problemRepository.save(problem);
         contestRepository.save(contest);
         problemValidatorService.validateProblem(problem);
@@ -262,17 +267,17 @@ public class ProblemService {
         logger.debug("Delete problem {}", problem.getId());
 
         //Quitamos los problemas del contest
-        for (Contest contestAux : problem.getListaContestsPertenece()) {
-            logger.debug("Remove problem {} from contest {}", problem.getId(), contestAux.getId());
-            if (!contestAux.getListaProblemas().remove(problem)) {
-                logger.error("Remove problem {} from contest {} failed", problem.getId(), contestAux.getId());
+        for (ContestProblem contestAux : problem.getListaProblemas()) {
+            logger.debug("Remove problem {} from contest {}", problem.getId(), contestAux.getProblem().getId());
+            if (!contestAux.getContest().getListaProblemas().remove(contestAux)) {
+                logger.error("Remove problem {} from contest {} failed", problem.getId(), contestAux.getContest().getId());
             }
         }
 
         // Quitamos el problema de equipos Intentados
-        for (Team teamAux : problem.getListaEquiposIntentados()) {
-            if (!teamAux.getListaProblemasParticipados().remove(problem)) {
-                logger.error("Remove problem {} from team {} failed", problem.getId(), teamAux.getId());
+        for (TeamsProblems teamAux : problem.getListaProblemasParticipados()) {
+            if (!teamAux.getTeams().getListaProblemasParticipados().remove(teamAux)) {
+                logger.error("Remove problem {} from team {} failed", teamAux.getProblem().getId(), teamAux.getTeams().getId());
             }
         }
 
@@ -350,7 +355,7 @@ public class ProblemService {
 
         //actualizmaos el problema de submissions
         for (Submission submission : newProblem.getSubmissions()) {
-            submission.setProblema(oldProblem);
+            submission.setProblem(oldProblem);
         }
         oldProblem.getSubmissions().addAll(newProblem.getSubmissions());
 

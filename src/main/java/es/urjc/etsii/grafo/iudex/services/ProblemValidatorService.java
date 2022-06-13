@@ -62,7 +62,7 @@ public class ProblemValidatorService {
     }
 
     public void checkIfProblemFinishedAndDoValidateIt(SubmissionProblemValidator submissionProblemValidator) {
-        long problemId = submissionProblemValidator.getSubmission().getProblema().getId();
+        long problemId = submissionProblemValidator.getSubmission().getProblem().getId();
 
         //Buscamos el problema en la BBDD para estar seguros de que esta actualizado
         Optional<Problem> problemOptional = problemRepository.findById(problemId);

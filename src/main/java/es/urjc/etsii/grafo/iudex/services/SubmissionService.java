@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -91,8 +92,10 @@ public class SubmissionService {
         }
         Language language = languageOptional.get();
 
+       ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
+
         //Comprobamos que el problema pertenezca al contest
-        if (!contest.getListaProblemas().contains(problema)) {
+        if (!contest.getListaProblemas().contains(contestProblem)) {
             logger.error("Problem {} not in contest {}", problem, idContest);
             submissionStringResult.setSalida("PROBLEM NOT IN CONTEST");
             return submissionStringResult;
@@ -108,7 +111,7 @@ public class SubmissionService {
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion
-        submission.setProblema(problema);
+        submission.setProblem(problema);
         submission.setContest(contest);
         submission.setTeam(team);
 
@@ -126,10 +129,14 @@ public class SubmissionService {
             submission.addResult(resAux);
         }
 
+        TeamsProblems teamsProblems = new TeamsProblems(team,problema, LocalDateTime.now());
+
+        ContestTeams contestTeams = new ContestTeams(contest,team, LocalDateTime.now());
+
         //actualizamos el problema
         problema.addSubmission(submission);
-        team.getListaContestsParticipados().add(contest);
-        team.getListaProblemasParticipados().add(problema);
+        team.getListaContestsParticipados().add(contestTeams);
+        team.getListaProblemasParticipados().add(teamsProblems);
 
         teamRepository.save(team);
         problemRepository.save(problema);
@@ -164,7 +171,7 @@ public class SubmissionService {
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion
-        submission.setProblema(problema);
+        submission.setProblem(problema);
         submission.setTeam(team);
         submission.setEsProblemValidator(true);
         //Guardamos la submission
@@ -246,11 +253,13 @@ public class SubmissionService {
         }
         Contest contest = contestOptional.get();
 
-        if (!contest.getListaProblemas().contains(problem)) {
+        ContestProblem contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+
+        if (!contest.getListaProblemas().contains(contestProblem)) {
             logger.error("Problem {} not in contest {}", problemId, contestId);
             return "PROBLEM NOT IN CONTEST";
         }
-        if (submission.getProblema().equals(problem)) {
+        if (submission.getProblem().equals(problem)) {
             logger.error("Submission {} not in problem {}", submissionId, problemId);
             return "SUBMISSION NOT IN PROBLEM";
         }
