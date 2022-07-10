@@ -16,24 +16,32 @@ public class Team {
     @Column(unique = true)
     private String nombreEquipo;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "equiposParticipantes")
-    private Set<User> participantes;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teams")
+    private Set<TeamUser> participantes;
     private boolean esUser;
+    
+    @OneToMany(mappedBy = "contest")
+    Set<ContestProblem> listaProblemas;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private Set<Submission> listaDeSubmissions;
-    @OneToMany(mappedBy = "equipoPropietario")
-    private Set<Problem> listaProblemasCreados;
-    @ManyToMany
-    private Set<Problem> listaProblemasParticipados;
-    @ManyToMany
-    private Set<Contest> listaContestsParticipados;
-    @OneToMany(mappedBy = "teamPropietario")
-    private Set<Contest> listaContestsCreados;
+
+    @OneToMany(mappedBy = "teams")
+    private Set<TeamsProblems> listaProblemasCreados;
+
+    @OneToMany(mappedBy = "teams")
+    private Set<TeamsProblems> listaProblemasParticipados;
+
+    @OneToMany(mappedBy = "teams")
+    private Set<ContestTeams> listaContestsParticipados;
+
+    @OneToMany(mappedBy = "teams")
+    private Set<ContestTeams> listaContestsCreados;
+
     private long timestamp = Instant.now().toEpochMilli();
 
     public Team() {
-        this(null);
+        
     }
 
     public Team(String nombreEquipo) {
@@ -51,8 +59,8 @@ public class Team {
         teamAPI.setId(this.id);
         teamAPI.setNombreEquipo(this.nombreEquipo);
         List<UserAPI> userAPIS = new ArrayList<>();
-        for (User user : participantes) {
-            userAPIS.add(user.toUserAPISimple());
+        for (TeamUser user : participantes) {
+            userAPIS.add(user.getUser().toUserAPISimple());
         }
         teamAPI.setParticipantes(userAPIS);
         teamAPI.setListaDeSubmissions(submissionToSubmissionAPI(this.listaDeSubmissions));
@@ -71,10 +79,10 @@ public class Team {
         return teamAPI;
     }
 
-    private List<ProblemAPI> problemToProblemAPI(Set<Problem> problems) {
+    private List<ProblemAPI> problemToProblemAPI(Set<TeamsProblems> problems) {
         List<ProblemAPI> problemAPIS = new ArrayList<>();
-        for (Problem problem : problems) {
-            problemAPIS.add(problem.toProblemAPISimple());
+        for (TeamsProblems problem : problems) {
+            problemAPIS.add(problem.getProblem().toProblemAPISimple());
         }
         return problemAPIS;
     }
@@ -87,10 +95,10 @@ public class Team {
         return listAux;
     }
 
-    private List<ContestAPI> contestToContestAPI(Set<Contest> problems) {
+    private List<ContestAPI> contestToContestAPI(Set<ContestTeams> concursos) {
         List<ContestAPI> listAux = new ArrayList<>();
-        for (Contest auxElement : problems) {
-            listAux.add(auxElement.toContestAPISimple());
+        for (ContestTeams auxElement : concursos) {
+            listAux.add(auxElement.getContest().toContestAPISimple());
         }
         return listAux;
     }
@@ -103,11 +111,11 @@ public class Team {
         this.nombreEquipo = nombreEquipo;
     }
 
-    public Set<User> getParticipantes() {
+    public Set<TeamUser> getParticipantes() {
         return participantes;
     }
 
-    public void setParticipantes(Set<User> participantes) {
+    public void setParticipantes(Set<TeamUser> participantes) {
         this.participantes = participantes;
     }
 
@@ -119,35 +127,35 @@ public class Team {
         this.listaDeSubmissions = listaDeSubmissions;
     }
 
-    public Set<Problem> getListaProblemasParticipados() {
-        return listaProblemasParticipados;
-    }
-
-    public void setListaProblemasParticipados(Set<Problem> listaProblemasIntentados) {
-        this.listaProblemasParticipados = listaProblemasIntentados;
-    }
-
-    public Set<Problem> getListaProblemasCreados() {
+    public Set<TeamsProblems> getListaProblemasCreados() {
         return listaProblemasCreados;
     }
 
-    public void setListaProblemasCreados(Set<Problem> listaProblemasCreados) {
+    public void setListaProblemasCreados(Set<TeamsProblems> listaProblemasCreados) {
         this.listaProblemasCreados = listaProblemasCreados;
     }
 
-    public void addUserToTeam(User user) {
+    public Set<TeamsProblems> getListaProblemasParticipados() {
+        return listaProblemasParticipados;
+    }
+
+    public void setListaProblemasParticipados(Set<TeamsProblems> listaProblemasParticipados) {
+        this.listaProblemasParticipados = listaProblemasParticipados;
+    }
+
+    public void addUserToTeam(TeamUser user) {
         this.participantes.add(user);
     }
 
-    public void removeUserFromTeam(User user) {
+    public void removeUserFromTeam(TeamUser user) {
         this.participantes.remove(user);
     }
 
-    public void addProblemaCreado(Problem problem) {
+    public void addProblemaCreado(TeamsProblems problem) {
         this.listaProblemasCreados.add(problem);
     }
 
-    public void addProblemaIntentado(Problem problem) {
+    public void addProblemaIntentado(TeamsProblems problem) {
         this.listaProblemasParticipados.add(problem);
     }
 
@@ -159,19 +167,24 @@ public class Team {
         this.id = id;
     }
 
-    public Set<Contest> getListaContestsParticipados() {
-        return listaContestsParticipados;
+    public Team(Set<ContestTeams> listaContestsParticipados) {
+        this.listaContestsParticipados = listaContestsParticipados;
     }
-
-    public void setListaContestsParticipados(Set<Contest> listaContestsParticipados) {
+    
+    public void setListaContestsParticipados(Set<ContestTeams> listaContestsParticipados) {
         this.listaContestsParticipados = listaContestsParticipados;
     }
 
-    public Set<Contest> getListaContestsCreados() {
+
+    public Set<ContestTeams> getListaContestsParticipados() {
+        return listaContestsParticipados;
+    }
+
+    public Set<ContestTeams> getListaContestsCreados() {
         return listaContestsCreados;
     }
 
-    public void setListaContestsCreados(Set<Contest> listaContestsCreados) {
+    public void setListaContestsCreados(Set<ContestTeams> listaContestsCreados) {
         this.listaContestsCreados = listaContestsCreados;
     }
 

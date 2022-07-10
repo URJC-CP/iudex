@@ -6,6 +6,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemScore;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
+import es.urjc.etsii.grafo.iudex.repositories.ContestTeamRespository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
 import es.urjc.etsii.grafo.iudex.utils.TeamScoreComparator;
 import org.slf4j.Logger;
@@ -31,7 +32,8 @@ public class ContestService {
     private ContestRepository contestRepository;
     @Autowired
     private TeamRepository teamRepository;
-
+    @Autowired
+    private ContestTeamRespository contestTeamRespository;
     @Autowired
     private ProblemService problemService;
     @Autowired
@@ -144,10 +146,8 @@ public class ContestService {
         }
         Contest contest = optionalContest.get();
 
-        // quitar contest de los participantes
-        for (Team teamAux : contest.getListaParticipantes()) {
-            teamAux.getListaContestsParticipados().remove(contest);
-        }
+        // elminamos contest de los participantes
+        contestTeamRespository.deleteByContest(contest);
         //borramos el contest
         contestRepository.delete(contest);
 
@@ -172,12 +172,14 @@ public class ContestService {
         }
         Problem problema = problemOptional.get();
 
-        if (contest.getListaProblemas().contains(problema)) {
+        ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
+
+        if (contest.getListaProblemas().contains(contestProblem)) {
             logger.error("Problem {} already in contest {}", idProblema, idContest);
             return "PROBLEM ALREADY IN CONTEST";
         }
 
-        contest.addProblem(problema);
+        contest.addProblem(contestProblem);
         contestRepository.save(contest);
 
         logger.debug("Finish add problem {} to contest {}", idProblema, idContest);
@@ -201,12 +203,14 @@ public class ContestService {
         }
         Problem problema = problemaOptional.get();
 
-        if (!contest.getListaProblemas().contains(problema)) {
+        ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
+
+        if (!contest.getListaProblemas().contains(contestProblem)) {
             logger.error("Problem {} not in contest {}", idProblema, idContest);
             return "PROBLEM NOT IN CONTEST";
         }
 
-        contest.deleteProblem(problema);
+        contest.deleteProblem(contestProblem);
         contestRepository.save(contest);
 
         logger.debug("Finish delete problem {} from contest {}", idProblema, idContest);
@@ -234,10 +238,12 @@ public class ContestService {
         }
         Team team = teamOptional.get();
 
-        if (!contest.getListaParticipantes().contains(team)) {
-            team.getListaContestsParticipados().add(contest);
+        ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
+
+        if (!contest.getListaContestsParticipados().contains(contestTeams)) {
+            team.getListaContestsParticipados().add(contestTeams);
             teamRepository.save(team);
-            contest.addTeam(team);
+            contest.addTeam(contestTeams);
             contestRepository.save(contest);
         } else {
             logger.error("Team {} already in contest {}", teamId, contest.getId());
@@ -293,14 +299,16 @@ public class ContestService {
         }
         Team team = teamOptional.get();
 
-        if (!contest.getListaParticipantes().contains(team)) {
+        ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
+
+        if (!contest.getListaContestsParticipados().contains(contestTeams)) {
             logger.error("Team {} not in contest {} ", teamId, contest.getId());
             return "TEAM NOT IN CONTEST";
         } else {
-            team.getListaContestsParticipados().remove(contest);
-            teamRepository.save(team);
-            contest.deleteTeam(team);
-            contestRepository.save(contest);
+            team.getListaContestsParticipados().remove(contestTeams);
+            teamRepository.save(contestTeams.getTeams());
+            contest.deleteTeam(contestTeams);
+            contestRepository.save(contestTeams.getContest());
         }
         logger.debug("Finish delete team {} from contest {}", teamId, contest.getId());
         return "OK";
@@ -329,7 +337,7 @@ public class ContestService {
     }
 
     public List<ProblemAPI> getProblemsFromConcurso(Contest contest) {
-        return contest.getListaProblemas().stream().map(x -> x.toProblemAPI()).collect(Collectors.toList());
+        return contest.getListaProblemas().stream().map(x -> x.getProblem().toProblemAPI()).collect(Collectors.toList());
     }
 
     public Optional<Contest> getContestById(String idContest) {
@@ -379,11 +387,14 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
-        if (!contest.getLenguajes().contains(language)) {
+        ContestLanguages contestLanguages = new ContestLanguages(contest,language,LocalDateTime.now());
+
+        if (!contest.getLenguajes().contains(contestLanguages)) {
             logger.error("Language {} not in contest {}", languageId, contest.getId());
             return "LANGUAGE NOT IN CONTEST";
         }
-        contest.removeLanguage(language);
+
+        contest.removeLanguage(contestLanguages);
         contestRepository.save(contest);
 
         logger.debug("Finish delete language {} from contest {}", languageId, contestId);
@@ -425,13 +436,15 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
+        ContestLanguages contestLanguages = new ContestLanguages(contest,language,LocalDateTime.now());
+
         // add language if it has not been added
-        if (contest.getLenguajes().contains(language)) {
+        if (contest.getLenguajes().contains(contestLanguages)) {
             logger.error("Language {} already in contest {}", languageName, contest.getId());
             return "LANGUAGE ALREADY IN CONTEST";
         }
 
-        contest.addLanguage(language);
+        contest.addLanguage(contestLanguages);
         contestRepository.save(contest);
 
         logger.debug("Finish add language {} to contest {}", languageName, contest.getId());
@@ -456,28 +469,28 @@ public class ContestService {
 
         logger.debug("Initializing scoreboard");
         Map<Team, TeamScore> teamScoreMap = new HashMap<>();
-        for (Team equipo : contest.getListaParticipantes()) {
-            TeamScore teamScore = teamScoreMap.getOrDefault(equipo, new TeamScore(equipo.toTeamAPISimple()));
-            for (Problem problem : contest.getListaProblemas()) {
-                teamScore.addProblemScore(problem, new ProblemScore(problem.toProblemAPISimple()));
+        for (ContestTeams equipo : contest.getListaContestsParticipados()) {
+            TeamScore teamScore = teamScoreMap.getOrDefault(equipo.getTeams(), new TeamScore(equipo.getTeams().toTeamAPISimple()));
+            for (ContestProblem problem : contest.getListaProblemas()) {
+                teamScore.addProblemScore(problem.getProblem(), new ProblemScore(problem.getProblem().toProblemAPISimple()));
             }
-            teamScoreMap.put(equipo, teamScore);
+            teamScoreMap.put(equipo.getTeams(), teamScore);
         }
 
         logger.debug("Adding data to scoreboard");
-        for (Problem problem : contest.getListaProblemas()) {
+        for (ContestProblem problem : contest.getListaProblemas()) {
             ProblemScore first = null;
             long minExecTime = -1;
             Set<Team> hasFirstAC = new HashSet<>();
 
-            for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem)) {
+            for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem.getProblem())) {
                 Team equipo = entrega.getTeam();
                 if (hasFirstAC.contains(equipo) || entrega.getResultado().toLowerCase().contains("failed in compiler")) {
                     continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación
                 }
 
                 TeamScore teamScore = teamScoreMap.get(equipo);
-                ProblemScore problemScore = teamScore.getProblemScore(problem);
+                ProblemScore problemScore = teamScore.getProblemScore(problem.getProblem());
 
                 // actualizar intentos
                 problemScore.setTries(problemScore.getTries() + 1);
@@ -495,7 +508,7 @@ public class ContestService {
                     minExecTime = (minExecTime == -1) ? tiempo : Long.min(minExecTime, tiempo);
                     first = (minExecTime == tiempo || first == null) ? problemScore : first;
                 }
-                teamScore.addProblemScore(problem, problemScore);
+                teamScore.addProblemScore(problem.getProblem(), problemScore);
             }
 
             // actualizar el primer equipo en resolver el problema

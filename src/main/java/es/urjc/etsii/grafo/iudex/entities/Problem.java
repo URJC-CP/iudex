@@ -18,6 +18,7 @@ public class Problem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(unique = true)
     private String nombreEjercicio;
 
@@ -28,14 +29,14 @@ public class Problem {
     private Set<SubmissionProblemValidator> submissionProblemValidators;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<SubmissionProblemValidator> oldSubmissionProblemValidators;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problema")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problem")
     private Set<Submission> submissions;
     @ManyToOne
     private Team equipoPropietario;
-    @ManyToMany(mappedBy = "listaProblemasParticipados")
-    private Set<Team> listaEquiposIntentados;
-    @ManyToMany(mappedBy = "listaProblemas")
-    private Set<Contest> listaContestsPertenece;
+    @OneToMany(mappedBy = "problem")
+    private Set<TeamsProblems> listaProblemasParticipados;
+    @OneToMany(mappedBy = "problem")
+    Set<ContestProblem> listaProblemas;
     private boolean valido;
     private long timestamp = Instant.now().toEpochMilli();
     private int numeroSubmissions;
@@ -67,9 +68,9 @@ public class Problem {
         this.datos = new HashSet<>();
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaContestsPertenece = new HashSet<>();
+        this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
-        this.listaEquiposIntentados = new HashSet<>();
+        this.listaProblemasParticipados = new HashSet<>();
         //valores por defecto
         if (timeout == null) {
             this.timeout = TIMEOUT_PROPERTIES;
@@ -87,9 +88,9 @@ public class Problem {
 
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaContestsPertenece = new HashSet<>();
+        this.listaProblemas = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
-        this.listaEquiposIntentados = new HashSet<>();
+        this.listaProblemasParticipados = new HashSet<>();
 
         this.timeout = TIMEOUT_PROPERTIES;
         this.memoryLimit = MEMORY_LIMIT_PROPERTIES;
@@ -463,12 +464,12 @@ public class Problem {
         this.equipoPropietario = equipoPropietario;
     }
 
-    public Set<Team> getListaEquiposIntentados() {
-        return listaEquiposIntentados;
+    public Set<TeamsProblems> getListaProblemasParticipados() {
+        return listaProblemasParticipados;
     }
 
-    public void setListaEquiposIntentados(Set<Team> listaEquiposIntentados) {
-        this.listaEquiposIntentados = listaEquiposIntentados;
+    public void setListaProblemasParticipados(Set<TeamsProblems> listaProblemasParticipados) {
+        this.listaProblemasParticipados = listaProblemasParticipados;
     }
 
     public byte[] getDocumento() {
@@ -479,12 +480,13 @@ public class Problem {
         this.documento = documento;
     }
 
-    public Set<Contest> getListaContestsPertenece() {
-        return listaContestsPertenece;
+
+    public Set<ContestProblem> getListaProblemas() {
+        return listaProblemas;
     }
 
-    public void setListaContestsPertenece(Set<Contest> listaContestsPertenece) {
-        this.listaContestsPertenece = listaContestsPertenece;
+    public void setListaProblemas(Set<ContestProblem> listaProblemas) {
+        this.listaProblemas = listaProblemas;
     }
 
     public Set<SubmissionProblemValidator> getOldSubmissionProblemValidators() {

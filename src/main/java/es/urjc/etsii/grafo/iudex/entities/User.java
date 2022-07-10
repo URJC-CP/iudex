@@ -24,9 +24,8 @@ public class User {
 
     private long timestamp = Instant.now().toEpochMilli();
 
-
-    @ManyToMany
-    private Set<Team> equiposParticipantes;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<TeamUser> equiposParticipantes;
 
 
     public User(String nickname, String email) {
@@ -78,15 +77,15 @@ public class User {
     }
 
 
-    public void addTeam(Team team) {
+    public void addTeam(TeamUser team) {
         this.equiposParticipantes.add(team);
     }
 
-    public Set<Team> getEquiposParticipantes() {
+    public Set<TeamUser> getEquiposParticipantes() {
         return equiposParticipantes;
     }
 
-    public void setEquiposParticipantes(Set<Team> equiposParticipantes) {
+    public void setEquiposParticipantes(Set<TeamUser> equiposParticipantes) {
         this.equiposParticipantes = equiposParticipantes;
     }
 

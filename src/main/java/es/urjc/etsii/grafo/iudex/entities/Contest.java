@@ -22,14 +22,16 @@ public class Contest {
 
     @ManyToOne
     private Team teamPropietario;
-    @ManyToMany
-    private Set<Problem> listaProblemas;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<Language> lenguajes;
+    @OneToMany(mappedBy = "contest")
+    Set<ContestProblem> listaProblemas;
 
-    @ManyToMany(mappedBy = "listaContestsParticipados")
-    private Set<Team> listaParticipantes;
+    @OneToMany(mappedBy= "lenguajes")
+    private Set<ContestLanguages> lenguajes;
+
+    @OneToMany(mappedBy = "contest")
+    private Set<ContestTeams> listaContestsParticipados;
+
     @OneToMany(mappedBy = "contest", cascade = CascadeType.ALL)
     private Set<Submission> listaSubmissions;
 
@@ -38,7 +40,7 @@ public class Contest {
 
     public Contest() {
         this.listaProblemas = new HashSet<>();
-        this.listaParticipantes = new HashSet<>();
+        this.listaContestsParticipados = new HashSet<>();
         this.listaSubmissions = new HashSet<>();
         this.lenguajes = new HashSet<>();
         this.startDateTime = LocalDateTime.now();
@@ -53,20 +55,20 @@ public class Contest {
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
 
         List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
-        for (Language lenguaje : lenguajes) {
-            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        for (ContestLanguages lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.getLenguajes().toLanguageAPISimple());
         }
         contestAPI.setLenguajesAceptados(lenguajesAceptados);
 
-        List<ProblemAPI> listaProblemass = new ArrayList<>();
-        for (Problem problem : this.listaProblemas) {
-            listaProblemass.add(problem.toProblemAPISimple());
+        List<ProblemAPI> listaProblemas = new ArrayList<>();
+        for (ContestProblem problem : this.listaProblemas) {
+            listaProblemas.add(problem.getProblem().toProblemAPISimple());
         }
-        contestAPI.setListaProblemas(listaProblemass);
+        contestAPI.setListaProblemas(listaProblemas);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for (Team team : this.listaParticipantes) {
-            teamAPIS.add(team.toTeamAPISimple());
+        for (ContestTeams team : this.listaContestsParticipados) {
+            teamAPIS.add(team.getTeams().toTeamAPISimple());
         }
         contestAPI.setListaParticipantes(teamAPIS);
 
@@ -83,26 +85,30 @@ public class Contest {
         contestAPI.setTeamPropietario(this.teamPropietario.toTeamAPISimple());
 
         List<LanguageAPI> lenguajesAceptados = new ArrayList<>();
-        for (Language lenguaje : lenguajes) {
-            lenguajesAceptados.add(lenguaje.toLanguageAPISimple());
+        for (ContestLanguages lenguaje : lenguajes) {
+            lenguajesAceptados.add(lenguaje.getLenguajes().toLanguageAPISimple());
         }
         contestAPI.setLenguajesAceptados(lenguajesAceptados);
 
         List<ProblemAPI> problemAPIS = new ArrayList<>();
-        for (Problem problem : this.listaProblemas) {
-            problemAPIS.add(problem.toProblemAPI());
+        for (ContestProblem problem : this.listaProblemas) {
+            problemAPIS.add(problem.getProblem().toProblemAPI());
         }
         contestAPI.setListaProblemas(problemAPIS);
 
         List<TeamAPI> teamAPIS = new ArrayList<>();
-        for (Team team : this.listaParticipantes) {
-            teamAPIS.add(team.toTeamAPISimple());
+        for (ContestTeams team : this.listaContestsParticipados) {
+            teamAPIS.add(team.getTeams().toTeamAPISimple());
         }
         contestAPI.setListaParticipantes(teamAPIS);
 
         contestAPI.setStartDateTime(convertLocalDateTimeToMillis(this.startDateTime));
         contestAPI.setEndDateTime(convertLocalDateTimeToMillis(this.endDateTime));
         return contestAPI;
+    }
+
+    public Contest(Set<ContestProblem> listaProblemas) {
+        this.listaProblemas = listaProblemas;
     }
 
     public ContestAPI toContestAPISimple() {
@@ -136,23 +142,23 @@ public class Contest {
         this.teamPropietario = teamPropietario;
     }
 
-    public Set<Problem> getListaProblemas() {
+    public Set<ContestProblem> getListaProblemas() {
         return listaProblemas;
     }
 
-    public void setListaProblemas(Set<Problem> listaProblemas) {
+    public void setListaProblemas(Set<ContestProblem> listaProblemas) {
         this.listaProblemas = listaProblemas;
     }
 
-    public Set<Language> getLenguajes() {
+    public Set<ContestLanguages> getLenguajes() {
         return lenguajes;
     }
 
-    public void setLenguajes(Set<Language> lenguajes) {
+    public void setLenguajes(Set<ContestLanguages> lenguajes) {
         this.lenguajes = lenguajes;
     }
 
-    public void addLanguage(Language language) {
+    public void addLanguage(ContestLanguages language) {
         lenguajes.add(language);
     }
 
@@ -160,7 +166,7 @@ public class Contest {
         lenguajes.clear();
     }
 
-    public void removeLanguage(Language language) {
+    public void removeLanguage(ContestLanguages language) {
         lenguajes.remove(language);
     }
 
@@ -180,28 +186,29 @@ public class Contest {
         this.endDateTime = endDateTime;
     }
 
-    public Set<Team> getListaParticipantes() {
-        return listaParticipantes;
+
+    public Set<ContestTeams> getListaContestsParticipados() {
+        return listaContestsParticipados;
     }
 
-    public void setListaParticipantes(Set<Team> listaParticipantes) {
-        this.listaParticipantes = listaParticipantes;
+    public void setListaContestsParticipados(Set<ContestTeams> listaContestsParticipados) {
+        this.listaContestsParticipados = listaContestsParticipados;
     }
 
-    public void addProblem(Problem problem) {
+    public void addProblem(ContestProblem problem) {
         this.listaProblemas.add(problem);
     }
 
-    public void deleteProblem(Problem problem) {
+    public void deleteProblem(ContestProblem problem) {
         this.listaProblemas.remove(problem);
     }
 
-    public void addTeam(Team team) {
-        this.listaParticipantes.add(team);
+    public void addTeam(ContestTeams team) {
+        this.listaContestsParticipados.add(team);
     }
 
-    public void deleteTeam(Team team) {
-        this.listaParticipantes.remove(team);
+    public void deleteTeam(ContestTeams team) {
+        this.listaContestsParticipados.remove(team);
     }
 
     public Set<Submission> getListaSubmissions() {

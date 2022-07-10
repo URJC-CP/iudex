@@ -19,11 +19,11 @@ public class Language {
     private String imgenId;
     private long timestamp = Instant.now().toEpochMilli();
 
-    @ManyToMany
-    private Set<Contest> concursos;
+    @OneToMany(mappedBy= "lenguajes")
+    private Set<ContestLanguages> lenguajes;
 
     public Language() {
-        concursos = new HashSet<>();
+        lenguajes = new HashSet<>();
     }
 
     public Language(String lenguaje, String imgenId) {
@@ -76,12 +76,12 @@ public class Language {
         this.timestamp = timestamp;
     }
 
-    public Set<Contest> getConcursos() {
-        return concursos;
+    public Language(Set<ContestLanguages> lenguajes) {
+        this.lenguajes = lenguajes;
     }
 
-    public void setConcursos(Set<Contest> concursos) {
-        this.concursos = concursos;
+    public void setLanguague(Set<ContestLanguages> lenguajes) {
+        this.lenguajes = lenguajes;
     }
 
     @Override

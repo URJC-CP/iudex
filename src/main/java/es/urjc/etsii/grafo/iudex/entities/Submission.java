@@ -19,7 +19,7 @@ public class Submission {
     private String codigo;
     private String filename;
     @ManyToOne
-    private Problem problema;
+    private Problem problem;
     @OneToMany(cascade = CascadeType.ALL)
     private Set<Result> results;
 
@@ -72,7 +72,7 @@ public class Submission {
         for (Result result : this.results) {
             resultAPIS.add(result.toResultAPISimple());
         }
-        submissionAPI.setProblem(this.getProblema().toProblemAPISimple());
+        submissionAPI.setProblem(this.getProblem().toProblemAPISimple());
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
@@ -92,7 +92,7 @@ public class Submission {
         for (Result result : this.results) {
             resultAPIS.add(result.toResultAPI());
         }
-        submissionAPI.setProblem(this.getProblema().toProblemAPISimple());
+        submissionAPI.setProblem(this.getProblem().toProblemAPISimple());
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
@@ -169,17 +169,17 @@ public class Submission {
         this.resultado = resultado;
     }
 
-    public Problem getProblema() {
-        return problema;
+    public Problem getProblem() {
+        return problem;
     }
 
-    public void setProblema(Problem problema) {
+    public void setProblem(Problem problema) {
         this.hashStringDelProblema = problema.getHashString();
-        this.problema = problema;
+        this.problem = problema;
     }
 
     public void generaHashProblema() {
-        this.hashStringDelProblema = problema.getHashString();
+        this.hashStringDelProblema = problem.getHashString();
     }
 
     public void addResult(Result res) {
@@ -299,11 +299,11 @@ public class Submission {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Submission that = (Submission) o;
-        return id == that.getId() && problema.equals(that.getProblema()) && team.equals(that.getTeam());
+        return id == that.getId() && problem.equals(that.getProblem()) && team.equals(that.getTeam());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, problema, team);
+        return Objects.hash(id, problem, team);
     }
 }
