@@ -48,6 +48,14 @@ public class ContestProblem {
         this.registeredAt = registeredAt;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public ContestProblem(Contest contest, Problem problem, LocalDateTime registeredAt) {
         this.contest = contest;
         this.problem = problem;
