@@ -48,9 +48,9 @@ public class ProblemService {
 
         updateProblemInside(newProblem, createdProblem);
 
-        newProblem.getListaContestsPertenece().addAll(createdProblem.getListaContestsPertenece());
+        newProblem.getListaProblemasParticipados().addAll(createdProblem.getListaProblemasParticipados());
         newProblem.setEquipoPropietario(createdProblem.getEquipoPropietario());
-        newProblem.getListaEquiposIntentados().addAll(createdProblem.getListaEquiposIntentados());
+        newProblem.getListaProblemasParticipados().addAll(createdProblem.getListaProblemasParticipados());
 
         problemRepository.save(newProblem);
         problemValidatorService.validateProblem(newProblem);
@@ -207,8 +207,8 @@ public class ProblemService {
         problemUpdated.getProblem().getOldSubmissionProblemValidators().addAll(problemOriginal.getSubmissionProblemValidators());
 
         //Ponemos los participantes y concursos de la anterior
-        problemUpdated.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
-        problemUpdated.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
+        problemUpdated.getProblem().setListaProblemasParticipados(problemOriginal.getListaProblemasParticipados());
+        problemUpdated.getProblem().setListaProblemasParticipados(problemOriginal.getListaProblemasParticipados());
 
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());
