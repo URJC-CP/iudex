@@ -26,7 +26,7 @@ public class Submission {
     private boolean corregido;
     private int numeroResultCorregidos;
     @Lob
-    private String resultado;
+    private String result;
 
     @ManyToOne
     private Language language;
@@ -36,7 +36,8 @@ public class Submission {
     private Team team;
 
     private String hashStringSubmission;
-    private String hashStringDelProblema;
+
+    private String hashStringDelProblem;
     private boolean esProblemValidator;
     private String esProblemValidatorResultadoEsperado;
 
@@ -52,7 +53,7 @@ public class Submission {
         this.codigo = codigo;
         this.language = lenguaje;
         this.corregido = false;
-        this.resultado = "";
+        this.result = "";
         this.results = new HashSet<>();
         this.filename = filename;
         this.numeroResultCorregidos = 0;
@@ -77,7 +78,7 @@ public class Submission {
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
         submissionAPI.setNumeroResultCorregidos(this.numeroResultCorregidos);
-        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setResultado(this.result);
         submissionAPI.setLanguage(this.language.toLanguageAPI());
         submissionAPI.setExecSubmissionTime(this.execSubmissionTime);
         submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
@@ -97,7 +98,7 @@ public class Submission {
         submissionAPI.setResults(resultAPIS);
         submissionAPI.setCorregido(this.corregido);
         submissionAPI.setNumeroResultCorregidos(this.numeroResultCorregidos);
-        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setResultado(this.result);
         submissionAPI.setLanguage(this.language.toLanguageAPI());
         submissionAPI.setExecSubmissionTime(this.execSubmissionTime);
         submissionAPI.setExecSubmissionMemory(this.execSubmissionMemory);
@@ -109,7 +110,7 @@ public class Submission {
         SubmissionAPI submissionAPI = new SubmissionAPI();
         submissionAPI.setId(this.id);
         submissionAPI.setTeam(this.team.toTeamAPISimple());
-        submissionAPI.setResultado(this.resultado);
+        submissionAPI.setResultado(this.result);
         submissionAPI.setTimestamp(this.timestamp);
         return submissionAPI;
     }
@@ -161,12 +162,12 @@ public class Submission {
         this.corregido = correjido;
     }
 
-    public String getResultado() {
-        return resultado;
+    public String getResult() {
+        return result;
     }
 
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
+    public void setResult(String resultado) {
+        this.result = resultado;
     }
 
     public Problem getProblem() {
@@ -174,12 +175,12 @@ public class Submission {
     }
 
     public void setProblem(Problem problema) {
-        this.hashStringDelProblema = problema.getHashString();
+        this.hashStringDelProblem = problema.getHashString();
         this.problem = problema;
     }
 
-    public void generaHashProblema() {
-        this.hashStringDelProblema = problem.getHashString();
+    public void generaHashProblem() {
+        this.hashStringDelProblem = problem.getHashString();
     }
 
     public void addResult(Result res) {
@@ -222,12 +223,12 @@ public class Submission {
         this.hashStringSubmission = hashString;
     }
 
-    public String getHashStringDelProblema() {
-        return hashStringDelProblema;
+    public String getHashStringDelProblem() {
+        return hashStringDelProblem;
     }
 
-    public void setHashStringDelProblema(String hashStringDelProblema) {
-        this.hashStringDelProblema = hashStringDelProblema;
+    public void setHashStringDelProblem(String hashStringDelProblema) {
+        this.hashStringDelProblem = hashStringDelProblema;
     }
 
     public void sumarResultCorregido() {

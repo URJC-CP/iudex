@@ -27,10 +27,10 @@ public class Team {
     private Set<Submission> listaDeSubmissions;
 
     @OneToMany(mappedBy = "teams")
-    private Set<TeamsProblems> listaProblemasCreados;
+    private Set<TeamsProblems> listaProblemsCreados;
 
     @OneToMany(mappedBy = "teams")
-    private Set<TeamsProblems> listaProblemasParticipados;
+    private Set<TeamsProblems> listaProblemsParticipados;
 
     @OneToMany(mappedBy = "teams")
     private Set<ContestTeams> listaContestsParticipados;
@@ -48,8 +48,8 @@ public class Team {
         this.nombreEquipo = nombreEquipo;
         this.participantes = new HashSet<>();
         this.listaDeSubmissions = new HashSet<>();
-        this.listaProblemasCreados = new HashSet<>();
-        this.listaProblemasParticipados = new HashSet<>();
+        this.listaProblemsCreados = new HashSet<>();
+        this.listaProblemsParticipados = new HashSet<>();
         this.listaContestsCreados = new HashSet<>();
         this.listaContestsParticipados = new HashSet<>();
     }
@@ -64,8 +64,8 @@ public class Team {
         }
         teamAPI.setParticipantes(userAPIS);
         teamAPI.setListaDeSubmissions(submissionToSubmissionAPI(this.listaDeSubmissions));
-        teamAPI.setListaProblemasCreados(problemToProblemAPI(this.listaProblemasCreados));
-        teamAPI.setListaProblemasParticipados(problemToProblemAPI(this.listaProblemasParticipados));
+        teamAPI.setListaProblemasCreados(problemToProblemAPI(this.listaProblemsCreados));
+        teamAPI.setListaProblemasParticipados(problemToProblemAPI(this.listaProblemsParticipados));
         teamAPI.setListaContestsParticipados(contestToContestAPI(this.listaContestsParticipados));
         teamAPI.setListaContestsCreados(contestToContestAPI(this.listaContestsCreados));
         teamAPI.setTimestamp(this.timestamp);
@@ -128,19 +128,19 @@ public class Team {
     }
 
     public Set<TeamsProblems> getListaProblemasCreados() {
-        return listaProblemasCreados;
+        return listaProblemsCreados;
     }
 
     public void setListaProblemasCreados(Set<TeamsProblems> listaProblemasCreados) {
-        this.listaProblemasCreados = listaProblemasCreados;
+        this.listaProblemsCreados = listaProblemasCreados;
     }
 
     public Set<TeamsProblems> getListaProblemasParticipados() {
-        return listaProblemasParticipados;
+        return listaProblemsCreados;
     }
 
-    public void setListaProblemasParticipados(Set<TeamsProblems> listaProblemasParticipados) {
-        this.listaProblemasParticipados = listaProblemasParticipados;
+    public void setListaProblemasParticipados(Set<TeamsProblems> listaProblemsParticipados) {
+        this.listaProblemsParticipados = listaProblemsParticipados;
     }
 
     public void addUserToTeam(TeamUser user) {
@@ -151,12 +151,12 @@ public class Team {
         this.participantes.remove(user);
     }
 
-    public void addProblemaCreado(TeamsProblems problem) {
-        this.listaProblemasCreados.add(problem);
+    public void addProblemCreado(TeamsProblems problem) {
+        this.listaProblemsCreados.add(problem);
     }
 
-    public void addProblemaIntentado(TeamsProblems problem) {
-        this.listaProblemasParticipados.add(problem);
+    public void addProblemIntentado(TeamsProblems problem) {
+        this.listaProblemsParticipados.add(problem);
     }
 
     public long getId() {

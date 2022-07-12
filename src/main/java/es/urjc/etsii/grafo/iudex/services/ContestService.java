@@ -485,7 +485,7 @@ public class ContestService {
 
             for (Submission entrega : problemService.getSubmissionsFromContestFromProblem(contest, problem.getProblem())) {
                 Team equipo = entrega.getTeam();
-                if (hasFirstAC.contains(equipo) || entrega.getResultado().toLowerCase().contains("failed in compiler")) {
+                if (hasFirstAC.contains(equipo) || entrega.getResult().toLowerCase().contains("failed in compiler")) {
                     continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación
                 }
 
@@ -496,7 +496,7 @@ public class ContestService {
                 problemScore.setTries(problemScore.getTries() + 1);
 
                 // obtener tiempo de las entregas aceptadas
-                if (entrega.getResultado().equalsIgnoreCase("accepted")) {
+                if (entrega.getResult().equalsIgnoreCase("accepted")) {
                     hasFirstAC.add(equipo);
 
                     long tiempo = (long) entrega.getExecSubmissionTime();

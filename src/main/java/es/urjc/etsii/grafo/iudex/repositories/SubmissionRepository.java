@@ -16,13 +16,13 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
     boolean existsSubmissionByResults(Result res);
 
-    boolean existsSubmissionByProblemaAndContest(Problem problem, Contest contest);
+    boolean existsSubmissionByProblemAndContest(Problem problem, Contest contest);
 
     Optional<Submission> findSubmissionById(long id);
 
     Optional<Submission> findSubmissionByResults(Result res);
 
-    List<Submission> findSubmissionsByProblemaAndContest(Problem problem, Contest contest);
+    List<Submission> findSubmissionsByProblemAndContest(Problem problem, Contest contest);
 
     Page<Submission> findAll(Pageable pageable);
 

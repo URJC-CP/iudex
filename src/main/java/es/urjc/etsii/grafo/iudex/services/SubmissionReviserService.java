@@ -32,9 +32,9 @@ public class SubmissionReviserService {
         logger.info("Review submission {}", submission.getId());
 
         if (checkAccepted(submission)) {
-            submission.setResultado("accepted");
+            submission.setResult("accepted");
         } else {
-            submission.setResultado(checkSubmission(submission));
+            submission.setResult(checkSubmission(submission));
         }
 
         //HAY QUE HACERLO CON EL RESTO DE OPCIONES WRONG ANSWER ETCETC
@@ -49,7 +49,7 @@ public class SubmissionReviserService {
             //Se valide el problema y pueda usarse en la aplicacion
             problemValidatorService.checkIfProblemFinishedAndDoValidateIt(submissionProblemValidator);
         }
-        logger.info("Finish review submission {} with {}", submission.getId(), submission.getResultado());
+        logger.info("Finish review submission {} with {}", submission.getId(), submission.getResult());
     }
 
     //Chekea si esta aceptado

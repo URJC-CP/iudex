@@ -282,7 +282,7 @@ public class ZipHandlerService {
 
     private void rellenaSubmissionConProblemHash(Problem problem) {
         for (Submission submission : problem.getSubmissions()) {
-            submission.generaHashProblema();
+            submission.generaHashProblem();
         }
     }
 

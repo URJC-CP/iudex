@@ -284,7 +284,7 @@ public class SubmissionService {
     }
 
     public List<Submission> getSubmissionFromProblemAndContest(Problem problem, Contest contest) {
-        return submissionRepository.findSubmissionsByProblemaAndContest(problem, contest);
+        return submissionRepository.findSubmissionsByProblemAndContest(problem, contest);
     }
 
     public Optional<Submission> getSubmission(String submissionId) {
