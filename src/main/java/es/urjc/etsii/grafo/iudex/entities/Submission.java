@@ -39,7 +39,7 @@ public class Submission {
 
     private String hashStringDelProblem;
     private boolean esProblemValidator;
-    private String esProblemValidatorResultadoEsperado;
+    private String esProblemValidatorResultEsperado;
 
     private float execSubmissionTime;
     private float execSubmissionMemory;
@@ -166,17 +166,17 @@ public class Submission {
         return result;
     }
 
-    public void setResult(String resultado) {
-        this.result = resultado;
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public Problem getProblem() {
         return problem;
     }
 
-    public void setProblem(Problem problema) {
-        this.hashStringDelProblem = problema.getHashString();
-        this.problem = problema;
+    public void setProblem(Problem problem) {
+        this.hashStringDelProblem = problem.getHashString();
+        this.problem = problem;
     }
 
     public void generaHashProblem() {
@@ -279,12 +279,12 @@ public class Submission {
         this.esProblemValidator = esProblemValidator;
     }
 
-    public String getEsProblemValidatorResultadoEsperado() {
-        return esProblemValidatorResultadoEsperado;
+    public String getEsProblemValidatorResultEsperado() {
+        return esProblemValidatorResultEsperado;
     }
 
-    public void setEsProblemValidatorResultadoEsperado(String esProblemValidatorResultadoEsperado) {
-        this.esProblemValidatorResultadoEsperado = esProblemValidatorResultadoEsperado;
+    public void setEsProblemValidatorResultEsperado(String esProblemValidatorResultadoEsperado) {
+        this.esProblemValidatorResultEsperado = esProblemValidatorResultadoEsperado;
     }
 
     public long getTimestamp() {
