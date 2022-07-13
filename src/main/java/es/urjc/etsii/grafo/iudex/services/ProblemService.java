@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ProblemService {
@@ -48,9 +45,9 @@ public class ProblemService {
 
         updateProblemInside(newProblem, createdProblem);
 
-        newProblem.getListaContestsPertenece().addAll(createdProblem.getListaContestsPertenece());
+        newProblem.getListaProblemasParticipados().addAll(createdProblem.getListaProblemasParticipados());
         newProblem.setEquipoPropietario(createdProblem.getEquipoPropietario());
-        newProblem.getListaEquiposIntentados().addAll(createdProblem.getListaEquiposIntentados());
+        newProblem.getListaProblemasParticipados().addAll(createdProblem.getEquipoPropietario().getListaProblemasCreados());
 
         problemRepository.save(newProblem);
         problemValidatorService.validateProblem(newProblem);
@@ -207,8 +204,8 @@ public class ProblemService {
         problemUpdated.getProblem().getOldSubmissionProblemValidators().addAll(problemOriginal.getSubmissionProblemValidators());
 
         //Ponemos los participantes y concursos de la anterior
-        problemUpdated.getProblem().setListaEquiposIntentados(problemOriginal.getListaEquiposIntentados());
-        problemUpdated.getProblem().setListaContestsPertenece(problemOriginal.getListaContestsPertenece());
+        problemUpdated.getProblem().setListaProblemasParticipados(problemOriginal.getEquipoPropietario().getListaProblemasParticipados());
+        problemUpdated.getProblem().setListaProblemas(problemOriginal.getListaProblemas());
 
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());

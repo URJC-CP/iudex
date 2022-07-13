@@ -42,47 +42,47 @@ class TestAPISubmissionController {
     @MockBean
     private ProblemService problemService;
 
-    private Contest contest;
-    private Problem problem;
+    private ContestProblem contest;
+    private ContestProblem problem;
     private Submission submission;
 
     @BeforeEach
     public void init() {
-        contest = new Contest();
+        contest = new ContestProblem();
         contest.setId(101);
-        contest.setNombreContest("elConcurso");
-        contest.setDescripcion("concurso de prueba");
+        contest.getContest().setNombreContest("elConcurso");
+        contest.getContest().setDescripcion("concurso de prueba");
 
         Team owner = new Team();
         owner.setId(201);
         owner.setNombreEquipo("propietario");
-        contest.setTeamPropietario(owner);
+        contest.getContest().setTeamPropietario(owner);
 
-        problem = new Problem();
+        problem = new ContestProblem();
         problem.setId(244);
-        problem.setNombreEjercicio("Ejercicio de prueba");
-        problem.setEquipoPropietario(owner);
-        contest.addProblem(problem);
+        problem.getProblem().setNombreEjercicio("Ejercicio de prueba");
+        problem.getProblem().setEquipoPropietario(owner);
+        contest.getContest().addProblem(problem);
 
         submission = new Submission();
         submission.setId(342);
-        submission.setProblema(problem);
-        submission.setContest(contest);
+        submission.setProblem(problem.getProblem());
+        submission.setContest(contest.getContest());
         submission.setTeam(owner);
         submission.setLanguage(new Language());
         submission.setResults(new HashSet<>());
-        problem.setSubmissions(Set.of(submission));
+        problem.getProblem().setSubmissions(Set.of(submission));
 
-        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest));
-        when(contestService.getAllContests()).thenReturn(List.of(contest));
+        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest.getContest()));
+        when(contestService.getAllContests()).thenReturn(List.of(contest.getContest()));
 
-        when(problemService.getAllProblemas()).thenReturn(List.of(problem));
-        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
+        when(problemService.getAllProblemas()).thenReturn(List.of(problem.getProblem()));
+        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem.getProblem()));
 
         when(submissionService.getSubmission(String.valueOf(submission.getId()))).thenReturn(Optional.of(submission));
         when(submissionService.getAllSubmissions()).thenReturn(List.of(submission));
-        when(submissionService.getSubmissionFromProblem(problem)).thenReturn(Set.of(submission));
-        when(submissionService.getSubmissionsFromContest(contest)).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionFromProblem(problem.getProblem())).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionsFromContest(contest.getContest())).thenReturn(Set.of(submission));
     }
 
     @Test

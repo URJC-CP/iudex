@@ -101,7 +101,7 @@ public class ProblemValidatorService {
             Submission submission = submissionProblemValidator.getSubmission();
 
             //Obtenemos la primera linea del resultado del Submission
-            String aux = submission.getResultado();
+            String aux = submission.getResult();
             try {
                 aux = new BufferedReader(new StringReader(aux)).readLine();
             } catch (IOException e) {
