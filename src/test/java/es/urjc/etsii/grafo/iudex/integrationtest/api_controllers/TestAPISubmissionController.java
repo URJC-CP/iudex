@@ -42,47 +42,55 @@ class TestAPISubmissionController {
     @MockBean
     private ProblemService problemService;
 
-    private ContestProblem contest;
-    private ContestProblem problem;
+    private Contest contest;
+    private Problem problem;
+    private ContestProblem contestProblem;
+
     private Submission submission;
 
     @BeforeEach
     public void init() {
-        contest = new ContestProblem();
-        contest.setId(101);
-        contest.getContest().setNombreContest("elConcurso");
-        contest.getContest().setDescripcion("concurso de prueba");
 
         Team owner = new Team();
         owner.setId(201);
         owner.setNombreEquipo("propietario");
-        contest.getContest().setTeamPropietario(owner);
 
-        problem = new ContestProblem();
+        contest = new Contest();
+        contest.setId(101);
+        contest.setNombreContest("elConcurso");
+        contest.setDescripcion("concurso de prueba");
+        contest.setTeamPropietario(owner);
+
+        problem = new Problem();
         problem.setId(244);
-        problem.getProblem().setNombreEjercicio("Ejercicio de prueba");
-        problem.getProblem().setEquipoPropietario(owner);
-        contest.getContest().addProblem(problem);
+        problem.setNombreEjercicio("Ejercicio de prueba");
+        problem.setEquipoPropietario(owner);
 
         submission = new Submission();
         submission.setId(342);
-        submission.setProblem(problem.getProblem());
-        submission.setContest(contest.getContest());
+        submission.setProblem(problem);
+        submission.setContest(contest);
         submission.setTeam(owner);
         submission.setLanguage(new Language());
         submission.setResults(new HashSet<>());
-        problem.getProblem().setSubmissions(Set.of(submission));
+        problem.setSubmissions(Set.of(submission));
 
-        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest.getContest()));
-        when(contestService.getAllContests()).thenReturn(List.of(contest.getContest()));
+        contestProblem = new ContestProblem();
+        contestProblem.setId(301);
+        contestProblem.setContest(contest);
+        contestProblem.setProblem(problem);
+        contest.addProblem(contestProblem);
 
-        when(problemService.getAllProblemas()).thenReturn(List.of(problem.getProblem()));
-        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem.getProblem()));
+        when(contestService.getContestById(String.valueOf(contestProblem.getId()))).thenReturn(Optional.of(contestProblem.getContest()));
+        when(contestService.getAllContests()).thenReturn(List.of(contestProblem.getContest()));
+
+        when(problemService.getAllProblemas()).thenReturn(List.of(problem));
+        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
 
         when(submissionService.getSubmission(String.valueOf(submission.getId()))).thenReturn(Optional.of(submission));
         when(submissionService.getAllSubmissions()).thenReturn(List.of(submission));
-        when(submissionService.getSubmissionFromProblem(problem.getProblem())).thenReturn(Set.of(submission));
-        when(submissionService.getSubmissionsFromContest(contest.getContest())).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionFromProblem(problem)).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionsFromContest(contestProblem.getContest())).thenReturn(Set.of(submission));
     }
 
     @Test
@@ -90,7 +98,7 @@ class TestAPISubmissionController {
     void testAPIGetSubmissions() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "312";
-        String goodContest = String.valueOf(contest.getId());
+        String goodContest = String.valueOf(contestProblem.getId());
         String badContest = "654";
         String url = "/API/v1/submissions/";
 
