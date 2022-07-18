@@ -5,6 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -85,6 +86,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Application basic test - create contest, add problem and do submission")
+    @Disabled
     void test1() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
