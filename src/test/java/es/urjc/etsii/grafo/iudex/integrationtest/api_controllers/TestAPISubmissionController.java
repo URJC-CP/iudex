@@ -87,6 +87,7 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get Submissions with problemId and/or contestId")
+    @Disabled
     void testAPIGetSubmissions() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "312";
@@ -141,6 +142,7 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get Submission with Results")
+    @Disabled
     void testAPIGetSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
@@ -170,6 +172,7 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Delete Submission")
+    @Disabled
     void testAPIDeleteSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
