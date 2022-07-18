@@ -168,7 +168,7 @@ public class UserAndTeamService {
             return "USER ALREADY IN TEAM";
         } else {
             team.addUserToTeam(teamUser);
-            teamRepository.save(team);
+            teamRepository.save(teamUser.getTeams());
             logger.debug("Finish add user {} to team {} ", user.getId(), team.getId());
             return "OK";
         }

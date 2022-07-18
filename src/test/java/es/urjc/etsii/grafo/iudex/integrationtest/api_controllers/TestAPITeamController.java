@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APITeamController;
+import es.urjc.etsii.grafo.iudex.entities.ContestTeams;
 import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.entities.TeamUser;
 import es.urjc.etsii.grafo.iudex.entities.User;
@@ -32,32 +33,38 @@ class TestAPITeamController {
     private MockMvc mockMvc;
     @MockBean
     private UserAndTeamService teamService;
-    private TeamUser team;
-    private TeamUser user;
+    private Team team;
+    private User user;
+    private TeamUser userTeam;
 
     @BeforeEach
     public void init() {
-        team = new TeamUser();
-        team.getTeams().setId(305);
-        team.getTeams().setEsUser(false);
-        team.getTeams().setNombreEquipo("Equipo de prueba");
+        team = new Team();
+        team.setId(305);
+        team.setEsUser(false);
+        team.setNombreEquipo("Equipo de prueba");
 
-        when(teamService.getTeamFromId(String.valueOf(team.getId()))).thenReturn(Optional.of(team.getTeams()));
-        when(teamService.getTeamByNick(team.getTeams().getNombreEquipo())).thenReturn(Optional.of(team.getTeams()));
-        when(teamService.getAllTeams()).thenReturn(List.of(team.getTeams()));
+        user = new User();
+        user.setId(307);
+        user.setNickname("usuario de prueba");
+        user.setEmail("prueba@prueba.com");
 
-        user = new TeamUser();
-        user.getUser().setId(307);
-        user.getUser().setNickname("usuario de prueba");
-        user.getUser().setEmail("prueba@prueba.com");
-        team.getTeams().addUserToTeam(user);
+        userTeam = new TeamUser();
+        userTeam.setTeams(team);
+        userTeam.setUser(user);
+        team.addUserToTeam(userTeam);
+
+        when(teamService.getTeamFromId(String.valueOf(userTeam.getTeams().getId()))).thenReturn(Optional.of(userTeam.getTeams()));
+        when(teamService.getTeamByNick(team.getNombreEquipo())).thenReturn(Optional.of(userTeam.getTeams()));
+        when(teamService.getAllTeams()).thenReturn(List.of(team));
+
     }
 
     @Test
     @DisplayName("Get all teams")
     void testAPIGetTeams() throws Exception {
         String url = "/API/v1/team";
-        String salida = jsonConverter.convertObjectToJSON(List.of(team.getTeams().toTeamAPISimple()));
+        String salida = jsonConverter.convertObjectToJSON(List.of(userTeam.getTeams().toTeamAPISimple()));
         String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
@@ -66,7 +73,7 @@ class TestAPITeamController {
     @DisplayName("Get Team")
     void testAPIGetTeam() throws Exception {
         String badTeam = "843";
-        String goodTeam = String.valueOf(team.getId());
+        String goodTeam = String.valueOf(userTeam.getId());
         String badURL = "/API/v1/team/" + badTeam;
         String goodURL = "/API/v1/team/" + goodTeam;
 
@@ -75,7 +82,7 @@ class TestAPITeamController {
         testGetTeam(badURL, status, salida);
 
         status = HttpStatus.OK;
-        salida = jsonConverter.convertObjectToJSON(team.getTeams().toTeamAPI());
+        salida = jsonConverter.convertObjectToJSON(userTeam.getTeams().toTeamAPI());
         testGetTeam(goodURL, status, salida);
     }
 
@@ -88,7 +95,7 @@ class TestAPITeamController {
     @DisplayName("Create Team")
     void testAPICreateTeam() throws Exception {
         String badTeam = "";
-        String goodTeam = team.getTeams().getNombreEquipo();
+        String goodTeam = userTeam.getTeams().getNombreEquipo();
         String url = "/API/v1/team/";
 
         TeamString ts = new TeamString();
@@ -100,10 +107,10 @@ class TestAPITeamController {
 
         salida = "OK";
         ts.setSalida(salida);
-        ts.setTeam(team.getTeams());
+        ts.setTeam(userTeam.getTeams());
         status = HttpStatus.OK;
         when(teamService.crearTeam(goodTeam, false)).thenReturn(ts);
-        salida = jsonConverter.convertObjectToJSON(team.getTeams().toTeamAPI());
+        salida = jsonConverter.convertObjectToJSON(userTeam.getTeams().toTeamAPI());
         testCreateTeam(url, goodTeam, status, salida);
     }
 
@@ -116,7 +123,7 @@ class TestAPITeamController {
     @DisplayName("Delete Team")
     void testAPIDeleteTeam() throws Exception {
         String badTeam = "856";
-        String goodTeam = String.valueOf(team.getId());
+        String goodTeam = String.valueOf(userTeam.getId());
         String badURL = "/API/v1/team/" + badTeam;
         String goodURL = "/API/v1/team/" + goodTeam;
 
@@ -141,12 +148,12 @@ class TestAPITeamController {
     @DisplayName("Update Team")
     void testAPIUpdateTeam() throws Exception {
         String badTeam = "834";
-        String goodTeam = String.valueOf(team.getId());
+        String goodTeam = String.valueOf(userTeam.getId());
         String badURL = "/API/v1/team/" + badTeam;
         String goodURL = "/API/v1/team/" + goodTeam;
 
         String badTeamName = "nombreFalso";
-        String goodTeamName = team.getTeams().getNombreEquipo();
+        String goodTeamName = userTeam.getTeams().getNombreEquipo();
         TeamString ts = new TeamString();
 
         String salida = "";
@@ -166,9 +173,9 @@ class TestAPITeamController {
         salida = "OK";
         status = HttpStatus.OK;
         ts.setSalida(salida);
-        ts.setTeam(team.getTeams());
+        ts.setTeam(userTeam.getTeams());
         when(teamService.updateTeam(goodTeam, Optional.of(goodTeamName))).thenReturn(ts);
-        salida = jsonConverter.convertObjectToJSON(team.getTeams().toTeamAPI());
+        salida = jsonConverter.convertObjectToJSON(userTeam.getTeams().toTeamAPI());
         testUpdateTeam(goodURL, goodTeamName, status, salida);
     }
 
@@ -181,9 +188,9 @@ class TestAPITeamController {
     @DisplayName("Add User to Team")
     void testAPIAddUser() throws Exception {
         String badUser = "872";
-        String goodUser = String.valueOf(user.getId());
+        String goodUser = String.valueOf(userTeam.getUser().getId());
         String badTeam = "667";
-        String goodTeam = String.valueOf(team.getId());
+        String goodTeam = String.valueOf(userTeam.getTeams().getId());
 
         String badURL = "/API/v1/team/" + badTeam + "/" + badUser;
         String badURL2 = "/API/v1/team/" + badTeam + "/" + goodUser;
@@ -209,9 +216,9 @@ class TestAPITeamController {
         salida = "OK";
         status = HttpStatus.OK;
         ts.setSalida(salida);
-        ts.setTeam(team.getTeams());
+        ts.setTeam(userTeam.getTeams());
         when(teamService.addUserToTeamUssingIds(goodTeam, goodUser)).thenReturn(ts);
-        salida = jsonConverter.convertObjectToJSON(team.getTeams().toTeamAPI());
+        salida = jsonConverter.convertObjectToJSON(userTeam.getTeams().toTeamAPI());
         testAddUser(goodURL, status, salida);
 
         salida = "";
