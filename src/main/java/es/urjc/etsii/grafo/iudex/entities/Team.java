@@ -16,7 +16,7 @@ public class Team {
     @Column(unique = true)
     private String nombreEquipo;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teams")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
     private Set<TeamUser> participantes;
     private boolean esUser;
     

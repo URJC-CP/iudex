@@ -14,7 +14,7 @@ public class TeamUser {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
-    Team teams;
+    Team team;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -22,8 +22,8 @@ public class TeamUser {
 
     LocalDateTime registeredAt;
 
-    public TeamUser(Team teams, User user, LocalDateTime registeredAt) {
-        this.teams = teams;
+    public TeamUser(Team team, User user, LocalDateTime registeredAt) {
+        this.team = team;
         this.user = user;
         this.registeredAt = registeredAt;
     }
@@ -40,12 +40,12 @@ public class TeamUser {
         this.id = id;
     }
 
-    public Team getTeams() {
-        return teams;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeams(Team teams) {
-        this.teams = teams;
+    public void setTeam(Team teams) {
+        this.team = teams;
     }
 
     public User getUser() {
@@ -69,11 +69,11 @@ public class TeamUser {
         if (this == o) return true;
         if (!(o instanceof TeamUser)) return false;
         TeamUser teamUser = (TeamUser) o;
-        return Objects.equals(getTeams(), teamUser.getTeams()) && Objects.equals(getUser(), teamUser.getUser());
+        return Objects.equals(getTeam(), teamUser.getTeam()) && Objects.equals(getUser(), teamUser.getUser());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTeams(), getUser());
+        return Objects.hash(getTeam(), getUser());
     }
 }

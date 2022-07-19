@@ -7,6 +7,7 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.pojos.UserString;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
+import es.urjc.etsii.grafo.iudex.repositories.UserTeamRespository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,12 @@ public class UserAndTeamService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
 
-    public UserAndTeamService(UserRepository userRepository, TeamRepository teamRepository) {
+    private final UserTeamRespository userTeamRespository;
+
+    public UserAndTeamService(UserRepository userRepository, TeamRepository teamRepository, UserTeamRespository userTeamRespository) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
+        this.userTeamRespository = userTeamRespository;
     }
 
     //Cuando se crea un usuario tambien se creara un equipo con el mismo nombre que el usuario
@@ -161,14 +165,14 @@ public class UserAndTeamService {
     }
 
     public String addUserToTeam(Team team, User user) {
-        TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
         logger.debug("Add user {} to team {}", user.getId(), team.getId());
-        if (teamRepository.existsTeamByParticipantesContains(user)) {
+        if ( userTeamRespository.existsByTeamAndUser(team, user)) {
             logger.error("User {} already in team {}", user.getId(), team.getId());
             return "USER ALREADY IN TEAM";
         } else {
+            TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
             team.addUserToTeam(teamUser);
-            teamRepository.save(team);
+            teamRepository.save(teamUser.getTeam());
             logger.debug("Finish add user {} to team {} ", user.getId(), team.getId());
             return "OK";
         }
@@ -325,4 +329,6 @@ public class UserAndTeamService {
         logger.debug("Finish update team {}", teamId);
         return salida;
     }
+
+
 }

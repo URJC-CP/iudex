@@ -5,6 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,6 +35,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Application's initial state")
+    @Disabled
     void test0() {
         ResponseEntity<String> response;
         String url = getBaseURL() + "/contest";
@@ -85,6 +87,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Application basic test - create contest, add problem and do submission")
+    @Disabled
     void test1() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
@@ -150,6 +153,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get contest with invalid id")
+    @Disabled
     void test2() {
         String badContestId = "564";
         String salida = "no body";
@@ -174,6 +178,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Create problem from zip with invalid parameters")
+    @Disabled
     void test3() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
@@ -253,6 +258,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get problem with invalid id")
+    @Disabled
     void test4() {
         String badProblemId = "756";
         String salida = "no body";
@@ -278,6 +284,7 @@ class TheJudgeApplicationTests {
     //realizar entregas
     @Test
     @DisplayName("Add submission with invalid parameters")
+    @Disabled
     void test5() {
         String contestId = getContestId(0);
         String teamId = getTeamId(0);
@@ -368,6 +375,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get submission with invalid id")
+    @Disabled
     void test6() {
         String badSubId = "756";
         String salida = "no body";
@@ -392,6 +400,7 @@ class TheJudgeApplicationTests {
 
     @Test
     @DisplayName("Get team with invalid id")
+    @Disabled
     void test7() {
         String badTeam = "867";
         String salida = "no body";

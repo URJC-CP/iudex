@@ -6,6 +6,7 @@ import es.urjc.etsii.grafo.iudex.entities.Sample;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ class TestAPIAdminController {
 
     @Test
     @DisplayName("Get Result")
+    @Disabled // todo rufinodisabledtest
     void testAPIGetResult() throws Exception {
         String badResult = "654";
         String goodResult = String.valueOf(result.getId());
