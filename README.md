@@ -43,27 +43,27 @@ Estructura del proyecto de GitHub
 
 * [Fronted](./front/) 
 * [Backend](./src/)
-* [Documetnación](./docs/)
+* [Documentación](./docs/)
 
 Lanzamiento de aplicación
 -------------
 
 Los requisitos para lanzar la aplicación son los siguientes:
 
-* 1.
-* 2.
+* Docker
 
 Se podrá lanzar ejecutando el siguiente comando:
 
 ```
-COMANDO
+docker-compose -f docker-compose-prod.yml up
 ```
 
 En este punto, tendremos información que nos resultará interesante en las siguientes IPs:
 
-* Interfaz web
-* Rabbit
-* Base de datos
+* Interfaz web: http://localhost:8080/
+* Rabbit:
+* Base de datos:
+* Documentación: http://localhost:8080/swagger-ui/index.html
 
 Autores
 -------------
