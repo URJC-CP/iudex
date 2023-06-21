@@ -5,6 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemScore;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
+import es.urjc.etsii.grafo.iudex.repositories.ContestProblemRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestTeamRespository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
@@ -30,6 +31,8 @@ public class ContestService {
 
     @Autowired
     private ContestRepository contestRepository;
+    @Autowired
+    private ContestProblemRepository contestProblemRepository;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
@@ -179,8 +182,7 @@ public class ContestService {
             return "PROBLEM ALREADY IN CONTEST";
         }
 
-        contest.addProblem(contestProblem);
-        contestRepository.save(contest);
+        contestProblemRepository.save(contestProblem);
 
         logger.debug("Finish add problem {} to contest {}", idProblema, idContest);
         return "OK";
