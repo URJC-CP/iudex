@@ -26,6 +26,8 @@ public class SubmissionService {
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
+    private ContestProblemRepository contestProblemRepository;
+    @Autowired
     private ProblemRepository problemRepository;
     @Autowired
     private TeamRepository teamRepository;
@@ -92,11 +94,18 @@ public class SubmissionService {
         }
         Language language = languageOptional.get();
 
-       ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
+        // ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
+        Optional<ContestProblem> optionalContestProblem = contestProblemRepository.findByContestAndProblem(contest, problema);
+        if (optionalContestProblem.isEmpty()) {
+            logger.error("Problem {} not in contest {}", problem, idContest);
+            submissionStringResult.setSalida("CONTESTPROBLEM NOT FOUND");
+            return submissionStringResult;
+        }
+        ContestProblem contestProblem = optionalContestProblem.get();
 
         //Comprobamos que el problema pertenezca al contest
         if (!contest.getListaProblemas().contains(contestProblem)) {
-            logger.error("Problem {} not in contest {}", problem, idContest);
+            logger.error("Problem {} not in contest {}", contestProblem, idContest);
             submissionStringResult.setSalida("PROBLEM NOT IN CONTEST");
             return submissionStringResult;
         }
