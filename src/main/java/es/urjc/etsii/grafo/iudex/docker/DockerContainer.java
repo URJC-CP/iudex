@@ -27,7 +27,7 @@ public class DockerContainer {
     private static final Logger logger = LoggerFactory.getLogger(DockerContainer.class);
     private static DockerClient dockerClient = null;
 
-    private final Set<String> acceptedLanguages = Set.of(new String[]{"c", "cpp", "java", "sql", "python3"});
+    private final Set<String> acceptedLanguages = Set.of("c", "cpp", "java", "sql", "python3");
 
     public DockerContainer(DockerClient dockerClient) {
         DockerContainer.dockerClient = dockerClient;
