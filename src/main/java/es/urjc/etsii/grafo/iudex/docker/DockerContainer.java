@@ -97,10 +97,10 @@ public class DockerContainer {
     }
 
     private void waitUntilContainerStopped(CreateContainerResponse container) {
-        Boolean isRunning;
+        boolean isRunning;
         do {
-            isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
-        } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
+            isRunning = Boolean.TRUE.equals(dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning());
+        } while (isRunning);  //Mientras esta corriendo se hace el do
     }
 
     private String getFileExtension(String language) {

@@ -75,10 +75,10 @@ public class DockerContainerMySQL extends DockerContainer {
 
             dockerClient.stopContainerCmd(container.getId()).exec();
             //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-            Boolean isRunning;
+            boolean isRunning;
             do {
-                isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
-            } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
+                isRunning = Boolean.TRUE.equals(dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning());
+            } while (isRunning);  //Mientras esta corriendo se hace el do
 
             this.setReturnedValuesFromContainer(container, result, signalEjecutor);
 
