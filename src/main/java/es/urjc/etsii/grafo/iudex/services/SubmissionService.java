@@ -94,7 +94,6 @@ public class SubmissionService {
         }
         Language language = languageOptional.get();
 
-        // ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
         Optional<ContestProblem> optionalContestProblem = contestProblemRepository.findByContestAndProblem(contest, problema);
         if (optionalContestProblem.isEmpty()) {
             logger.error("Problem {} not in contest {}", problem, idContest);
