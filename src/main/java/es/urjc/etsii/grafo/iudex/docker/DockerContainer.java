@@ -6,6 +6,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
+import es.urjc.etsii.grafo.iudex.exceptions.UnacceptedLanguageException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
@@ -35,7 +36,7 @@ public class DockerContainer {
 
     public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
         String language = result.getLanguage().getNombreLenguaje();
-        if (!acceptedLanguages.contains(language)) { throw new RuntimeException("Invalid file type."); }
+        if (!acceptedLanguages.contains(language)) { throw new UnacceptedLanguageException("Language is not accepted"); }
 
         logger.debug("Building {} container for image {}", language, imagenId);
 
@@ -111,7 +112,7 @@ public class DockerContainer {
             case "python3" -> { return "py"; }
         }
 
-        throw new RuntimeException("Unaccepted language.");
+        throw new UnacceptedLanguageException("Language is not accepted");
     }
 
     private String[] getEnv(Result result, String language, String defaultTimeout) {
@@ -137,7 +138,7 @@ public class DockerContainer {
             case "java" -> { return getJavaClassName(result); }
         }
 
-        throw new RuntimeException("Unaccepted language.");
+        throw new UnacceptedLanguageException("Language is not accepted");
     }
 
     private String getFileName2(Result result, String fileExtension) {
