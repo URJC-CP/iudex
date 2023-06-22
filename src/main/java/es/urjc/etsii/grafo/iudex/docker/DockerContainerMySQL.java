@@ -14,32 +14,27 @@ import java.time.LocalDateTime;
 public class DockerContainerMySQL extends DockerContainer {
     private static final Logger logger = LoggerFactory.getLogger(DockerContainerMySQL.class);
 
-    public DockerContainerMySQL(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
-        super(result, dockerClient, defaultMemoryLimit, defaultTimeout, defaultCPU, defaultStorageLimit);
+    public DockerContainerMySQL(DockerClient dockerClient) {
+        super(dockerClient);
     }
 
-    public Result ejecutar(String imagenId) throws IOException {
+    @Override
+    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
         logger.debug("Building container for image {}", imagenId);
-        String defaultCPU = (this.getDefaultCPU());
-        Long defaultMemoryLimit = Long.parseLong(this.getDefaultMemoryLimit());
 
-        Result result = getResult();
         String nombreClase = result.getFileName();
         String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
         nombreDocker = nombreDocker.replace(":", "");
 
         String timeout;
-        if (result.getMaxTimeout() != null) {
-            timeout = result.getMaxTimeout();
-        } else {
-            timeout = this.getDefaultTimeout();
-        }
+        if (result.getMaxTimeout() != null) { timeout = result.getMaxTimeout(); }
+        else { timeout = defaultTimeout; }
 
-        DockerClient dockerClient = getDockerClient();
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(defaultMemoryLimit).withCpusetCpus(defaultCPU);
+        hostConfig.withMemory(Long.parseLong(defaultMemoryLimit)).withCpusetCpus(defaultCPU);
 
+        DockerClient dockerClient = getDockerClient();
         CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql").withHostConfig(hostConfig).withName(nombreDocker).exec();
         logger.debug("DOCKER MySQL: Running container for result {} with timeout {} and memory limit {}", result.getId(), timeout, result.getMaxMemory());
 
@@ -79,7 +74,7 @@ public class DockerContainerMySQL extends DockerContainer {
         Boolean isRunning = null;
         do {
             isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
-        } while (isRunning != null && isRunning.booleanValue());  //Mientras esta corriendo se hace el do
+        } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
 
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");

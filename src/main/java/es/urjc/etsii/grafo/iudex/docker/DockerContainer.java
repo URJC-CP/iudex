@@ -1,5 +1,7 @@
 package es.urjc.etsii.grafo.iudex.docker;
 
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.model.HostConfig;
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
@@ -14,25 +16,143 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DockerContainer {
     private static final Logger logger = LoggerFactory.getLogger(DockerContainer.class);
     private static DockerClient dockerClient = null;
-    private Result result;
-    private String defaultMemoryLimit;
-    private String defaultTimeout;
-    private String defaultCPU;
-    private String defaultStorageLimit;
 
-    public DockerContainer(Result result, DockerClient dockerClient, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String defaultStorageLimit) {
-        this.result = result;
+    private final Set<String> acceptedLanguages = Set.of(new String[]{"c", "cpp", "java", "sql", "python3"});
+
+    public DockerContainer(DockerClient dockerClient) {
         DockerContainer.dockerClient = dockerClient;
-        this.defaultMemoryLimit = defaultMemoryLimit;
-        this.defaultTimeout = defaultTimeout;
-        this.defaultCPU = defaultCPU;
-        this.defaultStorageLimit = defaultStorageLimit;
+    }
+
+    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
+        String language = result.getLanguage().getNombreLenguaje();
+        if (!acceptedLanguages.contains(language)) { throw new RuntimeException("Invalid file type."); }
+
+        logger.debug("Building {} container for image {}", language, imagenId);
+
+        String nombreClase = (language.equals("java")) ? this.getJavaClassName(result) : result.getFileName();
+        String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
+        nombreDocker = nombreDocker.replace(":", "");
+
+        //Creamos el contendor
+        HostConfig hostConfig = new HostConfig();
+        hostConfig.withMemory(Long.parseLong(defaultMemoryLimit)).withCpusetCpus(defaultCPU);
+
+        String[] env = this.getEnv(result, language, defaultTimeout);
+        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv(env).withHostConfig(hostConfig).withName(nombreDocker).exec();
+        logger.debug("DOCKER {}: Running container for result {} with timeout {} and memory limit {}", language, result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+
+        //Copiamos el codigo
+        copiarArchivoAContenedor(container.getId(), nombreClase + "." + this.getFileExtension(language), result.getCodigo(), "/root");
+
+        //Copiamos la entrada
+        copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
+
+        //Arrancamos el docker
+        dockerClient.startContainerCmd(container.getId()).exec();
+        //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
+        Boolean isRunning;
+        do {
+            isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
+        } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
+
+        //Buscamos la salida Estandar
+        String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
+        result.setSalidaEstandar(salidaEstandar);
+
+        //buscamos la salida Error
+        String salidaError = copiarArchivoDeContenedor(container.getId(), "root/salidaError.ans");
+        result.setSalidaError(salidaError);
+
+        //buscamos la salida Compilador
+        String salidaCompilador = copiarArchivoDeContenedor(container.getId(), "root/salidaCompilador.ans");
+        result.setSalidaCompilador(salidaCompilador);
+
+        String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
+        result.setSalidaTime(time);
+
+        this.setSignals(result, container, language);
+
+        dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+
+        logger.debug("DOCKER {}: Finish running container for result {} ", language, result.getId());
+        return result;
+    }
+
+    private String getFileExtension(String language) {
+        switch (language) {
+            case "sql" -> { return "sql"; }
+            case "java" -> { return "java"; }
+            case "c" -> { return "c"; }
+            case "cpp" -> { return "cpp"; }
+            case "python3" -> { return "py"; }
+        }
+
+        throw new RuntimeException("Unaccepted language.");
+    }
+
+    private String[] getEnv(Result result, String language, String defaultTimeout) {
+        String timeout;
+        if (result.getMaxTimeout() != null) { timeout = result.getMaxTimeout(); }
+        else { timeout = defaultTimeout; }
+
+        List<String> env2 = new ArrayList<>();
+        env2.add("EXECUTION_TIMEOUT=" + timeout);
+        env2.add("FILENAME2=" + getFileName2(result, getFileExtension(language)));
+
+        if (!language.equals("py")) { env2.add("FILENAME1=" + getFileName1(result, language)); }
+
+        if (language.equals("java")) { env2.add("MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m"); }
+
+        return env2.toArray(new String[0]);
+    }
+
+    private String getFileName1(Result result, String language) {
+        switch (language) {
+            case "sql" -> { return "entrada.in"; }
+            case "python3", "cpp", "c" -> { return result.getFileName(); }
+            case "java" -> { return getJavaClassName(result); }
+        }
+
+        throw new RuntimeException("Unaccepted language.");
+    }
+
+    private String getFileName2(Result result, String fileExtension) {
+        if (fileExtension.equals("java")) { return this.getJavaClassName(result); }
+        else { return result.getFileName() + "." + fileExtension; }
+    }
+
+    private String getJavaClassName(Result result) {
+        Matcher publicClassMatcher = Pattern.compile("public\\s+class\\s+([a-zA-Z_$][a-zA-Z_$0-9]*)")
+                                       .matcher(result.getCodigo());
+        Matcher privateClassMatcher = Pattern.compile("class\\s+([a-zA-Z_$][a-zA-Z_$0-9]*)")
+                                        .matcher(result.getCodigo());
+
+        if (publicClassMatcher.find()) { return publicClassMatcher.group(1); }
+        else if (privateClassMatcher.find()) { return privateClassMatcher.group(1); }
+
+        return "";
+    }
+
+    private void setSignals(Result result, CreateContainerResponse container, String language) throws IOException {
+        if (language.equals("python3")) {
+            String signal = copiarArchivoDeContenedor(container.getId(), "root/signal.txt");
+            result.setSignalEjecutor(signal);
+        } else {
+            String signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
+            result.setSignalEjecutor(signalEjecutor);
+
+            String signalCompilador = copiarArchivoDeContenedor(container.getId(), "root/signalCompilador.txt");
+            result.setSignalCompilador(signalCompilador);
+        }
     }
 
     static void copiarArchivoAContenedor(String contAux, String nombre, String contenido, String pathDestino) throws IOException {
@@ -64,14 +184,6 @@ public class DockerContainer {
                 throw new TimeoutException(String.format("Condition not meet within %s ms", timeoutms));
             }
         }
-    }
-
-    public static DockerClient getDockerClient() {
-        return dockerClient;
-    }
-
-    public static void setDockerClient(DockerClient dockerClient) {
-        DockerContainer.dockerClient = dockerClient;
     }
 
     //sacado de aqui https://github.com/docker-java/docker-java/issues/991
@@ -116,43 +228,8 @@ public class DockerContainer {
         return salida;
     }
 
-    public Result getResult() {
-        return result;
+    public static DockerClient getDockerClient() {
+        return dockerClient;
     }
 
-    public void setResult(Result result) {
-        this.result = result;
-    }
-
-    public String getDefaultMemoryLimit() {
-        return defaultMemoryLimit;
-    }
-
-    public void setDefaultMemoryLimit(String defaultMemoryLimit) {
-        this.defaultMemoryLimit = defaultMemoryLimit;
-    }
-
-    public String getDefaultTimeout() {
-        return defaultTimeout;
-    }
-
-    public void setDefaultTimeout(String defaultTimeout) {
-        this.defaultTimeout = defaultTimeout;
-    }
-
-    public String getDefaultCPU() {
-        return defaultCPU;
-    }
-
-    public void setDefaultCPU(String defaultCPU) {
-        this.defaultCPU = defaultCPU;
-    }
-
-    public String getDefaultStorageLimit() {
-        return defaultStorageLimit;
-    }
-
-    public void setDefaultStorageLimit(String defaultStorageLimit) {
-        this.defaultStorageLimit = defaultStorageLimit;
-    }
 }
