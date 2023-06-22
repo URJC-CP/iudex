@@ -96,7 +96,7 @@ public class SubmissionService {
 
         Optional<ContestProblem> optionalContestProblem = contestProblemRepository.findByContestAndProblem(contest, problema);
         if (optionalContestProblem.isEmpty()) {
-            logger.error("Problem {} not in contest {}", problem, idContest);
+            logger.error("ContestProblem not found for problem {} in contest {}", problema, contest);
             submissionStringResult.setSalida("CONTESTPROBLEM NOT FOUND");
             return submissionStringResult;
         }
