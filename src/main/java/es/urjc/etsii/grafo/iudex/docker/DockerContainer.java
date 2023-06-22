@@ -36,7 +36,7 @@ public class DockerContainer {
 
     public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
         String language = result.getLanguage().getNombreLenguaje();
-        if (!acceptedLanguages.contains(language)) { throw new UnacceptedLanguageException("Language is not accepted"); }
+        if (!acceptedLanguages.contains(language)) { throw new UnacceptedLanguageException(""); }
 
         logger.debug("Building {} container for image {}", language, imagenId);
 
@@ -110,7 +110,7 @@ public class DockerContainer {
             case "c" -> { return "c"; }
             case "cpp" -> { return "cpp"; }
             case "python3" -> { return "py"; }
-            default -> throw new UnacceptedLanguageException("Language is not accepted");
+            default -> throw new UnacceptedLanguageException("");
         }
     }
 
@@ -135,7 +135,7 @@ public class DockerContainer {
             case "sql" -> { return "entrada.in"; }
             case "python3", "cpp", "c" -> { return result.getFileName(); }
             case "java" -> { return getJavaClassName(result); }
-            default -> throw new UnacceptedLanguageException("Language is not accepted");
+            default -> throw new UnacceptedLanguageException("");
         }
     }
 
