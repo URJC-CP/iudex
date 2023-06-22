@@ -110,9 +110,8 @@ public class DockerContainer {
             case "c" -> { return "c"; }
             case "cpp" -> { return "cpp"; }
             case "python3" -> { return "py"; }
+            default -> throw new UnacceptedLanguageException("Language is not accepted");
         }
-
-        throw new UnacceptedLanguageException("Language is not accepted");
     }
 
     private String[] getEnv(Result result, String language, String defaultTimeout) {
@@ -136,9 +135,8 @@ public class DockerContainer {
             case "sql" -> { return "entrada.in"; }
             case "python3", "cpp", "c" -> { return result.getFileName(); }
             case "java" -> { return getJavaClassName(result); }
+            default -> throw new UnacceptedLanguageException("Language is not accepted");
         }
-
-        throw new UnacceptedLanguageException("Language is not accepted");
     }
 
     private String getFileName2(Result result, String fileExtension) {
