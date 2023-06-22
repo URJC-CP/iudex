@@ -1,5 +1,6 @@
 package es.urjc.etsii.grafo.iudex.docker;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
 import es.urjc.etsii.grafo.iudex.entities.Result;
@@ -43,27 +44,39 @@ public class DockerContainer {
         nombreDocker = nombreDocker.replace(":", "");
 
         //Creamos el contendor
-        HostConfig hostConfig = new HostConfig();
-        hostConfig.withMemory(Long.parseLong(defaultMemoryLimit)).withCpusetCpus(defaultCPU);
-
+        HostConfig hostConfig = new HostConfig().withMemory(Long.parseLong(defaultMemoryLimit)).withCpusetCpus(defaultCPU);
         String[] env = this.getEnv(result, language, defaultTimeout);
-        CreateContainerResponse container = dockerClient.createContainerCmd(imagenId).withNetworkDisabled(true).withEnv(env).withHostConfig(hostConfig).withName(nombreDocker).exec();
-        logger.debug("DOCKER {}: Running container for result {} with timeout {} and memory limit {}", language, result.getId(), result.getMaxTimeout(), result.getMaxMemory());
+        try (CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(imagenId)
+                .withNetworkDisabled(true)
+                .withEnv(env)
+                .withHostConfig(hostConfig)
+                .withName(nombreDocker)) {
+            CreateContainerResponse container = createContainerCmd.exec();
+            logger.debug("DOCKER {}: Running container for result {} with timeout {} and memory limit {}", language, result.getId(), result.getMaxTimeout(), result.getMaxMemory());
 
+            copyInputDataToContainer(container, result, nombreClase + "." + this.getFileExtension(language));
+
+            dockerClient.startContainerCmd(container.getId()).exec();
+
+            waitUntilContainerStopped(container);
+            setReturnedValuesFromContainer(container, result, language);
+
+            dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+        }
+
+        logger.debug("DOCKER {}: Finish running container for result {} ", language, result.getId());
+        return result;
+    }
+
+    private void copyInputDataToContainer(CreateContainerResponse container, Result result, String codeFileName) throws IOException {
         //Copiamos el codigo
-        copiarArchivoAContenedor(container.getId(), nombreClase + "." + this.getFileExtension(language), result.getCodigo(), "/root");
+        copiarArchivoAContenedor(container.getId(), codeFileName, result.getCodigo(), "/root");
 
         //Copiamos la entrada
         copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
+    }
 
-        //Arrancamos el docker
-        dockerClient.startContainerCmd(container.getId()).exec();
-        //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-        Boolean isRunning;
-        do {
-            isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
-        } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
-
+    private void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String language) throws IOException {
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
         result.setSalidaEstandar(salidaEstandar);
@@ -80,11 +93,13 @@ public class DockerContainer {
         result.setSalidaTime(time);
 
         this.setSignals(result, container, language);
+    }
 
-        dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
-
-        logger.debug("DOCKER {}: Finish running container for result {} ", language, result.getId());
-        return result;
+    private void waitUntilContainerStopped(CreateContainerResponse container) {
+        Boolean isRunning;
+        do {
+            isRunning = dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning();
+        } while (isRunning != null && isRunning);  //Mientras esta corriendo se hace el do
     }
 
     private String getFileExtension(String language) {
