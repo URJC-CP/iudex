@@ -89,7 +89,8 @@ public class DockerContainerMySQL extends DockerContainer {
         return result;
     }
 
-    private void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String signalEjecutor) throws IOException {
+    @Override
+    protected void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String signalEjecutor) throws IOException {
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
         result.setSalidaEstandar(salidaEstandar);

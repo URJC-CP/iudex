@@ -77,7 +77,7 @@ public class DockerContainer {
         copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
     }
 
-    private void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String language) throws IOException {
+    protected void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String language) throws IOException {
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
         result.setSalidaEstandar(salidaEstandar);
