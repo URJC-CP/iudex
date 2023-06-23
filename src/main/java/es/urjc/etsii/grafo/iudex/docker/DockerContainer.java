@@ -119,15 +119,15 @@ public class DockerContainer {
         if (result.getMaxTimeout() != null) { timeout = result.getMaxTimeout(); }
         else { timeout = defaultTimeout; }
 
-        List<String> env2 = new ArrayList<>();
-        env2.add("EXECUTION_TIMEOUT=" + timeout);
-        env2.add("FILENAME2=" + getFileName2(result, getFileExtension(language)));
+        List<String> env = new ArrayList<>();
+        env.add("EXECUTION_TIMEOUT=" + timeout);
+        env.add("FILENAME2=" + getFileName2(result, getFileExtension(language)));
 
-        if (!language.equals("py")) { env2.add("FILENAME1=" + getFileName1(result, language)); }
+        if (!language.equals("py")) { env.add("FILENAME1=" + getFileName1(result, language)); }
 
-        if (language.equals("java")) { env2.add("MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m"); }
+        if (language.equals("java")) { env.add("MEMORYLIMIT=" + "-Xmx" + result.getMaxMemory() + "m"); }
 
-        return env2.toArray(new String[0]);
+        return env.toArray(new String[0]);
     }
 
     private String getFileName1(Result result, String language) {
