@@ -75,7 +75,7 @@ public class DockerContainerMySQL extends DockerContainer {
             LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));
             String signalEjecutor = null;
             do {
-                Thread.onSpinWait();
+                Thread.sleep(200);
                 signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
             } while (LocalDateTime.now().isBefore(maxTime) && signalEjecutor.equals(""));
 
