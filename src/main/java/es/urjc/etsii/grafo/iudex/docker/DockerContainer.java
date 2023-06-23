@@ -34,7 +34,7 @@ public class DockerContainer {
         DockerContainer.dockerClient = dockerClient;
     }
 
-    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
+    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException, InterruptedException {
         String language = result.getLanguage().getNombreLenguaje();
         if (!acceptedLanguages.contains(language)) { throw new UnacceptedLanguageException(""); }
 

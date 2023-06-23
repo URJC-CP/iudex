@@ -20,7 +20,7 @@ public class DockerContainerMySQL extends DockerContainer {
     }
 
     @Override
-    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException {
+    public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException, InterruptedException {
         logger.debug("Building container for image {}", imagenId);
 
         String nombreClase = result.getFileName();
@@ -56,6 +56,9 @@ public class DockerContainerMySQL extends DockerContainer {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 logger.error("context", e);
+                dockerClient.stopContainerCmd(container.getId()).exec();
+                dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+                throw e;
             }
 
             var executionID = dockerClient.execCreateCmd(container.getId()).withAttachStdout(true).withCmd("bash", "-c", "mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME1 >salidaError.ans 2>&1 && mysql -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE <$FILENAME2 >salidaEstandar.ans 2>salidaError.ans; echo $? >>signalEjecutor.txt").exec().getId();
@@ -64,6 +67,9 @@ public class DockerContainerMySQL extends DockerContainer {
                 dockerClient.execStartCmd(executionID).exec(new ExecStartResultCallback(System.out, System.err)).awaitCompletion();
             } catch (InterruptedException e) {
                 logger.error("context", e);
+                dockerClient.stopContainerCmd(container.getId()).exec();
+                dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+                throw e;
             }
 
             LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));

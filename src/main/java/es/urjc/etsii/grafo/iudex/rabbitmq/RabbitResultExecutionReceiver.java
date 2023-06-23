@@ -28,7 +28,7 @@ public class RabbitResultExecutionReceiver {
         //Primero ejecutamos el codigo y guardamos
         try {
             resultHandler.ejecutor(res);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         //resultRepository.save(res);

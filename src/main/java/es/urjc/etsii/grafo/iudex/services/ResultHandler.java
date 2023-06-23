@@ -34,7 +34,7 @@ public class ResultHandler {
         logger.info("Connection established with docker");
     }
 
-    public void ejecutor(Result res) throws IOException {
+    public void ejecutor(Result res) throws IOException, InterruptedException {
         if (res.getLanguage().getNombreLenguaje().equals("sql")) {
             new DockerContainerMySQL(dockerClient).ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
         } else {
