@@ -39,6 +39,8 @@ class SmokeTest {
     @Autowired
     ProblemRepository problemRepository;
     @Autowired
+    ContestProblemRepository contestProblemRepository;
+    @Autowired
     ResultRepository resultRepository;
     @Autowired
     SubmissionRepository submissionRepository;
@@ -78,6 +80,7 @@ class SmokeTest {
         assertNotNull(sampleRepository);
         assertNotNull(languageRepository);
         assertNotNull(problemRepository);
+        assertNotNull(contestProblemRepository);
         assertNotNull(resultRepository);
         assertNotNull(submissionRepository);
         assertNotNull(teamRepository);
@@ -96,6 +99,7 @@ class SmokeTest {
         assertTrue(sampleRepository.findAll().isEmpty());
         assertFalse(languageRepository.findAll().isEmpty());
         assertTrue(problemRepository.findAll().isEmpty());
+        assertTrue(contestProblemRepository.findAll().isEmpty());
         assertTrue(resultRepository.findAll().isEmpty());
         assertTrue(submissionRepository.findAll().isEmpty());
         assertEquals(1, teamRepository.findAll().size());

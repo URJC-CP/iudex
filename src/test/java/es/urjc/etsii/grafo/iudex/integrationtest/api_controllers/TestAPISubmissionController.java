@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
+import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
@@ -41,6 +42,8 @@ class TestAPISubmissionController {
     private ContestService contestService;
     @MockBean
     private ProblemService problemService;
+    @MockBean
+    private ContestProblemService contestProblemService;
 
     private ContestProblem contest;
     private ContestProblem problem;
