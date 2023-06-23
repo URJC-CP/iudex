@@ -105,14 +105,14 @@ public class DockerContainer {
     }
 
     private String getFileExtension(String language) {
-        switch (language) {
-            case "sql" -> { return "sql"; }
-            case "java" -> { return "java"; }
-            case "c" -> { return "c"; }
-            case "cpp" -> { return "cpp"; }
-            case "python3" -> { return "py"; }
+        return switch (language) {
+            case "sql" -> "sql";
+            case "java" -> "java";
+            case "c" -> "c";
+            case "cpp" -> "cpp";
+            case "python3" -> "py";
             default -> throw new UnacceptedLanguageException("");
-        }
+        };
     }
 
     private String[] getEnv(Result result, String language, String defaultTimeout) {
@@ -132,12 +132,12 @@ public class DockerContainer {
     }
 
     private String getFileName1(Result result, String language) {
-        switch (language) {
-            case "sql" -> { return "entrada.in"; }
-            case "python3", "cpp", "c" -> { return result.getFileName(); }
-            case "java" -> { return getJavaClassName(result); }
+        return switch (language) {
+            case "sql" -> "entrada.in";
+            case "java" -> getJavaClassName(result);
+            case "python3", "cpp", "c" -> result.getFileName();
             default -> throw new UnacceptedLanguageException("");
-        }
+        };
     }
 
     private String getFileName2(Result result, String fileExtension) {
