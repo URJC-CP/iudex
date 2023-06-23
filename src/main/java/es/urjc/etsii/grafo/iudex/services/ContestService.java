@@ -5,6 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemScore;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
+import es.urjc.etsii.grafo.iudex.repositories.ContestProblemRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestTeamRespository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
@@ -31,6 +32,8 @@ public class ContestService {
     @Autowired
     private ContestRepository contestRepository;
     @Autowired
+    private ContestProblemRepository contestProblemRepository;
+    @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private ContestTeamRespository contestTeamRespository;
@@ -40,6 +43,8 @@ public class ContestService {
     private UserAndTeamService teamService;
     @Autowired
     private LanguageService languageService;
+    @Autowired
+    private ContestProblemService contestProblemService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);
@@ -179,8 +184,7 @@ public class ContestService {
             return "PROBLEM ALREADY IN CONTEST";
         }
 
-        contest.addProblem(contestProblem);
-        contestRepository.save(contest);
+        contestProblemRepository.save(contestProblem);
 
         logger.debug("Finish add problem {} to contest {}", idProblema, idContest);
         return "OK";
@@ -202,13 +206,14 @@ public class ContestService {
             return "PROBLEM NOT FOUND";
         }
         Problem problema = problemaOptional.get();
+        Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problema);
 
-        ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
-
-        if (!contest.getListaProblemas().contains(contestProblem)) {
+        if (optionalContestProblem.isEmpty() || !contest.getListaProblemas().contains(optionalContestProblem.get())) {
             logger.error("Problem {} not in contest {}", idProblema, idContest);
             return "PROBLEM NOT IN CONTEST";
         }
+
+        ContestProblem contestProblem = optionalContestProblem.get();
 
         contest.deleteProblem(contestProblem);
         contestRepository.save(contest);

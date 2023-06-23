@@ -9,6 +9,7 @@ import es.urjc.etsii.grafo.iudex.repositories.SampleRepository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,8 @@ public class ProblemService {
 
     private final ZipHandlerService zipHandlerService;
     private final ProblemValidatorService problemValidatorService;
+    @Autowired
+    private ContestProblemService contestProblemService;
 
     public ProblemService(ContestRepository contestRepository, ProblemRepository problemRepository, TeamRepository teamRepository, SampleRepository sampleRepository, ZipHandlerService zipHandlerService, ProblemValidatorService problemValidatorService) {
         this.contestRepository = contestRepository;
@@ -89,7 +92,10 @@ public class ProblemService {
         //verificar si el problema ya ha sido creado apartir del mismo zip
         Optional<Problem> problemOptional = problemRepository.findProblemByNombreEjercicio(nombreProblema);
 
-        ContestProblem contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+        Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problem);
+        ContestProblem contestProblem;
+        if (optionalContestProblem.isEmpty()) contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+        else contestProblem = optionalContestProblem.get();
 
         if (problemOptional.isPresent()) {
             problem = problemOptional.get();

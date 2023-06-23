@@ -24,7 +24,7 @@ public class Contest {
     private Team teamPropietario;
 
     @OneToMany(mappedBy = "contest")
-    Set<ContestProblem> listaProblemas;
+    private Set<ContestProblem> listaProblemas;
 
     @OneToMany(mappedBy= "lenguajes")
     private Set<ContestLanguages> lenguajes;

@@ -34,33 +34,12 @@ public class ResultHandler {
         logger.info("Connection established with docker");
     }
 
-    public void ejecutor(Result res) throws IOException {
-        String language = res.getLanguage().getNombreLenguaje();
-        switch (language) {
-            case "java":
-                new DockerContainerJava(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
-                break;
-
-            case "python3":
-                new DockerContainerPython3(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
-                break;
-
-            case "c":
-                new DockerContainerC(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
-                break;
-
-            case "cpp":
-                new DockerContainerCPP(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
-                break;
-
-            case "sql":
-                new DockerContainerMySQL(res, dockerClient, memoryLimit, timeoutTime, defaultCPU, defaultStorage).ejecutar(res.getLanguage().getImgenId());
-                break;
-
-            default:
-                throw new RuntimeException("Unsupported language " + language);
+    public void ejecutor(Result res) throws IOException, InterruptedException {
+        if (res.getLanguage().getNombreLenguaje().equals("sql")) {
+            new DockerContainerMySQL(dockerClient).ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
+        } else {
+            new DockerContainer(dockerClient).ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
         }
-
     }
 
     public String buildImage(File file) {
