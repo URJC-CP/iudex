@@ -96,9 +96,10 @@ public class DockerContainer {
         this.setSignals(result, container, language);
     }
 
-    private void waitUntilContainerStopped(CreateContainerResponse container) {
+    private void waitUntilContainerStopped(CreateContainerResponse container) throws InterruptedException {
         boolean isRunning;
         do {
+            Thread.sleep(200);
             isRunning = Boolean.TRUE.equals(dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning());
         } while (isRunning);  //Mientras esta corriendo se hace el do
     }
