@@ -1,7 +1,7 @@
 <img align="right" width="96px" alt="Logo URJC" src="./docs/logos/logo_urjc_cp.jpg">
 
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=bugs)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rmartinsanta_mork&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rmartinsanta_mork)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=coverage)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=rmartinsanta_mork&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=rmartinsanta_mork)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=bugs)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=coverage)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex) [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=URJC-CP_iudex&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=URJC-CP_iudex)
 
 iudex
 --------
@@ -74,5 +74,6 @@ Pablo López Parrilla (p.lopezpar@alumnos.urjc.es) <br>
 Sudip Giri (s.giri.2017@alumnos.urjc.es) <br>
 Miguel Sierra Alonso (m.sierraal@alumnos.urjc.es) <br>
 Rufino García Sánchez (r.garciasa.2017@alumnos.urjc.es) <br>
+Iván Penedo Ventosa (i.penedo.2020@alumnos.urjc.es) <br>
 José Manuel Colmenar Verdugo (josemanuel.colmenar@urjc.es) <br>
 Jesús Sánchez-Oro Calvo (jesus.sanchezoro@urjc.es) <br>
