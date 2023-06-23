@@ -1,10 +1,12 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Contest;
+import es.urjc.etsii.grafo.iudex.entities.ContestProblem;
 import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.entities.Submission;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
+import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
@@ -36,6 +38,8 @@ public class APISubmissionController {
     ContestService contestService;
     @Autowired
     ProblemService problemService;
+    @Autowired
+    ContestProblemService contestProblemService;
 
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
@@ -52,8 +56,9 @@ public class APISubmissionController {
             }
             Contest contest = contestOptional.get();
             Problem problem = problemOptional.get();
+            Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problem);
 
-            if (!contest.getListaProblemas().contains(problem)) {
+            if (optionalContestProblem.isEmpty() || !contest.getListaProblemas().contains(optionalContestProblem.get())) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             List<SubmissionAPI> submissionAPIS = new ArrayList<>();

@@ -261,9 +261,9 @@ public class SubmissionService {
         }
         Contest contest = contestOptional.get();
 
-        ContestProblem contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+        Optional<ContestProblem> optionalContestProblem = contestProblemRepository.findByContestAndProblem(contest, problem);
 
-        if (!contest.getListaProblemas().contains(contestProblem)) {
+        if (optionalContestProblem.isEmpty() || !contest.getListaProblemas().contains(optionalContestProblem.get())) {
             logger.error("Problem {} not in contest {}", problemId, contestId);
             return "PROBLEM NOT IN CONTEST";
         }

@@ -43,6 +43,8 @@ public class ContestService {
     private UserAndTeamService teamService;
     @Autowired
     private LanguageService languageService;
+    @Autowired
+    private ContestProblemService contestProblemService;
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);
@@ -204,13 +206,14 @@ public class ContestService {
             return "PROBLEM NOT FOUND";
         }
         Problem problema = problemaOptional.get();
+        Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problema);
 
-        ContestProblem contestProblem = new ContestProblem(contest,problema,LocalDateTime.now());
-
-        if (!contest.getListaProblemas().contains(contestProblem)) {
+        if (optionalContestProblem.isEmpty() || !contest.getListaProblemas().contains(optionalContestProblem.get())) {
             logger.error("Problem {} not in contest {}", idProblema, idContest);
             return "PROBLEM NOT IN CONTEST";
         }
+
+        ContestProblem contestProblem = optionalContestProblem.get();
 
         contest.deleteProblem(contestProblem);
         contestRepository.save(contest);
