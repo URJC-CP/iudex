@@ -83,6 +83,13 @@ public class APIProblemController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
         String filename = sanitize(file.getOriginalFilename());
+        try {
+            System.err.println(file);
+            System.err.println(filename);
+            System.err.println(file.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemName, contestId);
@@ -92,6 +99,7 @@ public class APIProblemController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
+            System.err.println(e.toString());
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }

@@ -15,14 +15,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
@@ -40,9 +47,12 @@ class TestAPIProblemController {
     private Contest contest;
     private Team owner;
     private Problem problem;
+    private Problem problem2;
+    private List<Problem> problems;
+    private MockMultipartFile problem2File;
 
     @BeforeEach
-    public void init() {
+    public void init() throws Exception {
         contest = new Contest();
         contest.setId(101);
         contest.setNombreContest("elConcurso");
@@ -58,8 +68,34 @@ class TestAPIProblemController {
         problem.setNombreEjercicio("Ejercicio de prueba");
         problem.setEquipoPropietario(owner);
 
-        when(problemService.getAllProblemas()).thenReturn(List.of(problem));
+        problems = new ArrayList<>();
+        problems.add(problem);
+
+        problem2 = new Problem();
+        problem2.setId(673);
+        problem2.setNombreEjercicio("Ejercicio de prueba sin añadir a la lista");
+        problem2.setEquipoPropietario(owner);
+
+        problem2File = new MockMultipartFile(
+                "file",
+                "problem2.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("testfiles/primavera.zip").getInputStream());
+
+        ProblemString problemString2 = new ProblemString();
+        problemString2.setProblem(problem2);
+        problemString2.setSalida("OK");
+
+        when(problemService.getAllProblemas()).thenReturn(problems);
         when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
+
+        when(problemService.addProblemFromZip(
+                    sanitize(problem2File.getOriginalFilename()),
+                    problem2File.getInputStream(),
+                    sanitize(String.valueOf(owner.getId())),
+                    sanitize(problem2.getNombreEjercicio()),
+                    sanitize(String.valueOf(contest.getId()))))
+                .thenReturn(problemString2);
     }
 
     @Test
@@ -117,9 +153,19 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Create Problem From Zip")
-    @Disabled("Create Problem From Zip - Cannot be mocked")
     void testAPICreateProblemFromZip() throws Exception {
-        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+        String url = "/API/v1/problem/fromZip";
+
+        System.err.println(problem2File);
+        System.err.println(problem2File.getOriginalFilename());
+        System.err.println(problem2File.getInputStream());
+
+        mockMvc.perform(multipart(url)
+                    .file(problem2File)
+                    .param("problemName", problem2.getNombreEjercicio())
+                    .param("teamId", String.valueOf(owner.getId()))
+                    .param("contestId", String.valueOf(contest.getId())))
+                .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
