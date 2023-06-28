@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -62,7 +63,8 @@ public class ProblemService {
         return problemString;
     }
 
-    public ProblemString addProblemFromZip(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString addProblemFromZip(MultipartFile file, String teamId, String nombreProblema, String idcontest) throws Exception {
+        String nombreFichero = file.getOriginalFilename();
         logger.debug("Create problem {} from zip {}", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
@@ -101,11 +103,11 @@ public class ProblemService {
             problem = problemOptional.get();
             //si el problema esta almacendo en el concurso
             if (contest.getListaProblemas().contains(contestProblem)) {
-                return updateProblem(String.valueOf(problem.getId()), nombreFichero, inputStream, teamId, nombreProblema, idcontest);
+                return updateProblem(String.valueOf(problem.getId()), nombreFichero, file, teamId, nombreProblema, idcontest);
             }
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -134,7 +136,7 @@ public class ProblemService {
         return salida;
     }
 
-    public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString addProblemFromZipWithoutValidate(String nombreFichero, MultipartFile file, String teamId, String nombreProblema, String idcontest) throws Exception {
         logger.debug("Create problem {} from file {} without validate", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
@@ -158,7 +160,7 @@ public class ProblemService {
             nombreProblema = nombreFichero;
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, inputStream, teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -175,7 +177,7 @@ public class ProblemService {
         return salida;
     }
 
-    public ProblemString updateProblem(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString updateProblem(String idProblema, String nombreFichero, MultipartFile file, String teamId, String nombreProblema, String idcontest) throws Exception {
         logger.debug("Update problem {} from zip {}", nombreProblema, nombreFichero);
         ProblemString problemUpdated = new ProblemString();
 
@@ -193,7 +195,7 @@ public class ProblemService {
             return problemUpdated;
         }
 
-        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
+        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, file, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
             logger.error("Update problem {} failed with {}", problemOriginal.getNombreEjercicio(), problemUpdated.getSalida());
@@ -221,7 +223,7 @@ public class ProblemService {
         return problemUpdated;
     }
 
-    public ProblemString updateProblem2(String idProblema, String nombreFichero, InputStream inputStream, String teamId, String nombreProblema, String idcontest) throws Exception {
+    public ProblemString updateProblem2(String idProblema, String nombreFichero, MultipartFile file, String teamId, String nombreProblema, String idcontest) throws Exception {
         logger.debug("Update(v2) problem {} from zip {}", idProblema, nombreFichero);
         ProblemString problemUpdated = new ProblemString();
 
@@ -239,7 +241,7 @@ public class ProblemService {
             return problemUpdated;
         }
 
-        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, inputStream, teamId, nombreProblema, idcontest);
+        problemUpdated = addProblemFromZipWithoutValidate(nombreFichero, file, teamId, nombreProblema, idcontest);
         //Si es error
         if (!problemUpdated.getSalida().equals("OK")) {
             logger.error("Update problem {} failed with {}", idProblema, problemUpdated.getSalida());

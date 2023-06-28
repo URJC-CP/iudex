@@ -47,12 +47,9 @@ class TestAPIProblemController {
     private Contest contest;
     private Team owner;
     private Problem problem;
-    private Problem problem2;
-    private List<Problem> problems;
-    private MockMultipartFile problem2File;
 
     @BeforeEach
-    public void init() throws Exception {
+    public void init() {
         contest = new Contest();
         contest.setId(101);
         contest.setNombreContest("elConcurso");
@@ -68,34 +65,8 @@ class TestAPIProblemController {
         problem.setNombreEjercicio("Ejercicio de prueba");
         problem.setEquipoPropietario(owner);
 
-        problems = new ArrayList<>();
-        problems.add(problem);
-
-        problem2 = new Problem();
-        problem2.setId(673);
-        problem2.setNombreEjercicio("Ejercicio de prueba sin añadir a la lista");
-        problem2.setEquipoPropietario(owner);
-
-        problem2File = new MockMultipartFile(
-                "file",
-                "problem2.zip",
-                MediaType.MULTIPART_FORM_DATA_VALUE,
-                new ClassPathResource("testfiles/primavera.zip").getInputStream());
-
-        ProblemString problemString2 = new ProblemString();
-        problemString2.setProblem(problem2);
-        problemString2.setSalida("OK");
-
-        when(problemService.getAllProblemas()).thenReturn(problems);
+        when(problemService.getAllProblemas()).thenReturn(List.of(problem));
         when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem));
-
-        when(problemService.addProblemFromZip(
-                    sanitize(problem2File.getOriginalFilename()),
-                    problem2File.getInputStream(),
-                    sanitize(String.valueOf(owner.getId())),
-                    sanitize(problem2.getNombreEjercicio()),
-                    sanitize(String.valueOf(contest.getId()))))
-                .thenReturn(problemString2);
     }
 
     @Test
@@ -156,9 +127,27 @@ class TestAPIProblemController {
     void testAPICreateProblemFromZip() throws Exception {
         String url = "/API/v1/problem/fromZip";
 
-        System.err.println(problem2File);
-        System.err.println(problem2File.getOriginalFilename());
-        System.err.println(problem2File.getInputStream());
+        Problem problem2 = new Problem();
+        problem2.setId(673);
+        problem2.setNombreEjercicio("Ejercicio de prueba sin añadir a la lista");
+        problem2.setEquipoPropietario(owner);
+
+        MockMultipartFile problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("testfiles/primavera.zip").getInputStream());
+
+        ProblemString problemString2 = new ProblemString();
+        problemString2.setProblem(problem2);
+        problemString2.setSalida("OK");
+
+        when(problemService.addProblemFromZip(
+                    problem2File,
+                    sanitize(String.valueOf(owner.getId())),
+                    sanitize(problem2.getNombreEjercicio()),
+                    sanitize(String.valueOf(contest.getId()))))
+                .thenReturn(problemString2);
 
         mockMvc.perform(multipart(url)
                     .file(problem2File)

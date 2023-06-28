@@ -83,16 +83,9 @@ public class APIProblemController {
         teamId = sanitize(teamId);
         contestId = sanitize(contestId);
         String filename = sanitize(file.getOriginalFilename());
-        try {
-            System.err.println(file);
-            System.err.println(filename);
-            System.err.println(file.getInputStream());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         try {
-            ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.addProblemFromZip(file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
@@ -114,7 +107,7 @@ public class APIProblemController {
         String filename = sanitize(file.getOriginalFilename());
 
         try {
-            ProblemString salida = problemService.updateProblem(problemId, filename, file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, filename, file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
