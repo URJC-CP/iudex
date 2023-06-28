@@ -2,6 +2,7 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
+import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
 
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -23,7 +24,7 @@ public class APIAdminController {
     @Operation( summary = "Get a full Result")
     @GetMapping("/API/v1/result/{resultId}")
     public ResponseEntity<Result> getResult(@PathVariable String resultId) {
-        resultId = sanitize(resultId);
+        resultId = Sanitizer.removeLineBreaks(resultId);
 
         Result result = resultService.getResult(resultId);
         if (result == null) {

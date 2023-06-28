@@ -5,6 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
+import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
 
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -37,7 +38,7 @@ public class APITeamController {
     @Operation( summary = "Return Team")
     @GetMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> getTeam(@PathVariable String teamId) {
-        teamId = sanitize(teamId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
 
         Optional<Team> teamOptional = teamService.getTeamFromId(teamId);
         if (teamOptional.isPresent()) {
@@ -51,7 +52,7 @@ public class APITeamController {
     @Operation( summary = "Creates a Team")
     @PostMapping("/API/v1/team")
     public ResponseEntity<TeamAPI> createTeam(@RequestParam String nombreEquipo) {
-        nombreEquipo = sanitize(nombreEquipo);
+        nombreEquipo = Sanitizer.removeLineBreaks(nombreEquipo);
 
         //false pq no es un usuario
         TeamString salida = teamService.crearTeam(nombreEquipo, false);
@@ -66,7 +67,7 @@ public class APITeamController {
     @Operation( summary = "Delete a Team")
     @DeleteMapping("/API/v1/team/{teamId}")
     public ResponseEntity<String> deleteTeam(@PathVariable String teamId) {
-        teamId = sanitize(teamId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
 
         String salida = teamService.deleteTeamByTeamId(teamId);
         if (salida.equals("OK")) {
@@ -79,8 +80,8 @@ public class APITeamController {
     @Operation( summary = "Update a Team")
     @PutMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName) {
-        teamId = sanitize(teamId);
-        teamName = sanitize(teamName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        teamName = removeLineBreaks(teamName);
 
         TeamString salida = teamService.updateTeam(teamId, teamName);
         if (salida.getSalida().equals("OK")) {
@@ -93,8 +94,8 @@ public class APITeamController {
     @Operation( summary = "Add user to Team")
     @PutMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId) {
-        teamId = sanitize(teamId);
-        userId = sanitize(userId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        userId = Sanitizer.removeLineBreaks(userId);
 
         TeamString salida = teamService.addUserToTeamUssingIds(teamId, userId);
         if (salida.getSalida().equals("OK")) {
@@ -107,8 +108,8 @@ public class APITeamController {
     @Operation( summary = "Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
     public ResponseEntity<String> deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
-        teamId = sanitize(teamId);
-        userId = sanitize(userId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        userId = Sanitizer.removeLineBreaks(userId);
 
         TeamString salida = teamService.deleteUserFromTeam(teamId, userId);
         if (salida.getSalida().equals("OK")) {

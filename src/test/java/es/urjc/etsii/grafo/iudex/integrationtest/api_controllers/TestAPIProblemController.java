@@ -8,6 +8,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -20,16 +21,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
+import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
@@ -144,9 +142,9 @@ class TestAPIProblemController {
 
         when(problemService.addProblemFromZip(
                     problem2File,
-                    sanitize(String.valueOf(owner.getId())),
-                    sanitize(problem2.getNombreEjercicio()),
-                    sanitize(String.valueOf(contest.getId()))))
+                    Sanitizer.removeLineBreaks(String.valueOf(owner.getId())),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(String.valueOf(contest.getId()))))
                 .thenReturn(problemString2);
 
         mockMvc.perform(multipart(url)
