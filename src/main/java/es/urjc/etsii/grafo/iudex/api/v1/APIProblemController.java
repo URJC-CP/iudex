@@ -83,7 +83,6 @@ public class APIProblemController {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
         contestId = Sanitizer.removeLineBreaks(contestId);
-        String filename = Sanitizer.removeLineBreaks(file.getOriginalFilename());
 
         try {
             ProblemString salida = problemService.addProblemFromZip(file, teamId, problemName, contestId);
