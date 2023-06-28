@@ -45,52 +45,55 @@ class TestAPISubmissionController {
     @MockBean
     private ContestProblemService contestProblemService;
 
-    private ContestProblem contest;
-    private ContestProblem problem;
+    private ContestProblem contestProblem;
+    private Contest contest;
+    private Problem problem;
     private Submission submission;
 
     @BeforeEach
     public void init() {
-        contest = new ContestProblem();
+        contest = new Contest();
         contest.setId(101);
-        contest.getContest().setNombreContest("elConcurso");
-        contest.getContest().setDescripcion("concurso de prueba");
+        contest.setNombreContest("elConcurso");
+        contest.setDescripcion("concurso de prueba");
 
         Team owner = new Team();
         owner.setId(201);
         owner.setNombreEquipo("propietario");
-        contest.getContest().setTeamPropietario(owner);
+        contest.setTeamPropietario(owner);
 
-        problem = new ContestProblem();
+        problem = new Problem();
         problem.setId(244);
-        problem.getProblem().setNombreEjercicio("Ejercicio de prueba");
-        problem.getProblem().setEquipoPropietario(owner);
-        contest.getContest().addProblem(problem);
+        problem.setNombreEjercicio("Ejercicio de prueba");
+        problem.setEquipoPropietario(owner);
+
+        contestProblem = new ContestProblem();
+        contestProblem.setProblem(problem);
+        contestProblem.setContest(contest);
 
         submission = new Submission();
         submission.setId(342);
-        submission.setProblem(problem.getProblem());
-        submission.setContest(contest.getContest());
+        submission.setProblem(contestProblem.getProblem());
+        submission.setContest(contestProblem.getContest());
         submission.setTeam(owner);
         submission.setLanguage(new Language());
         submission.setResults(new HashSet<>());
-        problem.getProblem().setSubmissions(Set.of(submission));
+        contestProblem.getProblem().setSubmissions(Set.of(submission));
 
-        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contest.getContest()));
-        when(contestService.getAllContests()).thenReturn(List.of(contest.getContest()));
+        when(contestService.getContestById(String.valueOf(contest.getId()))).thenReturn(Optional.of(contestProblem.getContest()));
+        when(contestService.getAllContests()).thenReturn(List.of(contestProblem.getContest()));
 
-        when(problemService.getAllProblemas()).thenReturn(List.of(problem.getProblem()));
-        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(problem.getProblem()));
+        when(problemService.getAllProblemas()).thenReturn(List.of(contestProblem.getProblem()));
+        when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(contestProblem.getProblem()));
 
         when(submissionService.getSubmission(String.valueOf(submission.getId()))).thenReturn(Optional.of(submission));
         when(submissionService.getAllSubmissions()).thenReturn(List.of(submission));
-        when(submissionService.getSubmissionFromProblem(problem.getProblem())).thenReturn(Set.of(submission));
-        when(submissionService.getSubmissionsFromContest(contest.getContest())).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionFromProblem(contestProblem.getProblem())).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionsFromContest(contestProblem.getContest())).thenReturn(Set.of(submission));
     }
 
     @Test
     @DisplayName("Get Submissions with problemId and/or contestId")
-    @Disabled
     void testAPIGetSubmissions() throws Exception {
         String goodProblem = String.valueOf(problem.getId());
         String badProblem = "312";
@@ -145,7 +148,6 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get Submission with Results")
-    @Disabled
     void testAPIGetSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
@@ -175,7 +177,6 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Delete Submission")
-    @Disabled
     void testAPIDeleteSubmission() throws Exception {
         String badSubmission = "987";
         String goodSubmission = String.valueOf(submission.getId());
