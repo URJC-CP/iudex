@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
-
 @Service
 public class ContestService {
     private static final Logger logger = LoggerFactory.getLogger(ContestService.class);
