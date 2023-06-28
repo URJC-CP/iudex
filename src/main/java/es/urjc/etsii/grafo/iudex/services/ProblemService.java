@@ -65,9 +65,13 @@ public class ProblemService {
 
     public ProblemString addProblemFromZip(MultipartFile file, String teamId, String nombreProblema, String idcontest) throws Exception {
         String nombreFichero = file.getOriginalFilename();
-        logger.debug("Create problem {} from zip {}", nombreProblema, nombreFichero);
         ProblemString salida = new ProblemString();
         Problem problem = new Problem();
+        if (nombreFichero == null) {
+            logger.error("Problem with ID {} and name {} failed because of an invalid filename", problem.getId(), nombreProblema);
+        }
+        
+        logger.debug("Create problem {} from zip {}", nombreProblema, nombreFichero);
 
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
         if (teamOptional.isEmpty()) {
@@ -85,9 +89,9 @@ public class ProblemService {
             return salida;
         }
         Contest contest = contestOptional.get();
-
         //obtener nombre del problema
         if (nombreProblema == null || nombreProblema.trim().equals("")) {
+            assert nombreFichero != null;
             nombreProblema = nombreFichero.trim().split("\\.")[0];
         }
 
