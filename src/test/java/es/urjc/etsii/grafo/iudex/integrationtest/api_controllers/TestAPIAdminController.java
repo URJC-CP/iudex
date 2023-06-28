@@ -47,7 +47,6 @@ class TestAPIAdminController {
 
     @Test
     @DisplayName("Get Result")
-    @Disabled // todo rufinodisabledtest
     void testAPIGetResult() throws Exception {
         String badResult = "654";
         String goodResult = String.valueOf(result.getId());
