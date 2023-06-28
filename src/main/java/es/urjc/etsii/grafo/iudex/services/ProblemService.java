@@ -7,6 +7,7 @@ import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ProblemRepository;
 import es.urjc.etsii.grafo.iudex.repositories.SampleRepository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,10 @@ public class ProblemService {
         Problem problem = new Problem();
         if (nombreFichero == null) {
             logger.error("Problem with ID {} and name {} failed because of an invalid filename", problem.getId(), nombreProblema);
+            salida.setSalida("INVALID FILENAME");
+            return salida;
         }
+        nombreFichero = Sanitizer.removeLineBreaks(nombreFichero);
         
         logger.debug("Create problem {} from zip {}", nombreProblema, nombreFichero);
 
