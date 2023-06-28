@@ -92,7 +92,6 @@ public class APIProblemController {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            System.err.println(e.toString());
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
