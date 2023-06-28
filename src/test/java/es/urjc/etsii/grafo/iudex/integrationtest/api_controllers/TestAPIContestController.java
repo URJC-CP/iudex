@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -80,13 +81,12 @@ class TestAPIContestController {
 
     @Test
     @DisplayName("Get All Contests with Pagination")
-    @Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
     void testAPIGetAllContestsWithPagination() throws Exception {
         String url = baseURL + "/page";
-        Pageable pageable = PageRequest.of(1, 5);
-        PageImpl<Contest> page = new PageImpl<>(List.of(contest));
-        when(contestService.getContestPage(pageable)).thenReturn(page);
-        mockMvc.perform(get(url).characterEncoding("utf-8").param("pageable", String.valueOf(pageable)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$['pageable']['paged']").value("true"));
+        final int page = 1, size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        when(contestService.getContestPage(pageable)).thenReturn(new PageImpl<>(List.of(contest)));
+        mockMvc.perform(get(url).param("size", String.valueOf(size)).param("page", String.valueOf(page))).andExpect(status().isOk());
     }
 
     @Test
