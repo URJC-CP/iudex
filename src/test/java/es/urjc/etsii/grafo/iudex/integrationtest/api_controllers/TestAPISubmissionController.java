@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -141,9 +144,12 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Get All Submissions with Pagination")
-    @Disabled("Get All Submissions with Pagination - Not implemented yet!")
-    void testAPIGetAllSubmissions() {
-        fail("Not implemented yet");
+    void testAPIGetAllSubmissions() throws Exception {
+        String url = "/API/v1/submission/page";
+        final int page = 1, size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        when(submissionService.getSubmissionsPage(pageable)).thenReturn(new PageImpl<>(List.of(submission)));
+        mockMvc.perform(get(url).param("size", String.valueOf(size)).param("page", String.valueOf(page))).andExpect(status().isOk());
     }
 
     @Test
