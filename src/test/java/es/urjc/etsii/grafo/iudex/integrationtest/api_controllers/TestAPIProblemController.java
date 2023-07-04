@@ -237,9 +237,50 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Update Problem From Zip")
-    @Disabled("Update Problem From Zip - Cannot be mocked")
-    void testAPIUpdateProblemFromZip() {
-        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+    void testAPIUpdateProblemFromZip() throws Exception {
+        String url = "/API/v1/problem/" + problem.getId() + "/fromZip";
+
+        String problemId = String.valueOf(problem.getId());
+        String problemName = problem.getNombreEjercicio() + " modificado";
+        String teamId = String.valueOf(problem.getEquipoPropietario().getId());
+        String contestId = String.valueOf(contest.getId());
+
+        Problem problem2 = new Problem();
+        problem2.setId(problem.getId());
+        problem2.setNombreEjercicio(problemName);
+        problem2.setEquipoPropietario(owner);
+
+        MockMultipartFile problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("testfiles/primavera.zip").getInputStream());
+
+        ProblemString problemString2 = new ProblemString();
+        problemString2.setProblem(problem2);
+        problemString2.setSalida("OK");
+
+        when(problemService.updateProblem(
+                problemId,
+                problem2File.getOriginalFilename(),
+                problem2File,
+                Sanitizer.removeLineBreaks(teamId),
+                Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                Sanitizer.removeLineBreaks(contestId)))
+                .thenReturn(problemString2);
+
+        MockMultipartHttpServletRequestBuilder multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", problemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
