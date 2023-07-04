@@ -20,13 +20,17 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -163,7 +167,7 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Update Problem with Multiple Optional Params")
-    @Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
+    @Disabled("Review optional usage in problemService")
     void testAPIUpdateProblem() throws Exception {
         String badProblem = "534";
         String goodProblem = String.valueOf(problem.getId());
@@ -172,7 +176,12 @@ class TestAPIProblemController {
         String badTeam = "673";
         String goodTeam = String.valueOf(owner.getId());
         String timeout = "timeout";
-        byte[] pdf = new byte[0];
+
+        MockMultipartFile pdf = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.APPLICATION_PDF_VALUE,
+                new ClassPathResource("testfiles/curso_cp_grafos.pdf").getInputStream());
 
         ProblemString ps = new ProblemString();
         String badURL = "/API/v1/problem/" + badProblem;
@@ -181,41 +190,48 @@ class TestAPIProblemController {
         String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ps.setSalida(salida);
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, problemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(goodTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, badProblemName, goodTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
 
         salida = "";
         ps.setSalida(salida);
         problem.setNombreEjercicio("");
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         problem.setNombreEjercicio(problemName);
         testUpdateProblemMultipleOptions(goodURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         testUpdateProblemMultipleOptions(goodURL, problemName, badTeam, pdf, timeout, status, salida);
 
         salida = "OK";
         ps.setProblem(problem);
         ps.setSalida(salida);
         status = HttpStatus.OK;
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf.getBytes()), Optional.of(timeout))).thenReturn(ps);
         salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
         testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
     }
 
-    private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(put(url).characterEncoding("utf8").param("nombreProblema", problemName).param("teamId", team)
-            //TODO: pass byte[]
-            .param("pdf", String.valueOf(pdf)).param("timeout", timeout)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+    private void testUpdateProblemMultipleOptions(String url, String problemName, String team, MockMultipartFile pdf, String timeout, HttpStatus status, String salida) throws Exception {
+        MockMultipartHttpServletRequestBuilder multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        String result = mockMvc.perform(multipart.file(pdf)
+                    .param("nombreProblema", problemName)
+                    .param("teamId", team)
+                    .param("timeout", timeout)
+                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
