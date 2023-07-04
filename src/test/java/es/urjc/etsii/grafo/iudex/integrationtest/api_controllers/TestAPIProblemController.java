@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -80,9 +83,12 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Get All Problems With Pagination")
-    @Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
-    void testAPIGetProblemsWithPagination() {
-        fail("Not implemented yet!");
+    void testAPIGetProblemsWithPagination() throws Exception {
+        String url = "/API/v1/problem/page";
+        final int page = 1, size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        when(problemService.getProblemsPage(pageable)).thenReturn(new PageImpl<>(List.of(problem)));
+        mockMvc.perform(get(url).param("size", String.valueOf(size)).param("page", String.valueOf(page))).andExpect(status().isOk());
     }
 
     @Test
