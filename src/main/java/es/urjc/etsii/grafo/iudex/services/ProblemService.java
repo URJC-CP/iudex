@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -394,7 +395,12 @@ public class ProblemService {
         oldProblem.setColor(newProblem.getColor());
     }
 
-    public ProblemString updateProblemMultipleOptionalParams(String idproblem, Optional<String> nombreProblema, Optional<String> teamId, Optional<byte[]> pdf, Optional<String> timeout) {
+    public ProblemString updateProblemMultipleOptionalParams(String idproblem, Optional<String> nombreProblema, Optional<String> teamId, MultipartFile pdf, Optional<String> timeout) throws IOException {
+        byte[] pdfBytes = null;
+        if (pdf != null) {
+            pdfBytes = pdf.getBytes();
+        }
+        Optional<byte[]> optPdfBytes = Optional.ofNullable(pdfBytes);
         ProblemString salida = new ProblemString();
 
         Optional<Problem> problemOptional = getProblem(idproblem);
@@ -419,8 +425,8 @@ public class ProblemService {
             problem.setEquipoPropietario(team);
         }
 
-        if (pdf.isPresent()) {
-            problem.setDocumento(pdf.get());
+        if (optPdfBytes.isPresent()) {
+            problem.setDocumento(optPdfBytes.get());
         }
 
         if (timeout.isPresent()) {

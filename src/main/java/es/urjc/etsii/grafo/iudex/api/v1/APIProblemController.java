@@ -124,12 +124,7 @@ public class APIProblemController {
         problemName = removeLineBreaks(problemName);
         teamId = removeLineBreaks(teamId);
         timeout = removeLineBreaks(timeout);
-        byte[] pdfBytes = null;
-        if (pdf != null) {
-            pdfBytes = pdf.getBytes();
-        }
-        Optional<byte[]> optPdfBytes = Optional.ofNullable(pdfBytes);
-        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, optPdfBytes, timeout);
+        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
