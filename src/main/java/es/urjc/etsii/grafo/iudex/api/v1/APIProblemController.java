@@ -63,17 +63,17 @@ public class APIProblemController {
     }
 
     //Crea problema desde objeto Problem
-    @Operation( summary = "Create problem Using a Problem Object")
-    @PostMapping("problem")
-    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
-
-        ProblemString salida = problemService.addProblem(problem);
-        if (salida.getSalida().equals("OK")) {
-            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @Operation( summary = "Create problem Using a Problem Object")
+//    @PostMapping("problem")
+//    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
+//
+//        ProblemString salida = problemService.addProblem(problem);
+//        if (salida.getSalida().equals("OK")) {
+//            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @Operation( summary = "Create Problem from Zip")

@@ -118,17 +118,17 @@ class TestAPIProblemController {
         assertEquals(salida, result);
     }
 
-    @Test
-	/*
-	  WARNING:
-		no hay ningun metodo para pasar un objeto como parametro en MockMvc
-		y el controlador no acepta JSON
-	*/
-    @DisplayName("Create problem Using a Problem Object")
-    @Disabled("Create problem Using a Problem Object - Cannot be mocked")
-    void testAPICreateProblem() throws Exception {
-        fail("Could not send an instance as a param with mock");
-    }
+//    @Test
+//	/*
+//	  WARNING:
+//		no hay ningun metodo para pasar un objeto como parametro en MockMvc
+//		y el controlador no acepta JSON
+//	*/
+//    @DisplayName("Create problem Using a Problem Object")
+//    @Disabled("Create problem Using a Problem Object - Cannot be mocked")
+//    void testAPICreateProblem() throws Exception {
+//        fail("Could not send an instance as a param with mock");
+//    }
 
     @Test
     @DisplayName("Create Problem From Zip")
