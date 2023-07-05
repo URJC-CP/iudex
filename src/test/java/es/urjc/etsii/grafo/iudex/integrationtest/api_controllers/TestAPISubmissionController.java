@@ -1,12 +1,15 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
+import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
+import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.entities.*;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +17,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +36,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -176,9 +183,41 @@ class TestAPISubmissionController {
 
     @Test
     @DisplayName("Add Submission to a Problem and Contest")
-    @Disabled("Create Submission - Not implemented yet!")
-    void testAPICreateSubmission() {
-        fail("Not implemented yet");
+    void testAPICreateSubmission() throws Exception {
+        String url = "/API/v1/submission";
+
+        String languageId = Sanitizer.removeLineBreaks("1");
+        String problemId = Sanitizer.removeLineBreaks(String.valueOf(contestProblem.getProblem().getId()));
+        String contestId = Sanitizer.removeLineBreaks(String.valueOf(contestProblem.getContest().getId()));
+        String teamId = Sanitizer.removeLineBreaks(String.valueOf(submission.getTeam().getId()));
+
+        MockMultipartFile submissionCode = new MockMultipartFile(
+                "codigo",
+                "main.c",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("testfiles/primavera/submissions/accepted/main.c").getInputStream());
+
+        SubmissionStringResult submissionStringResult = new SubmissionStringResult();
+        submissionStringResult.setSalida("OK");
+        submissionStringResult.setSubmission(new Submission("", new Language(), submissionCode.getOriginalFilename()));
+        submissionStringResult.getSubmission().setProblem(problem);
+        submissionStringResult.getSubmission().setTeam(submission.getTeam());
+
+        when(submissionService.creaYejecutaSubmission(
+                    submissionCode,
+                    problemId,
+                    languageId,
+                    contestId,
+                    teamId))
+                .thenReturn(submissionStringResult);
+
+        mockMvc.perform(multipart(url)
+                        .file(submissionCode)
+                        .param("problemId", problemId)
+                        .param("teamId", teamId)
+                        .param("lenguaje", languageId)
+                        .param("contestId", contestId))
+                .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test

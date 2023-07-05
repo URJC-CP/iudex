@@ -133,16 +133,12 @@ public class APISubmissionController {
         lenguaje = Sanitizer.removeLineBreaks(lenguaje);
         teamId = Sanitizer.removeLineBreaks(teamId);
 
-        String fileNameaux = codigo.getOriginalFilename();
-        String fileName = FilenameUtils.removeExtension(fileNameaux);
-        String cod = null;
+        SubmissionStringResult salida;
         try {
-            cod = new String(codigo.getBytes());
+            salida = submissionService.creaYejecutaSubmission(codigo, problemId, lenguaje, contestId, teamId);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-
-        SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
