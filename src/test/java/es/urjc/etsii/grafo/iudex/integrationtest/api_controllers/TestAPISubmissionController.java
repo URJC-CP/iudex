@@ -235,6 +235,28 @@ class TestAPISubmissionController {
                         .param("lenguaje", languageId)
                         .param("contestId", contestId))
                 .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+        submissionCode = new MockMultipartFile(
+                "codigo",
+                "main.cs",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("testfiles/primavera/submissions/accepted/main.c").getInputStream());
+
+        when(submissionService.creaYejecutaSubmission(
+                    submissionCode,
+                    problemId,
+                    languageId,
+                    contestId,
+                    teamId))
+                .thenThrow(new IOException());
+
+        mockMvc.perform(multipart(url)
+                        .file(submissionCode)
+                        .param("problemId", problemId)
+                        .param("teamId", teamId)
+                        .param("lenguaje", languageId)
+                        .param("contestId", contestId))
+                .andExpect(status().isUnsupportedMediaType()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
