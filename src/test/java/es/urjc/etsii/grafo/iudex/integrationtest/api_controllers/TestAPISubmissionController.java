@@ -80,6 +80,8 @@ class TestAPISubmissionController {
         contestProblem = new ContestProblem();
         contestProblem.setProblem(problem);
         contestProblem.setContest(contest);
+        contest.getListaProblemas().add(contestProblem);
+        problem.getListaProblemas().add(contestProblem);
 
         submission = new Submission();
         submission.setId(342);
@@ -96,10 +98,13 @@ class TestAPISubmissionController {
         when(problemService.getAllProblemas()).thenReturn(List.of(contestProblem.getProblem()));
         when(problemService.getProblem(String.valueOf(problem.getId()))).thenReturn(Optional.of(contestProblem.getProblem()));
 
+        when(contestProblemService.getContestProblemByContestAndProblem(contest, problem)).thenReturn(Optional.of(contestProblem));
+
         when(submissionService.getSubmission(String.valueOf(submission.getId()))).thenReturn(Optional.of(submission));
         when(submissionService.getAllSubmissions()).thenReturn(List.of(submission));
         when(submissionService.getSubmissionFromProblem(contestProblem.getProblem())).thenReturn(Set.of(submission));
         when(submissionService.getSubmissionsFromContest(contestProblem.getContest())).thenReturn(Set.of(submission));
+        when(submissionService.getSubmissionFromProblemAndContest(contestProblem.getProblem(), contestProblem.getContest())).thenReturn(List.of(submission));
     }
 
     @Test
@@ -128,6 +133,7 @@ class TestAPISubmissionController {
         salida = jsonConverter.convertObjectToJSON(List.of(submission.toSubmissionAPI()));
         testGetSubmissionsWithProblemId(url, goodProblem, status, salida);
         testGetSubmissionsWithContestId(url, goodContest, status, salida);
+        testGetSubmissions(url, goodContest, goodProblem, status, salida);
 
         // return all submissions if there are no contestId and problemId
         String result = mockMvc.perform(get(url)).andExpect(status().is(200)).andDo(print()).andReturn().getResponse().getContentAsString();
