@@ -257,6 +257,25 @@ class TestAPISubmissionController {
                         .param("lenguaje", languageId)
                         .param("contestId", contestId))
                 .andExpect(status().isUnsupportedMediaType()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+        contestId = "420";
+        submissionStringResult.setSalida("CONTEST NOT FOUND");
+
+        when(submissionService.creaYejecutaSubmission(
+                    submissionCode,
+                    problemId,
+                    languageId,
+                    contestId,
+                    teamId))
+                .thenReturn(submissionStringResult);
+
+        mockMvc.perform(multipart(url)
+                        .file(submissionCode)
+                        .param("problemId", problemId)
+                        .param("teamId", teamId)
+                        .param("lenguaje", languageId)
+                        .param("contestId", contestId))
+                .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
