@@ -54,6 +54,7 @@ class TestAPISubmissionController {
     private ProblemService problemService;
     @MockBean
     private ContestProblemService contestProblemService;
+    private Team owner;
 
     private ContestProblem contestProblem;
     private Contest contest;
@@ -67,7 +68,7 @@ class TestAPISubmissionController {
         contest.setNombreContest("elConcurso");
         contest.setDescripcion("concurso de prueba");
 
-        Team owner = new Team();
+        owner = new Team();
         owner.setId(201);
         owner.setNombreEquipo("propietario");
         contest.setTeamPropietario(owner);
@@ -127,6 +128,16 @@ class TestAPISubmissionController {
 
         salida = "";
         testGetSubmissionsWithContestId(url, badContest, status, salida);
+
+        Problem externalProblem = new Problem();
+        externalProblem.setId(673);
+        externalProblem.setNombreEjercicio("Problema sin concurso");
+        externalProblem.setEquipoPropietario(owner);
+
+        when(problemService.getAllProblemas()).thenReturn(List.of(contestProblem.getProblem(), externalProblem));
+        when(problemService.getProblem(String.valueOf(externalProblem.getId()))).thenReturn(Optional.of(externalProblem));
+        when(submissionService.getSubmissionFromProblemAndContest(externalProblem, contestProblem.getContest())).thenReturn(List.of());
+        testGetSubmissions(url, goodContest, String.valueOf(externalProblem.getId()), status, salida);
 
         //salida = "OK";
         status = HttpStatus.OK;
