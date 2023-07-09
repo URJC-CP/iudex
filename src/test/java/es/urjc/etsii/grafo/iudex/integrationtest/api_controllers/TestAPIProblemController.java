@@ -345,6 +345,35 @@ class TestAPIProblemController {
                         .param("teamId", teamId)
                         .param("contestId", contestId))
                 .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                InputStream.nullInputStream());
+
+        multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        when(problemService.updateProblem(
+                    problemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
+                .thenThrow(new Exception());
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", problemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isNotAcceptable()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
