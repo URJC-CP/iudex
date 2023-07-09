@@ -300,12 +300,12 @@ class TestAPIProblemController {
         problemString2.setSalida("OK");
 
         when(problemService.updateProblem(
-                problemId,
-                problem2File.getOriginalFilename(),
-                problem2File,
-                Sanitizer.removeLineBreaks(teamId),
-                Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
-                Sanitizer.removeLineBreaks(contestId)))
+                    problemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
                 .thenReturn(problemString2);
 
         MockMultipartHttpServletRequestBuilder multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
@@ -320,6 +320,31 @@ class TestAPIProblemController {
                         .param("teamId", teamId)
                         .param("contestId", contestId))
                 .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        String nonExisingProblemId = "999";
+        problemString2.setSalida("PROBLEM NOT FOUND");
+        when(problemService.updateProblem(
+                    nonExisingProblemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
+                .thenReturn(problemString2);
+
+        multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", nonExisingProblemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
