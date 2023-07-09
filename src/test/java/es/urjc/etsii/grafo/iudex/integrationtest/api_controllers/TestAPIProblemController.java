@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequ
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -163,6 +164,23 @@ class TestAPIProblemController {
                     .param("teamId", String.valueOf(owner.getId()))
                     .param("contestId", String.valueOf(contest.getId())))
                 .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        String nonExisingTeamId = "999";
+        problemString2.setSalida("TEAM NOT FOUND");
+        when(problemService.addProblemFromZip(
+                    problem2File,
+                    Sanitizer.removeLineBreaks(nonExisingTeamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(String.valueOf(contest.getId()))))
+                .thenReturn(problemString2);
+
+        mockMvc.perform(multipart(url)
+                    .file(problem2File)
+                    .param("problemName", problem2.getNombreEjercicio())
+                    .param("teamId", nonExisingTeamId)
+                    .param("contestId", String.valueOf(contest.getId())))
+                .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
