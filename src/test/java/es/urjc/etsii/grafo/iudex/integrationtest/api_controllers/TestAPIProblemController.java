@@ -204,7 +204,6 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Update Problem with Multiple Optional Params")
-    @Disabled("Review optional usage in problemService")
     void testAPIUpdateProblem() throws Exception {
         String badProblem = "534";
         String goodProblem = String.valueOf(problem.getId());
@@ -215,7 +214,7 @@ class TestAPIProblemController {
         Optional<String> timeout = Optional.of("timeout");
 
         MockMultipartFile pdf = new MockMultipartFile(
-                "file",
+                "pdf",
                 "primavera.pdf",
                 MediaType.APPLICATION_PDF_VALUE,
                 new ClassPathResource("primavera.pdf").getInputStream());
@@ -264,7 +263,7 @@ class TestAPIProblemController {
             return request;
         });
         multipartBuilder.file(pdf);
-        problemName.ifPresent(value -> multipartBuilder.param("nombreProblema", value));
+        problemName.ifPresent(value -> multipartBuilder.param("problemName", value));
         team.ifPresent(value -> multipartBuilder.param("teamId", value));
         timeout.ifPresent(value -> multipartBuilder.param("timeout", value));
 
