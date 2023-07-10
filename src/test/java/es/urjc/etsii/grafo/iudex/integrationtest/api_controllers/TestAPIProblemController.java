@@ -28,10 +28,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -145,7 +143,7 @@ class TestAPIProblemController {
                 "file",
                 "primavera.zip",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new ClassPathResource("testfiles/primavera.zip").getInputStream());
+                new ClassPathResource("primavera.zip").getInputStream());
 
         ProblemString problemString2 = new ProblemString();
         problemString2.setProblem(problem2);
@@ -218,9 +216,9 @@ class TestAPIProblemController {
 
         MockMultipartFile pdf = new MockMultipartFile(
                 "file",
-                "primavera.zip",
+                "primavera.pdf",
                 MediaType.APPLICATION_PDF_VALUE,
-                new ClassPathResource("testfiles/curso_cp_grafos.pdf").getInputStream());
+                new ClassPathResource("primavera.pdf").getInputStream());
 
         ProblemString ps = new ProblemString();
         String badURL = "/API/v1/problem/" + badProblem;
@@ -230,26 +228,26 @@ class TestAPIProblemController {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ps.setSalida(salida);
         when(problemService.updateProblemMultipleOptionalParams(badProblem, badProblemName, badTeam, pdf, timeout)).thenReturn(ps);
-        testUpdateProblemMultipleOptions(badURL, badProblemName.get(), badTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(badURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
         when(problemService.updateProblemMultipleOptionalParams(badProblem, problemName, badTeam, pdf, timeout)).thenReturn(ps);
-        testUpdateProblemMultipleOptions(badURL, problemName.get(), badTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(badURL, problemName, badTeam, pdf, timeout, status, salida);
 
         when(problemService.updateProblemMultipleOptionalParams(badProblem, badProblemName, goodTeam, pdf, timeout)).thenReturn(ps);
-        testUpdateProblemMultipleOptions(badURL, badProblemName.get(), goodTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(badURL, badProblemName, goodTeam, pdf, timeout, status, salida);
 
         when(problemService.updateProblemMultipleOptionalParams(badProblem, problemName, goodTeam, pdf, timeout)).thenReturn(ps);
-        testUpdateProblemMultipleOptions(badURL, problemName.get(), goodTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
 
         salida = "";
         ps.setSalida(salida);
         problem.setNombreEjercicio("");
         when(problemService.updateProblemMultipleOptionalParams(goodProblem, badProblemName, badTeam, pdf, timeout)).thenReturn(ps);
         problem.setNombreEjercicio(problemName.get());
-        testUpdateProblemMultipleOptions(goodURL, badProblemName.get(), badTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(goodURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
         when(problemService.updateProblemMultipleOptionalParams(goodProblem, problemName, badTeam, pdf, timeout)).thenReturn(ps);
-        testUpdateProblemMultipleOptions(goodURL, problemName.get(), badTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(goodURL, problemName, badTeam, pdf, timeout, status, salida);
 
         salida = "OK";
         ps.setProblem(problem);
@@ -257,20 +255,20 @@ class TestAPIProblemController {
         status = HttpStatus.OK;
         when(problemService.updateProblemMultipleOptionalParams(goodProblem, problemName, goodTeam, pdf, timeout)).thenReturn(ps);
         salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
-        testUpdateProblemMultipleOptions(goodURL, problemName.get(), goodTeam.get(), pdf, timeout.get(), status, salida);
+        testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
     }
 
-    private void testUpdateProblemMultipleOptions(String url, String problemName, String team, MockMultipartFile pdf, String timeout, HttpStatus status, String salida) throws Exception {
-        MockMultipartHttpServletRequestBuilder multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+    private void testUpdateProblemMultipleOptions(String url, Optional<String> problemName, Optional<String> team, MockMultipartFile pdf, Optional<String> timeout, HttpStatus status, String salida) throws Exception {
+        var multipartBuilder = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
             request.setMethod(String.valueOf(HttpMethod.PUT));
             return request;
         });
+        multipartBuilder.file(pdf);
+        problemName.ifPresent(value -> multipartBuilder.param("nombreProblema", value));
+        team.ifPresent(value -> multipartBuilder.param("teamId", value));
+        timeout.ifPresent(value -> multipartBuilder.param("timeout", value));
 
-        String result = mockMvc.perform(multipart.file(pdf)
-                    .param("nombreProblema", problemName)
-                    .param("teamId", team)
-                    .param("timeout", timeout)
-                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(multipartBuilder).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -293,7 +291,7 @@ class TestAPIProblemController {
                 "file",
                 "primavera.zip",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new ClassPathResource("testfiles/primavera.zip").getInputStream());
+                new ClassPathResource("primavera.zip").getInputStream());
 
         ProblemString problemString2 = new ProblemString();
         problemString2.setProblem(problem2);
