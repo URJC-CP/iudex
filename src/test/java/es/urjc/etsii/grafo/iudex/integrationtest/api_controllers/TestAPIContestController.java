@@ -6,6 +6,7 @@ import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
+import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -650,6 +652,38 @@ class TestAPIContestController {
                 .characterEncoding("utf8")
                 .param("languageList", languageList)
         ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Set accepted languages of a contest")
+    void testAPIGetScores() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+
+        String badUrl = String.format("%s/%s/scoreboard", baseURL, badContest);
+        String goodUrl = String.format("%s/%s/scoreboard", baseURL, goodContest);
+
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        when(contestService.getScore(badContest)).thenThrow(new RuntimeException());
+        testGetScores(badUrl, status, "");
+
+        status = HttpStatus.OK;
+        List<TeamScore> teamScoreList = List.of(new TeamScore(owner.toTeamAPISimple()));
+
+        when(contestService.getScore(goodContest)).thenReturn(teamScoreList);
+        testGetScores(goodUrl, status, jsonConverter.convertObjectToJSON(teamScoreList));
+    }
+    private void testGetScores(String url, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(get(url))
+                .andExpect(status().is(status.value()))
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
         assertEquals(expected, result);
     }
 }
