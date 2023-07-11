@@ -599,4 +599,57 @@ class TestAPIContestController {
                 .getContentAsString();
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Set accepted languages of a contest")
+    void testAPIAddAcceptedLanguagesToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+        String goodLanguageName2 = "java";
+
+        String goodUrl = String.format("%s/%s/language/addBulk", baseURL, goodContest);
+        String badurl = String.format("%s/%s/language/addBulk", baseURL, badContest);
+
+        String[] languageList;
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        languageList = new String[5];
+        languageList[0] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+
+        languageList[0] = badLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(badContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(badurl, languageList, status, expected);
+
+        languageList[1] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(badContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(badurl, languageList, status, expected);
+        languageList[1] = null;
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        languageList[0] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+
+        languageList[1] = goodLanguageName2;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+    }
+
+    private void testAddAcceptedLanguagesToContest(String url, String[] languageList, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(post(url)
+                .characterEncoding("utf8")
+                .param("languageList", languageList)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
 }
