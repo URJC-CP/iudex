@@ -139,6 +139,13 @@ class TestAPISubmissionController {
         when(submissionService.getSubmissionFromProblemAndContest(externalProblem, contestProblem.getContest())).thenReturn(List.of());
         testGetSubmissions(url, goodContest, String.valueOf(externalProblem.getId()), status, salida);
 
+        ContestProblem invalidContestProblem = new ContestProblem();
+        invalidContestProblem.setContest(contest);
+        invalidContestProblem.setProblem(externalProblem);
+
+        when(contestProblemService.getContestProblemByContestAndProblem(contest, externalProblem)).thenReturn(Optional.of(invalidContestProblem));
+        testGetSubmissions(url, goodContest, String.valueOf(externalProblem.getId()), status, salida);
+
         //salida = "OK";
         status = HttpStatus.OK;
         salida = jsonConverter.convertObjectToJSON(List.of(submission.toSubmissionAPI()));
