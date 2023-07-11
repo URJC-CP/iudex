@@ -555,4 +555,48 @@ class TestAPIContestController {
         ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Delete Language from Contest")
+    void testAPIDeleteLanguageFromContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+
+        String badURL = String.format("%s/%s/language/%s", baseURL, badContest, badLanguageName);
+        String badURL2 = String.format("%s/%s/language/%s", baseURL, badContest, goodLanguageName);
+        String badURL3 = String.format("%s/%s/language/%s", baseURL, goodContest, badLanguageName);
+        String goodURL = String.format("%s/%s/language/%s", baseURL, goodContest, goodLanguageName);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.removeLanguageFromContest(badContest, badLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL, status, expected);
+
+        when(contestService.removeLanguageFromContest(badContest, goodLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL2, status, expected);
+
+        when(contestService.removeLanguageFromContest(goodContest, badLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL3, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.removeLanguageFromContest(goodContest, goodLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(goodURL, status, expected);
+    }
+
+    private void testDeleteLanguageFromContest(String url, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url))
+                .andExpect(status().is(status.value()))
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals(expected, result);
+    }
 }
