@@ -376,7 +376,8 @@ class TestAPIContestController {
         String badTeam = "764";
         String goodTeam = String.valueOf(owner.getId());
 
-        String url = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+        String goodUrl = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+        String badUrl = String.format("%s/%s/team/addBulk", baseURL, badContest);
 
         String[] teamList;
 
@@ -387,15 +388,15 @@ class TestAPIContestController {
         teamList = new String[5];
         teamList[0] = goodTeam;
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
 
         teamList[0] = badTeam;
         when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkAddTeamsToContest(badUrl, teamList, status, expected);
 
         teamList[1] = goodTeam;
         when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkAddTeamsToContest(badUrl, teamList, status, expected);
         teamList[1] = null;
 
         salida = "OK";
@@ -403,21 +404,20 @@ class TestAPIContestController {
 
         teamList[0] = goodTeam;
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
 
         Team newTeam = new Team();
         newTeam.setId(201);
         newTeam.setNombreEquipo("propietario");
         teamList[1] = String.valueOf(newTeam.getId());
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
     }
 
-    private void testBulkAddTeamsToContest(String url, String contestId, String[] teamList, HttpStatus status, String expected) throws Exception {
+    private void testBulkAddTeamsToContest(String url, String[] teamList, HttpStatus status, String expected) throws Exception {
         String result;
         result = mockMvc.perform(put(url)
                     .characterEncoding("utf8")
-                    .param("contestId", contestId)
                     .param("teamList", teamList)
                 ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(expected, result);
@@ -474,7 +474,8 @@ class TestAPIContestController {
         String badTeam = "764";
         String goodTeam = String.valueOf(owner.getId());
 
-        String url = String.format("%s/%s/team/removeBulk", baseURL, goodContest);
+        String goodUrl = String.format("%s/%s/team/removeBulk", baseURL, goodContest);
+        String badUrl = String.format("%s/%s/team/removeBulk", baseURL, goodContest);
 
         String[] teamList;
 
@@ -485,15 +486,15 @@ class TestAPIContestController {
         teamList = new String[5];
         teamList[0] = goodTeam;
         when(contestService.deleteTeamFromContest(goodContest, teamList)).thenReturn(salida);
-        testBulkDeleteTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkDeleteTeamsToContest(goodUrl, teamList, status, expected);
 
         teamList[0] = badTeam;
         when(contestService.deleteTeamFromContest(badContest, teamList)).thenReturn(salida);
-        testBulkDeleteTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkDeleteTeamsToContest(badUrl, teamList, status, expected);
 
         teamList[1] = goodTeam;
         when(contestService.deleteTeamFromContest(badContest, teamList)).thenReturn(salida);
-        testBulkDeleteTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkDeleteTeamsToContest(badUrl, teamList, status, expected);
         teamList[1] = null;
 
         salida = "OK";
@@ -501,14 +502,13 @@ class TestAPIContestController {
 
         teamList[0] = goodTeam;
         when(contestService.deleteTeamFromContest(goodContest, teamList)).thenReturn(salida);
-        testBulkDeleteTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkDeleteTeamsToContest(goodUrl, teamList, status, expected);
     }
 
-    private void testBulkDeleteTeamsToContest(String url, String contestId, String[] teamList, HttpStatus status, String expected) throws Exception {
+    private void testBulkDeleteTeamsToContest(String url, String[] teamList, HttpStatus status, String expected) throws Exception {
         String result;
         result = mockMvc.perform(delete(url)
                 .characterEncoding("utf8")
-                .param("contestId", contestId)
                 .param("teamList", teamList)
         ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(expected, result);
