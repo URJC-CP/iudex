@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.rabbitmq;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
+import es.urjc.etsii.grafo.iudex.exceptions.DockerExceptionFailedExecution;
 import es.urjc.etsii.grafo.iudex.services.ResultHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -29,7 +30,8 @@ public class RabbitResultExecutionReceiver {
         try {
             resultHandler.ejecutor(res);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            throw new DockerExceptionFailedExecution();
         }
         //resultRepository.save(res);
 
