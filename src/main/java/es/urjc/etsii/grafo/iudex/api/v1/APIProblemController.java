@@ -4,6 +4,7 @@ import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
 
 @RestController
 @RequestMapping("/API/v1/")
@@ -51,7 +50,7 @@ public class APIProblemController {
     @Operation( summary = "Return selected problem")
     @GetMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
-        problemId = sanitize(problemId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
@@ -62,30 +61,29 @@ public class APIProblemController {
     }
 
     //Crea problema desde objeto Problem
-    @Operation( summary = "Create problem Using a Problem Object")
-    @PostMapping("problem")
-    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
-
-        ProblemString salida = problemService.addProblem(problem);
-        if (salida.getSalida().equals("OK")) {
-            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @Operation( summary = "Create problem Using a Problem Object")
+//    @PostMapping("problem")
+//    public ResponseEntity<ProblemAPI> createProblem(@RequestParam Problem problem) {
+//
+//        ProblemString salida = problemService.addProblem(problem);
+//        if (salida.getSalida().equals("OK")) {
+//            return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @Operation( summary = "Create Problem from Zip")
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "problem/fromZip")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
-        problemName = sanitize(problemName);
-        teamId = sanitize(teamId);
-        contestId = sanitize(contestId);
-        String filename = sanitize(file.getOriginalFilename());
+        problemName = Sanitizer.removeLineBreaks(problemName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        contestId = Sanitizer.removeLineBreaks(contestId);
 
         try {
-            ProblemString salida = problemService.addProblemFromZip(filename, file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.addProblemFromZip(file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
@@ -99,14 +97,14 @@ public class APIProblemController {
     @Operation( summary = "Update problem from ZIP")
     @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
-        problemId = sanitize(problemId);
-        problemName = sanitize(problemName);
-        teamId = sanitize(teamId);
-        contestId = sanitize(contestId);
-        String filename = sanitize(file.getOriginalFilename());
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        problemName = Sanitizer.removeLineBreaks(problemName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        String filename = Sanitizer.removeLineBreaks(file.getOriginalFilename());
 
         try {
-            ProblemString salida = problemService.updateProblem(problemId, filename, file.getInputStream(), teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, filename, file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {
@@ -120,16 +118,11 @@ public class APIProblemController {
     @Operation( summary = "Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestPart(name = "pdf", required = false) MultipartFile pdf) throws IOException {
-        problemId = sanitize(problemId);
-        problemName = sanitize(problemName);
-        teamId = sanitize(teamId);
-        timeout = sanitize(timeout);
-        byte[] pdfBytes = null;
-        if (pdf != null) {
-            pdfBytes = pdf.getBytes();
-        }
-        Optional<byte[]> optPdfBytes = Optional.ofNullable(pdfBytes);
-        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, optPdfBytes, timeout);
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        problemName = Sanitizer.removeLineBreaks(problemName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        timeout = Sanitizer.removeLineBreaks(timeout);
+        ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
         } else {
@@ -142,7 +135,7 @@ public class APIProblemController {
     @Operation( summary = "Get pdf from Problem")
     @GetMapping("problem/{problemId}/getPDF")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
-        problemId = sanitize(problemId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
 
         Optional<Problem> problemOptional = problemService.getProblem(problemId);
         if (problemOptional.isEmpty()) {
@@ -165,7 +158,7 @@ public class APIProblemController {
     @Operation( summary = "Delete problem from all contests")
     @DeleteMapping("problem/{problemId}")
     public ResponseEntity<String> deleteProblem(@PathVariable String problemId) {
-        problemId = sanitize(problemId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
 
         String salida = problemService.deleteProblem(problemId);
         if (salida.equals("OK")) {
@@ -178,8 +171,8 @@ public class APIProblemController {
     @Operation( summary = "Add sample to problem")
     @PostMapping("problem/{problemId}/sample")
     public ResponseEntity<String> addSampleToProblem(@PathVariable String problemId, @RequestParam String name, @RequestPart("entrada") MultipartFile sampleInput, @RequestPart("salida") MultipartFile sampleOutput, @RequestParam boolean isPublic) {
-        problemId = sanitize(problemId);
-        name = sanitize(name);
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        name = Sanitizer.removeLineBreaks(name);
 
         if (sampleInput.isEmpty() || sampleOutput.isEmpty()) {
             return new ResponseEntity<>("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
@@ -204,9 +197,9 @@ public class APIProblemController {
     @Operation( summary = "Update sample from problem")
     @PutMapping("problem/{problemId}/sample/{sampleId}")
     public ResponseEntity<String> updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId, @RequestParam(value = "name", required = false) Optional<String> nameOptional, @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional, @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional, @RequestParam(value = "isPublic", required = false) Optional<Boolean> isPublicOptional) {
-        problemId = sanitize(problemId);
-        sampleId = sanitize(sampleId);
-        nameOptional = sanitize(nameOptional);
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        sampleId = Sanitizer.removeLineBreaks(sampleId);
+        nameOptional = Sanitizer.removeLineBreaks(nameOptional);
 
         if (nameOptional.isEmpty() && sampleInputOptional.isEmpty() && sampleOutputOptional.isEmpty() && isPublicOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -240,8 +233,8 @@ public class APIProblemController {
     @Operation( summary = "Delete sample from problem")
     @DeleteMapping("problem/{problemId}/sample/{sampleId}")
     public ResponseEntity<String> deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
-        problemId = sanitize(problemId);
-        sampleId = sanitize(sampleId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        sampleId = Sanitizer.removeLineBreaks(sampleId);
 
         String salida = problemService.deleteSampleFromProblem(problemId, sampleId);
         if (salida.equals("OK")) {

@@ -8,6 +8,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -15,16 +16,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -75,9 +84,12 @@ class TestAPIProblemController {
 
     @Test
     @DisplayName("Get All Problems With Pagination")
-    @Disabled("Get All Problems With Pagination - Averiguar como probar la paginación")
-    void testAPIGetProblemsWithPagination() {
-        fail("Not implemented yet!");
+    void testAPIGetProblemsWithPagination() throws Exception {
+        String url = "/API/v1/problem/page";
+        final int page = 1, size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        when(problemService.getProblemsPage(pageable)).thenReturn(new PageImpl<>(List.of(problem)));
+        mockMvc.perform(get(url).param("size", String.valueOf(size)).param("page", String.valueOf(page))).andExpect(status().isOk());
     }
 
     @Test
@@ -103,37 +115,107 @@ class TestAPIProblemController {
         assertEquals(salida, result);
     }
 
-    @Test
-	/*
-	  WARNING:
-		no hay ningun metodo para pasar un objeto como parametro en MockMvc
-		y el controlador no acepta JSON
-	*/
-    @DisplayName("Create problem Using a Problem Object")
-    @Disabled("Create problem Using a Problem Object - Cannot be mocked")
-    void testAPICreateProblem() throws Exception {
-        fail("Could not send an instance as a param with mock");
-    }
+//    @Test
+//	/*
+//	  WARNING:
+//		no hay ningun metodo para pasar un objeto como parametro en MockMvc
+//		y el controlador no acepta JSON
+//	*/
+//    @DisplayName("Create problem Using a Problem Object")
+//    @Disabled("Create problem Using a Problem Object - Cannot be mocked")
+//    void testAPICreateProblem() throws Exception {
+//        fail("Could not send an instance as a param with mock");
+//    }
 
     @Test
     @DisplayName("Create Problem From Zip")
-    @Disabled("Create Problem From Zip - Cannot be mocked")
     void testAPICreateProblemFromZip() throws Exception {
-        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+        String url = "/API/v1/problem/fromZip";
+
+        Problem problem2 = new Problem();
+        problem2.setId(673);
+        problem2.setNombreEjercicio("Ejercicio de prueba sin añadir a la lista");
+        problem2.setEquipoPropietario(owner);
+
+        MockMultipartFile problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera.zip").getInputStream());
+
+        ProblemString problemString2 = new ProblemString();
+        problemString2.setProblem(problem2);
+        problemString2.setSalida("OK");
+
+        when(problemService.addProblemFromZip(
+                    problem2File,
+                    Sanitizer.removeLineBreaks(String.valueOf(owner.getId())),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(String.valueOf(contest.getId()))))
+                .thenReturn(problemString2);
+
+        mockMvc.perform(multipart(url)
+                    .file(problem2File)
+                    .param("problemName", problem2.getNombreEjercicio())
+                    .param("teamId", String.valueOf(owner.getId()))
+                    .param("contestId", String.valueOf(contest.getId())))
+                .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        String nonExisingTeamId = "999";
+        problemString2.setSalida("TEAM NOT FOUND");
+        when(problemService.addProblemFromZip(
+                    problem2File,
+                    Sanitizer.removeLineBreaks(nonExisingTeamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(String.valueOf(contest.getId()))))
+                .thenReturn(problemString2);
+
+        mockMvc.perform(multipart(url)
+                    .file(problem2File)
+                    .param("problemName", problem2.getNombreEjercicio())
+                    .param("teamId", nonExisingTeamId)
+                    .param("contestId", String.valueOf(contest.getId())))
+                .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                InputStream.nullInputStream());
+
+        when(problemService.addProblemFromZip(
+                    problem2File,
+                    Sanitizer.removeLineBreaks(String.valueOf(owner.getId())),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(String.valueOf(contest.getId()))))
+                .thenThrow(new Exception());
+
+        mockMvc.perform(multipart(url)
+                    .file(problem2File)
+                    .param("problemName", problem2.getNombreEjercicio())
+                    .param("teamId", String.valueOf(owner.getId()))
+                    .param("contestId", String.valueOf(contest.getId())))
+                .andExpect(status().isNotAcceptable()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test
     @DisplayName("Update Problem with Multiple Optional Params")
-    @Disabled("Update Problem with Multiple Optional Params - Averiguar como pasar bytes[] del pdf como param")
     void testAPIUpdateProblem() throws Exception {
         String badProblem = "534";
         String goodProblem = String.valueOf(problem.getId());
-        String badProblemName = "";
-        String problemName = problem.getNombreEjercicio();
-        String badTeam = "673";
-        String goodTeam = String.valueOf(owner.getId());
-        String timeout = "timeout";
-        byte[] pdf = new byte[0];
+        Optional<String> badProblemName = Optional.of("");
+        Optional<String> problemName = Optional.of(problem.getNombreEjercicio());
+        Optional<String> badTeam = Optional.of("673");
+        Optional<String> goodTeam = Optional.of(String.valueOf(owner.getId()));
+        Optional<String> timeout = Optional.of("timeout");
+
+        MockMultipartFile pdf = new MockMultipartFile(
+                "pdf",
+                "primavera.pdf",
+                MediaType.APPLICATION_PDF_VALUE,
+                new ClassPathResource("primavera.pdf").getInputStream());
 
         ProblemString ps = new ProblemString();
         String badURL = "/API/v1/problem/" + badProblem;
@@ -142,49 +224,151 @@ class TestAPIProblemController {
         String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
         ps.setSalida(salida);
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, badProblemName, badTeam, pdf, timeout)).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, problemName, badTeam, pdf, timeout)).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, problemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(badProblemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, badProblemName, goodTeam, pdf, timeout)).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, badProblemName, goodTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(badProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(badProblem, problemName, goodTeam, pdf, timeout)).thenReturn(ps);
         testUpdateProblemMultipleOptions(badURL, problemName, goodTeam, pdf, timeout, status, salida);
 
         salida = "";
         ps.setSalida(salida);
         problem.setNombreEjercicio("");
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(badProblemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
-        problem.setNombreEjercicio(problemName);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, badProblemName, badTeam, pdf, timeout)).thenReturn(ps);
+        problem.setNombreEjercicio(problemName.get());
         testUpdateProblemMultipleOptions(goodURL, badProblemName, badTeam, pdf, timeout, status, salida);
 
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(badTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, problemName, badTeam, pdf, timeout)).thenReturn(ps);
         testUpdateProblemMultipleOptions(goodURL, problemName, badTeam, pdf, timeout, status, salida);
 
         salida = "OK";
         ps.setProblem(problem);
         ps.setSalida(salida);
         status = HttpStatus.OK;
-        when(problemService.updateProblemMultipleOptionalParams(goodProblem, Optional.of(problemName), Optional.of(goodTeam), Optional.of(pdf), Optional.of(timeout))).thenReturn(ps);
+        when(problemService.updateProblemMultipleOptionalParams(goodProblem, problemName, goodTeam, pdf, timeout)).thenReturn(ps);
         salida = jsonConverter.convertObjectToJSON(problem.toProblemAPI());
         testUpdateProblemMultipleOptions(goodURL, problemName, goodTeam, pdf, timeout, status, salida);
     }
 
-    private void testUpdateProblemMultipleOptions(String url, String problemName, String team, byte[] pdf, String timeout, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(put(url).characterEncoding("utf8").param("nombreProblema", problemName).param("teamId", team)
-            //TODO: pass byte[]
-            .param("pdf", String.valueOf(pdf)).param("timeout", timeout)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+    private void testUpdateProblemMultipleOptions(String url, Optional<String> problemName, Optional<String> team, MockMultipartFile pdf, Optional<String> timeout, HttpStatus status, String salida) throws Exception {
+        var multipartBuilder = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+        multipartBuilder.file(pdf);
+        problemName.ifPresent(value -> multipartBuilder.param("problemName", value));
+        team.ifPresent(value -> multipartBuilder.param("teamId", value));
+        timeout.ifPresent(value -> multipartBuilder.param("timeout", value));
+
+        String result = mockMvc.perform(multipartBuilder).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
     @Test
     @DisplayName("Update Problem From Zip")
-    @Disabled("Update Problem From Zip - Cannot be mocked")
-    void testAPIUpdateProblemFromZip() {
-        fail("the Input Stream is created in the controller, so it will be different from the one specified in when");
+    void testAPIUpdateProblemFromZip() throws Exception {
+        String url = "/API/v1/problem/" + problem.getId() + "/fromZip";
+
+        String problemId = String.valueOf(problem.getId());
+        String problemName = problem.getNombreEjercicio() + " modificado";
+        String teamId = String.valueOf(problem.getEquipoPropietario().getId());
+        String contestId = String.valueOf(contest.getId());
+
+        Problem problem2 = new Problem();
+        problem2.setId(problem.getId());
+        problem2.setNombreEjercicio(problemName);
+        problem2.setEquipoPropietario(owner);
+
+        MockMultipartFile problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera.zip").getInputStream());
+
+        ProblemString problemString2 = new ProblemString();
+        problemString2.setProblem(problem2);
+        problemString2.setSalida("OK");
+
+        when(problemService.updateProblem(
+                    problemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
+                .thenReturn(problemString2);
+
+        MockMultipartHttpServletRequestBuilder multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", problemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        String nonExisingProblemId = "999";
+        problemString2.setSalida("PROBLEM NOT FOUND");
+        when(problemService.updateProblem(
+                    nonExisingProblemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
+                .thenReturn(problemString2);
+
+        multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", nonExisingProblemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isNotFound()).andDo(print()).andReturn().getResponse().getContentAsString();
+
+
+        problem2File = new MockMultipartFile(
+                "file",
+                "primavera.zip",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                InputStream.nullInputStream());
+
+        multipart = (MockMultipartHttpServletRequestBuilder) multipart(url).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        when(problemService.updateProblem(
+                    problemId,
+                    problem2File.getOriginalFilename(),
+                    problem2File,
+                    Sanitizer.removeLineBreaks(teamId),
+                    Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
+                    Sanitizer.removeLineBreaks(contestId)))
+                .thenThrow(new Exception());
+
+        mockMvc.perform(multipart
+                        .file(problem2File)
+                        .param("problemId", problemId)
+                        .param("problemName", problem2.getNombreEjercicio())
+                        .param("teamId", teamId)
+                        .param("contestId", contestId))
+                .andExpect(status().isNotAcceptable()).andDo(print()).andReturn().getResponse().getContentAsString();
     }
 
     @Test

@@ -9,6 +9,7 @@ import es.urjc.etsii.grafo.iudex.repositories.ContestProblemRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
 import es.urjc.etsii.grafo.iudex.repositories.ContestTeamRespository;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import es.urjc.etsii.grafo.iudex.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
 
 @Service
 public class ContestService {
@@ -272,7 +271,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String teamId : teamIdList) {
-            teamId = sanitize(teamId);
+            teamId = Sanitizer.removeLineBreaks(teamId);
             String salida = addTeamToContest(contest, teamId);
             // si hay algun problema se detiene la inserción
             if (!salida.equals("OK")) {
@@ -330,7 +329,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String teamId : teamIdList) {
-            teamId = sanitize(teamId);
+            teamId = Sanitizer.removeLineBreaks(teamId);
             String salida = deleteTeamFromContest(contest, teamId);
             if (!salida.equals("OK")) {
                 logger.error("Error while removing team {} from contest {}", teamId, contestId);
@@ -418,7 +417,7 @@ public class ContestService {
         Contest contest = contestOptional.get();
 
         for (String languageName : languageList) {
-            languageName = sanitize(languageName);
+            languageName = Sanitizer.removeLineBreaks(languageName);
             String salida = addLanguageToContest(contest, languageName);
             if (!salida.equals("OK")) {
                 logger.error("Error while adding language {} to contest {}", languageName, contestId);

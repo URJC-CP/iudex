@@ -7,13 +7,13 @@ public class Sanitizer {
 
     private Sanitizer() {}
 
-    public static String sanitize(String s) {
+    public static String removeLineBreaks(String s) {
         return s.trim().replaceAll(SANITIZE_REGEX, "_");
     }
 
-    public static Optional<String> sanitize(Optional<String> op) {
+    public static Optional<String> removeLineBreaks(Optional<String> op) {
         if (op.isPresent()) {
-            op = Optional.of(sanitize(op.get()));
+            op = Optional.of(removeLineBreaks(op.get()));
         }
         return op;
     }

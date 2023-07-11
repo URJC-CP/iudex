@@ -98,42 +98,34 @@ public class Problem {
     }
 
     public ProblemAPI toProblemAPI() {
-        ProblemAPI problemAPI = new ProblemAPI();
-        problemAPI.setId(this.id);
-        problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setSamples(convertSampletoSampleAPI(this.getDatosVisibles()));
+        ProblemAPI problemAPI = this.toProblemAPIWithoutSubmissions();
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
             submissionAPIS.add(submission.toSubmissionAPISimple());
         }
         problemAPI.setSubmissions(submissionAPIS);
-        problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
-        problemAPI.setValido(this.valido);
-        problemAPI.setTimeout(this.timeout);
-        problemAPI.setMemoryLimit(this.memoryLimit);
-        problemAPI.setAutor(this.autor);
-        problemAPI.setSource(this.source);
-        problemAPI.setSourceURL(this.sourceURL);
-        problemAPI.setLicense(this.license);
-        problemAPI.setOwnerRights(this.ownerRights);
-        problemAPI.setColor(this.color);
-        problemAPI.setTimeout(this.timeout);
 
         return problemAPI;
     }
 
     public ProblemAPI toProblemAPIFull() {
-        ProblemAPI problemAPI = new ProblemAPI();
-        problemAPI.setId(this.id);
-        problemAPI.setNombreEjercicio(this.nombreEjercicio);
-        problemAPI.setSamples(convertSampletoSampleAPI(this.getDatosVisibles()));
+        ProblemAPI problemAPI = this.toProblemAPIWithoutSubmissions();
 
         List<SubmissionAPI> submissionAPIS = new ArrayList<>();
         for (Submission submission : this.submissions) {
             submissionAPIS.add(submission.toSubmissionAPI());
         }
         problemAPI.setSubmissions(submissionAPIS);
+
+        return problemAPI;
+    }
+
+    private ProblemAPI toProblemAPIWithoutSubmissions() {
+        ProblemAPI problemAPI = new ProblemAPI();
+        problemAPI.setId(this.id);
+        problemAPI.setNombreEjercicio(this.nombreEjercicio);
+        problemAPI.setSamples(convertSampletoSampleAPI(this.getDatosVisibles()));
         problemAPI.setEquipoPropietario(this.equipoPropietario.toTeamAPISimple());
         problemAPI.setValido(this.valido);
         problemAPI.setTimeout(this.timeout);

@@ -10,6 +10,7 @@ import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
+import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 
 import org.apache.commons.io.FilenameUtils;
@@ -25,8 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.sanitize;
 
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -44,8 +43,8 @@ public class APISubmissionController {
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
-        contestId = sanitize(contestId);
-        problemId = sanitize(problemId);
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
 
         //Si tiene los dos devolvemos lo que corresponde
         if (contestId.isPresent() && problemId.isPresent()) {
@@ -113,7 +112,7 @@ public class APISubmissionController {
     @Operation( summary = "Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId) {
-        submissionId = sanitize(submissionId);
+        submissionId = Sanitizer.removeLineBreaks(submissionId);
 
         Optional<Submission> submissionOptional = submissionService.getSubmission(submissionId);
         if (submissionOptional.isPresent()) {
@@ -127,21 +126,17 @@ public class APISubmissionController {
     @Operation( summary = "Create a submission to a problem and contest")
     @PostMapping("/API/v1/submission")
     public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId) {
-        problemId = sanitize(problemId);
-        contestId = sanitize(contestId);
-        lenguaje = sanitize(lenguaje);
-        teamId = sanitize(teamId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        lenguaje = Sanitizer.removeLineBreaks(lenguaje);
+        teamId = Sanitizer.removeLineBreaks(teamId);
 
-        String fileNameaux = codigo.getOriginalFilename();
-        String fileName = FilenameUtils.removeExtension(fileNameaux);
-        String cod = null;
+        SubmissionStringResult salida;
         try {
-            cod = new String(codigo.getBytes());
+            salida = submissionService.creaYejecutaSubmission(codigo, problemId, lenguaje, contestId, teamId);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-
-        SubmissionStringResult salida = submissionService.creaYejecutaSubmission(cod, problemId, lenguaje, fileName, contestId, teamId);
 
         if (!salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -153,7 +148,7 @@ public class APISubmissionController {
     @Operation( summary = "Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
     public ResponseEntity<String> deleteSubmission(@PathVariable String submissionId) {
-        submissionId = sanitize(submissionId);
+        submissionId = Sanitizer.removeLineBreaks(submissionId);
 
         String salida = submissionService.deleteSubmission(submissionId);
         if (!salida.equals("OK")) {

@@ -39,20 +39,18 @@ class TestAPITeamController {
 
     @BeforeEach
     public void init() {
-        team = new Team();
+        team = new Team("Equipo de prueba");
         team.setId(305);
         team.setEsUser(false);
-        team.setNombreEquipo("Equipo de prueba");
 
-        user = new User();
+        user = new User("usuario de prueba", "prueba@prueba.com");
         user.setId(307);
-        user.setNickname("usuario de prueba");
-        user.setEmail("prueba@prueba.com");
 
         userTeam = new TeamUser();
         userTeam.setTeam(team);
         userTeam.setUser(user);
         team.addUserToTeam(userTeam);
+        user.addTeam(userTeam);
 
         when(teamService.getTeamFromId(String.valueOf(userTeam.getTeam().getId()))).thenReturn(Optional.of(userTeam.getTeam()));
         when(teamService.getTeamByNick(userTeam.getTeam().getNombreEquipo())).thenReturn(Optional.of(userTeam.getTeam()));
@@ -62,20 +60,18 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Get all teams")
-    @Disabled
     void testAPIGetTeams() throws Exception {
         String url = "/API/v1/team";
-        String salida = jsonConverter.convertObjectToJSON(List.of(team.toTeamAPI()));
+        String salida = jsonConverter.convertObjectToJSON(List.of(team.toTeamAPISimple()));
         String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
     @Test
     @DisplayName("Get Team")
-    @Disabled
     void testAPIGetTeam() throws Exception {
         String badTeam = "843";
-        String goodTeam = String.valueOf(userTeam.getId());
+        String goodTeam = String.valueOf(team.getId());
         String badURL = "/API/v1/team/" + badTeam;
         String goodURL = "/API/v1/team/" + goodTeam;
 
@@ -84,7 +80,7 @@ class TestAPITeamController {
         testGetTeam(badURL, status, salida);
 
         status = HttpStatus.OK;
-        salida = jsonConverter.convertObjectToJSON(userTeam.getTeam().toTeamAPI());
+        salida = jsonConverter.convertObjectToJSON(team.toTeamAPI());
         testGetTeam(goodURL, status, salida);
     }
 
@@ -95,10 +91,9 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Create Team")
-    @Disabled
     void testAPICreateTeam() throws Exception {
         String badTeam = "";
-        String goodTeam = userTeam.getTeam().getNombreEquipo();
+        String goodTeam = team.getNombreEquipo();
         String url = "/API/v1/team/";
 
         TeamString ts = new TeamString();
@@ -124,7 +119,6 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Delete Team")
-    @Disabled
     void testAPIDeleteTeam() throws Exception {
         String badTeam = "856";
         String goodTeam = String.valueOf(userTeam.getId());
@@ -150,7 +144,6 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Update Team")
-    @Disabled
     void testAPIUpdateTeam() throws Exception {
         String badTeam = "834";
         String goodTeam = String.valueOf(userTeam.getId());
@@ -191,7 +184,6 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Add User to Team")
-    @Disabled
     void testAPIAddUser() throws Exception {
         String badUser = "872";
         String goodUser = String.valueOf(userTeam.getUser().getId());
@@ -241,7 +233,6 @@ class TestAPITeamController {
 
     @Test
     @DisplayName("Delete User from Team")
-    @Disabled
     void testAPIDeleteUser() throws Exception {
         String badUser = "872";
         String goodUser = String.valueOf(user.getId());

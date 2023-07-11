@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -80,13 +81,12 @@ class TestAPIContestController {
 
     @Test
     @DisplayName("Get All Contests with Pagination")
-    @Disabled("Get All Contests with Pagination - Null Pointer Exception from ContestService")
     void testAPIGetAllContestsWithPagination() throws Exception {
         String url = baseURL + "/page";
-        Pageable pageable = PageRequest.of(1, 5);
-        PageImpl<Contest> page = new PageImpl<>(List.of(contest));
-        when(contestService.getContestPage(pageable)).thenReturn(page);
-        mockMvc.perform(get(url).characterEncoding("utf-8").param("pageable", String.valueOf(pageable)).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$['pageable']['paged']").value("true"));
+        final int page = 1, size = 5;
+        Pageable pageable = PageRequest.of(page, size);
+        when(contestService.getContestPage(pageable)).thenReturn(new PageImpl<>(List.of(contest)));
+        mockMvc.perform(get(url).param("size", String.valueOf(size)).param("page", String.valueOf(page))).andExpect(status().isOk());
     }
 
     @Test
@@ -323,5 +323,103 @@ class TestAPIContestController {
         String result;
         result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
+    }
+
+    @Test
+    @DisplayName("Add Team to Contest")
+    void testAPIAddTeamToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String badURL = String.format("%s/%s/team/%s", baseURL, badContest, badTeam);
+        String badURL2 = String.format("%s/%s/team/%s", baseURL, badContest, goodTeam);
+        String badURL3 = String.format("%s/%s/team/%s", baseURL, goodContest, badTeam);
+        String goodURL = String.format("%s/%s/team/%s", baseURL, goodContest, goodTeam);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.addTeamToContest(badContest, badTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL, badContest, badTeam, status, expected);
+
+        when(contestService.addTeamToContest(badContest, goodTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL2, badContest, goodTeam, status, expected);
+
+        when(contestService.addTeamToContest(goodContest, badTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL3, goodContest, badTeam, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.addTeamToContest(goodContest, goodTeam)).thenReturn(salida);
+        testAddTeamToContest(goodURL, goodContest, goodTeam, status, expected);
+    }
+
+    private void testAddTeamToContest(String url, String contestId, String teamId, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url)
+                    .characterEncoding("utf8")
+                    .param("contestId", contestId)
+                    .param("teamId", teamId)
+                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Bulk add Team to Contest")
+    void testAPIBulkAddTeamsToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String url = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+
+        String[] teamList;
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        teamList = new String[5];
+        teamList[0] = goodTeam;
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+
+        teamList[0] = badTeam;
+        when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+
+        teamList[1] = goodTeam;
+        when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        teamList[1] = null;
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        teamList[0] = goodTeam;
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+
+        Team newTeam = new Team();
+        newTeam.setId(201);
+        newTeam.setNombreEquipo("propietario");
+        teamList[1] = String.valueOf(newTeam.getId());
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+    }
+
+    private void testBulkAddTeamsToContest(String url, String contestId, String[] teamList, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url)
+                    .characterEncoding("utf8")
+                    .param("contestId", contestId)
+                    .param("teamList", teamList)
+                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
     }
 }
