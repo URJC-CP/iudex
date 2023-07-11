@@ -324,4 +324,47 @@ class TestAPIContestController {
         result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
+
+    @Test
+    @DisplayName("Add Team to Contest")
+    void testAPIAddTeamToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String badURL = String.format("%s/%s/team/%s", baseURL, badContest, badTeam);
+        String badURL2 = String.format("%s/%s/team/%s", baseURL, badContest, goodTeam);
+        String badURL3 = String.format("%s/%s/team/%s", baseURL, goodContest, badTeam);
+        String goodURL = String.format("%s/%s/team/%s", baseURL, goodContest, goodTeam);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.addTeamToContest(badContest, badTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL, badContest, badTeam, status, expected);
+
+        when(contestService.addTeamToContest(badContest, goodTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL2, badContest, goodTeam, status, expected);
+
+        when(contestService.addTeamToContest(goodContest, badTeam)).thenReturn(salida);
+        testAddTeamToContest(badURL3, goodContest, badTeam, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.addTeamToContest(goodContest, goodTeam)).thenReturn(salida);
+        testAddTeamToContest(goodURL, goodContest, goodTeam, status, expected);
+    }
+
+    private void testAddTeamToContest(String url, String contestId, String teamId, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url)
+                    .characterEncoding("utf8")
+                    .param("contestId", contestId)
+                    .param("teamId", teamId)
+                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
 }
