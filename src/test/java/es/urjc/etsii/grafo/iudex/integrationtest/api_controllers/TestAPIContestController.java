@@ -513,4 +513,46 @@ class TestAPIContestController {
         ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Add Language to Contest")
+    void testAPIAddLanguageToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+
+        String badURL = String.format("%s/%s/language", baseURL, badContest);
+        String badURL2 = String.format("%s/%s/language", baseURL, badContest);
+        String badURL3 = String.format("%s/%s/language", baseURL, goodContest);
+        String goodURL = String.format("%s/%s/language", baseURL, goodContest);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.addLanguageToContest(badContest, badLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL, badLanguageName, status, expected);
+
+        when(contestService.addLanguageToContest(badContest, goodLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL2, goodLanguageName, status, expected);
+
+        when(contestService.addLanguageToContest(goodContest, badLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL3, badLanguageName, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.addLanguageToContest(goodContest, goodLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(goodURL, goodLanguageName, status, expected);
+    }
+
+    private void testAddLanguageToContest(String url, String language, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(post(url)
+                .characterEncoding("utf8")
+                .param("language", language)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
 }
