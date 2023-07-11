@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
-
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APISubmissionController {
@@ -45,8 +43,8 @@ public class APISubmissionController {
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
-        contestId = removeLineBreaks(contestId);
-        problemId = removeLineBreaks(problemId);
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        problemId = Sanitizer.removeLineBreaks(problemId);
 
         //Si tiene los dos devolvemos lo que corresponde
         if (contestId.isPresent() && problemId.isPresent()) {

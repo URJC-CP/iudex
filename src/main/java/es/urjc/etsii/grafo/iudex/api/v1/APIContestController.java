@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
-
 @RestController
 @RequestMapping("/API/v1/")
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -69,7 +67,7 @@ public class APIContestController {
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
         contestName = Sanitizer.removeLineBreaks(contestName);
         teamId = Sanitizer.removeLineBreaks(teamId);
-        descripcion = removeLineBreaks(descripcion);
+        descripcion = Sanitizer.removeLineBreaks(descripcion);
 
         ContestString salida = contestService.creaContest(contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {
@@ -95,9 +93,9 @@ public class APIContestController {
     @PutMapping("contest/{contestId}")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         contestId = Sanitizer.removeLineBreaks(contestId);
-        contestName = removeLineBreaks(contestName);
-        teamId = removeLineBreaks(teamId);
-        descripcion = removeLineBreaks(descripcion);
+        contestName = Sanitizer.removeLineBreaks(contestName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        descripcion = Sanitizer.removeLineBreaks(descripcion);
 
         ContestString salida = contestService.updateContest(contestId, contestName, teamId, descripcion, startTimestamp, endTimestamp);
         if (salida.getSalida().equals("OK")) {

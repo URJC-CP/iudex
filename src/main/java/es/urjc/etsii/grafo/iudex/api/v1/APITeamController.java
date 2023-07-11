@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
-
 @RestController
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APITeamController {
@@ -81,7 +79,7 @@ public class APITeamController {
     @PutMapping("/API/v1/team/{teamId}")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName) {
         teamId = Sanitizer.removeLineBreaks(teamId);
-        teamName = removeLineBreaks(teamName);
+        teamName = Sanitizer.removeLineBreaks(teamName);
 
         TeamString salida = teamService.updateTeam(teamId, teamName);
         if (salida.getSalida().equals("OK")) {

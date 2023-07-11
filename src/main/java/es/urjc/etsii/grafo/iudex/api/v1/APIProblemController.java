@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static es.urjc.etsii.grafo.iudex.utils.Sanitizer.removeLineBreaks;
-
 @RestController
 @RequestMapping("/API/v1/")
 @CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
@@ -121,9 +119,9 @@ public class APIProblemController {
     @PutMapping("problem/{problemId}")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestPart(name = "pdf", required = false) MultipartFile pdf) throws IOException {
         problemId = Sanitizer.removeLineBreaks(problemId);
-        problemName = removeLineBreaks(problemName);
-        teamId = removeLineBreaks(teamId);
-        timeout = removeLineBreaks(timeout);
+        problemName = Sanitizer.removeLineBreaks(problemName);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+        timeout = Sanitizer.removeLineBreaks(timeout);
         ProblemString salida = problemService.updateProblemMultipleOptionalParams(problemId, problemName, teamId, pdf, timeout);
         if (salida.getSalida().equals("OK")) {
             return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
@@ -201,7 +199,7 @@ public class APIProblemController {
     public ResponseEntity<String> updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId, @RequestParam(value = "name", required = false) Optional<String> nameOptional, @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional, @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional, @RequestParam(value = "isPublic", required = false) Optional<Boolean> isPublicOptional) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         sampleId = Sanitizer.removeLineBreaks(sampleId);
-        nameOptional = removeLineBreaks(nameOptional);
+        nameOptional = Sanitizer.removeLineBreaks(nameOptional);
 
         if (nameOptional.isEmpty() && sampleInputOptional.isEmpty() && sampleOutputOptional.isEmpty() && isPublicOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
