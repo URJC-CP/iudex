@@ -367,4 +367,59 @@ class TestAPIContestController {
                 ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Bulk add Team to Contest")
+    void testAPIBulkAddTeamsToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String url = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+
+        String[] teamList;
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        teamList = new String[5];
+        teamList[0] = goodTeam;
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+
+        teamList[0] = badTeam;
+        when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+
+        teamList[1] = goodTeam;
+        when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        teamList[1] = null;
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        teamList[0] = goodTeam;
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+
+        Team newTeam = new Team();
+        newTeam.setId(201);
+        newTeam.setNombreEquipo("propietario");
+        teamList[1] = String.valueOf(newTeam.getId());
+        when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
+        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+    }
+
+    private void testBulkAddTeamsToContest(String url, String contestId, String[] teamList, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(put(url)
+                    .characterEncoding("utf8")
+                    .param("contestId", contestId)
+                    .param("teamList", teamList)
+                ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
 }
