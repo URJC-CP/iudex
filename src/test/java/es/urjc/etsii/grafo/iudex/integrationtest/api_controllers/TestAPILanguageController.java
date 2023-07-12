@@ -1,14 +1,10 @@
-package es.urjc.etsii.grafo.iudex.api.v1;
+package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
-import es.urjc.etsii.grafo.iudex.entities.Contest;
+import es.urjc.etsii.grafo.iudex.api.v1.APILanguageController;
 import es.urjc.etsii.grafo.iudex.entities.Language;
-import es.urjc.etsii.grafo.iudex.entities.Problem;
-import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.LanguageAPI;
-import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.LanguageService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -28,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(APILanguageController.class)
-class APILanguageControllerTest {
+class TestAPILanguageController {
 
     private final JSONConverter jsonConverter = new JSONConverter();
 
