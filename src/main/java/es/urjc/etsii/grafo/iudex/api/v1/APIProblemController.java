@@ -175,9 +175,7 @@ public class APIProblemController {
         name = Sanitizer.removeLineBreaks(name);
 
         try {
-            String inputText = new String(sampleInput.getBytes());
-            String outputText = new String(sampleInput.getBytes());
-            String salida = problemService.addSampleToProblem(problemId, name, inputText, outputText, isPublic);
+            String salida = problemService.addSampleToProblem(problemId, name, sampleInput, sampleOutput, isPublic);
 
             if (salida.equals("OK")) {
                 return new ResponseEntity<>(HttpStatus.OK);
