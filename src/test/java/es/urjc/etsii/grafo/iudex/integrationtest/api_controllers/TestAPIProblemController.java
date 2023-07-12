@@ -1,9 +1,7 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APIProblemController;
-import es.urjc.etsii.grafo.iudex.entities.Contest;
-import es.urjc.etsii.grafo.iudex.entities.Problem;
-import es.urjc.etsii.grafo.iudex.entities.Team;
+import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
@@ -480,6 +478,67 @@ class TestAPIProblemController {
         multipartBuilder.param("isPublic", String.valueOf(isPublic));
         optionalSampleInput.ifPresent(multipartBuilder::file);
         optionalSampleOutput.ifPresent(multipartBuilder::file);
+
+        String result = mockMvc.perform(multipartBuilder)
+                .andExpect(status)
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Update sample from problem")
+    void testAPIUpdateSampleFromProblem() throws Exception {
+        String url = "/API/v1/problem/%s/sample/%s";
+
+        String problemId = String.valueOf(problem.getId());
+        String badProblemId = "999";
+
+        String name = problem.getNombreEjercicio();
+        boolean isPublic = true;
+        MockMultipartFile sampleInput = new MockMultipartFile(
+                "entrada",
+                "sample.in",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.in").getInputStream()
+        );
+        String inputText = new String(sampleInput.getBytes());
+        MockMultipartFile sampleOutput = new MockMultipartFile(
+                "salida",
+                "sample.ans",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.ans").getInputStream()
+        );
+        String outputText = new String(sampleOutput.getBytes());
+        Sample sample = new Sample(5L, name, new String(sampleInput.getBytes()), new String(sampleOutput.getBytes()), isPublic);
+        String salida;
+
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isBadRequest(),
+                ""
+        );
+    }
+
+    private void testUpdateSampleFromProblem(String url, String problemId, long sampleId, Optional<MockMultipartFile> sampleInputOptional, Optional<MockMultipartFile> sampleOutputOptional, Optional<String> nameOptional, Optional<Boolean> isPublicOptional, ResultMatcher status, String expected) throws Exception {
+        var multipartBuilder = (MockMultipartHttpServletRequestBuilder) multipart(String.format(url, problemId, sampleId)).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        nameOptional.ifPresent(value -> multipartBuilder.param("name", value));
+        isPublicOptional.ifPresent(value -> multipartBuilder.param("isPublic", String.valueOf(value)));
+        sampleInputOptional.ifPresent(multipartBuilder::file);
+        sampleOutputOptional.ifPresent(multipartBuilder::file);
 
         String result = mockMvc.perform(multipartBuilder)
                 .andExpect(status)

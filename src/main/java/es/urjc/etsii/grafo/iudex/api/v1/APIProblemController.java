@@ -199,7 +199,7 @@ public class APIProblemController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Optional<String> inputText = Optional.ofNullable(null);
+        Optional<String> inputText = Optional.empty();
         try {
             if (sampleInputOptional.isPresent()) {
                 inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));
