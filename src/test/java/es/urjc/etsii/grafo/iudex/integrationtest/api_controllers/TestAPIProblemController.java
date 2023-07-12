@@ -527,6 +527,36 @@ class TestAPIProblemController {
                 status().isBadRequest(),
                 ""
         );
+
+        MockMultipartFile invalidSampleInput = mock(MockMultipartFile.class);
+        when(invalidSampleInput.getName()).thenReturn("entrada");
+        when(invalidSampleInput.getBytes()).thenThrow(new IOException());
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.of(invalidSampleInput),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isUnsupportedMediaType(),
+                "ERROR IN INPUT FILE"
+        );
+
+        MockMultipartFile invalidSampleOutput = mock(MockMultipartFile.class);
+        when(invalidSampleOutput.getName()).thenReturn("salida");
+        when(invalidSampleOutput.getBytes()).thenThrow(new IOException());
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.of(invalidSampleOutput),
+                Optional.empty(),
+                Optional.empty(),
+                status().isUnsupportedMediaType(),
+                "ERROR IN OUTPUT FILE"
+        );
     }
 
     private void testUpdateSampleFromProblem(String url, String problemId, long sampleId, Optional<MockMultipartFile> sampleInputOptional, Optional<MockMultipartFile> sampleOutputOptional, Optional<String> nameOptional, Optional<Boolean> isPublicOptional, ResultMatcher status, String expected) throws Exception {
