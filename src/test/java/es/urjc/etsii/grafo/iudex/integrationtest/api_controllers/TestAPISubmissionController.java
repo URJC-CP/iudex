@@ -1,7 +1,6 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
-import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
@@ -11,7 +10,6 @@ import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -219,7 +216,7 @@ class TestAPISubmissionController {
                 "codigo",
                 "main.c",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new ClassPathResource("testfiles/primavera/submissions/accepted/main.c").getInputStream());
+                new ClassPathResource("primavera/submissions/accepted/main.c").getInputStream());
 
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
         submissionStringResult.setSalida("OK");
@@ -247,7 +244,7 @@ class TestAPISubmissionController {
                 "codigo",
                 "main.cs",
                 MediaType.MULTIPART_FORM_DATA_VALUE,
-                new ClassPathResource("testfiles/primavera/submissions/accepted/main.c").getInputStream());
+                new ClassPathResource("primavera/submissions/accepted/main.c").getInputStream());
 
         when(submissionService.creaYejecutaSubmission(
                     submissionCode,
