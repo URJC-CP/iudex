@@ -658,4 +658,37 @@ class TestAPIProblemController {
 
         assertEquals(expected, result);
     }
+
+    @Test
+    @DisplayName("Delete sample from problem")
+    void testAPIDeleteSampleFromProblem() throws Exception {
+        String url = "/API/v1/problem/%s/sample/%s";
+        String problemId = String.valueOf(problem.getId());
+        String badProblemId = "999";
+        Sample sample = new Sample(5L, problem.getNombreEjercicio(), "", "", true);
+        String sampleId = String.valueOf(sample.getId());
+        String badSampleId = "999";
+        String salida;
+
+        salida = "PROBLEM NOT FOUND";
+        when(problemService.deleteSampleFromProblem(badProblemId, sampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, badProblemId, sampleId, status().isNotFound(), salida);
+
+        salida = "SAMPLE NOT FOUND";
+        when(problemService.deleteSampleFromProblem(problemId, badSampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, problemId, badSampleId, status().isNotFound(), salida);
+
+        salida = "SAMPLE NOT IN PROBLEM";
+        when(problemService.deleteSampleFromProblem(badProblemId, badSampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, badProblemId, badSampleId, status().isNotFound(), salida);
+
+        salida = "OK";
+        when(problemService.deleteSampleFromProblem(problemId, sampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, problemId, sampleId, status().isOk(), "");
+    }
+
+    private void testDeleteSampleFromProblem(String url, String problemId, String sampleId, ResultMatcher status, String expected) throws Exception {
+        String result = mockMvc.perform(delete(String.format(url, problemId, sampleId))).andExpect(status).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
 }
