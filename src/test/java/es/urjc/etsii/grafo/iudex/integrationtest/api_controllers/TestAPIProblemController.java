@@ -557,6 +557,85 @@ class TestAPIProblemController {
                 status().isUnsupportedMediaType(),
                 "ERROR IN OUTPUT FILE"
         );
+
+        salida = "OK";
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.of(inputText),
+                Optional.empty(),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.of(sampleInput),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.of(outputText),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.of(sampleOutput),
+                Optional.empty(),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.of(name),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId, sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(name),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(isPublic))
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId, sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(isPublic),
+                status().isOk(),
+                ""
+        );
     }
 
     private void testUpdateSampleFromProblem(String url, String problemId, long sampleId, Optional<MockMultipartFile> sampleInputOptional, Optional<MockMultipartFile> sampleOutputOptional, Optional<String> nameOptional, Optional<Boolean> isPublicOptional, ResultMatcher status, String expected) throws Exception {
