@@ -5,10 +5,8 @@ import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -17,7 +15,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User loginUserFromOAuthPrincipal(OidcUser oAuth2User) {
+    public User getUserFromOAuthPrincipal(OidcUser oAuth2User) {
         Optional<User> user = userRepository.findUserByEmail(oAuth2User.getAttribute("email"));
 
         if (user.isEmpty()) throw new IudexException("User not registered");
@@ -26,8 +24,6 @@ public class UserService {
     }
 
     public User signupUserFromOAuthPrincipal(OidcUser oAuth2User) {
-        System.out.println(oAuth2User.getAttributes());
-
         User user = new User(
                 oAuth2User.getAttribute("preferred_username").toString(),
                 oAuth2User.getAttribute("email").toString(),
