@@ -22,6 +22,10 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String name = "";
+
+    private String familyName = "";
+
     private long timestamp = Instant.now().toEpochMilli();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
@@ -31,6 +35,15 @@ public class User {
     public User(String nickname, String email) {
         this.nickname = nickname;
         this.email = email;
+        this.equiposParticipantes = new HashSet<>();
+    }
+
+
+    public User(String nickname, String email, String name, String familyName) {
+        this.nickname = nickname;
+        this.email = email;
+        this.name = name;
+        this.familyName = familyName;
         this.equiposParticipantes = new HashSet<>();
     }
 
@@ -76,6 +89,21 @@ public class User {
         this.email = email;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
 
     public void addTeam(TeamUser team) {
         this.equiposParticipantes.add(team);
