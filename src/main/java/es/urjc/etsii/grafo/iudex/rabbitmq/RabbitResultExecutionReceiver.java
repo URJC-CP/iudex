@@ -30,8 +30,7 @@ public class RabbitResultExecutionReceiver {
         try {
             resultHandler.ejecutor(res);
         } catch (IOException | InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new DockerExecutionException();
+            throw new DockerExecutionException(e);
         }
         //resultRepository.save(res);
 
