@@ -6,6 +6,7 @@ import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
+import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -376,7 +378,8 @@ class TestAPIContestController {
         String badTeam = "764";
         String goodTeam = String.valueOf(owner.getId());
 
-        String url = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+        String goodUrl = String.format("%s/%s/team/addBulk", baseURL, goodContest);
+        String badUrl = String.format("%s/%s/team/addBulk", baseURL, badContest);
 
         String[] teamList;
 
@@ -387,15 +390,15 @@ class TestAPIContestController {
         teamList = new String[5];
         teamList[0] = goodTeam;
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
 
         teamList[0] = badTeam;
         when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkAddTeamsToContest(badUrl, teamList, status, expected);
 
         teamList[1] = goodTeam;
         when(contestService.addTeamToContest(badContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, badContest, teamList, status, expected);
+        testBulkAddTeamsToContest(badUrl, teamList, status, expected);
         teamList[1] = null;
 
         salida = "OK";
@@ -403,23 +406,284 @@ class TestAPIContestController {
 
         teamList[0] = goodTeam;
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
 
         Team newTeam = new Team();
         newTeam.setId(201);
         newTeam.setNombreEquipo("propietario");
         teamList[1] = String.valueOf(newTeam.getId());
         when(contestService.addTeamToContest(goodContest, teamList)).thenReturn(salida);
-        testBulkAddTeamsToContest(url, goodContest, teamList, status, expected);
+        testBulkAddTeamsToContest(goodUrl, teamList, status, expected);
     }
 
-    private void testBulkAddTeamsToContest(String url, String contestId, String[] teamList, HttpStatus status, String expected) throws Exception {
+    private void testBulkAddTeamsToContest(String url, String[] teamList, HttpStatus status, String expected) throws Exception {
         String result;
         result = mockMvc.perform(put(url)
                     .characterEncoding("utf8")
-                    .param("contestId", contestId)
                     .param("teamList", teamList)
                 ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Delete Team from Contest")
+    void testAPIDeleteTeamToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String badURL = String.format("%s/%s/team/%s", baseURL, badContest, badTeam);
+        String badURL2 = String.format("%s/%s/team/%s", baseURL, badContest, goodTeam);
+        String badURL3 = String.format("%s/%s/team/%s", baseURL, goodContest, badTeam);
+        String goodURL = String.format("%s/%s/team/%s", baseURL, goodContest, goodTeam);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.deleteTeamFromContest(badContest, badTeam)).thenReturn(salida);
+        testDeleteTeamToContest(badURL, badContest, badTeam, status, expected);
+
+        when(contestService.deleteTeamFromContest(badContest, goodTeam)).thenReturn(salida);
+        testDeleteTeamToContest(badURL2, badContest, goodTeam, status, expected);
+
+        when(contestService.deleteTeamFromContest(goodContest, badTeam)).thenReturn(salida);
+        testDeleteTeamToContest(badURL3, goodContest, badTeam, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.deleteTeamFromContest(goodContest, goodTeam)).thenReturn(salida);
+        testDeleteTeamToContest(goodURL, goodContest, goodTeam, status, expected);
+    }
+
+    private void testDeleteTeamToContest(String url, String contestId, String teamId, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url)
+                .characterEncoding("utf8")
+                .param("contestId", contestId)
+                .param("teamId", teamId)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Bulk delete Team to Contest")
+    void testAPIBulkDeleteTeamsToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badTeam = "764";
+        String goodTeam = String.valueOf(owner.getId());
+
+        String goodUrl = String.format("%s/%s/team/removeBulk", baseURL, goodContest);
+        String badUrl = String.format("%s/%s/team/removeBulk", baseURL, goodContest);
+
+        String[] teamList;
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        teamList = new String[5];
+        teamList[0] = goodTeam;
+        when(contestService.deleteTeamFromContest(goodContest, teamList)).thenReturn(salida);
+        testBulkDeleteTeamsToContest(goodUrl, teamList, status, expected);
+
+        teamList[0] = badTeam;
+        when(contestService.deleteTeamFromContest(badContest, teamList)).thenReturn(salida);
+        testBulkDeleteTeamsToContest(badUrl, teamList, status, expected);
+
+        teamList[1] = goodTeam;
+        when(contestService.deleteTeamFromContest(badContest, teamList)).thenReturn(salida);
+        testBulkDeleteTeamsToContest(badUrl, teamList, status, expected);
+        teamList[1] = null;
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        teamList[0] = goodTeam;
+        when(contestService.deleteTeamFromContest(goodContest, teamList)).thenReturn(salida);
+        testBulkDeleteTeamsToContest(goodUrl, teamList, status, expected);
+    }
+
+    private void testBulkDeleteTeamsToContest(String url, String[] teamList, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url)
+                .characterEncoding("utf8")
+                .param("teamList", teamList)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Add Language to Contest")
+    void testAPIAddLanguageToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+
+        String badURL = String.format("%s/%s/language", baseURL, badContest);
+        String badURL2 = String.format("%s/%s/language", baseURL, badContest);
+        String badURL3 = String.format("%s/%s/language", baseURL, goodContest);
+        String goodURL = String.format("%s/%s/language", baseURL, goodContest);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.addLanguageToContest(badContest, badLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL, badLanguageName, status, expected);
+
+        when(contestService.addLanguageToContest(badContest, goodLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL2, goodLanguageName, status, expected);
+
+        when(contestService.addLanguageToContest(goodContest, badLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(badURL3, badLanguageName, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.addLanguageToContest(goodContest, goodLanguageName)).thenReturn(salida);
+        testAddLanguageToContest(goodURL, goodLanguageName, status, expected);
+    }
+
+    private void testAddLanguageToContest(String url, String language, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(post(url)
+                .characterEncoding("utf8")
+                .param("language", language)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Delete Language from Contest")
+    void testAPIDeleteLanguageFromContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+
+        String badURL = String.format("%s/%s/language/%s", baseURL, badContest, badLanguageName);
+        String badURL2 = String.format("%s/%s/language/%s", baseURL, badContest, goodLanguageName);
+        String badURL3 = String.format("%s/%s/language/%s", baseURL, goodContest, badLanguageName);
+        String goodURL = String.format("%s/%s/language/%s", baseURL, goodContest, goodLanguageName);
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        when(contestService.removeLanguageFromContest(badContest, badLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL, status, expected);
+
+        when(contestService.removeLanguageFromContest(badContest, goodLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL2, status, expected);
+
+        when(contestService.removeLanguageFromContest(goodContest, badLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(badURL3, status, expected);
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        when(contestService.removeLanguageFromContest(goodContest, goodLanguageName)).thenReturn(salida);
+        testDeleteLanguageFromContest(goodURL, status, expected);
+    }
+
+    private void testDeleteLanguageFromContest(String url, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(delete(url))
+                .andExpect(status().is(status.value()))
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Set accepted languages of a contest")
+    void testAPIAddAcceptedLanguagesToContest() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+        String badLanguageName = "iudex";
+        String goodLanguageName = "cpp";
+        String goodLanguageName2 = "java";
+
+        String goodUrl = String.format("%s/%s/language/addBulk", baseURL, goodContest);
+        String badurl = String.format("%s/%s/language/addBulk", baseURL, badContest);
+
+        String[] languageList;
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String salida = "";
+        String expected = "";
+
+        languageList = new String[5];
+        languageList[0] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+
+        languageList[0] = badLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(badContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(badurl, languageList, status, expected);
+
+        languageList[1] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(badContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(badurl, languageList, status, expected);
+        languageList[1] = null;
+
+        salida = "OK";
+        status = HttpStatus.OK;
+
+        languageList[0] = goodLanguageName;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+
+        languageList[1] = goodLanguageName2;
+        when(contestService.addAcceptedLanguagesToContest(goodContest, languageList)).thenReturn(salida);
+        testAddAcceptedLanguagesToContest(goodUrl, languageList, status, expected);
+    }
+
+    private void testAddAcceptedLanguagesToContest(String url, String[] languageList, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(post(url)
+                .characterEncoding("utf8")
+                .param("languageList", languageList)
+        ).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Set accepted languages of a contest")
+    void testAPIGetScores() throws Exception {
+        String badContest = "531";
+        String goodContest = String.valueOf(contest.getId());
+
+        String badUrl = String.format("%s/%s/scoreboard", baseURL, badContest);
+        String goodUrl = String.format("%s/%s/scoreboard", baseURL, goodContest);
+
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        when(contestService.getScore(badContest)).thenThrow(new RuntimeException());
+        testGetScores(badUrl, status, "");
+
+        status = HttpStatus.OK;
+        List<TeamScore> teamScoreList = List.of(new TeamScore(owner.toTeamAPISimple()));
+
+        when(contestService.getScore(goodContest)).thenReturn(teamScoreList);
+        testGetScores(goodUrl, status, jsonConverter.convertObjectToJSON(teamScoreList));
+    }
+    private void testGetScores(String url, HttpStatus status, String expected) throws Exception {
+        String result;
+        result = mockMvc.perform(get(url))
+                .andExpect(status().is(status.value()))
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
         assertEquals(expected, result);
     }
 }
