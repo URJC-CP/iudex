@@ -174,14 +174,8 @@ public class APIProblemController {
         problemId = Sanitizer.removeLineBreaks(problemId);
         name = Sanitizer.removeLineBreaks(name);
 
-        if (sampleInput.isEmpty() || sampleOutput.isEmpty()) {
-            return new ResponseEntity<>("ERROR REQUIRED FILES ARE MISSING", HttpStatus.BAD_REQUEST);
-        }
-
         try {
-            String inputText = new String(sampleInput.getBytes());
-            String outputText = new String(sampleInput.getBytes());
-            String salida = problemService.addSampleToProblem(problemId, name, inputText, outputText, isPublic);
+            String salida = problemService.addSampleToProblem(problemId, name, sampleInput, sampleOutput, isPublic);
 
             if (salida.equals("OK")) {
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -205,7 +199,7 @@ public class APIProblemController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Optional<String> inputText = Optional.ofNullable(null);
+        Optional<String> inputText = Optional.empty();
         try {
             if (sampleInputOptional.isPresent()) {
                 inputText = Optional.of(new String(sampleInputOptional.get().getBytes()));

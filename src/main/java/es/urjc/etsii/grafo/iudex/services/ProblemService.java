@@ -443,7 +443,10 @@ public class ProblemService {
         return problemRepository.findAll(pageable);
     }
 
-    public String addSampleToProblem(String problemId, String name, String inputText, String outputText, boolean isPublic) {
+    public String addSampleToProblem(String problemId, String name, MultipartFile sampleInput, MultipartFile sampleOutput, boolean isPublic) throws IOException {
+        String inputText = new String(sampleInput.getBytes());
+        String outputText = new String(sampleOutput.getBytes());
+
         logger.debug("Adding new sample to problem {}", problemId);
 
         Optional<Problem> problemOptional = problemRepository.findProblemById(Long.parseLong(problemId));

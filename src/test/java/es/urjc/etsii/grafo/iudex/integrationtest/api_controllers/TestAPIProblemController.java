@@ -1,16 +1,13 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APIProblemController;
-import es.urjc.etsii.grafo.iudex.entities.Contest;
-import es.urjc.etsii.grafo.iudex.entities.Problem;
-import es.urjc.etsii.grafo.iudex.entities.Team;
+import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +23,18 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.ResultMatcher;
+
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -423,5 +424,271 @@ class TestAPIProblemController {
     private void testDeleteProblem(String url, HttpStatus status, String salida) throws Exception {
         String result = mockMvc.perform(delete(url)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
+    }
+
+    @Test
+    @DisplayName("Add sample to problem")
+    void testAPIAddSampleToProblem() throws Exception {
+        String url = "/API/v1/problem/%s/sample";
+
+        String problemId = String.valueOf(problem.getId());
+        String badProblemId = "999";
+        String name = problem.getNombreEjercicio();
+        boolean isPublic = true;
+        MockMultipartFile sampleInput = new MockMultipartFile(
+                "entrada",
+                "sample.in",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.in").getInputStream()
+        );
+        MockMultipartFile sampleOutput = new MockMultipartFile(
+                "salida",
+                "sample.ans",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.ans").getInputStream()
+        );
+        String salida;
+
+
+        testAddSampleToProblem(url, problemId, Optional.empty(), Optional.empty(), name, isPublic, status().isBadRequest(), "");
+        testAddSampleToProblem(url, problemId, Optional.of(sampleInput), Optional.empty(), name, isPublic, status().isBadRequest(), "");
+        testAddSampleToProblem(url, problemId, Optional.empty(), Optional.of(sampleOutput), name, isPublic, status().isBadRequest(), "");
+
+        MockMultipartFile invalidSampleOutput = mock(MockMultipartFile.class);
+        when(invalidSampleOutput.getName()).thenReturn("salida");
+        when(problemService.addSampleToProblem(problemId, name, sampleInput, invalidSampleOutput, isPublic)).thenThrow(new IOException());
+        testAddSampleToProblem(url, problemId, Optional.of(sampleInput), Optional.of(invalidSampleOutput), name, isPublic, status().isUnsupportedMediaType(), "ERROR IN INPUT FILE");
+
+        salida = "OK";
+        when(problemService.addSampleToProblem(problemId, name, sampleInput, sampleOutput, isPublic)).thenReturn(salida);
+        testAddSampleToProblem(url, problemId, Optional.of(sampleInput), Optional.of(sampleOutput), name, isPublic, status().isOk(), "");
+
+        salida = "PROBLEM NOT FOUND";
+        when(problemService.addSampleToProblem(badProblemId, name, sampleInput, sampleOutput, isPublic)).thenReturn(salida);
+        testAddSampleToProblem(url, badProblemId, Optional.of(sampleInput), Optional.of(sampleOutput), name, isPublic, status().isNotFound(), salida);
+    }
+
+    private void testAddSampleToProblem(String url, String problemId, Optional<MockMultipartFile> optionalSampleInput, Optional<MockMultipartFile> optionalSampleOutput, String name, boolean isPublic, ResultMatcher status, String expected) throws Exception {
+        var multipartBuilder = (MockMultipartHttpServletRequestBuilder) multipart(String.format(url, problemId)).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.POST));
+            return request;
+        });
+
+        multipartBuilder.param("name", name);
+        multipartBuilder.param("isPublic", String.valueOf(isPublic));
+        optionalSampleInput.ifPresent(multipartBuilder::file);
+        optionalSampleOutput.ifPresent(multipartBuilder::file);
+
+        String result = mockMvc.perform(multipartBuilder)
+                .andExpect(status)
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Update sample from problem")
+    void testAPIUpdateSampleFromProblem() throws Exception {
+        String url = "/API/v1/problem/%s/sample/%s";
+
+        String problemId = String.valueOf(problem.getId());
+        String badProblemId = "999";
+
+        String name = problem.getNombreEjercicio();
+        boolean isPublic = true;
+        MockMultipartFile sampleInput = new MockMultipartFile(
+                "entrada",
+                "sample.in",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.in").getInputStream()
+        );
+        String inputText = new String(sampleInput.getBytes());
+        MockMultipartFile sampleOutput = new MockMultipartFile(
+                "salida",
+                "sample.ans",
+                MediaType.MULTIPART_FORM_DATA_VALUE,
+                new ClassPathResource("primavera/data/sample/sample.ans").getInputStream()
+        );
+        String outputText = new String(sampleOutput.getBytes());
+        Sample sample = new Sample(5L, name, new String(sampleInput.getBytes()), new String(sampleOutput.getBytes()), isPublic);
+        String salida;
+
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isBadRequest(),
+                ""
+        );
+
+        MockMultipartFile invalidSampleInput = mock(MockMultipartFile.class);
+        when(invalidSampleInput.getName()).thenReturn("entrada");
+        when(invalidSampleInput.getBytes()).thenThrow(new IOException());
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.of(invalidSampleInput),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isUnsupportedMediaType(),
+                "ERROR IN INPUT FILE"
+        );
+
+        MockMultipartFile invalidSampleOutput = mock(MockMultipartFile.class);
+        when(invalidSampleOutput.getName()).thenReturn("salida");
+        when(invalidSampleOutput.getBytes()).thenThrow(new IOException());
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.of(invalidSampleOutput),
+                Optional.empty(),
+                Optional.empty(),
+                status().isUnsupportedMediaType(),
+                "ERROR IN OUTPUT FILE"
+        );
+
+        salida = "OK";
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.of(inputText),
+                Optional.empty(),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.of(sampleInput),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.of(outputText),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId,
+                sample.getId(),
+                Optional.empty(),
+                Optional.of(sampleOutput),
+                Optional.empty(),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.of(name),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty())
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId, sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(name),
+                Optional.empty(),
+                status().isOk(),
+                ""
+        );
+
+        when(problemService.updateSampleFromProblem(
+                Optional.empty(),
+                problemId,
+                String.valueOf(sample.getId()),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(isPublic))
+        ).thenReturn(salida);
+        testUpdateSampleFromProblem(
+                url,
+                problemId, sample.getId(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.empty(),
+                Optional.of(isPublic),
+                status().isOk(),
+                ""
+        );
+    }
+
+    private void testUpdateSampleFromProblem(String url, String problemId, long sampleId, Optional<MockMultipartFile> sampleInputOptional, Optional<MockMultipartFile> sampleOutputOptional, Optional<String> nameOptional, Optional<Boolean> isPublicOptional, ResultMatcher status, String expected) throws Exception {
+        var multipartBuilder = (MockMultipartHttpServletRequestBuilder) multipart(String.format(url, problemId, sampleId)).with(request -> {
+            request.setMethod(String.valueOf(HttpMethod.PUT));
+            return request;
+        });
+
+        nameOptional.ifPresent(value -> multipartBuilder.param("name", value));
+        isPublicOptional.ifPresent(value -> multipartBuilder.param("isPublic", String.valueOf(value)));
+        sampleInputOptional.ifPresent(multipartBuilder::file);
+        sampleOutputOptional.ifPresent(multipartBuilder::file);
+
+        String result = mockMvc.perform(multipartBuilder)
+                .andExpect(status)
+                .andDo(print())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("Delete sample from problem")
+    void testAPIDeleteSampleFromProblem() throws Exception {
+        String url = "/API/v1/problem/%s/sample/%s";
+        String problemId = String.valueOf(problem.getId());
+        String badProblemId = "999";
+        Sample sample = new Sample(5L, problem.getNombreEjercicio(), "", "", true);
+        String sampleId = String.valueOf(sample.getId());
+        String badSampleId = "999";
+        String salida;
+
+        salida = "PROBLEM NOT FOUND";
+        when(problemService.deleteSampleFromProblem(badProblemId, sampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, badProblemId, sampleId, status().isNotFound(), salida);
+
+        salida = "SAMPLE NOT FOUND";
+        when(problemService.deleteSampleFromProblem(problemId, badSampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, problemId, badSampleId, status().isNotFound(), salida);
+
+        salida = "SAMPLE NOT IN PROBLEM";
+        when(problemService.deleteSampleFromProblem(badProblemId, badSampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, badProblemId, badSampleId, status().isNotFound(), salida);
+
+        salida = "OK";
+        when(problemService.deleteSampleFromProblem(problemId, sampleId)).thenReturn(salida);
+        testDeleteSampleFromProblem(url, problemId, sampleId, status().isOk(), "");
+    }
+
+    private void testDeleteSampleFromProblem(String url, String problemId, String sampleId, ResultMatcher status, String expected) throws Exception {
+        String result = mockMvc.perform(delete(String.format(url, problemId, sampleId))).andExpect(status).andDo(print()).andReturn().getResponse().getContentAsString();
+        assertEquals(expected, result);
     }
 }
