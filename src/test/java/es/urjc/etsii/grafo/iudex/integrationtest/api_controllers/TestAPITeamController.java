@@ -66,7 +66,7 @@ class TestAPITeamController {
     void testAPIGetTeams() throws Exception {
         String url = "/API/v1/team";
         String salida = jsonConverter.convertObjectToJSON(List.of(team.toTeamAPISimple()));
-        String result = mockMvc.perform(get(url).with(csrf()).with(csrf()).characterEncoding("utf8")).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().isOk()).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -88,7 +88,7 @@ class TestAPITeamController {
     }
 
     private void testGetTeam(String url, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(get(url).with(csrf()).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(get(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -116,7 +116,7 @@ class TestAPITeamController {
     }
 
     private void testCreateTeam(String url, String team, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(post(url).with(csrf()).characterEncoding("utf8").param("nombreEquipo", team)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(post(url).characterEncoding("utf8").param("nombreEquipo", team)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -141,7 +141,7 @@ class TestAPITeamController {
     }
 
     private void testDeleteTeam(String url, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(delete(url).with(csrf()).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -181,7 +181,7 @@ class TestAPITeamController {
     }
 
     private void testUpdateTeam(String url, String team, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(put(url).with(csrf()).characterEncoding("utf8").param("teamName", team)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(put(url).characterEncoding("utf8").param("teamName", team)).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -230,7 +230,7 @@ class TestAPITeamController {
     }
 
     private void testAddUser(String url, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(put(url).with(csrf()).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(put(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 
@@ -277,7 +277,7 @@ class TestAPITeamController {
     }
 
     private void testDeleteUser(String url, HttpStatus status, String salida) throws Exception {
-        String result = mockMvc.perform(delete(url).with(csrf()).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
+        String result = mockMvc.perform(delete(url).characterEncoding("utf8")).andExpect(status().is(status.value())).andDo(print()).andReturn().getResponse().getContentAsString();
         assertEquals(salida, result);
     }
 }
