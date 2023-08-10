@@ -18,6 +18,10 @@ class ConfigSecurity {
                 .authenticated()
                 .and()
                 .oauth2Login();
+
+        // Disable CSRF protection
+        http.csrf().disable();
+
         return http.build();
     }
 
