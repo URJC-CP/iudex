@@ -2,6 +2,7 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
+import es.urjc.etsii.grafo.iudex.security.jwt.AuthResponse;
 import es.urjc.etsii.grafo.iudex.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,12 @@ public class APIOAuthController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/session")
-    public ResponseEntity<User> session(@AuthenticationPrincipal OidcUser oidcUser) {
-        try {
-            User user = userService.getUserFromOAuthPrincipal(oidcUser);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        } catch (IudexException e) {
-            User user = userService.signupUserFromOAuthPrincipal(oidcUser);
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
+    @GetMapping("/login")
+    public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OidcUser oidcUser) {
+        AuthResponse authResponse = userService.loginUser(oidcUser);
+
+        if (authResponse.getError().isEmpty()) return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        else return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
     }
 
 }
