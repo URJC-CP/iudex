@@ -1,7 +1,7 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
-import es.urjc.etsii.grafo.iudex.services.UserService;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,11 +17,11 @@ import java.util.List;
 public class UserDetailsServiceImp implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByNickname(username)
+        User user = userRepository.findByNickname(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         List<GrantedAuthority> roles = new ArrayList<>();
