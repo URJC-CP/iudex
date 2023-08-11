@@ -26,6 +26,9 @@ public class User {
 
     private String familyName = "";
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
     private long timestamp = Instant.now().toEpochMilli();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
@@ -45,6 +48,7 @@ public class User {
         this.name = name;
         this.familyName = familyName;
         this.equiposParticipantes = new HashSet<>();
+        this.roles = new ArrayList<>();
     }
 
     public User() {}
@@ -103,6 +107,14 @@ public class User {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public void addTeam(TeamUser team) {
