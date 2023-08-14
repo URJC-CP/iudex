@@ -4,6 +4,7 @@ import es.urjc.etsii.grafo.iudex.api.v1.APIProblemController;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
+import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +44,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(APIProblemController.class)
+@WebMvcTest(value = APIProblemController.class, excludeFilters =
+        @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtRequestFilter.class))
 @AutoConfigureMockMvc(addFilters = false)
 class TestAPIProblemController {
     private final JSONConverter jsonConverter = new JSONConverter();
