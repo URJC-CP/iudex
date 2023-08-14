@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
 import io.jsonwebtoken.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,8 +32,10 @@ public class JwtTokenProvider {
 		try {
 			File jwtSecretFile = new File("jwt.secret");
 
-			if (jwtSecretFile.createNewFile()){
-				LOG.debug("JWT Secret file created successfully");
+			if (jwtSecretFile.createNewFile()) {
+				Files.writeString(jwtSecretFile.toPath(), RandomStringUtils.randomAlphabetic(32));
+
+				LOG.debug("JWT Secret file created successfully in " + jwtSecretFile.getAbsolutePath());
 			}
 
 			return Files.readString(jwtSecretFile.toPath());
