@@ -23,7 +23,7 @@ public class APIOAuthController {
     public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OidcUser oidcUser) {
         AuthResponse authResponse = userService.loginUser(oidcUser);
 
-        if (authResponse.getError().isEmpty()) return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        if (authResponse.getError() != null) return new ResponseEntity<>(authResponse, HttpStatus.OK);
         else return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
     }
 
