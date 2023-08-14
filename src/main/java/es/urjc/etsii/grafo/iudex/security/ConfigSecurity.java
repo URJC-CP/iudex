@@ -21,7 +21,7 @@ class ConfigSecurity {
                 .oauth2Login();
 
         // Disable CORS and CSRF protection
-        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.cors().and().csrf().disable();
 
         return http.build();
     }
