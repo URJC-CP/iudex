@@ -86,7 +86,7 @@ public class JwtTokenProvider {
 	private Token generateToken(Token.TokenType tokenType, UserDetails userDetails) {
 		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 
-		claims.put("auth", userDetails.getAuthorities().stream().map(s -> new SimpleGrantedAuthority("ROLE_"+s)).collect(Collectors.toList()));
+		claims.put("roles", userDetails.getAuthorities());
 
 		long time = (tokenType == Token.TokenType.ACCESS) ? JWT_EXPIRATION_IN_MS : REFRESH_TOKEN_EXPIRATION_MSEC;
 		Date now = new Date();

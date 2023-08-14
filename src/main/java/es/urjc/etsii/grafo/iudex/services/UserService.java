@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +42,10 @@ public class UserService {
                 oAuth2User.getAttribute("given_name").toString(),
                 oAuth2User.getAttribute("family_name").toString()
         );
+
+        List<String> roles = new ArrayList<>();
+        oAuth2User.getAuthorities().forEach(authority -> roles.add(authority.getAuthority()));
+        user.setRoles(roles);
 
         if (userRepository.existsUserByEmail(user.getEmail()) || userRepository.existsUserByNickname(user.getNickname())) {
             throw new IudexException("User already exists");
