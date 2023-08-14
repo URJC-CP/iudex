@@ -87,9 +87,11 @@ public class JwtTokenProvider {
 		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 
 		claims.put("auth", userDetails.getAuthorities().stream().map(s -> new SimpleGrantedAuthority("ROLE_"+s)).collect(Collectors.toList()));
+
+		long time = (tokenType == Token.TokenType.ACCESS) ? JWT_EXPIRATION_IN_MS : REFRESH_TOKEN_EXPIRATION_MSEC;
 		Date now = new Date();
-		Long duration = now.getTime() + REFRESH_TOKEN_EXPIRATION_MSEC;
-		Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_MSEC);
+		Long duration = now.getTime() + time;
+		Date expiryDate = new Date(now.getTime() + time);
 		String token = Jwts.builder().setClaims(claims).setSubject((userDetails.getUsername())).setIssuedAt(new Date())
 				.setExpiration(expiryDate).signWith(SignatureAlgorithm.HS256, jwtSecret).compact();
 
