@@ -34,3 +34,5 @@ build/
 .DS_Store
 
 *.secret
+
+secrets.env
