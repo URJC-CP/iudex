@@ -33,6 +33,8 @@ jobs:
         run: docker run -p 5672:5672 -d --name conejito rabbitmq:3
       - name: Start Database container
         run: docker run --name bbdd -v db_data:/var/lib/mysql -p 3306:3306 -e MYSQL_HOST=bbdd -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_DATABASE=testdb -e MYSQL_USER=iudexuser -e MYSQL_PASSWORD=iudexpassword -d mysql:8
+      - name: Start Keycloak Server
+        run: docker run -e KEYCLOAK_USER=iudexci -e KEYCLOAK_PASSWORD=p455w0rd -e KEYCLOAK_IMPORT=/tmp/keycloak-ci-realm.json -v $(pwd)/keycloak-ci-realm.json:/tmp/keycloak-ci-realm.json keycloak/keycloak:22.0
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
