@@ -24,9 +24,9 @@ public class APIUserController {
     UserAndTeamService userAndTeamService;
 
     @Operation( summary = "Add a specific role to an existing user")
-    @PostMapping("/API/v1/user/{id}/role")
+    @PostMapping("/API/v1/user/{id}/role/{role}")
     @RolesAllowed("ADMIN")
-    public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @RequestParam String role) {
+    public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
 
