@@ -34,7 +34,8 @@ public class APIUserController {
         if (!List.of("ROLE_ADMIN", "ROLE_JUDGE", "ROLE_USER").contains(role)) return ResponseEntity.badRequest().build();
 
         User user = optionalUser.get();
-        user = userAndTeamService.addRoleToUser(role, user);
+        if (user.getRoles().contains(role)) return ResponseEntity.badRequest().build();
+        else user = userAndTeamService.addRoleToUser(role, user);
 
         return ResponseEntity.ok(user.getRoles());
     }
