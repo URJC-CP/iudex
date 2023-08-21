@@ -678,18 +678,7 @@
         "_id" : "c1a7ecde-535e-4e9a-a38b-5edbc13595e2",
         "uris" : [ "/*" ]
       } ],
-      "policies" : [ {
-        "id" : "6c0b8764-52cb-41b6-9df9-f5f2d95bb607",
-        "name" : "Default Permission",
-        "description" : "A permission that applies to the default resource type",
-        "type" : "resource",
-        "logic" : "POSITIVE",
-        "decisionStrategy" : "UNANIMOUS",
-        "config" : {
-          "defaultResourceType" : "urn:ivan:resources:default",
-          "applyPolicies" : "[\"Default Policy\"]"
-        }
-      } ],
+      "policies" : [ ],
       "scopes" : [ ],
       "decisionStrategy" : "UNANIMOUS"
     }
