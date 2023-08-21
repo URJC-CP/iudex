@@ -41,7 +41,7 @@ public class APIUserController {
     }
 
     @Operation( summary = "Remove a role from an existing user")
-    @PostMapping("/API/v1/user/{id}/role/{role}")
+    @DeleteMapping("/API/v1/user/{id}/role/{role}")
     @RolesAllowed("ADMIN")
     public ResponseEntity<List<String>> removeRoleFromUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
