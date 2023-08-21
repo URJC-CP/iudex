@@ -90,6 +90,42 @@ class TestAPIUserController {
         );
     }
 
+    @Test
+    void removeRoleFromUser() throws Exception {
+        checkRequests(
+                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "JUDGE")),
+                HttpStatus.OK,
+                List.of("ROLE_USER")
+        );
+        checkRequests(
+                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "uSeR")),
+                HttpStatus.OK,
+                List.of("ROLE_JUDGE")
+        );
+
+        // User not found
+        when(userAndTeamService.getUserById(2L)).thenReturn(Optional.empty());
+        checkRequests(
+                delete(String.format("%s/%s/role/%s", baseUrl, 2L, "judge")),
+                HttpStatus.NOT_FOUND,
+                ""
+        );
+
+        // Tries to add user a non-existing role
+        checkRequests(
+                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "non_existing")),
+                HttpStatus.BAD_REQUEST,
+                ""
+        );
+
+        // User does not have admin role
+        checkRequests(
+                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "admin")),
+                HttpStatus.BAD_REQUEST,
+                ""
+        );
+    }
+
     private void checkRequests(RequestBuilder requestBuilder, HttpStatus status, Object output) throws Exception {
         String outputJson = jsonConverter.convertObjectToJSON(output);
 
