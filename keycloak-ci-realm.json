@@ -679,16 +679,6 @@
         "uris" : [ "/*" ]
       } ],
       "policies" : [ {
-        "id" : "a08dca38-a03e-4fc3-8e94-0cae38c56d4b",
-        "name" : "Default Policy",
-        "description" : "A policy that grants access only for users within this realm",
-        "type" : "js",
-        "logic" : "POSITIVE",
-        "decisionStrategy" : "AFFIRMATIVE",
-        "config" : {
-          "code" : "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-        }
-      }, {
         "id" : "6c0b8764-52cb-41b6-9df9-f5f2d95bb607",
         "name" : "Default Permission",
         "description" : "A permission that applies to the default resource type",
