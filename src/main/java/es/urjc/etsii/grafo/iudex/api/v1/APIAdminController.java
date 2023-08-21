@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -21,6 +22,7 @@ public class APIAdminController {
 
     @Operation( summary = "Get a full Result")
     @GetMapping("/API/v1/result/{resultId}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<Result> getResult(@PathVariable String resultId) {
         resultId = Sanitizer.removeLineBreaks(resultId);
 
@@ -33,6 +35,7 @@ public class APIAdminController {
 
     @Operation( summary = "Get all Results")
     @GetMapping("/API/v1/result/")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();
         if (resultList == null) {

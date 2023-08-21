@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class APIUserController {
 
     @Operation( summary = "Add a specific role to an existing user")
     @PostMapping("/API/v1/user/{id}/role")
-    public ResponseEntity<UserAPI> createUser(@RequestParam String username, @RequestParam String email) {
+    @RolesAllowed("ADMIN")
     public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @RequestParam String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
@@ -40,6 +41,7 @@ public class APIUserController {
 
     @Operation( summary = "Remove a role from an existing user")
     @PostMapping("/API/v1/user/{id}/role/{role}")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<List<String>> removeRoleToUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();

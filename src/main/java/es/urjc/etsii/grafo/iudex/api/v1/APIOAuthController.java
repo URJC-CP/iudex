@@ -7,6 +7,7 @@ import es.urjc.etsii.grafo.iudex.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class APIOAuthController {
     private UserService userService;
 
     @GetMapping("/login")
+    @PreAuthorize("")
     public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OidcUser oidcUser) {
         AuthResponse authResponse = userService.loginUser(oidcUser);
 
