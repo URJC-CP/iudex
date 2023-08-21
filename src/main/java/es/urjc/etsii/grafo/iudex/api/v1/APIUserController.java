@@ -34,7 +34,7 @@ public class APIUserController {
         if (!List.of("ROLE_ADMIN", "ROLE_JUDGE", "ROLE_USER").contains(role)) return ResponseEntity.badRequest().build();
 
         User user = optionalUser.get();
-        if (!user.getRoles().contains(role)) user.getRoles().add(role);
+        user = userAndTeamService.addRoleToUser(role, user);
 
         return ResponseEntity.ok(user.getRoles());
     }
@@ -51,7 +51,7 @@ public class APIUserController {
 
         User user = optionalUser.get();
         if (!user.getRoles().contains(role)) return ResponseEntity.badRequest().build();
-        else user.getRoles().remove(role);
+        else user = userAndTeamService.removeRoleFromUser(role, user);
 
         return ResponseEntity.ok(user.getRoles());
     }
