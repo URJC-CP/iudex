@@ -30,6 +30,8 @@ public class APIUserController {
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
 
         role = "ROLE_" + role.toUpperCase();
+        if (!role.equals("ROLE_ADMIN") && !role.equals("ROLE_JUDGE") && !role.equals("ROLE_USER")) return ResponseEntity.badRequest().build();
+
         User user = optionalUser.get();
         if (!user.getRoles().contains(role)) user.getRoles().add(role);
 
@@ -43,6 +45,8 @@ public class APIUserController {
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
 
         role = "ROLE_" + role.toUpperCase();
+        if (!role.equals("ROLE_ADMIN") && !role.equals("ROLE_JUDGE") && !role.equals("ROLE_USER")) return ResponseEntity.badRequest().build();
+
         User user = optionalUser.get();
         if (!user.getRoles().contains(role)) return ResponseEntity.badRequest().build();
         else user.getRoles().remove(role);
