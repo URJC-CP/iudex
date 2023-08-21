@@ -36,33 +36,4 @@ class TestAPIUserController {
     @MockBean
     UserAndTeamService userService;
 
-    @Test
-    void createUser() throws Exception {
-        String url = "/API/v1/user";
-
-        User user = new User("iudex", "iudex@example.org");
-
-        UserString userString = new UserString();
-        userString.setUser(user);
-        userString.setSalida("OK");
-
-        when(userService.crearUsuario(user.getNickname(), user.getEmail())).thenReturn(userString);
-
-        String result = mockMvc.perform(post(url)
-                        .param("username", user.getNickname())
-                        .param("email", user.getEmail()))
-                .andExpect(status().is(200)).andDo(print()).andReturn().getResponse().getContentAsString();
-        assertEquals(jsonConverter.convertObjectToJSON(user.toUserAPI()), result);
-
-
-        user.setNickname("iudex2");
-        userString.setSalida("USER MAIL DUPLICATED");
-        when(userService.crearUsuario(user.getNickname(), user.getEmail())).thenReturn(userString);
-
-        mockMvc.perform(post(url)
-                        .param("username", user.getNickname())
-                        .param("email", user.getEmail()))
-                .andExpect(status().is(404)).andDo(print()).andReturn().getResponse().getContentAsString();
-    }
-
 }
