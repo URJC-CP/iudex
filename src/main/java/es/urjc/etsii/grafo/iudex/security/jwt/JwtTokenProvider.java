@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class JwtTokenProvider {
 			File jwtSecretFile = new File("jwt.secret");
 
 			if (jwtSecretFile.createNewFile()) {
-				Files.writeString(jwtSecretFile.toPath(), RandomStringUtils.randomAlphabetic(32));
+				Files.writeString(jwtSecretFile.toPath(), RandomStringUtils.random(32, 0, 0, true, true, null, new SecureRandom()));
 
 				LOG.debug("JWT Secret file created successfully in " + jwtSecretFile.getAbsolutePath());
 			}
