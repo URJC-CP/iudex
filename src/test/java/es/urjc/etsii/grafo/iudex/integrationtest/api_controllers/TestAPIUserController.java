@@ -14,9 +14,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,87 +60,104 @@ class TestAPIUserController {
 
     @Test
     void addRoleToUser() throws Exception {
+        List<String> roles = List.of("ROLE_USER", "ROLE_JUDGE", "ROLE_ADMIN");
+        when(userAndTeamService.addRoleToUser("ROLE_ADMIN", user))
+                .thenReturn(cloneUserWithRoles(user, roles));
         checkRequests(
-                put(String.format("%s/%s/role/%s", baseUrl, user.getId(), "admin")),
+                post(String.format("%s/%d/role/%s", baseUrl, user.getId(), "admin")),
                 HttpStatus.OK,
-                List.of("ROLE_USER", "ROLE_JUDGE", "ROLE_ADMIN")
+                roles
         );
         checkRequests(
-                put(String.format("%s/%s/role/%s", baseUrl, user.getId(), "AdMiN")),
+                post(String.format("%s/%d/role/%s", baseUrl, user.getId(), "AdMiN")),
                 HttpStatus.OK,
-                List.of("ROLE_USER", "ROLE_JUDGE", "ROLE_ADMIN")
+                roles
         );
 
         // User not found
         when(userAndTeamService.getUserById(2L)).thenReturn(Optional.empty());
         checkRequests(
-                put(String.format("%s/%s/role/%s", baseUrl, 2L, "admin")),
+                post(String.format("%s/%d/role/%s", baseUrl, 2L, "admin")),
                 HttpStatus.NOT_FOUND,
-                ""
+                null
         );
 
         // Tries to add user a non-existing role
         checkRequests(
-                put(String.format("%s/%s/role/%s", baseUrl, user.getId(), "non_existing")),
+                post(String.format("%s/%d/role/%s", baseUrl, user.getId(), "non_existing")),
                 HttpStatus.BAD_REQUEST,
-                ""
+                null
         );
 
         // User already has JUDGE role
         checkRequests(
-                put(String.format("%s/%s/role/%s", baseUrl, user.getId(), "JUDGE")),
+                post(String.format("%s/%d/role/%s", baseUrl, user.getId(), "JUDGE")),
                 HttpStatus.BAD_REQUEST,
-                ""
+                null
         );
     }
 
     @Test
     void removeRoleFromUser() throws Exception {
+        List<String> roles = List.of("ROLE_USER");
+        when(userAndTeamService.removeRoleFromUser("ROLE_JUDGE", user))
+                .thenReturn(cloneUserWithRoles(user, roles));
         checkRequests(
-                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "JUDGE")),
+                delete(String.format("%s/%d/role/%s", baseUrl, user.getId(), "JUDGE")),
                 HttpStatus.OK,
-                List.of("ROLE_USER")
+                roles
         );
+
+        roles = List.of("ROLE_JUDGE");
+        when(userAndTeamService.removeRoleFromUser("ROLE_USER", user))
+                .thenReturn(cloneUserWithRoles(user, roles));
         checkRequests(
-                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "uSeR")),
+                delete(String.format("%s/%d/role/%s", baseUrl, user.getId(), "uSeR")),
                 HttpStatus.OK,
-                List.of("ROLE_JUDGE")
+                roles
         );
 
         // User not found
         when(userAndTeamService.getUserById(2L)).thenReturn(Optional.empty());
         checkRequests(
-                delete(String.format("%s/%s/role/%s", baseUrl, 2L, "judge")),
+                delete(String.format("%s/%d/role/%s", baseUrl, 2L, "judge")),
                 HttpStatus.NOT_FOUND,
-                ""
+                null
         );
 
         // Tries to add user a non-existing role
         checkRequests(
-                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "non_existing")),
+                delete(String.format("%s/%d/role/%s", baseUrl, user.getId(), "non_existing")),
                 HttpStatus.BAD_REQUEST,
-                ""
+                null
         );
 
         // User does not have admin role
         checkRequests(
-                delete(String.format("%s/%s/role/%s", baseUrl, user.getId(), "admin")),
-                HttpStatus.BAD_REQUEST,
-                ""
+                delete(String.format("%s/%d/role/%s", baseUrl, user.getId(), "admin")),
+                HttpStatus.NOT_FOUND,
+                null
         );
     }
 
-    private void checkRequests(RequestBuilder requestBuilder, HttpStatus status, Object output) throws Exception {
-        String outputJson = jsonConverter.convertObjectToJSON(output);
-
-        String result = mockMvc.perform(requestBuilder)
+    private void checkRequests(MockHttpServletRequestBuilder requestBuilder, HttpStatus status, Object output) throws Exception {
+        String result = mockMvc.perform(requestBuilder.characterEncoding("utf8"))
                 .andExpect(status().is(status.value()))
                 .andDo(print())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        assertEquals(outputJson, result);
+        if (output == null) assertTrue(result.isEmpty());
+        else assertEquals(jsonConverter.convertObjectToJSON(output), result);
+    }
+
+    private User cloneUserWithRoles(User user, List<String> roles) {
+        User result = new User(user.getNickname(), user.getEmail(), user.getName(), user.getFamilyName());
+        result.setId(user.getId());
+        result.setRoles(roles);
+
+        return result;
     }
 
 }
