@@ -21,7 +21,6 @@ public class APIOAuthController {
     private UserService userService;
 
     @GetMapping("/login")
-    @PreAuthorize("")
     public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OidcUser oidcUser) {
         AuthResponse authResponse = userService.loginUser(oidcUser);
 
