@@ -1,4 +1,4 @@
-FROM frolvlad/alpine-gcc
+FROM --platform=linux/x86_64 frolvlad/alpine-gcc
 WORKDIR /root
 #RUN /bin/sh
 

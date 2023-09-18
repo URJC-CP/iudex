@@ -2,11 +2,13 @@ version: '3'
 services:
   iudex-tests:
     image: maven:3.8.4-openjdk-17
+    platform: linux/x86_64
     container_name: maven-tests
     volumes:
       - ./src:/usr/src
       - ./pom.xml:/usr/pom.xml
       - ./DOCKERS:/usr/DOCKERS
+      - /var/run/docker.sock:/var/run/docker.sock
     working_dir: /usr
     command: mvn test
     depends_on:
@@ -22,19 +24,21 @@ services:
       - spring.rabbitmq.host=rabbit
       - spring.rabbitmq.port=5672
       - management.endpoint.health.show-details=always
-      - logging.level.root=debug
+      - logging.level.root=info
     env_file:
       - secrets.env
 
   rabbitmq:
     image: rabbitmq:3
-    container_name: rabbitmq
+    platform: linux/x86_64
+    container_name: rabbit
     ports:
       - "5672:5672"
     restart: always
 
   database:
     image: mysql:8
+    platform: linux/x86_64
     container_name: database
     volumes:
       - db_data:/var/lib/mysql
@@ -50,6 +54,7 @@ services:
 
   keycloak:
     image: keycloak/keycloak:22.0
+    platform: linux/x86_64
     container_name: keycloak
     ports:
       - "3000:8080"

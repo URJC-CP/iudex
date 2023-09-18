@@ -1,5 +1,5 @@
 #La instalacion que vamos a utilizar. (de donde venimos)
-FROM openjdk:15-alpine
+FROM --platform=linux/x86_64 openjdk:17-alpine
 WORKDIR /root
 #RUN /bin/sh
 

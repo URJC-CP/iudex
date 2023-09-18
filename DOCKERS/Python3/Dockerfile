@@ -1,4 +1,4 @@
-FROM  python:3.6.12-alpine
+FROM --platform=linux/x86_64 python:3.11-alpine
 
 
 WORKDIR /root
