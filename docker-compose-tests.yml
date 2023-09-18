@@ -9,8 +9,9 @@ services:
       - ./pom.xml:/usr/pom.xml
       - ./DOCKERS:/usr/DOCKERS
       - /var/run/docker.sock:/var/run/docker.sock
+      - m2-repo:/home/foo/.m2/repository
     working_dir: /usr
-    command: mvn test
+    command: mvn -B test
     depends_on:
       - database
       - keycloak
@@ -71,3 +72,4 @@ services:
 
 volumes:
   db_data:
+  m2-repo:
