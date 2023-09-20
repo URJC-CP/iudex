@@ -38,5 +38,7 @@ services:
       - spring.rabbitmq.port=5672
       - management.endpoint.health.show-details=never
       - logging.level.root=info
+    env_file:
+      - secrets.env
 volumes:
   db_data:

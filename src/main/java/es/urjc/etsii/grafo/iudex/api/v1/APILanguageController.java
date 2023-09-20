@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class APILanguageController {
 
     @Operation( summary = "Return all languages")
     @GetMapping("language")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<List<LanguageAPI>> getLanguages() {
         List<Language> languageList = languageService.getAllLanguages();
         List<LanguageAPI> languageAPIS = new ArrayList<>();

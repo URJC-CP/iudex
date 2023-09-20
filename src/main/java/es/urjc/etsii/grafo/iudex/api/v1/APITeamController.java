@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class APITeamController {
 
     @Operation( summary = "Return all Teams")
     @GetMapping("/API/v1/team")
+    @RolesAllowed("ROLE_JUDGE")
     public ResponseEntity<List<TeamAPI>> getteams() {
         List<TeamAPI> teamAPIS = new ArrayList<>();
         for (Team team : teamService.getAllTeams()) {
@@ -35,6 +37,7 @@ public class APITeamController {
 
     @Operation( summary = "Return Team")
     @GetMapping("/API/v1/team/{teamId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<TeamAPI> getTeam(@PathVariable String teamId) {
         teamId = Sanitizer.removeLineBreaks(teamId);
 
@@ -49,6 +52,7 @@ public class APITeamController {
 
     @Operation( summary = "Creates a Team")
     @PostMapping("/API/v1/team")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<TeamAPI> createTeam(@RequestParam String nombreEquipo) {
         nombreEquipo = Sanitizer.removeLineBreaks(nombreEquipo);
 
@@ -64,6 +68,7 @@ public class APITeamController {
 
     @Operation( summary = "Delete a Team")
     @DeleteMapping("/API/v1/team/{teamId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<String> deleteTeam(@PathVariable String teamId) {
         teamId = Sanitizer.removeLineBreaks(teamId);
 
@@ -77,6 +82,7 @@ public class APITeamController {
 
     @Operation( summary = "Update a Team")
     @PutMapping("/API/v1/team/{teamId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<TeamAPI> updateTeam(@PathVariable String teamId, @RequestParam(required = false) Optional<String> teamName) {
         teamId = Sanitizer.removeLineBreaks(teamId);
         teamName = Sanitizer.removeLineBreaks(teamName);
@@ -91,6 +97,7 @@ public class APITeamController {
 
     @Operation( summary = "Add user to Team")
     @PutMapping("/API/v1/team/{teamId}/{userId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<TeamAPI> addUserToTeam(@PathVariable String teamId, @PathVariable String userId) {
         teamId = Sanitizer.removeLineBreaks(teamId);
         userId = Sanitizer.removeLineBreaks(userId);
@@ -105,6 +112,7 @@ public class APITeamController {
 
     @Operation( summary = "Delete user from team")
     @DeleteMapping("/API/v1/team/{teamId}/{userId}")
+    @RolesAllowed("ROLE_USER")
     public ResponseEntity<String> deleteUserFromTeam(@PathVariable String teamId, @PathVariable String userId) {
         teamId = Sanitizer.removeLineBreaks(teamId);
         userId = Sanitizer.removeLineBreaks(userId);

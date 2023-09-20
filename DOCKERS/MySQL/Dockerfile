@@ -1,4 +1,4 @@
-FROM mysql:8
+FROM --platform=linux/x86_64 mysql:8
 WORKDIR /root
 
 #RUN apk add --no-cache bash
