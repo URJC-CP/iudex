@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 public class User {
@@ -22,6 +24,13 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String name = "";
+
+    private String familyName = "";
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
     private long timestamp = Instant.now().toEpochMilli();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
@@ -32,6 +41,16 @@ public class User {
         this.nickname = nickname;
         this.email = email;
         this.equiposParticipantes = new HashSet<>();
+    }
+
+
+    public User(String nickname, String email, String name, String familyName) {
+        this.nickname = nickname;
+        this.email = email;
+        this.name = name;
+        this.familyName = familyName;
+        this.equiposParticipantes = new HashSet<>();
+        this.roles = new ArrayList<>();
     }
 
     public User() {}
@@ -76,6 +95,29 @@ public class User {
         this.email = email;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     public void addTeam(TeamUser team) {
         this.equiposParticipantes.add(team);

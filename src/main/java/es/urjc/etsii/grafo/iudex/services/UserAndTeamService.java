@@ -330,5 +330,18 @@ public class UserAndTeamService {
         return salida;
     }
 
+    public User addRoleToUser(String role, User user) {
+        user.getRoles().add(role);
+        userRepository.save(user);
+
+        return user;
+    }
+
+    public User removeRoleFromUser(String role, User user) {
+        user.getRoles().remove(role);
+        userRepository.save(user);
+
+        return user;
+    }
 
 }

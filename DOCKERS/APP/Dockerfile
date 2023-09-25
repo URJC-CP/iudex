@@ -1,5 +1,4 @@
-
-FROM maven:3.8.4-openjdk-17 AS MAVEN_BUILD
+FROM --platform=linux/x86_64 maven:3.8.4-openjdk-17 AS MAVEN_BUILD
 WORKDIR /app
 
 COPY pom.xml .
