@@ -9,8 +9,14 @@
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log(frame);
-            stompClient.subscribe('/all/messages', function(result) {
-                show(JSON.parse(result.body));
+            stompClient.subscribe('/all/simple', function(result) {
+                show("SIMPLE: ", result.body);
+            });
+            stompClient.subscribe('/all/submissions', function(result) {
+                show("SUBMISSION: ", result.body);
+            });
+            stompClient.subscribe('/specific/submissions/1', function(result) {
+                show("SUBMISSION: ", result.body);
             });
         });
 
@@ -22,10 +28,10 @@
         }
 
 
-        function show(message) {
+        function show(prefix, message) {
             var response = document.getElementById('messages');
             var p = document.createElement('p');
-            p.innerHTML= "message: "  + message.text;
+            p.innerHTML= prefix + message;
             response.appendChild(p);
         }
     </script>
