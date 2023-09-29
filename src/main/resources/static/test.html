@@ -15,8 +15,11 @@
             stompClient.subscribe('/all/submissions', function(result) {
                 show("SUBMISSION: ", result.body);
             });
-            stompClient.subscribe('/specific/submissions/1', function(result) {
-                show("SUBMISSION: ", result.body);
+            stompClient.subscribe('/specific/contests/1/submissions', function(result) {
+                show("SUBMISSION (C-1): ", result.body);
+            });
+            stompClient.subscribe('/specific/contests/1/teams/1/submissions', function(result) {
+                show("SUBMISSION (C-1 | T-1): ", result.body);
             });
         });
 

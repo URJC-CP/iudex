@@ -1,7 +1,8 @@
 package es.urjc.etsii.grafo.iudex.events;
 
 import es.urjc.etsii.grafo.iudex.events.publishers.IudexSimpleEventPublisher;
-import es.urjc.etsii.grafo.iudex.events.publishers.IudexSpecificSubmissionEventPublisher;
+import es.urjc.etsii.grafo.iudex.events.publishers.IudexSpecificContestSubmissionEventPublisher;
+import es.urjc.etsii.grafo.iudex.events.publishers.IudexSpecificContestTeamSubmissionEventPublisher;
 import es.urjc.etsii.grafo.iudex.events.publishers.IudexSubmissionEventPublisher;
 import es.urjc.etsii.grafo.iudex.events.types.IudexSimpleEvent;
 import es.urjc.etsii.grafo.iudex.events.types.IudexSubmissionEvent;
@@ -17,15 +18,19 @@ public class IudexEventTestRestController {
 
     final IudexSubmissionEventPublisher iudexSubmissionEventPublisher;
 
-    final IudexSpecificSubmissionEventPublisher iudexSpecificSubmissionEventPublisher;
+    final IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher;
+
+    final IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher;
 
     public IudexEventTestRestController(IudexSimpleEventPublisher iudexSimpleEventPublisher,
                                         IudexSubmissionEventPublisher iudexSubmissionEventPublisher,
-                                        IudexSpecificSubmissionEventPublisher iudexSpecificSubmissionEventPublisher) {
+                                        IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher,
+                                        IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher) {
 
         this.iudexSimpleEventPublisher = iudexSimpleEventPublisher;
         this.iudexSubmissionEventPublisher = iudexSubmissionEventPublisher;
-        this.iudexSpecificSubmissionEventPublisher = iudexSpecificSubmissionEventPublisher;
+        this.iudexSpecificContestSubmissionEventPublisher = iudexSpecificContestSubmissionEventPublisher;
+        this.iudexSpecificContestTeamSubmissionEventPublisher = iudexSpecificContestTeamSubmissionEventPublisher;
     }
 
     @PostMapping("/testEvent")
@@ -43,9 +48,14 @@ public class IudexEventTestRestController {
         iudexSubmissionEventPublisher.sendMessage(event);
     }
 
-    @PostMapping("/testEvent/submissions/{id}")
-    public void sendSubmission(@RequestBody IudexSubmissionEvent event, @PathVariable String id) {
-        iudexSpecificSubmissionEventPublisher.sendMessage(event, id);
+    @PostMapping("/testEvent/contests/{contest_id}/submissions")
+    public void sendSubmission(@RequestBody IudexSubmissionEvent event, @PathVariable String contest_id) {
+        iudexSpecificContestSubmissionEventPublisher.sendMessage(event, contest_id);
+    }
+
+    @PostMapping("/testEvent/contests/{contest_id}/teams/{team_id}/submissions")
+    public void sendSubmission(@RequestBody IudexSubmissionEvent event, @PathVariable String contest_id, @PathVariable String team_id) {
+        iudexSpecificContestTeamSubmissionEventPublisher.sendMessage(event, contest_id, team_id);
     }
 
 }

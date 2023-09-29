@@ -1,24 +1,16 @@
 package es.urjc.etsii.grafo.iudex.events.types;
 
-import es.urjc.etsii.grafo.iudex.pojos.ProblemScore;
-import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
+import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 
 public class IudexSubmissionEvent implements IudexEvent {
 
-    private final UserAPI user;
+    private final SubmissionAPI submission;
 
-    private final ProblemScore problemScore;
-
-    public IudexSubmissionEvent(UserAPI user, ProblemScore problemScore) {
-        this.user = user;
-        this.problemScore = problemScore;
+    public IudexSubmissionEvent(SubmissionAPI submission) {
+        this.submission = submission;
     }
 
-    public UserAPI getUser() {
-        return user;
-    }
-
-    public ProblemScore getProblemScore() {
-        return problemScore;
+    public SubmissionAPI getSubmission() {
+        return submission;
     }
 }
