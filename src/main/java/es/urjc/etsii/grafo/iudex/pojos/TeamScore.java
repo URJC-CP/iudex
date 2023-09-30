@@ -2,7 +2,7 @@ package es.urjc.etsii.grafo.iudex.pojos;
 
 import es.urjc.etsii.grafo.iudex.entities.Problem;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 public class TeamScore {

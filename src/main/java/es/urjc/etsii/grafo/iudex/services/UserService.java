@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.Null;
+import jakarta.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

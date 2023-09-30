@@ -1,6 +1,6 @@
 package es.urjc.etsii.grafo.iudex.pojos;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.Objects;
 

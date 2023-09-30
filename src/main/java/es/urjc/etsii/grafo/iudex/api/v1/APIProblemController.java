@@ -14,8 +14,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.Consumes;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
