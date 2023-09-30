@@ -4,7 +4,10 @@ import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 
 public class IudexSubmissionEvent implements IudexEvent {
 
-    private final SubmissionAPI submission;
+    private SubmissionAPI submission;
+
+    public IudexSubmissionEvent() {
+    }
 
     public IudexSubmissionEvent(SubmissionAPI submission) {
         this.submission = submission;
@@ -12,5 +15,9 @@ public class IudexSubmissionEvent implements IudexEvent {
 
     public SubmissionAPI getSubmission() {
         return submission;
+    }
+
+    public void setSubmission(SubmissionAPI submission) {
+        this.submission = submission;
     }
 }
