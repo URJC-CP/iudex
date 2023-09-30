@@ -11,12 +11,12 @@ public class SubmissionProblemValidatorService {
     @Autowired
     private SubmissionService submissionService;
 
-    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName, String expectedResult, String idEquipo) {
+    public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName, String expectedResult, String idEquipo, String contestId) {
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();
         submissionProblemValidator.setExpectedSolution(expectedResult);
 
         //Creamos la submission
-        SubmissionStringResult submissionStringResult = submissionService.creaSubmissionProblemValidator(codigo, problema, lenguaje, fileName, idEquipo);
+        SubmissionStringResult submissionStringResult = submissionService.creaSubmissionProblemValidator(codigo, problema, lenguaje, fileName, idEquipo, contestId);
         if (!submissionStringResult.getSalida().equals("OK")) {
             //REVISAR
             return null;

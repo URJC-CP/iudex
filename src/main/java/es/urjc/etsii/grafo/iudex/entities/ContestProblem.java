@@ -1,8 +1,7 @@
 package es.urjc.etsii.grafo.iudex.entities;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class ContestProblem {
@@ -10,11 +9,11 @@ public class ContestProblem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "contest_id")
     Contest contest;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "problem_id")
     Problem problem;
 

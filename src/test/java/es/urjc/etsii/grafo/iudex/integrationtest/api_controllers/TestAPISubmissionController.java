@@ -87,7 +87,7 @@ class TestAPISubmissionController {
         contestProblem.setProblem(problem);
         contestProblem.setContest(contest);
         contest.getListaProblemas().add(contestProblem);
-        problem.getListaProblemas().add(contestProblem);
+        problem.getListaConcursos().add(contestProblem);
 
         submission = new Submission();
         submission.setId(342);
