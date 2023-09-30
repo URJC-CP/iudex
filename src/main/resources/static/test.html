@@ -10,18 +10,25 @@
         stompClient.connect({}, function(frame) {
             console.log(frame);
             stompClient.subscribe('/all/simple', function(result) {
-                show("SIMPLE: ", result.body);
-            });
-            stompClient.subscribe('/all/submissions', function(result) {
-                show("SUBMISSION: ", result.body);
-            });
-            stompClient.subscribe('/specific/contests/1/submissions', function(result) {
-                show("SUBMISSION (C-1): ", result.body);
-            });
-            stompClient.subscribe('/specific/contests/1/teams/1/submissions', function(result) {
-                show("SUBMISSION (C-1 | T-1): ", result.body);
+                show("SIMPLE: ", JSON.parse(result.body).text);
             });
         });
+
+
+        function connectSocket(path) {
+            var contest_id = document.getElementById('contest_id').value;
+            var team_id = document.getElementById('team_id').value;
+            document.getElementById('contest_id').value = '';
+            document.getElementById('team_id').value = '';
+
+            path = path.replace('{contest_id}', contest_id).replace('{team_id}', team_id);
+
+            var prefix = (team_id !== '') ? `SUBMISSION (C-${contest_id} | T-${team_id}): ` : `SUBMISSION (C-${contest_id}): `;
+
+            stompClient.subscribe(path, function(result) {
+                show(prefix, result.body);
+            });
+        }
 
 
         function sendMessage() {
@@ -42,7 +49,18 @@
 <body>
 <div>
     <div>
-        <button id="sendMessage" onclick="sendMessage();">Send</button>
+        <input type="text" id="contest_id" placeholder="{contest_id}"/>
+        <input type="text" id="team_id" placeholder="{team_id}"/>
+    </div>
+    <br />
+    <div>
+        <button id="connectContestTeamSubs" onclick="connectSocket('/specific/contests/{contest_id}/teams/{team_id}/submissions');">Connect Contest & Team Submissions</button>
+        <button id="connectContestSubs" onclick="connectSocket('/specific/contests/{contest_id}/submissions');">Connect Contest Submissions</button>
+        <button id="connectSubs" onclick="connectSocket('/all/submissions');">Connect All Submissions</button>
+    </div>
+    <br />
+    <div>
+        <button id="sendMessage" onclick="sendMessage();">Send simple message</button>
         <input type="text" id="text" placeholder="Text"/>
     </div>
     <br />
