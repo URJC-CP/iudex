@@ -5,7 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.LanguageAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 

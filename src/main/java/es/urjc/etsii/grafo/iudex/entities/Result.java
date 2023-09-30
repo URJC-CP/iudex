@@ -2,7 +2,7 @@ package es.urjc.etsii.grafo.iudex.entities;
 
 import es.urjc.etsii.grafo.iudex.pojos.ResultAPI;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
