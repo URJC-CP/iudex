@@ -20,7 +20,7 @@ public class Team {
     private Set<TeamUser> participantes;
     private boolean esUser;
     
-    @OneToMany(mappedBy = "contest")
+    @OneToMany
     Set<ContestProblem> listaProblemas;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
