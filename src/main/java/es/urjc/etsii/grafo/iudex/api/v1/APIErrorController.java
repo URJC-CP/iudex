@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.*;
 public class APIErrorController {
     private static final Logger logger = LoggerFactory.getLogger(APIErrorController.class);
 
+    @ExceptionHandler({ org.springframework.security.access.AccessDeniedException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e) {
+        logger.error(e.toString());
+        return "UNAUTHORIZED";
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleError(RuntimeException e) {
