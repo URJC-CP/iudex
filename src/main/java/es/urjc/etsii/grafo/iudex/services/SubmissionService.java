@@ -165,7 +165,7 @@ public class SubmissionService {
     }
 
     //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
-    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idEquipo) {
+    public SubmissionStringResult creaSubmissionProblemValidator(String codigo, Problem problema, String lenguaje, String fileName, String idEquipo, String contestId) {
         SubmissionStringResult submissionStringResult = new SubmissionStringResult();
 
         Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(idEquipo));
@@ -184,11 +184,20 @@ public class SubmissionService {
         }
         Language language = languageOptional.get();
 
+        Optional<Contest> contestOptional = contestRepository.findContestById(Long.parseLong(contestId));
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest {} not found", idEquipo);
+            submissionStringResult.setSalida("CONTEST NOT FOUND");
+            return submissionStringResult;
+        }
+        Contest contest = contestOptional.get();
+
         //Creamos la Submission
         Submission submission = new Submission(codigo, language, fileName);
         //anadimos el probelma a la submsion
         submission.setProblem(problema);
         submission.setTeam(team);
+        submission.setContest(contest);
         submission.setEsProblemValidator(true);
         //Guardamos la submission
         problema.addSubmission(submission);

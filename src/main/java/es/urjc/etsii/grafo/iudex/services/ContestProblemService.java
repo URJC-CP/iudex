@@ -15,6 +15,10 @@ public class ContestProblemService {
     @Autowired
     private ContestProblemRepository contestProblemRepository;
 
+    public void save(ContestProblem contestProblem) {
+        contestProblemRepository.save(contestProblem);
+    }
+
     public Optional<ContestProblem> getContestProblemByContestAndProblem(Contest contest, Problem problem) {
         return contestProblemRepository.findByContestAndProblem(contest, problem);
     }
