@@ -1,0 +1,75 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log(frame);
+            stompClient.subscribe('/all/simple', function(result) {
+                show("SIMPLE: ", JSON.parse(result.body).text);
+            });
+        });
+
+
+        function connectSocket(path) {
+            var contest_id = document.getElementById('contest_id').value;
+            var team_id = document.getElementById('team_id').value;
+            document.getElementById('contest_id').value = '';
+            document.getElementById('team_id').value = '';
+
+            path = path.replace('{contest_id}', contest_id).replace('{team_id}', team_id);
+
+            var prefix = (team_id !== '') ? `SUBMISSION (C-${contest_id} | T-${team_id}): ` : `SUBMISSION (C-${contest_id}): `;
+
+            stompClient.subscribe(path, function(result) {
+                show(prefix, result.body);
+            });
+        }
+
+
+        function sendMessage() {
+            var text = document.getElementById('text').value;
+            stompClient.send("/app/application", {},
+                JSON.stringify({'text':text}));
+        }
+
+
+        function show(prefix, message) {
+            var response = document.getElementById('messages');
+            var p = document.createElement('p');
+            p.innerHTML= prefix + message;
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div>
+        <input type="text" id="contest_id" placeholder="{contest_id}"/>
+        <input type="text" id="team_id" placeholder="{team_id}"/>
+    </div>
+    <br />
+    <div>
+        <button id="connectContestTeamSubs" onclick="connectSocket('/specific/contests/{contest_id}/teams/{team_id}/submissions');">Connect Contest & Team Submissions</button>
+        <button id="connectContestSubs" onclick="connectSocket('/specific/contests/{contest_id}/submissions');">Connect Contest Submissions</button>
+        <button id="connectSubs" onclick="connectSocket('/all/submissions');">Connect All Submissions</button>
+    </div>
+    <br />
+    <div>
+        <button id="sendMessage" onclick="sendMessage();">Send simple message</button>
+        <input type="text" id="text" placeholder="Text"/>
+    </div>
+    <br />
+    <br />
+    <br />
+
+    <div id="messages"></div>
+
+</div>
+
+</body>
+</html>

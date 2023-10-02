@@ -3,14 +3,10 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemEntradaSalidaVisiblesHTML;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
-import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
-import es.urjc.etsii.grafo.iudex.repositories.ProblemRepository;
-import es.urjc.etsii.grafo.iudex.repositories.SampleRepository;
-import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
+import es.urjc.etsii.grafo.iudex.repositories.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProblemService {
@@ -31,16 +30,18 @@ public class ProblemService {
 
     private final ZipHandlerService zipHandlerService;
     private final ProblemValidatorService problemValidatorService;
-    @Autowired
-    private ContestProblemService contestProblemService;
+    private final ContestProblemService contestProblemService;
+    private final ContestTeamService contestTeamService;
 
-    public ProblemService(ContestRepository contestRepository, ProblemRepository problemRepository, TeamRepository teamRepository, SampleRepository sampleRepository, ZipHandlerService zipHandlerService, ProblemValidatorService problemValidatorService) {
+    public ProblemService(ContestRepository contestRepository, ProblemRepository problemRepository, TeamRepository teamRepository, SampleRepository sampleRepository, ZipHandlerService zipHandlerService, ProblemValidatorService problemValidatorService, ContestProblemService contestProblemService, ContestTeamService contestTeamService) {
         this.contestRepository = contestRepository;
         this.problemRepository = problemRepository;
         this.teamRepository = teamRepository;
         this.sampleRepository = sampleRepository;
         this.zipHandlerService = zipHandlerService;
         this.problemValidatorService = problemValidatorService;
+        this.contestProblemService = contestProblemService;
+        this.contestTeamService = contestTeamService;
     }
 
     public ProblemString addProblem(Problem createdProblem) {
@@ -101,21 +102,24 @@ public class ProblemService {
 
         //verificar si el problema ya ha sido creado apartir del mismo zip
         Optional<Problem> problemOptional = problemRepository.findProblemByNombreEjercicio(nombreProblema);
-
-        Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problem);
         ContestProblem contestProblem;
-        if (optionalContestProblem.isEmpty()) contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
-        else contestProblem = optionalContestProblem.get();
 
         if (problemOptional.isPresent()) {
             problem = problemOptional.get();
+
+            Optional<ContestProblem> optionalContestProblem = contestProblemService.getContestProblemByContestAndProblem(contest, problem);
+            if (optionalContestProblem.isEmpty()) contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
+            else contestProblem = optionalContestProblem.get();
+
             //si el problema esta almacendo en el concurso
             if (contest.getListaProblemas().contains(contestProblem)) {
                 return updateProblem(String.valueOf(problem.getId()), nombreFichero, file, teamId, nombreProblema, idcontest);
             }
+        } else {
+            contestProblem = new ContestProblem(contest,problem,LocalDateTime.now());
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId, idcontest);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -133,6 +137,7 @@ public class ProblemService {
         ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
 
         contest.addProblem(contestProblem);
+        problem.addContest(contestProblem);
         contestProblem.getContest().getListaContestsParticipados().add(contestTeams);
         problemRepository.save(problem);
         contestRepository.save(contest);
@@ -168,7 +173,7 @@ public class ProblemService {
             nombreProblema = nombreFichero;
         }
 
-        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId);
+        ProblemString problemString = zipHandlerService.generateProblemFromZIP(problem, nombreProblema, file.getInputStream(), teamId, idcontest);
         problem = problemString.getProblem();
 
         //Verificamos si hubiera dado fallo el problema al guardarse
@@ -221,7 +226,7 @@ public class ProblemService {
 
         //Ponemos los participantes y concursos de la anterior
         problemUpdated.getProblem().setListaProblemasParticipados(problemOriginal.getEquipoPropietario().getListaProblemasParticipados());
-        problemUpdated.getProblem().setListaProblemas(problemOriginal.getListaProblemas());
+        problemUpdated.getProblem().setListaConcursos(problemOriginal.getListaConcursos());
 
         //ACTIALIZAMOS EN LA BBDD
         problemRepository.save(problemUpdated.getProblem());
@@ -280,7 +285,7 @@ public class ProblemService {
         logger.debug("Delete problem {}", problem.getId());
 
         //Quitamos los problemas del contest
-        for (ContestProblem contestAux : problem.getListaProblemas()) {
+        for (ContestProblem contestAux : problem.getListaConcursos()) {
             logger.debug("Remove problem {} from contest {}", problem.getId(), contestAux.getProblem().getId());
             if (!contestAux.getContest().getListaProblemas().remove(contestAux)) {
                 logger.error("Remove problem {} from contest {} failed", problem.getId(), contestAux.getContest().getId());
