@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
+import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
@@ -8,7 +9,6 @@ import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
-import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -120,7 +119,7 @@ class TestAPISubmissionController {
         String badProblem = "312";
         String goodContest = String.valueOf(contest.getId());
         String badContest = "654";
-        String url = "/API/v1/submissions/";
+        String url = "/API/v1/submissions";
 
         String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;
