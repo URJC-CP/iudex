@@ -1,19 +1,16 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
-import es.urjc.etsii.grafo.iudex.exceptions.JwtIudexException;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -23,27 +20,9 @@ public class JwtTokenProvider {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-	private final String jwtSecret = getJwtSecret();
-
 	private static final long JWT_EXPIRATION_IN_MS = 5400000;
 
 	private static final Long REFRESH_TOKEN_EXPIRATION_MSEC = 10800000L;
-
-	private static String getJwtSecret() {
-		try {
-			File jwtSecretFile = new File("jwt.secret");
-
-			if (jwtSecretFile.createNewFile()) {
-				Files.writeString(jwtSecretFile.toPath(), RandomStringUtils.random(32, 0, 0, true, true, null, new SecureRandom()));
-
-				LOG.debug("JWT Secret file created successfully in {}", jwtSecretFile.getAbsolutePath());
-			}
-
-			return Files.readString(jwtSecretFile.toPath());
-		} catch (IOException e) {
-            throw new JwtIudexException(e);
-        }
-    }
 
 	public String getUsername(String token) {
 		return Jwts.parserBuilder().setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256)).build()

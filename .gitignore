@@ -33,6 +33,5 @@ build/
 .vscode/
 .DS_Store
 
-*.secret
-
+### iudex ENV files ###
 secrets.env
