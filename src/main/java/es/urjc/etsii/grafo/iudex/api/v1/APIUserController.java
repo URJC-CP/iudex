@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(methods = {RequestMethod.POST})
 public class APIUserController {
 
     @Autowired

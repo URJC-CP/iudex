@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/API/v1/")
-@CrossOrigin(methods = {RequestMethod.GET})
 public class APILanguageController {
     @Autowired
     private LanguageService languageService;
