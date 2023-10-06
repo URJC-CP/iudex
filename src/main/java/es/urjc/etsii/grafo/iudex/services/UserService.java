@@ -8,11 +8,9 @@ import es.urjc.etsii.grafo.iudex.security.jwt.JwtTokenProvider;
 import es.urjc.etsii.grafo.iudex.security.jwt.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import jakarta.validation.constraints.Null;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,14 +27,13 @@ public class UserService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    public User getUserFromOAuthPrincipal(OidcUser oAuth2User) {
+    public User getUserFromOAuthPrincipal(OAuth2User oAuth2User) {
         Optional<User> user = userRepository.findUserByEmail(oAuth2User.getAttribute("email"));
 
         return user.orElse(null);
-
     }
 
-    public User signupUserFromOAuthPrincipal(OidcUser oAuth2User) {
+    public User signupUserFromOAuthPrincipal(OAuth2User oAuth2User) {
         User user;
 
         try {
@@ -50,9 +47,7 @@ public class UserService {
             throw new IudexException("OAuth2 account has required values missing");
         }
 
-        List<String> roles = new ArrayList<>();
-        oAuth2User.getAuthorities().forEach(authority -> roles.add(authority.getAuthority()));
-        user.setRoles(roles);
+        user.setRoles(List.of("ROLE_USER"));
 
         if (userRepository.existsUserByEmail(user.getEmail()) || userRepository.existsUserByNickname(user.getNickname())) {
             throw new IudexException("User already exists");
@@ -63,12 +58,12 @@ public class UserService {
         return user;
     }
 
-    public AuthResponse loginUser(OidcUser oidcUser) {
-        User user = getUserFromOAuthPrincipal(oidcUser);
+    public AuthResponse loginUser(OAuth2User oAuth2User) {
+        User user = getUserFromOAuthPrincipal(oAuth2User);
 
         if (user == null) {
             try {
-                user = signupUserFromOAuthPrincipal(oidcUser);
+                user = signupUserFromOAuthPrincipal(oAuth2User);
             } catch (IudexException e) {
                 return new AuthResponse(
                         AuthResponse.Status.FAILURE,

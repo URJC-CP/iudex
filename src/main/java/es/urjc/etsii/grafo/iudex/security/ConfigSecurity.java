@@ -17,8 +17,7 @@ class ConfigSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/API/v1/oauth/**")
-                        .authenticated())
+                        .anyRequest().authenticated())
                 .oauth2Login(Customizer.withDefaults());
 
         // Disable CORS and CSRF protection

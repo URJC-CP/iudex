@@ -1,13 +1,14 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -92,7 +93,7 @@ public class JwtTokenProvider {
 		Long duration = now.getTime() + time;
 		Date expiryDate = new Date(now.getTime() + time);
 		String token = Jwts.builder().setClaims(claims).setSubject((userDetails.getUsername())).setIssuedAt(new Date())
-				.setExpiration(expiryDate).signWith(SignatureAlgorithm.HS256, jwtSecret).compact();
+				.setExpiration(expiryDate).signWith(Keys.secretKeyFor(SignatureAlgorithm.HS256)).compact();
 
 		return new Token(tokenType, token, duration,
 				LocalDateTime.ofInstant(expiryDate.toInstant(), ZoneId.systemDefault()));
