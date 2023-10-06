@@ -1,18 +1,13 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
-import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
-import es.urjc.etsii.grafo.iudex.pojos.UserString;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
-import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +20,7 @@ public class APIUserController {
 
     @Operation( summary = "Add a specific role to an existing user")
     @PostMapping("/API/v1/user/{id}/role/{role}")
-    @RolesAllowed("ROLE_ADMIN")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
@@ -42,7 +37,7 @@ public class APIUserController {
 
     @Operation( summary = "Remove a role from an existing user")
     @DeleteMapping("/API/v1/user/{id}/role/{role}")
-    @RolesAllowed("ROLE_ADMIN")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> removeRoleFromUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();

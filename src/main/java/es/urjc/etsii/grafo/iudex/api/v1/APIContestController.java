@@ -7,15 +7,14 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.annotation.security.RolesAllowed;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public class APIContestController {
 
     @Operation( summary = "Return all contests")
     @GetMapping("contest")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<ContestAPI>> getAllcontests() {
         List<Contest> contestList = contestService.getAllContests();
         List<ContestAPI> contestAPIS = new ArrayList<>();
@@ -42,7 +41,7 @@ public class APIContestController {
 
     @Operation( summary = "Return Page Contest")
     @GetMapping("contest/page")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Page<ContestAPI>> getAllContestPage(Pageable pageable) {
         Page<ContestAPI> salida = contestService.getContestPage(pageable).map(Contest::toContestAPI);
         return new ResponseEntity<>(salida, HttpStatus.OK);
@@ -50,7 +49,7 @@ public class APIContestController {
 
     @Operation( summary = "Return selected contest with full Problems")
     @GetMapping("contest/{contestId}")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<ContestAPI> getContest(@PathVariable String contestId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
 
@@ -68,7 +67,7 @@ public class APIContestController {
 
     @Operation( summary = "Create a contest")
     @PostMapping("contest")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<ContestAPI> addContest(@RequestParam String contestName, @RequestParam String teamId, @RequestParam Optional<String> descripcion, @RequestParam long startTimestamp, @RequestParam long endTimestamp) {
         contestName = Sanitizer.removeLineBreaks(contestName);
         teamId = Sanitizer.removeLineBreaks(teamId);
@@ -84,7 +83,7 @@ public class APIContestController {
 
     @Operation( summary = "Delete a contest")
     @DeleteMapping("contest/{contestId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteContest(@PathVariable String contestId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         String salida = contestService.deleteContest(contestId);
@@ -97,7 +96,7 @@ public class APIContestController {
 
     @Operation( summary = "Update a contest")
     @PutMapping("contest/{contestId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<ContestAPI> updateContest(@PathVariable String contestId, @RequestParam Optional<String> contestName, @RequestParam Optional<String> teamId, @RequestParam Optional<String> descripcion, @RequestParam Optional<Long> startTimestamp, @RequestParam Optional<Long> endTimestamp) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         contestName = Sanitizer.removeLineBreaks(contestName);
@@ -114,7 +113,7 @@ public class APIContestController {
 
     @Operation( summary = "Add Problem to Contest")
     @PutMapping("contest/{contestId}/{problemId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> addProblemToContest(@PathVariable String problemId, @PathVariable String contestId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         contestId = Sanitizer.removeLineBreaks(contestId);
@@ -129,7 +128,7 @@ public class APIContestController {
 
     @Operation( summary = "Delete a Problem from a Contest")
     @DeleteMapping("contest/{contestId}/{problemId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteProblemFromContest(@PathVariable String problemId, @PathVariable String contestId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         contestId = Sanitizer.removeLineBreaks(contestId);
@@ -144,7 +143,7 @@ public class APIContestController {
 
     @Operation( summary = "Add Team to Contest")
     @PutMapping("contest/{contestId}/team/{teamId}")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<String> addTeamToContest(@PathVariable String contestId, @PathVariable String teamId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         teamId = Sanitizer.removeLineBreaks(teamId);
@@ -159,7 +158,7 @@ public class APIContestController {
 
     @Operation( summary = "Bulk add Team to Contest")
     @PutMapping("contest/{contestId}/team/addBulk")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> addTeamToContest(@PathVariable String contestId, @RequestParam String[] teamList) {
         contestId = Sanitizer.removeLineBreaks(contestId);
 
@@ -173,7 +172,7 @@ public class APIContestController {
 
     @Operation( summary = "Delete Team From Contest")
     @DeleteMapping("contest/{contestId}/team/{teamId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteTeamFromContest(@PathVariable String contestId, @PathVariable String teamId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         teamId = Sanitizer.removeLineBreaks(teamId);
@@ -201,7 +200,7 @@ public class APIContestController {
 
     @Operation( summary = "Add Language to Contest")
     @PostMapping("contest/{contestId}/language")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> addLanguageToContest(@PathVariable String contestId, @RequestParam String language) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         language = Sanitizer.removeLineBreaks(language);
@@ -228,7 +227,7 @@ public class APIContestController {
 
     @Operation( summary = "Set accepted languages of a contest")
     @PostMapping("contest/{contestId}/language/addBulk")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> addAcceptedLanguagesToContest(@PathVariable String contestId, @RequestParam String[] languageList) {
         contestId = Sanitizer.removeLineBreaks(contestId);
 
@@ -241,7 +240,7 @@ public class APIContestController {
 
     @Operation( summary = "Get scores of a contest")
     @GetMapping("contest/{contestId}/scoreboard")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<TeamScore>> getScores(@PathVariable String contestId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
 
