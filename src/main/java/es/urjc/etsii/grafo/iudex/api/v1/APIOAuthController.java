@@ -23,7 +23,7 @@ public class APIOAuthController {
     public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OAuth2User oAuth2User) {
         AuthResponse authResponse = userService.loginUser(oAuth2User);
 
-        if (authResponse.getError() != null) return new ResponseEntity<>(authResponse, HttpStatus.OK);
+        if (authResponse.getError() == null) return new ResponseEntity<>(authResponse, HttpStatus.OK);
         else return new ResponseEntity<>(authResponse, HttpStatus.BAD_REQUEST);
     }
 
