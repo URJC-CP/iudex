@@ -45,7 +45,8 @@ public class JwtTokenProvider {
     }
 
 	public String getUsername(String token) {
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parserBuilder().setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256)).build()
+				.parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public String resolveToken(HttpServletRequest req) {
@@ -58,16 +59,11 @@ public class JwtTokenProvider {
 
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+			Jwts.parserBuilder().setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256)).build()
+					.parseClaimsJws(token);
 			return true;
-		} catch (SignatureException ex) {
-			LOG.debug("Invalid JWT Signature");
-		} catch (MalformedJwtException ex) {
-			LOG.debug("Invalid JWT token");
-		} catch (ExpiredJwtException ex) {
-			LOG.debug("Expired JWT token");
-		} catch (UnsupportedJwtException ex) {
-			LOG.debug("Unsupported JWT exception");
+		} catch (JwtException ex) {
+			LOG.debug("Invalid JWT Token");
 		} catch (IllegalArgumentException ex) {
 			LOG.debug("JWT claims string is empty");
 		}
