@@ -13,14 +13,14 @@ public class APIErrorController {
     @ExceptionHandler({ org.springframework.security.access.AccessDeniedException.class })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e) {
-        logger.error(e.toString());
+        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
         return "UNAUTHORIZED";
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleError(RuntimeException e) {
-        logger.error(e.toString());
+        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
         return "ERROR GENERAL DEL SISTEMA";
     }
 }

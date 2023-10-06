@@ -1,5 +1,6 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
+import es.urjc.etsii.grafo.iudex.exceptions.JwtIudexException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(JwtRequestFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
 
 	private final String jwtSecret = getJwtSecret();
 
@@ -35,12 +36,12 @@ public class JwtTokenProvider {
 			if (jwtSecretFile.createNewFile()) {
 				Files.writeString(jwtSecretFile.toPath(), RandomStringUtils.random(32, 0, 0, true, true, null, new SecureRandom()));
 
-				LOG.debug("JWT Secret file created successfully in " + jwtSecretFile.getAbsolutePath());
+				LOG.debug("JWT Secret file created successfully in {}", jwtSecretFile.getAbsolutePath());
 			}
 
 			return Files.readString(jwtSecretFile.toPath());
 		} catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JwtIudexException(e);
         }
     }
 

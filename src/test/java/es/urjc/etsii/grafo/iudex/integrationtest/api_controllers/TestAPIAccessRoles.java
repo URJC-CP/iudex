@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class TestAPIAccessRoles {
+class TestAPIAccessRoles {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,24 +35,24 @@ public class TestAPIAccessRoles {
 
     @Test
     @WithMockUser(username="admin",roles={"USER","ADMIN"})
-    public void adminShouldAccessAdminEndpoint() throws Exception {
+    void adminShouldAccessAdminEndpoint() throws Exception {
         mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username="judge",roles={"USER","JUDGE"})
-    public void judgeShouldBeDeniedAccessToAdminEndpoint() throws Exception {
+    void judgeShouldBeDeniedAccessToAdminEndpoint() throws Exception {
         mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(username="user")
-    public void userShouldBeDeniedAccessToAdminEndpoint() throws Exception {
+    void userShouldBeDeniedAccessToAdminEndpoint() throws Exception {
         mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unauthorizedShouldBeRedirectedOnAdminEndpoint() throws Exception {
+    void unauthorizedShouldBeRedirectedOnAdminEndpoint() throws Exception {
         mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().is3xxRedirection());
     }
 
