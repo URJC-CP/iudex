@@ -9,6 +9,7 @@ const baseUrl = '/API/v1/problem';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProblemService {
 
   constructor(private http: HttpClient) { }
@@ -25,6 +26,7 @@ export class ProblemService {
     return this.http.get(baseUrl + '/' + problemId + '/getPDF');
   }
 
+  //esto probablemente hay que cambiarlo
   getPageProblem(offset: number, paged: boolean, pageNumber: number, pageSize: number, sorted: boolean, unsorted: boolean, unpaged: boolean): Observable<PageDTO<ProblemDto>> {
     let httpOptions = {
       params: new HttpParams()

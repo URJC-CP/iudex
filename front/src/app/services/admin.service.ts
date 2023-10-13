@@ -8,6 +8,7 @@ const baseUrl = '/API/v1/result';
 @Injectable({
   providedIn: 'root'
 })
+
 export class AdminService{
 
   constructor(private http: HttpClient) {

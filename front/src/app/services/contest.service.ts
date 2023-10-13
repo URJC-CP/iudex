@@ -9,6 +9,7 @@ const baseUrl = '/API/v1/contest';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ContestService {
 
   constructor(private http: HttpClient) {
@@ -18,6 +19,7 @@ export class ContestService {
     return this.http.get<ContestDTO[]>(baseUrl);
   }
 
+  //esto probablemente hay que cambiarlo
   getPageContest(offset: number, paged: boolean, pageNumber: number, pageSize: number, sorted: boolean, unsorted: boolean, unpaged: boolean): Observable<PageDTO<ContestDTO>> {
     let httpOptions = {
       params: new HttpParams()
