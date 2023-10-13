@@ -5,6 +5,14 @@
   "projects": {
     "front": {
       "projectType": "application",
+      "i18n": {
+        "sourceLocale": "es-ES",
+        "locales": {
+          "en": {
+            "translation": "src/locale/messages.en.xlf"
+          }
+        }
+      },
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
@@ -27,7 +35,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "localize": true,
+            "i18nMissingTranslation": "error"
           },
           "configurations": {
             "production": {
@@ -52,6 +62,9 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "en": {
+              "localize": ["en"]
             }
           },
           "defaultConfiguration": "production"
@@ -64,6 +77,12 @@
             },
             "development": {
               "browserTarget": "front:build:development"
+            },
+            "en": {
+              "browserTarget": "front:build:production,en"
+            },
+            "en-dev": {
+              "browserTarget": "front:build:development,en"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +90,9 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "front:build"
+            "browserTarget": "front:build",
+            "format": "xlf",
+            "outputPath": "src/locale"
           }
         },
         "test": {
