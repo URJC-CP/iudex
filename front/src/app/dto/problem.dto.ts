@@ -2,9 +2,7 @@ import {TeamDTO} from './team.dto';
 import {SampleDTO} from './sample.dto';
 import {SubmissionDTO} from './submission.dto';
 
-
 export interface ProblemDto {
-
   id?: number;
   nombreEjercicio?: string;
   samples?: SampleDTO[];
