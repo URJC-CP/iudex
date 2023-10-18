@@ -1,0 +1,8 @@
+<p-menubar [model]="items">
+    <ng-template pTemplate="start">
+        <img src="assets/images/logo2.svg" height="40" class="mr-2" />
+    </ng-template>
+    <div class="inline-flex">
+            <button *ngIf="pageType=='user'" pButton pRipple label="Submit" class="p-button-success"></button>
+    </div>
+</p-menubar>
