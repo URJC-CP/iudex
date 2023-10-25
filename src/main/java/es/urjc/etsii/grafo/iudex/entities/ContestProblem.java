@@ -1,7 +1,8 @@
 package es.urjc.etsii.grafo.iudex.entities;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.*;
 
 @Entity
 public class ContestProblem {

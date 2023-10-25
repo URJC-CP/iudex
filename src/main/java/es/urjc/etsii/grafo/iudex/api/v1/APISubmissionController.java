@@ -12,24 +12,21 @@ import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APISubmissionController {
 
     @Autowired
@@ -43,7 +40,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<List<SubmissionAPI>> getSubmissions(@RequestParam(required = false) Optional<String> contestId, @RequestParam(required = false) Optional<String> problemId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         problemId = Sanitizer.removeLineBreaks(problemId);
@@ -106,7 +103,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Return Page of all submissions")
     @GetMapping("/API/v1/submission/page")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<Page<SubmissionAPI>> getAllSubmisionPage(Pageable pageable) {
         return new ResponseEntity<>(submissionService.getSubmissionsPage(pageable).map(Submission::toSubmissionAPI), HttpStatus.OK);
     }
@@ -114,7 +111,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Get submission with results")
     @GetMapping("/API/v1/submission/{submissionId}")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<SubmissionAPI> getSubmission(@PathVariable String submissionId) {
         submissionId = Sanitizer.removeLineBreaks(submissionId);
 
@@ -129,7 +126,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Create a submission to a problem and contest")
     @PostMapping("/API/v1/submission")
-    @RolesAllowed("ROLE_USER")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<SubmissionAPI> createSubmission(@RequestParam String problemId, @RequestParam String contestId, @RequestParam MultipartFile codigo, @RequestParam String lenguaje, @RequestParam String teamId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         contestId = Sanitizer.removeLineBreaks(contestId);
@@ -152,7 +149,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Delete API")
     @DeleteMapping("/API/v1/submission/{submissionId}")
-    @RolesAllowed("ROLE_JUDGE")
+    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteSubmission(@PathVariable String submissionId) {
         submissionId = Sanitizer.removeLineBreaks(submissionId);
 

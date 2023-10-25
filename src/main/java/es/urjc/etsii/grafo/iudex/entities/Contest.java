@@ -5,7 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.LanguageAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -26,7 +26,7 @@ public class Contest {
     @OneToMany(mappedBy = "contest")
     private Set<ContestProblem> listaProblemas;
 
-    @OneToMany(mappedBy= "lenguajes")
+    @OneToMany(mappedBy= "contest")
     private Set<ContestLanguages> lenguajes;
 
     @OneToMany(mappedBy = "contest")
