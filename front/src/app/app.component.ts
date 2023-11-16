@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TagModule } from 'primeng/tag';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +8,11 @@ import { TagModule } from 'primeng/tag';
 })
 export class AppComponent {
   title = 'IUDEX';
+
+  constructor(private primengConfig: PrimeNGConfig) {}
+
+    ngOnInit() {
+        this.primengConfig.ripple = true;
+    }
+
 }
