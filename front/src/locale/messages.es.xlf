@@ -246,6 +246,102 @@
           <context context-type="linenumber">133</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8349164794409130739" datatype="html">
+        <source>Welcome, Username</source>
+        <target>Bienvenido, Usuario</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5457691539607587997" datatype="html">
+        <source>Total submissions</source>
+        <target>Envíos totales</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="248706303884092608" datatype="html">
+        <source>Assigned contests</source>
+        <target>Concursos asignados</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6517017892563491996" datatype="html">
+        <source>AC Submissions</source>
+        <target>Envíos AC</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4328544884235882777" datatype="html">
+        <source>Contests subject 1</source>
+        <target>Concursos asignatura 1</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2311180389512030102" datatype="html">
+        <source>Contest 1</source>
+        <target>Concurso 1</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1007040795565119526" datatype="html">
+        <source> Start: time <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> End: time </source>
+        <target> Inicio: time <x id="LINE_BREAK" ctype="lb" equiv-text="&lt;br&gt;"/> Final: time </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">33,35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">41,43</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">49,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2276213080008535613" datatype="html">
+        <source>Go to contest</source>
+        <target>Ir al concurso</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="145102866268502043" datatype="html">
+        <source>Contest 2</source>
+        <target>Concurso 2</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1452698758387824748" datatype="html">
+        <source>Contest 3</source>
+        <target>Concurso 3</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/student-contests/student-contests.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

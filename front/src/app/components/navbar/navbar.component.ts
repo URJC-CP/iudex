@@ -9,10 +9,11 @@ import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 export class NavbarComponent {
   items: MenuItem[] | undefined;
   studentItems: MenuItem[] | undefined;
+  studentHomeItems: MenuItem[] | undefined;
   judgeItems: MenuItem[] | undefined;
   adminItems: MenuItem[] | undefined;
   username: MenuItem = {};
-  pageType: string | undefined = "student";
+  pageType: string | undefined = "studentHome";
   userType: string | undefined = "student";
 
   constructor(private router: Router) {
@@ -20,17 +21,20 @@ export class NavbarComponent {
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
-          if (event.url.startsWith("/student")){this.pageType == "student"}
+          if (event.url.endsWith("/student")){this.pageType == "studentHome"}
+          if (event.url.startsWith("/student") && !event.url.endsWith("/student")){this.pageType == "student"}
           if (event.url.startsWith("/judge")){this.pageType == "judge"}
           if (event.url.startsWith("/admin")){this.pageType == "admin"}
         }
       });
 
     this.studentItems = [
-      { label: $localize`Home`, icon: 'pi pi-fw pi-home' },
+      { label: $localize`Home`, icon: 'pi pi-fw pi-home', command: () => {
+        this.redirect("/student");
+    } },
       { label: $localize`Problems`, icon: 'pi pi-fw pi-calendar' },
       { label: $localize`Ranking`, icon: 'pi pi-fw pi-pencil' },
-      { label: $localize`Time`, icon: 'pi pi-fw pi-file' },
+      { label: $localize`Time`, style: { 'margin-left': 'auto' } },
       { label: $localize`Contest`, style: { 'margin-left': 'auto' } }
     ];
 
@@ -47,6 +51,8 @@ export class NavbarComponent {
       { label: $localize`Users`, icon: 'pi pi-fw pi-home' },
       { label: $localize`Results`, icon: 'pi pi-fw pi-calendar' }
     ];
+
+    this.studentHomeItems = [];
 
   }
 
@@ -189,6 +195,10 @@ export class NavbarComponent {
         this.adminItems?.push(this.username);
         this.items = this.adminItems;
         break;
+      case "studentHome":
+        this.studentHomeItems?.push(this.username);
+        this.items = this.studentHomeItems;
+        break;
       default:
         break;
     }
@@ -196,6 +206,10 @@ export class NavbarComponent {
   }
 
   logout() {
+
+  }
+
+  redirect(route: string){
 
   }
 
