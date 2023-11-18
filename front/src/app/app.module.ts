@@ -18,6 +18,9 @@ import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
+import { StudentHomeComponent } from './components/student-home/student-home.component';
+import { StudentProblemsComponent } from './components/student-problems/student-problems.component';
+import { StudentRankingComponent } from './components/student-ranking/student-ranking.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { CardModule } from 'primeng/card';
     HomeComponent,
     NavbarComponent,
     FooterComponent,
-    StudentContestsComponent
+    StudentContestsComponent,
+    StudentHomeComponent,
+    StudentProblemsComponent,
+    StudentRankingComponent
   ],
   imports: [
     BrowserModule,
