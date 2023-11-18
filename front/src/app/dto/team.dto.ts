@@ -1,6 +1,6 @@
 import { ContestDTO } from './contest.dto';
 import {SubmissionDTO} from './submission.dto';
-import {ProblemDto} from './problem.dto';
+import {ProblemDTO} from './problem.dto';
 import {UserDTO} from './user.dto';
 
 export interface TeamDTO {
@@ -9,8 +9,8 @@ export interface TeamDTO {
   listaContestsCreados?: ContestDTO[];
   listaContestsParticipados?: ContestDTO[];
   listaDeSubmissions?: SubmissionDTO[];
-  listaProblemasCreados?: ProblemDto[];
-  listaProblemasParticipados?: ProblemDto[];
+  listaProblemasCreados?: ProblemDTO[];
+  listaProblemasParticipados?: ProblemDTO[];
   participantes?: UserDTO[];
   timestamp?: number;
 

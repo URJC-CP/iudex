@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ContestDTO } from '../dto/contest.dto';
 import { PageDTO } from '../dto/page.dto';
+import { ProblemScoreDTO } from '../dto/problemScore.dto';
 
 const baseUrl = '/API/v1/contest';
 
@@ -38,8 +39,8 @@ export class ContestService {
     return this.http.get<ContestDTO>(baseUrl + '/' + contestId);
   }
 
-  getScoreboard(contestId: string): Observable<any> {
-    return this.http.get(baseUrl + '/' + contestId + '/scoreboard');
+  getScoreboard(contestId: string): Observable<ProblemScoreDTO> {
+    return this.http.get<ProblemScoreDTO>(baseUrl + '/' + contestId + '/scoreboard');
   }
 
   createContest(contestName: string, descripcion: string, teamId: string, startTimestamp: number, endTimestamp: number): Observable<ContestDTO> {

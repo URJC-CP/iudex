@@ -1,13 +1,13 @@
 import {TeamDTO} from './team.dto';
 
-import {ProblemDto} from './problem.dto';
+import {ProblemDTO} from './problem.dto';
 import {LanguageDTO} from './language.dto';
 
 export interface ContestDTO {
   descripcion?: string;
   id?: string;
   listaParticipantes?: TeamDTO[];
-  listaProblemas?:ProblemDto[];
+  listaProblemas?:ProblemDTO[];
   nombreContest?: string;
   teamPropietario?: TeamDTO;
   timestamp?: number;
