@@ -4,7 +4,7 @@ import {SubmissionDTO} from './submission.dto';
 
 export interface ProblemDTO {
   id?: number;
-  nombreEjercicio?: string;
+  nombreEjercicio: string;
   samples?: SampleDTO[];
   submissions?: SubmissionDTO[];
   equipoPropietario?: TeamDTO;

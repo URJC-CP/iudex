@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProblemDto } from '../dto/problem.dto';
+import { ProblemDTO } from '../dto/problem.dto';
 import { PageDTO } from '../dto/page.dto';
 
 const baseUrl = '/API/v1/problem';
@@ -14,12 +14,12 @@ export class ProblemService {
 
   constructor(private http: HttpClient) { }
 
-  getAllProblems(): Observable<ProblemDto[]> {
-    return this.http.get<ProblemDto[]>(baseUrl);
+  getAllProblems(): Observable<ProblemDTO[]> {
+    return this.http.get<ProblemDTO[]>(baseUrl);
   }
 
-  getSelectedProblem(problemId: string): Observable<ProblemDto> {
-    return this.http.get<ProblemDto>(baseUrl + '/' + problemId);
+  getSelectedProblem(problemId: string): Observable<ProblemDTO> {
+    return this.http.get<ProblemDTO>(baseUrl + '/' + problemId);
   }
 
   getPdfFromProblem(problemId: string): Observable<any> {
@@ -27,7 +27,7 @@ export class ProblemService {
   }
 
   //esto probablemente hay que cambiarlo
-  getPageProblem(offset: number, paged: boolean, pageNumber: number, pageSize: number, sorted: boolean, unsorted: boolean, unpaged: boolean): Observable<PageDTO<ProblemDto>> {
+  getPageProblem(offset: number, paged: boolean, pageNumber: number, pageSize: number, sorted: boolean, unsorted: boolean, unpaged: boolean): Observable<PageDTO<ProblemDTO>> {
     let httpOptions = {
       params: new HttpParams()
         .set('offset', "" + offset)
@@ -38,14 +38,14 @@ export class ProblemService {
         .set('sort.unsorted', "" + unsorted)
         .set('unpaged', "" + unpaged)
     };
-    return this.http.get<PageDTO<ProblemDto>>(baseUrl + '/page', httpOptions);
+    return this.http.get<PageDTO<ProblemDTO>>(baseUrl + '/page', httpOptions);
   }
 
-  createProblemFromZip(contestId: string, file: File, problemName: string, teamId: string): Observable<ProblemDto> {
+  createProblemFromZip(contestId: string, file: File, problemName: string, teamId: string): Observable<ProblemDTO> {
     let formData: FormData = new FormData();
     formData.append('file', file, file.name);
 
-    return this.http.post<ProblemDto>(baseUrl + 'problem/fromZip', formData, {
+    return this.http.post<ProblemDTO>(baseUrl + 'problem/fromZip', formData, {
       params: {
         problemName: problemName,
         teamId: teamId,
@@ -61,7 +61,7 @@ export class ProblemService {
       formData.append('salida', outputFile, outputFile.name);
     }
 
-    return this.http.post<ProblemDto>(baseUrl + '/' + problemId + '/sample', formData, {
+    return this.http.post<ProblemDTO>(baseUrl + '/' + problemId + '/sample', formData, {
       params: {
         name: name,
         isPublic: isPublic,
@@ -69,12 +69,12 @@ export class ProblemService {
     });
   }
 
-  updateProblem(problemId: string, pdf: File, problemName: string, teamId: string, timeout: string): Observable<ProblemDto> {
+  updateProblem(problemId: string, pdf: File, problemName: string, teamId: string, timeout: string): Observable<ProblemDTO> {
     if (pdf != null) {
       let formData: FormData = new FormData();
       formData.append('pdf', pdf, pdf.name);
 
-      return this.http.put<ProblemDto>(baseUrl + '/' + problemId, formData, {
+      return this.http.put<ProblemDTO>(baseUrl + '/' + problemId, formData, {
         params: {
           problemName: problemName,
           teamId: teamId,
@@ -83,7 +83,7 @@ export class ProblemService {
       });
     }
 
-    return this.http.put<ProblemDto>(baseUrl + '/' + problemId, null, {
+    return this.http.put<ProblemDTO>(baseUrl + '/' + problemId, null, {
       params: {
         problemName: problemName,
         teamId: teamId,
@@ -107,11 +107,11 @@ export class ProblemService {
     });
   }
 
-  updateProblemFromZip(problemId: string, contestId: string, file: File, problemName: string, teamId: string): Observable<ProblemDto> {
+  updateProblemFromZip(problemId: string, contestId: string, file: File, problemName: string, teamId: string): Observable<ProblemDTO> {
     let formData: FormData = new FormData();
     formData.append('file', file, file.name);
 
-    return this.http.put<ProblemDto>(baseUrl + '/' + problemId + '/fromZip', formData, {
+    return this.http.put<ProblemDTO>(baseUrl + '/' + problemId + '/fromZip', formData, {
       params: {
         problemName: problemName,
         teamId: teamId,

@@ -21,21 +21,23 @@ export class NavbarComponent {
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
-          if (event.url.endsWith("/student")){this.pageType == "studentHome"}
-          if (event.url.startsWith("/student") && !event.url.endsWith("/student")){this.pageType == "student"}
-          if (event.url.startsWith("/judge")){this.pageType == "judge"}
-          if (event.url.startsWith("/admin")){this.pageType == "admin"}
+          if (event.url.endsWith("/student")) { this.pageType == "studentHome" }
+          if (event.url.startsWith("/student") && !event.url.endsWith("/student")) { this.pageType == "student" }
+          if (event.url.startsWith("/judge")) { this.pageType == "judge" }
+          if (event.url.startsWith("/admin")) { this.pageType == "admin" }
         }
       });
 
     this.studentItems = [
-      { label: $localize`Home`, icon: 'pi pi-fw pi-home', command: () => {
-        this.redirect("/student");
-    } },
+      { label: $localize`Home`, icon: 'pi pi-fw pi-home' },
       { label: $localize`Problems`, icon: 'pi pi-fw pi-calendar' },
       { label: $localize`Ranking`, icon: 'pi pi-fw pi-pencil' },
       { label: $localize`Time`, style: { 'margin-left': 'auto' } },
-      { label: $localize`Contest`, style: { 'margin-left': 'auto' } }
+      {
+        label: $localize`Contest`, style: { 'margin-left': 'auto' }, command: () => {
+          this.redirect("/student");
+        }
+      }
     ];
 
     this.judgeItems = [
@@ -209,7 +211,7 @@ export class NavbarComponent {
 
   }
 
-  redirect(route: string){
+  redirect(route: string) {
 
   }
 

@@ -1,13 +1,13 @@
 import {TeamDTO} from './team.dto';
 import {LanguageDTO} from './language.dto';
 import {ResultDTO} from './result.dto';
-import {ProblemBasicInfoDto} from './problembasicinfo.dto';
+import {ProblemDTO} from './problem.dto';
 
 export interface SubmissionDTO {
   id?: number;
   results?: ResultDTO[];
   team?: TeamDTO;
-  problem?: ProblemBasicInfoDto;
+  problem?: ProblemDTO;
   corregido?: boolean;
   numeroResultCorregidos?: number;
   resultado?: string;
