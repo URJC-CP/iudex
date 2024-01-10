@@ -2,7 +2,7 @@ package es.urjc.etsii.grafo.iudex.entities;
 
 import es.urjc.etsii.grafo.iudex.pojos.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class Team {
     private Set<TeamUser> participantes;
     private boolean esUser;
     
-    @OneToMany(mappedBy = "contest")
+    @OneToMany
     Set<ContestProblem> listaProblemas;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)

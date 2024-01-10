@@ -31,7 +31,7 @@ public class ZipHandlerService {
     }
 
     //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
-    public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String teamId) throws Exception {
+    public ProblemString generateProblemFromZIP(Problem problem, String problemName, InputStream inputStream, String teamId, String contestId) throws Exception {
         logger.info("Generate problem {}", problemName);
         ProblemString problemString = new ProblemString();
 
@@ -135,7 +135,7 @@ public class ZipHandlerService {
                         //obtenemos el string del codigo
                         String aux = convertZipToString(zipFile);
                         //para ProblemValidator NO PONEMOS EL CONCURSO PARA EVITAR EL BORRADO DE LA SUBMISSION CUANDO SE BORRE EL CONCURSO Y ESE PROBLEMA TMB ESTE EN OTRO CONCURSO
-                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, teamId);
+                        SubmissionProblemValidator submissionProblemValidator = submissionProblemValidatorService.createSubmissionNoExecute(aux, problem, lenguaje, filename, resultadoEsperado, teamId, contestId);
                         //Anyadimos el submissionproblemvalidator al problema
                         problem.getSubmissionProblemValidators().add(submissionProblemValidator);
                         logger.info("ZIP COMPRESS: Adding new submission for problem {}", problemName);

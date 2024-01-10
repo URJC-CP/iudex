@@ -5,7 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.SampleAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
@@ -33,10 +33,10 @@ public class Problem {
     private Set<Submission> submissions;
     @ManyToOne
     private Team equipoPropietario;
-    @OneToMany(mappedBy = "problem")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problem")
     private Set<TeamsProblems> listaProblemasParticipados;
-    @OneToMany(mappedBy = "problem")
-    Set<ContestProblem> listaProblemas;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "problem")
+    Set<ContestProblem> listaConcursos;
     private boolean valido;
     private long timestamp = Instant.now().toEpochMilli();
     private int numeroSubmissions;
@@ -68,7 +68,7 @@ public class Problem {
         this.datos = new HashSet<>();
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaProblemas = new HashSet<>();
+        this.listaConcursos = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
         this.listaProblemasParticipados = new HashSet<>();
         //valores por defecto
@@ -88,7 +88,7 @@ public class Problem {
 
         this.submissionProblemValidators = new HashSet<>();
         this.submissions = new HashSet<>();
-        this.listaProblemas = new HashSet<>();
+        this.listaConcursos = new HashSet<>();
         this.oldSubmissionProblemValidators = new HashSet<>();
         this.listaProblemasParticipados = new HashSet<>();
 
@@ -473,12 +473,16 @@ public class Problem {
     }
 
 
-    public Set<ContestProblem> getListaProblemas() {
-        return listaProblemas;
+    public Set<ContestProblem> getListaConcursos() {
+        return listaConcursos;
     }
 
-    public void setListaProblemas(Set<ContestProblem> listaProblemas) {
-        this.listaProblemas = listaProblemas;
+    public void setListaConcursos(Set<ContestProblem> listaProblemas) {
+        this.listaConcursos = listaProblemas;
+    }
+
+    public void addContest(ContestProblem contest) {
+        this.listaConcursos.add(contest);
     }
 
     public Set<SubmissionProblemValidator> getOldSubmissionProblemValidators() {

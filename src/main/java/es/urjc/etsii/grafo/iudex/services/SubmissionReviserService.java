@@ -3,6 +3,10 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.entities.Submission;
 import es.urjc.etsii.grafo.iudex.entities.SubmissionProblemValidator;
+import es.urjc.etsii.grafo.iudex.events.publishers.IudexSpecificContestSubmissionEventPublisher;
+import es.urjc.etsii.grafo.iudex.events.publishers.IudexSpecificContestTeamSubmissionEventPublisher;
+import es.urjc.etsii.grafo.iudex.events.types.IudexSubmissionEvent;
+import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import es.urjc.etsii.grafo.iudex.repositories.SubmissionProblemValidatorRepository;
 import es.urjc.etsii.grafo.iudex.repositories.SubmissionRepository;
 import org.slf4j.Logger;
@@ -26,20 +30,38 @@ public class SubmissionReviserService {
     @Autowired
     private ProblemValidatorService problemValidatorService;
 
+    @Autowired
+    private IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher;
+
+    @Autowired
+    private IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher;
+
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado
     public void revisarSubmission(Submission submission) {
         logger.info("Review submission {}", submission.getId());
 
-        if (checkAccepted(submission)) {
-            submission.setResult("accepted");
-        } else {
-            submission.setResult(checkSubmission(submission));
-        }
-
         //HAY QUE HACERLO CON EL RESTO DE OPCIONES WRONG ANSWER ETCETC
         submission.setCorregido(true);
-        submissionRepository.save(submission);
+
+        if (checkAccepted(submission)) {
+            submission.setResult("accepted");
+            submissionRepository.save(submission);
+
+            SubmissionAPI submissionAPI = submission.toSubmissionAPISimple();
+            submissionAPI.setProblem(submission.getProblem().toProblemAPISimple());
+
+            iudexSpecificContestSubmissionEventPublisher.sendMessage(new IudexSubmissionEvent(submissionAPI), submission.getContest().getId());
+        } else {
+            submission.setResult(checkSubmission(submission));
+            submissionRepository.save(submission);
+
+            SubmissionAPI submissionAPI = submission.toSubmissionAPISimple();
+            submissionAPI.setProblem(submission.getProblem().toProblemAPISimple());
+
+            iudexSpecificContestTeamSubmissionEventPublisher.sendMessage(new IudexSubmissionEvent(submissionAPI), submission.getContest().getId(), submission.getTeam().getId());
+        }
+
 
         //Ahora buscamos si pudiera ser una submission de problema entrado desde ZIP
         Optional<SubmissionProblemValidator> submissionProblemValidatorOptional = submissionProblemValidatorRepository.findSubmissionProblemValidatorBySubmission(submission);

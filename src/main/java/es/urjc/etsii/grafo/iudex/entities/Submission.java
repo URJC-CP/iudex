@@ -4,7 +4,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ResultAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import com.google.common.hash.Hashing;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;

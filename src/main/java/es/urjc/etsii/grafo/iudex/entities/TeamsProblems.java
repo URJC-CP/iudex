@@ -3,7 +3,7 @@ package es.urjc.etsii.grafo.iudex.entities;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 public class TeamsProblems {

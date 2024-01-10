@@ -25,7 +25,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -103,7 +102,7 @@ class TestAPITeamController {
     void testAPICreateTeam() throws Exception {
         String badTeam = "";
         String goodTeam = team.getNombreEquipo();
-        String url = "/API/v1/team/";
+        String url = "/API/v1/team";
 
         TeamString ts = new TeamString();
         String salida = "";

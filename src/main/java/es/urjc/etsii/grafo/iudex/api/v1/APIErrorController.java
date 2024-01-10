@@ -6,14 +6,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
-@CrossOrigin(methods = {RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT})
 public class APIErrorController {
     private static final Logger logger = LoggerFactory.getLogger(APIErrorController.class);
+
+    @ExceptionHandler({ org.springframework.security.access.AccessDeniedException.class })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e) {
+        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
+        return "UNAUTHORIZED";
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleError(RuntimeException e) {
-        logger.error(e.toString());
+        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
         return "ERROR GENERAL DEL SISTEMA";
     }
 }
