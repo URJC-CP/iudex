@@ -55,7 +55,7 @@ Los requisitos para lanzar la aplicación son los siguientes:
 Se podrá lanzar ejecutando el siguiente comando:
 
 ```
-docker-compose -f docker-compose-prod.yml up
+docker-compose -f docker-compose-prod.yml up --build
 ```
 
 En este punto, tendremos información que nos resultará interesante en las siguientes IPs:
@@ -75,5 +75,6 @@ Sudip Giri (s.giri.2017@alumnos.urjc.es) <br>
 Miguel Sierra Alonso (m.sierraal@alumnos.urjc.es) <br>
 Rufino García Sánchez (r.garciasa.2017@alumnos.urjc.es) <br>
 Iván Penedo Ventosa (i.penedo.2020@alumnos.urjc.es) <br>
+Adaya María Ruiz Mayoral (am.ruiz.2020@alumnos.urjc.es) <br>
 José Manuel Colmenar Verdugo (josemanuel.colmenar@urjc.es) <br>
 Jesús Sánchez-Oro Calvo (jesus.sanchezoro@urjc.es) <br>
