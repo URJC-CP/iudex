@@ -42,7 +42,7 @@
             // console.log(frame);
             stompClient.subscribe('/all/simple', function (result) {
                 // show("SIMPLE: ", JSON.parse(result.body).text);
-                show('bg-primary', 'Simple', JSON.parse(result.body).text)
+                show('bg-primary', 'Broadcast', JSON.parse(result.body).text)
             });
         });
 
@@ -62,10 +62,15 @@
             // var prefix = (team_id !== '') ? `SUBMISSION (C-${contest_id} | T-${team_id}): ` : `SUBMISSION (C-${contest_id}): `;
 
             stompClient.subscribe(path, function (result) {
+                console.log(result.body);
+                submission = JSON.parse(result.body).submission;
+
+                message = `Team ${submission.team.nombreEquipo} obtained ${submission.resultado} in problem ${submission.problem.nombreEjercicio}!`;
+
                 // show(prefix, result.body);
-                if (type == 0) show('bg-info', 'Submission', result.body);
-                else if (type == 1) show('bg-info', 'Submission (C-${contest_id})', result.body);
-                else if (type == 2) show('bg-info', 'Submission (C-${contest_id} | T-${team_id})', result.body);
+                if (type == 0) show('bg-info', 'New submission', message);
+                else if (type == 1) show('bg-info', `New submission`, message);
+                else if (type == 2) show('bg-info', `New submission`, message);
             });
         }
 
