@@ -11,7 +11,6 @@ import es.urjc.etsii.grafo.iudex.repositories.SubmissionProblemValidatorReposito
 import es.urjc.etsii.grafo.iudex.repositories.SubmissionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,19 +21,26 @@ import java.util.Optional;
 public class SubmissionReviserService {
     private static final Logger logger = LoggerFactory.getLogger(SubmissionReviserService.class);
 
-    @Autowired
-    private SubmissionRepository submissionRepository;
-    @Autowired
-    private SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
+    private final SubmissionRepository submissionRepository;
+    private final SubmissionProblemValidatorRepository submissionProblemValidatorRepository;
 
-    @Autowired
-    private ProblemValidatorService problemValidatorService;
+    private final ProblemValidatorService problemValidatorService;
 
-    @Autowired
-    private IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher;
+    private final IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher;
 
-    @Autowired
-    private IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher;
+    private final IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher;
+
+    public SubmissionReviserService(IudexSpecificContestTeamSubmissionEventPublisher iudexSpecificContestTeamSubmissionEventPublisher,
+                                    IudexSpecificContestSubmissionEventPublisher iudexSpecificContestSubmissionEventPublisher,
+                                    ProblemValidatorService problemValidatorService,
+                                    SubmissionProblemValidatorRepository submissionProblemValidatorRepository,
+                                    SubmissionRepository submissionRepository) {
+        this.iudexSpecificContestTeamSubmissionEventPublisher = iudexSpecificContestTeamSubmissionEventPublisher;
+        this.iudexSpecificContestSubmissionEventPublisher = iudexSpecificContestSubmissionEventPublisher;
+        this.problemValidatorService = problemValidatorService;
+        this.submissionProblemValidatorRepository = submissionProblemValidatorRepository;
+        this.submissionRepository = submissionRepository;
+    }
 
     @Transactional
     //Metodo que revisa si una submission ha sido aceptada y si no, indica el primero de los errores que ha dado

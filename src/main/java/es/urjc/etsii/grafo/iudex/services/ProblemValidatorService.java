@@ -9,7 +9,6 @@ import es.urjc.etsii.grafo.iudex.repositories.ProblemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -23,13 +22,18 @@ import java.util.Optional;
 public class ProblemValidatorService {
     private static final Logger logger = LoggerFactory.getLogger(ProblemValidatorService.class);
 
-    @Autowired
-    private ProblemRepository problemRepository;
+    private final ProblemRepository problemRepository;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private RabbitResultExecutionSender sender;
+    private final RabbitTemplate rabbitTemplate;
+    private final RabbitResultExecutionSender sender;
+
+    public ProblemValidatorService(RabbitResultExecutionSender sender,
+                                   RabbitTemplate rabbitTemplate,
+                                   ProblemRepository problemRepository) {
+        this.sender = sender;
+        this.rabbitTemplate = rabbitTemplate;
+        this.problemRepository = problemRepository;
+    }
 
     public void validateProblem(Problem problemA) {
         Optional<Problem> problemOptional = problemRepository.findProblemById(problemA.getId());
