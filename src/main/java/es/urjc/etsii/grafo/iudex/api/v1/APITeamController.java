@@ -6,7 +6,6 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,8 +17,11 @@ import java.util.Optional;
 
 @RestController
 public class APITeamController {
-    @Autowired
-    UserAndTeamService teamService;
+    final UserAndTeamService teamService;
+
+    public APITeamController(UserAndTeamService teamService) {
+        this.teamService = teamService;
+    }
 
     @Operation( summary = "Return all Teams")
     @GetMapping("/API/v1/team")

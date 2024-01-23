@@ -12,7 +12,6 @@ import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,14 +28,20 @@ import java.util.Optional;
 @RestController
 public class APISubmissionController {
 
-    @Autowired
-    SubmissionService submissionService;
-    @Autowired
-    ContestService contestService;
-    @Autowired
-    ProblemService problemService;
-    @Autowired
-    ContestProblemService contestProblemService;
+    final SubmissionService submissionService;
+    final ContestService contestService;
+    final ProblemService problemService;
+    final ContestProblemService contestProblemService;
+
+    public APISubmissionController(ContestProblemService contestProblemService,
+                                   ProblemService problemService,
+                                   ContestService contestService,
+                                   SubmissionService submissionService) {
+        this.contestProblemService = contestProblemService;
+        this.problemService = problemService;
+        this.contestService = contestService;
+        this.submissionService = submissionService;
+    }
 
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
     @GetMapping("/API/v1/submissions")

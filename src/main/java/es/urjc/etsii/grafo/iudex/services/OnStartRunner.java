@@ -3,7 +3,6 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -19,16 +18,22 @@ import java.util.TimeZone;
 public class OnStartRunner implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(OnStartRunner.class);
 
-    @Autowired
-    private ContestService contestService;
-    @Autowired
-    private UserAndTeamService userAndTeamService;
+    private final ContestService contestService;
+    private final UserAndTeamService userAndTeamService;
 
-    @Autowired
-    private LanguageService languageService;
+    private final LanguageService languageService;
 
-    @Autowired
-    private ResultHandler resultHandler;
+    private final ResultHandler resultHandler;
+
+    public OnStartRunner(ResultHandler resultHandler,
+                         LanguageService languageService,
+                         UserAndTeamService userAndTeamService,
+                         ContestService contestService) {
+        this.resultHandler = resultHandler;
+        this.languageService = languageService;
+        this.userAndTeamService = userAndTeamService;
+        this.contestService = contestService;
+    }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

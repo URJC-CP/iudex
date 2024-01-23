@@ -255,11 +255,12 @@ public class UserAndTeamService {
             return salida;
         }
 
+        userTeamRespository.save(teamUser);
         team.getParticipantes().add(teamUser);
         teamRepository.save(team);
 
         salida.setSalida("OK");
-        salida.setTeam(team);
+        salida.setTeam(teamRepository.findTeamById(team.getId()).orElseThrow());
         logger.debug("Finish add user {} to team {}", userId, teamId);
         return salida;
     }

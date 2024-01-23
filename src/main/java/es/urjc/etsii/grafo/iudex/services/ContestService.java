@@ -13,7 +13,6 @@ import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import es.urjc.etsii.grafo.iudex.utils.TeamScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,22 +27,32 @@ import java.util.stream.Collectors;
 public class ContestService {
     private static final Logger logger = LoggerFactory.getLogger(ContestService.class);
 
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private ContestProblemRepository contestProblemRepository;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private ContestTeamRespository contestTeamRespository;
-    @Autowired
-    private ProblemService problemService;
-    @Autowired
-    private UserAndTeamService teamService;
-    @Autowired
-    private LanguageService languageService;
-    @Autowired
-    private ContestProblemService contestProblemService;
+    private final ContestRepository contestRepository;
+    private final ContestProblemRepository contestProblemRepository;
+    private final TeamRepository teamRepository;
+    private final ContestTeamRespository contestTeamRespository;
+    private final ProblemService problemService;
+    private final UserAndTeamService teamService;
+    private final LanguageService languageService;
+    private final ContestProblemService contestProblemService;
+
+    public ContestService(ContestProblemService contestProblemService,
+                          LanguageService languageService,
+                          UserAndTeamService teamService,
+                          ProblemService problemService,
+                          ContestTeamRespository contestTeamRespository,
+                          TeamRepository teamRepository,
+                          ContestProblemRepository contestProblemRepository,
+                          ContestRepository contestRepository) {
+        this.contestProblemService = contestProblemService;
+        this.languageService = languageService;
+        this.teamService = teamService;
+        this.problemService = problemService;
+        this.contestTeamRespository = contestTeamRespository;
+        this.teamRepository = teamRepository;
+        this.contestProblemRepository = contestProblemRepository;
+        this.contestRepository = contestRepository;
+    }
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
         logger.debug("Build contest {}", nameContest);

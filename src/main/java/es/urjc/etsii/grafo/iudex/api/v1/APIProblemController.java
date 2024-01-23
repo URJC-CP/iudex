@@ -24,8 +24,11 @@ import java.util.Optional;
 @RequestMapping("/API/v1/")
 public class APIProblemController {
 
-    @Autowired
-    ProblemService problemService;
+    final ProblemService problemService;
+
+    public APIProblemController(ProblemService problemService) {
+        this.problemService = problemService;
+    }
 
     //Get all problems in DB
     @Operation( summary = "Return All Problems")

@@ -3,10 +3,12 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +16,11 @@ import java.util.Optional;
 @RestController
 public class APIUserController {
 
-    @Autowired
-    UserAndTeamService userAndTeamService;
+    final UserAndTeamService userAndTeamService;
+
+    public APIUserController(UserAndTeamService userAndTeamService) {
+        this.userAndTeamService = userAndTeamService;
+    }
 
     @Operation( summary = "Add a specific role to an existing user")
     @PostMapping("/API/v1/user/{id}/role/{role}")

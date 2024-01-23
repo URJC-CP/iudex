@@ -7,7 +7,6 @@ import es.urjc.etsii.grafo.iudex.repositories.SubmissionRepository;
 import es.urjc.etsii.grafo.iudex.services.ResultReviser;
 import es.urjc.etsii.grafo.iudex.services.SubmissionReviserService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +15,17 @@ import java.util.Optional;
 //Clase que se encarga de recibir el result
 @Service
 public class RabbitResultRevieserReceiver {
-    @Autowired
     private ResultRepository resultRepository;
-    @Autowired
     private SubmissionRepository submissionRepository;
-    @Autowired
-    private SubmissionReviserService submissionReviserService;
+    private final SubmissionReviserService submissionReviserService;
 
+    public RabbitResultRevieserReceiver(SubmissionReviserService submissionReviserService,
+                                        SubmissionRepository submissionRepository,
+                                        ResultRepository resultRepository) {
+        this.submissionReviserService = submissionReviserService;
+        this.submissionRepository = submissionRepository;
+        this.resultRepository = resultRepository;
+    }
 
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME2)
     @Transactional

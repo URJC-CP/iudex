@@ -3,15 +3,17 @@ package es.urjc.etsii.grafo.iudex.rabbitmq;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 //Clase que se encarga de enviar un result a la cola
 @Service
 public class RabbitResultExecutionSender {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
+
+    public RabbitResultExecutionSender(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
 
     public void sendMessage(Result res) {
