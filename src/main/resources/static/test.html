@@ -1,32 +1,76 @@
-<html>
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iudex WebSockets Showcase</title>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" 
+        crossorigin="anonymous">
+
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        #parent {
+            min-height: 100vh;
+        }
+
+        .box {
+            height: 20px;
+            width: 20px;
+            clear: both;
+        }
+    </style>
+
+    <!-- StompJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
     <script type="text/javascript">
         var stompClient = null;
+        const toastTemplate = '<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true"><div class="toast-header"><div class="box rounded me-2 {bg-color}"></div><strong class="me-auto">{websocket-type}</strong><small class="text-body-secondary">just now</small><button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div><div class="toast-body">{toast-message}</div></div>';
 
         var socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
-        stompClient.connect({}, function(frame) {
-            console.log(frame);
-            stompClient.subscribe('/all/simple', function(result) {
-                show("SIMPLE: ", JSON.parse(result.body).text);
+        stompClient.connect({}, function (frame) {
+            // console.log(frame);
+            stompClient.subscribe('/all/simple', function (result) {
+                // show("SIMPLE: ", JSON.parse(result.body).text);
+                show('bg-primary', 'Broadcast', JSON.parse(result.body).text)
             });
         });
 
 
-        function connectSocket(path) {
+        function connectSocket(path, type) {
             var contest_id = document.getElementById('contest_id').value;
             var team_id = document.getElementById('team_id').value;
             document.getElementById('contest_id').value = '';
             document.getElementById('team_id').value = '';
 
+            // Empty field rejection
+            if (type == 2 && (contest_id == '' || team_id == '')) return;
+            if (type == 1 && contest_id == '') return;
+
             path = path.replace('{contest_id}', contest_id).replace('{team_id}', team_id);
 
-            var prefix = (team_id !== '') ? `SUBMISSION (C-${contest_id} | T-${team_id}): ` : `SUBMISSION (C-${contest_id}): `;
+            // var prefix = (team_id !== '') ? `SUBMISSION (C-${contest_id} | T-${team_id}): ` : `SUBMISSION (C-${contest_id}): `;
 
-            stompClient.subscribe(path, function(result) {
-                show(prefix, result.body);
+            stompClient.subscribe(path, function (result) {
+                console.log(result.body);
+                submission = JSON.parse(result.body).submission;
+
+                message = `Team ${submission.team.nombreEquipo} obtained ${submission.resultado} in problem ${submission.problem.nombreEjercicio}!`;
+
+                // show(prefix, result.body);
+                if (type == 0) show('bg-info', 'New submission', message);
+                else if (type == 1) show('bg-info', `New submission`, message);
+                else if (type == 2) show('bg-info', `New submission`, message);
             });
         }
 
@@ -34,42 +78,93 @@
         function sendMessage() {
             var text = document.getElementById('text').value;
             stompClient.send("/app/application", {},
-                JSON.stringify({'text':text}));
+                JSON.stringify({ 'text': text }));
         }
 
 
-        function show(prefix, message) {
+        function show(bgColor, wsType, message) {
             var response = document.getElementById('messages');
-            var p = document.createElement('p');
-            p.innerHTML= prefix + message;
-            response.appendChild(p);
+            let temp = document.createElement('template');
+
+            temp.innerHTML = toastTemplate.replace('{bg-color}', bgColor).replace('{websocket-type}', wsType).replace('{toast-message}', message);
+
+            response.appendChild(temp.content.firstChild);
         }
     </script>
 </head>
-<body>
-<div>
-    <div>
-        <input type="text" id="contest_id" placeholder="{contest_id}"/>
-        <input type="text" id="team_id" placeholder="{team_id}"/>
-    </div>
-    <br />
-    <div>
-        <button id="connectContestTeamSubs" onclick="connectSocket('/specific/contests/{contest_id}/teams/{team_id}/submissions');">Connect Contest & Team Submissions</button>
-        <button id="connectContestSubs" onclick="connectSocket('/specific/contests/{contest_id}/submissions');">Connect Contest Submissions</button>
-        <button id="connectSubs" onclick="connectSocket('/all/submissions');">Connect All Submissions</button>
-    </div>
-    <br />
-    <div>
-        <button id="sendMessage" onclick="sendMessage();">Send simple message</button>
-        <input type="text" id="text" placeholder="Text"/>
-    </div>
-    <br />
-    <br />
-    <br />
 
-    <div id="messages"></div>
+<body class="">
 
-</div>
+    <!-- Toast messages -->
+    <div id="messages" class="toast-container position-absolute top-0 end-0 p-3" id="messages"></div>
+    
 
+    <!-- Content -->
+    <div id="parent" class="container d-flex justify-content-center align-items-center h-100">
+
+        <div id="child" class="container p-5 rounded-3 bg-black bg-opacity-50 text-white">
+            <!-- Header -->
+            <header class="mb-5 position-relative">
+                <h1><b>iudex</bz> WebSockets Showcase</h1>
+                <img src="squared-logoURJC.png" alt="Logo URJC" class="position-absolute top-0 end-0 bg-white p-1 rounded" height="100%">
+            </header>
+
+            <!-- Parameters and connections -->
+            <section class="my-5">
+                <h2>WebSockets parameters:</h2>
+
+                <div class="row my-3">
+                    <div class="col-6">
+                        <input type="text" id="contest_id" placeholder="{contest_id}" class="form-control" />
+                    </div>
+                    <div class="col-6">
+                        <input type="text" id="team_id" placeholder="{team_id}" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row text-center my-3">
+                    <div class="col-4">
+                        <button id="connectSubs" onclick="connectSocket('/all/submissions', 0);" class="btn btn-secondary">
+                            Connect All Submissions
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button id="connectContestSubs"
+                            onclick="connectSocket('/specific/contests/{contest_id}/submissions', 1);"
+                            class="btn btn-secondary">
+                            Connect Contest Submissions
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button id="connectContestTeamSubs"
+                            onclick="connectSocket('/specific/contests/{contest_id}/teams/{team_id}/submissions', 2);"
+                            class="btn btn-secondary">
+                            Connect Contest & Team Submissions
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Simple message sending -->
+            <section class="mt-5">
+                <h2>Send simple message:</h2>
+                <div class="row">
+                    <div class="input-group col-12">
+                        <input type="text" id="text" placeholder="Text" class="form-control" />
+                        <button id="sendMessage" onclick="sendMessage();" class="btn btn-primary">
+                            Broadcast!
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" 
+        crossorigin="anonymous"></script>
 </body>
+
 </html>
