@@ -25,7 +25,7 @@ public class APILanguageController {
 
     @Operation( summary = "Return all languages")
     @GetMapping("language")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<LanguageAPI>> getLanguages() {
         List<Language> languageList = languageService.getAllLanguages();
         List<LanguageAPI> languageAPIS = new ArrayList<>();

@@ -24,7 +24,7 @@ public class APIUserController {
 
     @Operation( summary = "Add a specific role to an existing user")
     @PostMapping("/API/v1/user/{id}/role/{role}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
@@ -41,7 +41,7 @@ public class APIUserController {
 
     @Operation( summary = "Remove a role from an existing user")
     @DeleteMapping("/API/v1/user/{id}/role/{role}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> removeRoleFromUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();

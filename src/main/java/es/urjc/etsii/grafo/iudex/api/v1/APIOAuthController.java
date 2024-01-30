@@ -22,7 +22,7 @@ public class APIOAuthController {
     }
 
     @GetMapping("/login")
-    @PreAuthorize("hasAuthority('OIDC_USER')")
+    // @PreAuthorize("hasAuthority('OIDC_USER')")
     public ResponseEntity<AuthResponse> session(@AuthenticationPrincipal OAuth2User oAuth2User) {
         AuthResponse authResponse = userService.loginUser(oAuth2User);
 

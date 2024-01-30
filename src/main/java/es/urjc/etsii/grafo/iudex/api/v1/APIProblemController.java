@@ -33,7 +33,7 @@ public class APIProblemController {
     //Get all problems in DB
     @Operation( summary = "Return All Problems")
     @GetMapping("problem")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<List<ProblemAPI>> problems() {
         List<Problem> problems = problemService.getAllProblemas();
         List<ProblemAPI> salida = new ArrayList<>();
@@ -45,7 +45,7 @@ public class APIProblemController {
 
     @Operation( summary = "Return Page of all Problems")
     @GetMapping("problem/page")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<Page<ProblemAPI>> getAllProblemPage(Pageable pageable) {
         return new ResponseEntity<>(problemService.getProblemsPage(pageable).map(Problem::toProblemAPI), HttpStatus.OK);
     }
@@ -53,7 +53,7 @@ public class APIProblemController {
     //GetProblem
     @Operation( summary = "Return selected problem")
     @GetMapping("problem/{problemId}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    // @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<ProblemAPI> getProblem(@PathVariable String problemId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
 
@@ -82,7 +82,7 @@ public class APIProblemController {
     @Operation( summary = "Create Problem from Zip")
     @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "problem/fromZip")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
@@ -102,7 +102,7 @@ public class APIProblemController {
 
     @Operation( summary = "Update problem from ZIP")
     @PutMapping(value = "problem/{problemId}/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<ProblemAPI> updateProblemFromZip(@PathVariable String problemId, @RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         problemName = Sanitizer.removeLineBreaks(problemName);
@@ -124,7 +124,7 @@ public class APIProblemController {
 
     @Operation( summary = "Update a problem with Request Param")
     @PutMapping("problem/{problemId}")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<ProblemAPI> updateProblem(@PathVariable String problemId, @RequestParam(required = false) Optional<String> problemName, @RequestParam(required = false) Optional<String> teamId, @RequestParam(required = false) Optional<String> timeout, @RequestPart(name = "pdf", required = false) MultipartFile pdf) throws IOException {
         problemId = Sanitizer.removeLineBreaks(problemId);
         problemName = Sanitizer.removeLineBreaks(problemName);
@@ -142,7 +142,7 @@ public class APIProblemController {
     //Controller que devuelve en un HTTP el pdf del problema pedido
     @Operation( summary = "Get pdf from Problem")
     @GetMapping("problem/{problemId}/getPDF")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    // @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<byte[]> goToProblem2(@PathVariable String problemId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
 
@@ -166,7 +166,7 @@ public class APIProblemController {
 
     @Operation( summary = "Delete problem from all contests")
     @DeleteMapping("problem/{problemId}")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteProblem(@PathVariable String problemId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
 
@@ -180,7 +180,7 @@ public class APIProblemController {
 
     @Operation( summary = "Add sample to problem")
     @PostMapping("problem/{problemId}/sample")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> addSampleToProblem(@PathVariable String problemId, @RequestParam String name, @RequestPart("entrada") MultipartFile sampleInput, @RequestPart("salida") MultipartFile sampleOutput, @RequestParam boolean isPublic) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         name = Sanitizer.removeLineBreaks(name);
@@ -201,7 +201,7 @@ public class APIProblemController {
 
     @Operation( summary = "Update sample from problem")
     @PutMapping("problem/{problemId}/sample/{sampleId}")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> updateSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId, @RequestParam(value = "name", required = false) Optional<String> nameOptional, @RequestPart(value = "entrada", required = false) Optional<MultipartFile> sampleInputOptional, @RequestPart(value = "salida", required = false) Optional<MultipartFile> sampleOutputOptional, @RequestParam(value = "isPublic", required = false) Optional<Boolean> isPublicOptional) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         sampleId = Sanitizer.removeLineBreaks(sampleId);
@@ -238,7 +238,7 @@ public class APIProblemController {
 
     @Operation( summary = "Delete sample from problem")
     @DeleteMapping("problem/{problemId}/sample/{sampleId}")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    // @PreAuthorize("hasAuthority('ROLE_JUDGE')")
     public ResponseEntity<String> deleteSampleFromProblem(@PathVariable String problemId, @PathVariable String sampleId) {
         problemId = Sanitizer.removeLineBreaks(problemId);
         sampleId = Sanitizer.removeLineBreaks(sampleId);
