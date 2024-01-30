@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -24,8 +25,10 @@ public class JwtTokenProvider {
 
 	private static final Long REFRESH_TOKEN_EXPIRATION_MSEC = 10800000L;
 
+	private static final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
 	public String getUsername(String token) {
-		return Jwts.parserBuilder().setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256)).build()
+		return Jwts.parserBuilder().setSigningKey(jwtSecret).build()
 				.parseClaimsJws(token).getBody().getSubject();
 	}
 
@@ -39,7 +42,7 @@ public class JwtTokenProvider {
 
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256)).build()
+			Jwts.parserBuilder().setSigningKey(jwtSecret).build()
 					.parseClaimsJws(token);
 			return true;
 		} catch (JwtException ex) {
@@ -69,7 +72,7 @@ public class JwtTokenProvider {
 		Long duration = now.getTime() + time;
 		Date expiryDate = new Date(now.getTime() + time);
 		String token = Jwts.builder().setClaims(claims).setSubject((userDetails.getUsername())).setIssuedAt(new Date())
-				.setExpiration(expiryDate).signWith(Keys.secretKeyFor(SignatureAlgorithm.HS256)).compact();
+				.setExpiration(expiryDate).signWith(jwtSecret).compact();
 
 		return new Token(tokenType, token, duration,
 				LocalDateTime.ofInstant(expiryDate.toInstant(), ZoneId.systemDefault()));

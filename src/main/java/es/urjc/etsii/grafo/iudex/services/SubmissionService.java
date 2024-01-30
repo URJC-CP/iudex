@@ -1,15 +1,14 @@
 package es.urjc.etsii.grafo.iudex.services;
 
+import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.rabbitmq.RabbitResultExecutionSender;
-import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.repositories.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,25 +27,36 @@ import java.util.Set;
 public class SubmissionService {
     private static final Logger logger = LoggerFactory.getLogger(SubmissionService.class);
 
-    @Autowired
-    private ContestRepository contestRepository;
-    @Autowired
-    private ContestProblemRepository contestProblemRepository;
-    @Autowired
-    private ProblemRepository problemRepository;
-    @Autowired
-    private TeamRepository teamRepository;
-    @Autowired
-    private LanguageRepository languageRepository;
-    @Autowired
-    private SubmissionRepository submissionRepository;
-    @Autowired
-    private ResultRepository resultRepository;
+    private final ContestRepository contestRepository;
+    private final ContestProblemRepository contestProblemRepository;
+    private final ProblemRepository problemRepository;
+    private final TeamRepository teamRepository;
+    private final LanguageRepository languageRepository;
+    private final SubmissionRepository submissionRepository;
+    private final ResultRepository resultRepository;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-    @Autowired
-    private RabbitResultExecutionSender sender;
+    private final RabbitTemplate rabbitTemplate;
+    private final RabbitResultExecutionSender sender;
+
+    public SubmissionService(RabbitResultExecutionSender sender,
+                             RabbitTemplate rabbitTemplate,
+                             ResultRepository resultRepository,
+                             SubmissionRepository submissionRepository,
+                             LanguageRepository languageRepository,
+                             TeamRepository teamRepository,
+                             ProblemRepository problemRepository,
+                             ContestProblemRepository contestProblemRepository,
+                             ContestRepository contestRepository) {
+        this.sender = sender;
+        this.rabbitTemplate = rabbitTemplate;
+        this.resultRepository = resultRepository;
+        this.submissionRepository = submissionRepository;
+        this.languageRepository = languageRepository;
+        this.teamRepository = teamRepository;
+        this.problemRepository = problemRepository;
+        this.contestProblemRepository = contestProblemRepository;
+        this.contestRepository = contestRepository;
+    }
 
     public SubmissionStringResult creaYejecutaSubmission(MultipartFile codigoFile, String problem, String lenguaje, String idContest, String idEquipo) throws IOException {
         String codigo = new String(codigoFile.getBytes());

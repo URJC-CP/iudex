@@ -5,7 +5,6 @@ import es.urjc.etsii.grafo.iudex.exceptions.DockerExecutionException;
 import es.urjc.etsii.grafo.iudex.services.ResultHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,14 +12,18 @@ import java.io.IOException;
 //Clase que se encarga de recibir un result y mandarlo al servicio docker.
 @Service
 public class RabbitResultExecutionReceiver {
-    @Autowired
-    private ResultHandler resultHandler;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final ResultHandler resultHandler;
+    private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitResultReviserSender rabbitResultReviserSender;
+    private final RabbitResultReviserSender rabbitResultReviserSender;
 
+    public RabbitResultExecutionReceiver(RabbitResultReviserSender rabbitResultReviserSender,
+                                         RabbitTemplate rabbitTemplate,
+                                         ResultHandler resultHandler) {
+        this.rabbitResultReviserSender = rabbitResultReviserSender;
+        this.rabbitTemplate = rabbitTemplate;
+        this.resultHandler = resultHandler;
+    }
 
     //LIstener que recibe el objeto resultado desde la cola
     @RabbitListener(queues = ConfigureRabbitMq.QUEUE_NAME)

@@ -3,13 +3,15 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.Problem;
 import es.urjc.etsii.grafo.iudex.entities.SubmissionProblemValidator;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SubmissionProblemValidatorService {
-    @Autowired
-    private SubmissionService submissionService;
+    private final SubmissionService submissionService;
+
+    public SubmissionProblemValidatorService(SubmissionService submissionService) {
+        this.submissionService = submissionService;
+    }
 
     public SubmissionProblemValidator createSubmissionNoExecute(String codigo, Problem problema, String lenguaje, String fileName, String expectedResult, String idEquipo, String contestId) {
         SubmissionProblemValidator submissionProblemValidator = new SubmissionProblemValidator();

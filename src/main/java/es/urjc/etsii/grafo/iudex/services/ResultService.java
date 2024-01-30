@@ -2,15 +2,17 @@ package es.urjc.etsii.grafo.iudex.services;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.repositories.ResultRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ResultService {
-    @Autowired
-    private ResultRepository resultRepository;
+    private final ResultRepository resultRepository;
+
+    public ResultService(ResultRepository resultRepository) {
+        this.resultRepository = resultRepository;
+    }
 
     public Result getResult(String resultId) {
         return resultRepository.findResultById(Long.parseLong(resultId)).orElseThrow();

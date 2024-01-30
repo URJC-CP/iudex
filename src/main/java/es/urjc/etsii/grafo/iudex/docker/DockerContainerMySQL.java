@@ -1,16 +1,18 @@
 package es.urjc.etsii.grafo.iudex.docker;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
-import es.urjc.etsii.grafo.iudex.entities.Result;
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
+import es.urjc.etsii.grafo.iudex.entities.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DockerContainerMySQL extends DockerContainer {
     private static final Logger logger = LoggerFactory.getLogger(DockerContainerMySQL.class);
@@ -23,31 +25,24 @@ public class DockerContainerMySQL extends DockerContainer {
     public Result ejecutar(Result result, String defaultMemoryLimit, String defaultTimeout, String defaultCPU, String imagenId) throws IOException, InterruptedException {
         logger.debug("Building container for image {}", imagenId);
 
-        String nombreClase = result.getFileName();
-        String nombreDocker = "a" + result.getId() + "_" + java.time.LocalDateTime.now();
+        String nombreClase = this.getClassName(result);
+        String nombreDocker = "iudex_" + result.getId() + "_" + java.time.LocalDateTime.now();
         nombreDocker = nombreDocker.replace(":", "");
 
-        String timeout;
-        if (result.getMaxTimeout() != null) { timeout = result.getMaxTimeout(); }
-        else { timeout = defaultTimeout; }
+        String timeout = getTimeoutEnv(result, defaultTimeout);
 
         //Creamos el contendor
         HostConfig hostConfig = new HostConfig();
         hostConfig.withMemory(Long.parseLong(defaultMemoryLimit)).withCpusetCpus(defaultCPU);
 
-        DockerClient dockerClient = getDockerClient();
         try (CreateContainerCmd createContainerCmd = dockerClient.createContainerCmd(imagenId)
                 .withNetworkDisabled(true)
-                .withEnv("EXECUTION_TIMEOUT=" + timeout, "FILENAME1=entrada.in", "FILENAME2=" + nombreClase + ".sql")
+                .withEnv(this.getEnv(result, defaultTimeout))
                 .withHostConfig(hostConfig).withName(nombreDocker)) {
             CreateContainerResponse container = createContainerCmd.exec();
             logger.debug("DOCKER MySQL: Running container for result {} with timeout {} and memory limit {}", result.getId(), timeout, result.getMaxMemory());
 
-            //Copiamos el codigo
-            copiarArchivoAContenedor(container.getId(), nombreClase + ".sql", result.getCodigo(), "/root");
-
-            //Copiamos la entrada
-            copiarArchivoAContenedor(container.getId(), "entrada.in", result.getEntrada(), "/root");
+            copyInputDataToContainer(container, result, nombreClase + ".sql");
 
             //Arrancamos el docker
             dockerClient.startContainerCmd(container.getId()).exec();
@@ -73,20 +68,15 @@ public class DockerContainerMySQL extends DockerContainer {
             }
 
             LocalDateTime maxTime = LocalDateTime.now().plusSeconds(Long.parseLong(result.getMaxTimeout()));
-            String signalEjecutor = null;
+            String signalEjecutor;
             do {
                 Thread.sleep(200);
                 signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
-            } while (LocalDateTime.now().isBefore(maxTime) && signalEjecutor.equals(""));
+            } while (LocalDateTime.now().isBefore(maxTime) && signalEjecutor.isEmpty());
 
             dockerClient.stopContainerCmd(container.getId()).exec();
             //comprueba el estado del contenedor y no sigue la ejecucion hasta que este esta parado
-            boolean isRunning;
-            do {
-                Thread.sleep(200);
-                isRunning = Boolean.TRUE.equals(dockerClient.inspectContainerCmd(container.getId()).exec().getState().getRunning());
-            } while (isRunning);  //Mientras esta corriendo se hace el do
-
+            this.waitUntilContainerStopped(container);
             this.setReturnedValuesFromContainer(container, result, signalEjecutor);
 
             dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
@@ -97,6 +87,36 @@ public class DockerContainerMySQL extends DockerContainer {
     }
 
     @Override
+    protected String getClassName(Result result) {
+        return result.getFileName();
+    }
+
+    @Override
+    protected String getFileExtension() {
+        return "sql";
+    }
+
+    @Override
+    protected String getFileName1(Result result) {
+        return "entrada.in";
+    }
+
+    @Override
+    protected String getFileName2(Result result, String fileExtension) {
+        return result.getFileName() + "." + fileExtension;
+    }
+
+    @Override
+    protected String[] getEnv(Result result, String defaultTimeout) {
+        List<String> env = new ArrayList<>();
+
+        env.add("EXECUTION_TIMEOUT=" + getTimeoutEnv(result, defaultTimeout));
+        env.add("FILENAME2=" + this.getClassName(result) + ".sql");
+        env.add("FILENAME1=" + "entrada.in");
+
+        return env.toArray(new String[0]);
+    }
+
     protected void setReturnedValuesFromContainer(CreateContainerResponse container, Result result, String signalEjecutor) throws IOException {
         //Buscamos la salida Estandar
         String salidaEstandar = copiarArchivoDeContenedor(container.getId(), "root/salidaEstandar.ans");
@@ -108,9 +128,14 @@ public class DockerContainerMySQL extends DockerContainer {
 
         String time = copiarArchivoDeContenedor(container.getId(), "root/time.txt");
         result.setSalidaTime(time);
+    }
 
+    @Override
+    protected void setSignals(Result result, CreateContainerResponse container) throws IOException {
         //para que no de fallo de compilador
         result.setSignalCompilador("0");
+
+        String signalEjecutor = copiarArchivoDeContenedor(container.getId(), "root/signalEjecutor.txt");
         result.setSignalEjecutor(signalEjecutor);
     }
 }

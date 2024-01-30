@@ -6,7 +6,6 @@ import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.security.jwt.AuthResponse;
 import es.urjc.etsii.grafo.iudex.security.jwt.JwtTokenProvider;
 import es.urjc.etsii.grafo.iudex.security.jwt.UserDetailsServiceImp;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,17 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserDetailsServiceImp userDetailsServiceImp;
+    private final UserDetailsServiceImp userDetailsServiceImp;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public UserService(UserRepository userRepository, UserDetailsServiceImp userDetailsServiceImp, JwtTokenProvider jwtTokenProvider) {
+        this.userRepository = userRepository;
+        this.userDetailsServiceImp = userDetailsServiceImp;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     public User getUserFromOAuthPrincipal(OAuth2User oAuth2User) {
         Optional<User> user = userRepository.findUserByEmail(oAuth2User.getAttribute("email"));

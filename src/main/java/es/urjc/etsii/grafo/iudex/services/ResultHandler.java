@@ -7,8 +7,7 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import es.urjc.etsii.grafo.iudex.docker.DockerContainer;
-import es.urjc.etsii.grafo.iudex.docker.DockerContainerMySQL;
+import es.urjc.etsii.grafo.iudex.docker.DockerContainerFactory;
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +52,8 @@ public class ResultHandler {
     }
 
     public void ejecutor(Result res) throws IOException, InterruptedException {
-        if (res.getLanguage().getNombreLenguaje().equals("sql")) {
-            new DockerContainerMySQL(dockerClient).ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
-        } else {
-            new DockerContainer(dockerClient).ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
-        }
+        DockerContainerFactory.createDockerContainerForResult(res, dockerClient)
+                .ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
     }
 
     public String buildImage(File file) {

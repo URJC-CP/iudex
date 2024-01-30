@@ -2,7 +2,6 @@ package es.urjc.etsii.grafo.iudex.services;
 
 import es.urjc.etsii.grafo.iudex.entities.Language;
 import es.urjc.etsii.grafo.iudex.repositories.LanguageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +9,11 @@ import java.util.Optional;
 
 @Service
 public class LanguageService {
-    @Autowired
-    private LanguageRepository languageRepository;
+    private final LanguageRepository languageRepository;
+
+    public LanguageService(LanguageRepository languageRepository) {
+        this.languageRepository = languageRepository;
+    }
 
     public Optional<Language> getLanguage(String id) {
         return languageRepository.findLanguageById(Long.parseLong(id));

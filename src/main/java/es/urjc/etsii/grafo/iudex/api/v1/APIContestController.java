@@ -7,7 +7,6 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,8 +22,11 @@ import java.util.Optional;
 @RequestMapping("/API/v1/")
 public class APIContestController {
 
-    @Autowired
-    ContestService contestService;
+    final ContestService contestService;
+
+    public APIContestController(ContestService contestService) {
+        this.contestService = contestService;
+    }
 
     @Operation( summary = "Return all contests")
     @GetMapping("contest")
