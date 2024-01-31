@@ -5,7 +5,7 @@ import {LanguageDTO} from './language.dto';
 
 export interface ContestDTO {
   descripcion?: string;
-  id?: string;
+  id: string;
   listaParticipantes?: TeamDTO[];
   listaProblemas:ProblemDTO[];
   nombreContest?: string;

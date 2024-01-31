@@ -7,7 +7,7 @@ import { StudentProblemsComponent } from './components/student-problems/student-
 const appRoutes: Routes = [
   { path: "", component: HomeComponent },
   { path: "student", component: StudentContestsComponent },
-  { path: "student/contest/1", component: StudentProblemsComponent },
+  { path: "student/contest/:id", component: StudentProblemsComponent },
 ]
 
   export const routing = RouterModule.forRoot(appRoutes);

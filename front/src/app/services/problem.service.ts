@@ -22,8 +22,8 @@ export class ProblemService {
     return this.http.get<ProblemDTO>(baseUrl + '/' + problemId);
   }
 
-  getPdfFromProblem(problemId: string): Observable<any> {
-    return this.http.get(baseUrl + '/' + problemId + '/getPDF');
+  getPdfFromProblem(problemId: string): void {
+    window.open(baseUrl + '/' + problemId + '/getPDF', '_blank');
   }
 
   //esto probablemente hay que cambiarlo
