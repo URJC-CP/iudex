@@ -7,59 +7,57 @@ import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
   templateUrl: './navbar.component.html'
 })
 export class NavbarComponent {
-  items: MenuItem[] | undefined;
-  studentItems: MenuItem[] | undefined;
-  studentHomeItems: MenuItem[] | undefined;
-  judgeItems: MenuItem[] | undefined;
-  adminItems: MenuItem[] | undefined;
+  items: MenuItem[] = [];
   username: MenuItem = {};
-  pageType: string | undefined = "studentHome";
+  pageType: string | undefined;
   userType: string | undefined = "student";
+  studentItems: MenuItem[] = [
+    { label: $localize`Home`, icon: 'pi pi-fw pi-home', style: { 'margin-left': '4%' } },
+    { label: $localize`Problems`, icon: 'pi pi-fw pi-book' },
+    { label: $localize`Ranking`, style: { 'margin-right': 'auto' }, icon: 'pi pi-fw pi-chart-bar' },
+    { label: $localize`Time?`, style: { 'margin': 'auto' } },
+    { label: $localize`Contest`, style: { 'margin-left': 'auto' }, routerLink: ['/student'] }
+  ];
+  judgeItems: MenuItem[] = [
+    { label: $localize`Contests`, icon: 'pi pi-fw pi-star' },
+    { label: $localize`Problems`, icon: 'pi pi-fw pi-book' },
+    { label: $localize`Submissions`, icon: 'pi pi-fw pi-code' },
+    { label: $localize`Ranking`, icon: 'pi pi-fw pi-file' },
+    //disabled?
+    { label: $localize`Rejudge`, icon: 'pi pi-fw pi-undo' }
+  ];
+  adminItems: MenuItem[] = [
+    { label: $localize`Users`, icon: 'pi pi-fw pi-users' },
+    { label: $localize`Results`, icon: 'pi pi-fw pi-folder-open' }
+  ];
+  studentHomeItems: MenuItem[] = [];
 
   constructor(private router: Router) {
-
-    this.router.events.subscribe(
-      (event) => {
-        if (event instanceof NavigationStart) {
-          if (event.url.endsWith("/student")) { this.pageType == "studentHome" }
-          if (event.url.startsWith("/student") && !event.url.endsWith("/student")) { this.pageType == "student" }
-          if (event.url.startsWith("/judge")) { this.pageType == "judge" }
-          if (event.url.startsWith("/admin")) { this.pageType == "admin" }
-        }
-      });
-
-    this.studentItems = [
-      { label: $localize`Home`, icon: 'pi pi-fw pi-home' },
-      { label: $localize`Problems`, icon: 'pi pi-fw pi-calendar' },
-      { label: $localize`Ranking`, icon: 'pi pi-fw pi-pencil' },
-      { label: $localize`Time`, style: { 'margin-left': 'auto' } },
-      {
-        label: $localize`Contest`, style: { 'margin-left': 'auto' }, command: () => {
-          this.redirect("/student");
-        }
-      }
-    ];
-
-    this.judgeItems = [
-      { label: $localize`Contests`, icon: 'pi pi-fw pi-home' },
-      { label: $localize`Problems`, icon: 'pi pi-fw pi-calendar' },
-      { label: $localize`Submissions`, icon: 'pi pi-fw pi-pencil' },
-      { label: $localize`Ranking`, icon: 'pi pi-fw pi-file' },
-      //disabled?
-      { label: $localize`Rejudge`, icon: 'pi pi-fw pi-file' }
-    ];
-
-    this.adminItems = [
-      { label: $localize`Users`, icon: 'pi pi-fw pi-home' },
-      { label: $localize`Results`, icon: 'pi pi-fw pi-calendar' }
-    ];
-
-    this.studentHomeItems = [];
-
   }
 
   ngOnInit() {
+    this.router.events.subscribe(
+      (event) => {
+        if (event instanceof NavigationStart) {
+          this.items = [];
+          if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
+          if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
+            this.pageType = "student";
+            if (this.studentItems.length > 5) {
+              this.studentItems.pop();
+            }
+            this.studentItems.pop();
+            this.studentItems.push({ label: $localize`Contest ` + event.url[17], style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
+          }
+          if (event.url.startsWith("/judge")) { this.pageType = "judge" }
+          if (event.url.startsWith("/admin")) { this.pageType = "admin" }
+        }
+        this.initUser();
+        this.initItems();
+      });
+  }
 
+  initUser() {
     switch (this.userType) {
       case "student":
         this.username = {
@@ -183,26 +181,46 @@ export class NavbarComponent {
       default:
         break;
     }
+  }
 
-    switch (this.pageType) {
-      case "student":
-        this.studentItems?.push(this.username);
-        this.items = this.studentItems;
-        break;
-      case "judge":
-        this.judgeItems?.push(this.username);
-        this.items = this.judgeItems;
-        break;
-      case "admin":
-        this.adminItems?.push(this.username);
-        this.items = this.adminItems;
-        break;
-      case "studentHome":
-        this.studentHomeItems?.push(this.username);
-        this.items = this.studentHomeItems;
-        break;
-      default:
-        break;
+  initItems() {
+    if (this.items.length == 0) {
+      switch (this.pageType) {
+        case "student":
+          if (this.studentItems.length == 5) {
+            this.studentItems.push(this.username);
+          } else {
+            this.studentItems.pop();
+            this.studentItems.push(this.username);
+          }
+          this.items = this.studentItems;
+          break;
+        case "judge":
+          if (this.judgeItems.length == 5) {
+            this.judgeItems.push(this.username);
+          } else {
+            this.judgeItems.pop();
+            this.judgeItems.push(this.username);
+          }
+          this.items = this.judgeItems;
+          break;
+        case "admin":
+          if (this.adminItems.length == 2) {
+            this.adminItems.push(this.username);
+          } else {
+            this.adminItems.pop();
+            this.adminItems.push(this.username);
+          }
+          this.items = this.adminItems;
+          break;
+        case "studentHome":
+          this.studentHomeItems.pop()
+          this.studentHomeItems.push(this.username);
+          this.items = this.studentHomeItems;
+          break;
+        default:
+          break;
+      }
     }
 
   }
@@ -213,6 +231,10 @@ export class NavbarComponent {
 
   redirect(route: string) {
 
+  }
+
+  getMenuItem(array: MenuItem[], label: string): any {
+    return array.find(item => item.label === label);
   }
 
 }
