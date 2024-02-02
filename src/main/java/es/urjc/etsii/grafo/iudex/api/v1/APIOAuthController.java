@@ -37,6 +37,6 @@ public class APIOAuthController {
     // @PreAuthorize("hasAuthority('OIDC_USER')")
     public void login1(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
         String uid = userService.prepareForLogin(oAuth2User);
-        response.sendRedirect("redirect:/?loginid=" + uid);
+        response.sendRedirect("/?loginid=" + uid);
     }
 }
