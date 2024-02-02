@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { AuthResponseDTO } from 'src/app/dto/authResponse.dto';
 import { OauthService } from 'src/app/services/oauth.service';
 
@@ -11,14 +12,13 @@ export class HomeComponent {
 
   authresponse!: AuthResponseDTO;
 
-  constructor(private router: Router, private oauthService: OauthService) {
+  constructor(private router: Router, private oauthService: OauthService, private activatedRoute: ActivatedRoute) {
 
   }
 
   login(){
-    this.oauthService.login().subscribe((data) => {
-      this.authresponse = data;
-  });
+    this.oauthService.login();
+    // window.location.href = "/student"
   }
 
 }
