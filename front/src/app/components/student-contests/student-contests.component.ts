@@ -5,8 +5,7 @@ import { ContestService } from 'src/app/services/contest.service';
 
 @Component({
   selector: 'app-student-contests',
-  templateUrl: './student-contests.component.html',
-  styleUrls: ['../../../styles.css']
+  templateUrl: './student-contests.component.html'
 })
 export class StudentContestsComponent {
   

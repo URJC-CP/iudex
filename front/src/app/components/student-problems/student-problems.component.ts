@@ -7,8 +7,7 @@ import { ProblemService } from 'src/app/services/problem.service';
 
 @Component({
   selector: 'app-student-problems',
-  templateUrl: './student-problems.component.html',
-  styleUrls: ['../../../styles.css']
+  templateUrl: './student-problems.component.html'
 })
 export class StudentProblemsComponent {
 
