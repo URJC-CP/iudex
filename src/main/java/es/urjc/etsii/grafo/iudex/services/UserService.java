@@ -11,8 +11,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService {
@@ -22,6 +24,8 @@ public class UserService {
     private final UserDetailsServiceImp userDetailsServiceImp;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final Map<String, AuthResponse> pendingLogins = new ConcurrentHashMap<>();
 
     public UserService(UserRepository userRepository, UserDetailsServiceImp userDetailsServiceImp, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
@@ -60,29 +64,35 @@ public class UserService {
         return user;
     }
 
-    public AuthResponse loginUser(OAuth2User oAuth2User) {
+    public String prepareForLogin(OAuth2User oAuth2User) {
+        var UUID = java.util.UUID.randomUUID().toString();
         User user = getUserFromOAuthPrincipal(oAuth2User);
 
         if (user == null) {
             try {
                 user = signupUserFromOAuthPrincipal(oAuth2User);
             } catch (IudexException e) {
-                return new AuthResponse(
+                this.pendingLogins.put(UUID, new AuthResponse(
                         AuthResponse.Status.FAILURE,
                         "Iudex account not found and an error has occurred while trying to sign up",
                         e.getMessage()
-                );
+                ));
             }
         }
 
         UserDetails userDetails = userDetailsServiceImp.loadUserByUsername(user.getNickname());
 
-        return new AuthResponse(
+        var authResponse = new AuthResponse(
                 AuthResponse.Status.SUCCESS,
                 "Successfully logged in",
                 jwtTokenProvider.generateAccessToken(userDetails),
                 jwtTokenProvider.generateRefreshToken(userDetails)
         );
+        this.pendingLogins.put(UUID, authResponse);
+        return UUID;
     }
 
+    public AuthResponse completeLogin(String uid) {
+        return this.pendingLogins.remove(uid);
+    }
 }
