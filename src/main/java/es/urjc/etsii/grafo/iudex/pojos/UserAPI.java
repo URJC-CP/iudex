@@ -2,6 +2,8 @@ package es.urjc.etsii.grafo.iudex.pojos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class UserAPI {
@@ -14,6 +16,8 @@ public class UserAPI {
 
     private String familyName;
     private long timestamp;
+
+    private List<String> roles;
 
 
     public long getId() {
@@ -62,5 +66,13 @@ public class UserAPI {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public List<String> getRoles() {
+        return this.roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

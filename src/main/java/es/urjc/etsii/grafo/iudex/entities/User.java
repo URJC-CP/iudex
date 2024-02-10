@@ -2,14 +2,10 @@ package es.urjc.etsii.grafo.iudex.entities;
 
 
 import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
-
 import jakarta.persistence.*;
+
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 @Entity
 public class User {
@@ -61,6 +57,7 @@ public class User {
         userAPI.setNickname(this.nickname);
         userAPI.setEmail(this.email);
         userAPI.setTimestamp(this.timestamp);
+        userAPI.setRoles(new ArrayList<>(this.roles));
         return userAPI;
     }
 

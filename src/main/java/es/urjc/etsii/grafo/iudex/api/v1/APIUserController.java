@@ -1,11 +1,17 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
+import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,17 +20,40 @@ import java.util.Optional;
 @RestController
 public class APIUserController {
 
-    final UserAndTeamService userAndTeamService;
+    private static final Logger log = LoggerFactory.getLogger(APIUserController.class);
 
-    public APIUserController(UserAndTeamService userAndTeamService) {
+    final UserAndTeamService userAndTeamService;
+    final UserRepository userRepository;
+
+    public APIUserController(UserAndTeamService userAndTeamService, UserRepository userRepository) {
         this.userAndTeamService = userAndTeamService;
+        this.userRepository = userRepository;
     }
 
-//    @Operation( summary = "Get current user identifier by the current token", responses = {401})
+//
     @GetMapping("/API/v1/user/me")
-    public ResponseEntity<User> getCurrentUser(){
-        // TODO raul, implement /me, document 401 cuando el token no es valido,200 y datos del usuario cuando si es valido
-        return ResponseEntity.internalServerError().build();
+    @Operation( summary = "Get current user identifier by the current token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Current authenticated user"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid token provided")
+    })
+    public ResponseEntity<UserAPI> getCurrentUser(Authentication authentication){
+        if(!authentication.isAuthenticated()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String nickname = authentication.getName(); // Our User::nickname is used as the Spring User::username
+        if(nickname == null || nickname.isBlank()){
+            log.warn("Invalid username extracted from auth token: " + (nickname));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        var user = userRepository.findByNickname(nickname);
+        if(user.isEmpty()){
+            // May happen but should be extremely rare, log it
+            log.warn("User %s has a signed token but the username does not exist?".formatted(nickname));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(user.get().toUserAPI());
     }
 
     @Operation( summary = "Add a specific role to an existing user")
