@@ -1,12 +1,19 @@
 import { Component } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
+import { ContestService } from 'src/app/services/contest.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html'
 })
 export class NavbarComponent {
+  contestName: string;
+  contestId: string;
+  subRouter: Subscription;
+  subContest: Subscription;
+  loaded: boolean = true;
   items: MenuItem[] = [];
   username: MenuItem = {};
   pageType: string | undefined;
@@ -32,22 +39,30 @@ export class NavbarComponent {
   ];
   studentHomeItems: MenuItem[] = [];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private contestService: ContestService) {
   }
 
   ngOnInit() {
-    this.router.events.subscribe(
+    this.subRouter = this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
           this.items = [];
           if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
           if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
+            this.loaded = false;
             this.pageType = "student";
-            if (this.studentItems.length > 5) {
-              this.studentItems.pop();
-            }
-            this.studentItems.pop();
-            this.studentItems.push({ label: $localize`Contest ` + event.url[17], style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
+            this.contestId = event.url[17];
+            this.subRouter = this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
+              this.contestName = data.nombreContest!
+              /* if (this.studentItems.length > 5) {
+                this.studentItems.pop();
+              }
+              this.studentItems.pop(); */
+              // this.studentItems = [...this.studentItems, { label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] }];
+              // this.studentItems.push({ label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
+              this.studentItems.splice(4, 1, { label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
+              this.loaded = true;
+            });
           }
           if (event.url.startsWith("/judge")) { this.pageType = "judge" }
           if (event.url.startsWith("/admin")) { this.pageType = "admin" }
@@ -235,6 +250,11 @@ export class NavbarComponent {
 
   getMenuItem(array: MenuItem[], label: string): any {
     return array.find(item => item.label === label);
+  }
+
+  ngOnDestroy(){
+    this.subContest.unsubscribe();
+    this.subRouter.unsubscribe();
   }
 
 }
