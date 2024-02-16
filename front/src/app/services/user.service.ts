@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
+import { UserDTO } from '../dto/user.dto';
 
 const baseUrl = '/API/v1/user';
 
@@ -18,5 +19,9 @@ export class UserService {
 
   removeRoleFromUser(userId: string, role: string): Observable<string[]> {
     return this.http.delete<string[]>(`${baseUrl}/${userId}/role/${role}`);
+  }
+
+  getCurrentUser(): Observable<UserDTO> {
+    return this.http.get<UserDTO>(`${baseUrl}/me`);
   }
 }

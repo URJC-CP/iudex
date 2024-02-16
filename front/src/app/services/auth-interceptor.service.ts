@@ -11,7 +11,7 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     //Mirar si hay token, si no si está en '/' nada y si está en otro lado redirigir a '/'
-      const token: string = '';
+      const token: string = localStorage.getItem('token')!;
 
       let request = req;
 
