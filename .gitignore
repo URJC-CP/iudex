@@ -35,3 +35,4 @@ build/
 
 ### iudex ENV files ###
 secrets.env
+jwt.secret
