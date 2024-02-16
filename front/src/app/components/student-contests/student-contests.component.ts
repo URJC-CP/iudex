@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ContestDTO } from 'src/app/dto/contest.dto';
 import { ContestService } from 'src/app/services/contest.service';
+import { ProblemService } from 'src/app/services/problem.service';
 
 @Component({
   selector: 'app-student-contests',
@@ -13,7 +14,7 @@ export class StudentContestsComponent {
   forStart: number | undefined;
   forEnd: number | undefined;
 
-  constructor(private contestService: ContestService, private router: Router) {
+  constructor(private contestService: ContestService, private problemService: ProblemService, private router: Router) {
 
   }
 
