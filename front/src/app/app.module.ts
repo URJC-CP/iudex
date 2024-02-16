@@ -26,6 +26,11 @@ import { StudentHomeComponent } from './components/student-home/student-home.com
 import { StudentProblemsComponent } from './components/student-problems/student-problems.component';
 import { StudentRankingComponent } from './components/student-ranking/student-ranking.component';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { SubmitButtonComponent } from './components/submit-button/submit-button.component';
+import { FormsModule } from '@angular/forms';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @NgModule({
   declarations: [
@@ -36,7 +41,8 @@ import { TableModule } from 'primeng/table';
     StudentContestsComponent,
     StudentHomeComponent,
     StudentProblemsComponent,
-    StudentRankingComponent
+    StudentRankingComponent,
+    SubmitButtonComponent
   ],
   imports: [
     HttpClientModule,
@@ -50,7 +56,11 @@ import { TableModule } from 'primeng/table';
     SplitButtonModule,
     AccordionModule,
     CardModule,
-    TableModule
+    TableModule,
+    DialogModule,
+    DropdownModule,
+    FormsModule,
+    SkeletonModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

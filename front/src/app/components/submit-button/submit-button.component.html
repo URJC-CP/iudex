@@ -1,0 +1,19 @@
+<p-button (click)="showDialog()" label="Submit" severity="success" class="mr-4" i18n-label></p-button>
+<div *ngIf="loaded === false">
+    <p-skeleton width="10rem" height="4rem" borderRadius="16px"></p-skeleton>
+</div>
+<div *ngIf="loaded">
+    <p-dialog header="Submit code to contest {{contestId}}" (onHide)="close()" [(visible)]="visible" [style]="{ width: '50vw' }"
+        appendTo="body">
+        <div class="row flex py-2 justify-content-center">
+            <p-dropdown class="col-4" appendTo="body" [options]="problems" [(ngModel)]="selProblem"
+                placeholder="Select a problem" optionLabel="name" i18n-label></p-dropdown>
+            <p-dropdown class="col-4" appendTo="body" [options]="lang" [(ngModel)]="selectedLang"
+                placeholder="Select submission language" optionLabel="name" i18n-label></p-dropdown>
+        </div>
+        <ng-template pTemplate="footer">
+            <p-button icon="pi pi-check" (click)="submitCode()" label="Submit" severity="success" pAutoFocus
+                [autofocus]="true"></p-button>
+        </ng-template>
+    </p-dialog>
+</div>
