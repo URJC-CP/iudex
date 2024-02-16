@@ -21,10 +21,9 @@ export class HomeComponent {
 
   }
 
-  //TO-DO: control errores
-  login(){
-    this.oauthService.login();
-    this.tempToken =this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
+  ngOnInit(){
+    if (this.router.url.includes('loginid')){
+      this.tempToken =this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
     console.log(this.tempToken);
     this.oauthService.exchange(this.tempToken).subscribe(data=> {this.token = data.accessToken?.tokenValue!; 
       console.log(data);}
@@ -42,6 +41,13 @@ export class HomeComponent {
         window.location.href = "/admin";
         break;
     }
+    }
+
+  }
+
+  //TO-DO: control errores
+  login(){
+    this.oauthService.login();
   }
 
 }
