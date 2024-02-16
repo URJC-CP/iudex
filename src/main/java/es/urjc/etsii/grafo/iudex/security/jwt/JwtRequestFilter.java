@@ -34,6 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
 			FilterChain filterChain) throws ServletException, IOException {
 
+		// If there is not an Authorization header, we skip the filter
 		try {
 			String token = jwtTokenProvider.resolveToken(request);
 			

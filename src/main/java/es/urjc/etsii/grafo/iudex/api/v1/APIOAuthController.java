@@ -25,7 +25,7 @@ public class APIOAuthController {
     }
 
     @GetMapping("/exchange")
-    public ResponseEntity<AuthResponse> login2(@RequestParam("uid") String uid){
+    public ResponseEntity<AuthResponse> login2(@RequestParam("token") String uid){
         var authObject = userService.completeLogin(uid);
         if(authObject == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -36,7 +36,11 @@ public class APIOAuthController {
     @GetMapping("/login")
     // @PreAuthorize("hasAuthority('OIDC_USER')")
     public void login1(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
-        String uid = userService.prepareForLogin(oAuth2User);
-        response.sendRedirect("/?loginid=" + uid);
+        if(oAuth2User == null){
+            response.sendRedirect("/login");
+        } else {
+            String uid = userService.prepareForLogin(oAuth2User);
+            response.sendRedirect("/?loginid=" + uid);
+        }
     }
 }

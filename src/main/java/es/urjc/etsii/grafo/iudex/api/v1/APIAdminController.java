@@ -24,7 +24,7 @@ public class APIAdminController {
 
     @Operation( summary = "Get a full Result")
     @GetMapping("/API/v1/result/{resultId}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Result> getResult(@PathVariable String resultId) {
         resultId = Sanitizer.removeLineBreaks(resultId);
 
@@ -37,7 +37,7 @@ public class APIAdminController {
 
     @Operation( summary = "Get all Results")
     @GetMapping("/API/v1/result/")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();
         if (resultList == null) {

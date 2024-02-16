@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +59,7 @@ public class APIUserController {
 
     @Operation( summary = "Add a specific role to an existing user")
     @PostMapping("/API/v1/user/{id}/role/{role}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> addRoleToUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
@@ -75,7 +76,7 @@ public class APIUserController {
 
     @Operation( summary = "Remove a role from an existing user")
     @DeleteMapping("/API/v1/user/{id}/role/{role}")
-    // @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<String>> removeRoleFromUser(@PathVariable long id, @PathVariable String role) {
         Optional<User> optionalUser = userAndTeamService.getUserById(id);
         if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
