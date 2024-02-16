@@ -26,21 +26,22 @@ export class HomeComponent {
       this.tempToken =this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
     console.log(this.tempToken);
     this.oauthService.exchange(this.tempToken).subscribe(data=> {this.token = data.accessToken?.tokenValue!; 
-      console.log(data);}
-    );
-    localStorage.setItem('token', this.token);
-    this.userService.getCurrentUser().subscribe(data => this.user = data);
-    switch(this.user.role){
-      case "student":
-        window.location.href = "/student";
-        break;
-      case "judge":
-        window.location.href = "/judge";
-        break;
-      case "admin":
-        window.location.href = "/admin";
-        break;
+      console.log(data);
+      localStorage.setItem('token', this.token);
+      this.userService.getCurrentUser().subscribe(data => this.user = data);
+      switch(this.user.role){
+        case "student":
+          window.location.href = "/student";
+          break;
+        case "judge":
+          window.location.href = "/judge";
+          break;
+        case "admin":
+          window.location.href = "/admin";
+          break;
+      }
     }
+    );
     }
 
   }
