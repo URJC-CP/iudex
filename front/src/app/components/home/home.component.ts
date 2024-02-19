@@ -13,7 +13,7 @@ import { UserService } from 'src/app/services/user.service';
 export class HomeComponent {
 
   authresponse!: AuthResponseDTO;
-  private tempToken:string;
+  private tempToken: string;
   private token: string;
   private user: UserDTO;
 
@@ -21,33 +21,33 @@ export class HomeComponent {
 
   }
 
-  ngOnInit(){
-    if (this.router.url.includes('loginid')){
-      this.tempToken =this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
-    console.log(this.tempToken);
-    this.oauthService.exchange(this.tempToken).subscribe(data=> {this.token = data.accessToken?.tokenValue!; 
-      console.log(data);
-      localStorage.setItem('token', this.token);
-      this.userService.getCurrentUser().subscribe(data => this.user = data);
-      switch(this.user.role){
-        case "student":
-          window.location.href = "/student";
-          break;
-        case "judge":
-          window.location.href = "/judge";
-          break;
-        case "admin":
-          window.location.href = "/admin";
-          break;
+  ngOnInit() {
+    if (this.router.url.includes('loginid')) {
+      this.tempToken = this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
+      console.log(this.tempToken);
+      this.oauthService.exchange(this.tempToken).subscribe(data => {
+        this.token = data.accessToken?.tokenValue!;
+        console.log(data);
+        localStorage.setItem('token', this.token);
+        this.userService.getCurrentUser().subscribe(me => {
+          this.user = me
+          console.log(this.user.roles);
+          if (this.user.roles?.includes("ROLE_ADMIN")){
+            window.location.href = "/admin";
+          } else if (this.user.roles?.includes("ROLE_JUDGE")){
+            window.location.href = "/judge";
+          } else if (this.user.roles?.includes("ROLE_USER")){
+            window.location.href = "/student";
+          }
+        });
       }
-    }
-    );
+      );
     }
 
   }
 
   //TO-DO: control errores
-  login(){
+  login() {
     this.oauthService.login();
   }
 
