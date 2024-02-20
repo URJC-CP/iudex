@@ -72,6 +72,7 @@ export class NavbarComponent {
       });
   }
 
+  // Limpiar código y CAMBIAR STYLE LOGOUT amore ponle un width mas chico
   initUser() {
     switch (this.userType) {
       case "student":
@@ -252,7 +253,7 @@ export class NavbarComponent {
     return array.find(item => item.label === label);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subContest.unsubscribe();
     this.subRouter.unsubscribe();
   }

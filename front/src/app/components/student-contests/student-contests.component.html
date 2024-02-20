@@ -31,7 +31,7 @@
     <p-card class="col-4 font-bold text-center border-round" header="{{i.nombreContest}}" *ngFor="let i of allContests"
         i18n-header>
         <p i18n>
-            Start: {{i.startDateTime | date: 'yyyy-MM-dd'}} <br> End: {{i.endDateTime | date: 'yyyy-MM-dd'}}
+            Start: {{i.startDateTime | date: 'dd-MM-yyyy'}} <br> End: {{i.endDateTime | date: 'dd-MM-yyyy'}}
         </p>
         <p-button label="Go to contest" severity="success" (click)="redirect(i.id)" i18n-label></p-button>
     </p-card>

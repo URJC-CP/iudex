@@ -24,19 +24,18 @@ export class HomeComponent {
   ngOnInit() {
     if (this.router.url.includes('loginid')) {
       this.tempToken = this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
-      console.log(this.tempToken);
       this.oauthService.exchange(this.tempToken).subscribe(data => {
         this.token = data.accessToken?.tokenValue!;
-        console.log(data);
         localStorage.setItem('token', this.token);
+        localStorage.setItem('refreshToken', data.refreshToken?.tokenValue!);
         this.userService.getCurrentUser().subscribe(me => {
           this.user = me
           console.log(this.user.roles);
-          if (this.user.roles?.includes("ROLE_ADMIN")){
+          if (this.user.roles?.includes("ROLE_ADMIN")) {
             window.location.href = "/admin";
-          } else if (this.user.roles?.includes("ROLE_JUDGE")){
+          } else if (this.user.roles?.includes("ROLE_JUDGE")) {
             window.location.href = "/judge";
-          } else if (this.user.roles?.includes("ROLE_USER")){
+          } else if (this.user.roles?.includes("ROLE_USER")) {
             window.location.href = "/student";
           }
         });

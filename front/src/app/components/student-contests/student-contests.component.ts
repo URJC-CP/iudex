@@ -9,22 +9,20 @@ import { ProblemService } from 'src/app/services/problem.service';
   templateUrl: './student-contests.component.html'
 })
 export class StudentContestsComponent {
-  
+
   allContests: ContestDTO[] | undefined;
-  forStart: number | undefined;
-  forEnd: number | undefined;
 
   constructor(private contestService: ContestService, private problemService: ProblemService, private router: Router) {
 
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.contestService.getAllContests().subscribe((contests) => {
       this.allContests = contests;
     });
   }
 
-  redirect(id: string){
+  redirect(id: string) {
     this.router.navigate(['/student/contest/' + id]);
   }
 }

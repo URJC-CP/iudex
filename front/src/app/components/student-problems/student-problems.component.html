@@ -1,5 +1,5 @@
 <div class="flex pt-2 justify-content-center">
-    <h1 i18n>Problems contest {{contest?.id}}</h1>
+    <h1 i18n>Problems {{contest?.nombreContest}}</h1>
 </div>
 <hr class="mx-8">
 
@@ -11,6 +11,7 @@
         </p>
         <p-button label="PDF" (click)="pdf(i.id!)" i18n-label></p-button>
         <p-button label="Test Cases" severity="info" class="mx-2" (click)="testCases(i.id!)" i18n-label></p-button>
-        <app-submit-button contestId="{{id}}" selectedProblem="{{i.nombreEjercicio}}" problemId="{{i.id}}"></app-submit-button>
+        <app-submit-button contestId="{{id}}" selectedProblem="{{i.nombreEjercicio}}"
+            problemId="{{i.id}}"></app-submit-button>
     </p-card>
 </div>
