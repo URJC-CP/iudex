@@ -12,14 +12,27 @@ const baseUrl = '/API/v1/problem';
 
 export class ProblemService {
 
+  private problems: { [id: string]: Observable<ProblemDTO>; } = {};
+  private allProblems: Observable<ProblemDTO[]>;
+
   constructor(private http: HttpClient) { }
 
   getAllProblems(): Observable<ProblemDTO[]> {
-    return this.http.get<ProblemDTO[]>(baseUrl);
+    if (this.allProblems) {
+      return this.allProblems;
+    } else {
+      this.allProblems = this.http.get<ProblemDTO[]>(baseUrl);
+      return this.allProblems;
+    }
   }
 
   getSelectedProblem(problemId: string): Observable<ProblemDTO> {
-    return this.http.get<ProblemDTO>(baseUrl + '/' + problemId);
+    if (problemId in this.problems) {
+      return this.problems[problemId];
+    } else {
+      this.problems[problemId] = this.http.get<ProblemDTO>(baseUrl + '/' + problemId);
+      return this.problems[problemId];
+    }
   }
 
   getPdfFromProblem(problemId: string): void {

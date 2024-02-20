@@ -14,11 +14,28 @@ const baseUrl = '/API/v1/contest';
 
 export class ContestService {
 
+  private contests: { [id: string]: Observable<ContestDTO>; } = {};
+  private allContests: Observable<ContestDTO[]>;
+
   constructor(private http: HttpClient) {
   }
 
   getAllContests(): Observable<ContestDTO[]> {
-    return this.http.get<ContestDTO[]>(baseUrl);
+    if (this.allContests) {
+      return this.allContests;
+    } else {
+      this.allContests = this.http.get<ContestDTO[]>(baseUrl);
+      return this.allContests;
+    }
+  }
+
+  getSelectedContest(contestId: string): Observable<ContestDTO> {
+    if (contestId in this.contests) {
+      return this.contests[contestId];
+    } else {
+      this.contests[contestId] = this.http.get<ContestDTO>(baseUrl + '/' + contestId);
+      return this.contests[contestId];
+    }
   }
 
   //esto probablemente hay que cambiarlo
@@ -34,10 +51,6 @@ export class ContestService {
         .set('unpaged', "" + unpaged)
     };
     return this.http.get<PageDTO<ContestDTO>>(baseUrl + '/page', httpOptions);
-  }
-
-  getSelectedContest(contestId: string): Observable<ContestDTO> {
-    return this.http.get<ContestDTO>(baseUrl + '/' + contestId);
   }
 
   getScoreboard(contestId: string): Observable<TeamScoreDTO[]> {
