@@ -7174,7 +7174,8 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 
 .p-toast {
-    opacity: .9
+    opacity: .9;
+    text-align: start;
 }
 
 .p-toast .p-toast-message {

@@ -1,11 +1,11 @@
-<div class="sticky top-0 pt-1">
+<div class="sticky top-0 pt-1 z-5">
     <div *ngIf="loaded === false">
         <p-skeleton height="5rem" styleClass="mb-2" borderRadius="16px"></p-skeleton>
     </div>
     <div *ngIf="loaded">
     <p-menubar [model]="items">
         <ng-template pTemplate="start">
-            <img src="assets/images/logo2.svg" height="40" class="ml-4" />
+            <img src="/images/logo2.svg" height="40" class="ml-4" />
         </ng-template>
         <div *ngIf="pageType=='student'" class="inline-flex">
             <app-submit-button contestId="{{contestId}}"></app-submit-button>

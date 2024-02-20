@@ -31,6 +31,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { SubmitButtonComponent } from './components/submit-button/submit-button.component';
 import { FormsModule } from '@angular/forms';
 import { SkeletonModule } from 'primeng/skeleton';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { MessagesModule } from 'primeng/messages';
 
 @NgModule({
   declarations: [
@@ -60,7 +63,10 @@ import { SkeletonModule } from 'primeng/skeleton';
     DialogModule,
     DropdownModule,
     FormsModule,
-    SkeletonModule
+    SkeletonModule,
+    FileUploadModule,
+    ToastModule,
+    MessagesModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

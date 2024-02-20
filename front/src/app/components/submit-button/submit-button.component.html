@@ -1,18 +1,30 @@
 <p-button (click)="showDialog()" label="Submit" severity="success" class="mr-4" i18n-label></p-button>
-<div *ngIf="loaded === false">
-    <p-skeleton width="10rem" height="4rem" borderRadius="16px"></p-skeleton>
-</div>
 <div *ngIf="loaded">
-    <p-dialog header="Submit code to contest {{contestId}}" (onHide)="close()" [(visible)]="visible" [style]="{ width: '50vw' }"
+    <p-dialog header="Submit code to contest {{contestId}}" [(visible)]="visible" [style]="{ width: '35vw' }"
         appendTo="body">
-        <div class="row flex py-2 justify-content-center">
-            <p-dropdown class="col-4" appendTo="body" [options]="problems" [(ngModel)]="selProblem"
-                placeholder="Select a problem" optionLabel="name" i18n-label></p-dropdown>
-            <p-dropdown class="col-4" appendTo="body" [options]="lang" [(ngModel)]="selectedLang"
-                placeholder="Select submission language" optionLabel="name" i18n-label></p-dropdown>
+        <div class="card flex justify-content-center pt-4">
+            <span class="p-float-label">
+                <p-dropdown appendTo="body" [options]="problems" [(ngModel)]="selProblem" placeholder="Select a problem"
+                    optionLabel="name" inputId="float-label" [style]="{ minWidth: '175px' }" [required]="true"
+                    i18n-label></p-dropdown>
+                <label for="float-label">Select a problem</label>
+            </span>
+        </div>
+        <div class="card flex justify-content-center pt-4">
+            <span class="p-float-label">
+                <p-dropdown appendTo="body" [options]="lang" [(ngModel)]="selectedLang"
+                    placeholder="Select submission language" optionLabel="name" inputId="float-label"
+                    [style]="{ minWidth: '175px' }" [required]="true" i18n-label></p-dropdown>
+                <label for="float-label">Select submission language</label>
+            </span>
+        </div>
+        <div class="flex justify-content-center pt-4">
+            <p-fileUpload chooseLabel="Upload file" name="file" url="your-upload-url" [showUploadButton]="false"
+                [showCancelButton]="false" (onSelect)="onFileSelected($event)"></p-fileUpload>
         </div>
         <ng-template pTemplate="footer">
-            <p-button icon="pi pi-check" (click)="submitCode()" label="Submit" severity="success" pAutoFocus
+            <p-toast position="top-left" key="tl"></p-toast>
+            <p-button icon="pi pi-check" (click)="submitCode()" label="Submit" severity="success" [disabled]="isDisabled" pAutoFocus
                 [autofocus]="true"></p-button>
         </ng-template>
     </p-dialog>
