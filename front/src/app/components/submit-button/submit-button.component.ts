@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { FileSelectEvent } from 'primeng/fileupload';
 import { ContestDTO } from 'src/app/dto/contest.dto';
+import { SubmissionDTO } from 'src/app/dto/submission.dto';
 import { ContestService } from 'src/app/services/contest.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { ProblemService } from 'src/app/services/problem.service';
@@ -12,7 +13,8 @@ interface ProblemName {
   id: string;
 }
 interface LanguageName {
-  name: string
+  name: string;
+  id: string;
 }
 
 @Component({
@@ -45,7 +47,7 @@ export class SubmitButtonComponent {
     this.loaded = false;
     this.langSevice.getAllLanguages().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
-        this.lang = [...this.lang, { name: data[i].nombreLenguaje! }];
+        this.lang = [...this.lang, { name: data[i].nombreLenguaje!, id: String(data[i].id!) }];
       }
     });
     this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
@@ -79,7 +81,7 @@ export class SubmitButtonComponent {
   submitCode() {
     if (this.selProblem && this.selectedLang && this.uploadedFile) {
       this.visible = false;
-      //this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.name, this.selProblem.id, )
+      //this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, teamId);
     } else {
       this.visible = true;
       this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });

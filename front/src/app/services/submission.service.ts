@@ -49,14 +49,18 @@ export class SubmissionService {
   }
 
   createSubmission(codigo: File, contestId: string, lenguaje: string, problemId: string, teamId: string): Observable<SubmissionDTO> {
-    return this.http.post<SubmissionDTO>(baseUrl, { codigo: codigo }, {
-      params: {
-        contestId: contestId,
-        lenguaje: lenguaje,
-        problemId: problemId,
-        teamId: teamId,
-      }
-    });
+    let formData: FormData = new FormData();
+    formData.append('codigo', codigo);
+
+    let httpOptions = {
+      params: new HttpParams()
+        .set('contestId', contestId)
+        .set('lenguaje', lenguaje)
+        .set('problemId', problemId)
+        .set('teamId', teamId)
+    };
+
+    return this.http.post(baseUrl, formData, httpOptions);
 
   }
 
