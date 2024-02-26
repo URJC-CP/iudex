@@ -55,6 +55,8 @@ public class OnStartRunner implements ApplicationRunner {
         } else {
             logger.info("Creating demo contest 'contestPrueba' with team 'pavloXd'");
             contestService.creaContest("contestPrueba", teamId, Optional.of("Este es el mejor concurso del mundo"), startDateTime, endDateTime);
+            var contestId = contestService.getContestByName("contestPrueba").orElseThrow().getId();
+            contestService.addTeamToContest(String.valueOf(contestId), new String[]{teamId});
         }
     }
 

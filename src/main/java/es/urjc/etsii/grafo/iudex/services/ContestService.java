@@ -251,13 +251,15 @@ public class ContestService {
         }
         Team team = teamOptional.get();
 
-        ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
+        Optional<ContestTeams> optionalContestTeams = contestTeamRespository.findByContestAndTeams(contest, team);
 
-        if (!contest.getListaContestsParticipados().contains(contestTeams)) {
+        if (optionalContestTeams.isEmpty()) {
+            ContestTeams contestTeams = new ContestTeams(contest,team,LocalDateTime.now());
             team.getListaContestsParticipados().add(contestTeams);
             teamRepository.save(team);
             contest.addTeam(contestTeams);
             contestRepository.save(contest);
+            contestTeamRespository.save(contestTeams);
         } else {
             logger.error("Team {} already in contest {}", teamId, contest.getId());
             return "TEAM ALREADY IN CONTEST";
