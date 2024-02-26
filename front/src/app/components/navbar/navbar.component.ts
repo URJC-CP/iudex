@@ -83,9 +83,9 @@ export class NavbarComponent {
 
   studentIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-home', name: 'Home' },
-      { icon: 'pi pi-fw pi-book', name: 'Problems', url: '/student/contest/' + this.contestId },
-      { icon: 'pi pi-fw pi-chart-bar', name: 'Ranking', url: '/student/contest/' + this.contestId + '/ranking' }
+      { icon: 'pi pi-fw pi-home', name: $localize`Home`, url: '/student/contest/' + this.contestId + '/home' },
+      { icon: 'pi pi-fw pi-book', name: $localize`Problems`, url: '/student/contest/' + this.contestId + '/problems' },
+      { icon: 'pi pi-fw pi-chart-bar', name: $localize`Ranking`, url: '/student/contest/' + this.contestId + '/ranking' }
     ];
     switch (this.userType) {
       case "admin":
@@ -116,12 +116,12 @@ export class NavbarComponent {
 
   judgeIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-star', name: 'Contests' },
-      { icon: 'pi pi-fw pi-book', name: 'Problems' },
-      { icon: 'pi pi-fw pi-code', name: 'Submissions' },
-      { icon: 'pi pi-fw pi-file', name: 'Ranking' },
+      { icon: 'pi pi-fw pi-star', name: $localize`Contests` },
+      { icon: 'pi pi-fw pi-book', name: $localize`Problems` },
+      { icon: 'pi pi-fw pi-code', name: $localize`Submissions` },
+      { icon: 'pi pi-fw pi-file', name: $localize`Ranking` },
       // disabled?
-      { icon: 'pi pi-fw pi-undo', name: 'Rejudge' }
+      { icon: 'pi pi-fw pi-undo', name: $localize`Rejudge` }
     ];
     switch (this.userType) {
       case "admin":
@@ -147,8 +147,8 @@ export class NavbarComponent {
 
   adminIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-users', name: 'Users' },
-      { icon: 'pi pi-fw pi-folder-open', name: 'Results' }
+      { icon: 'pi pi-fw pi-users', name: $localize`Users` },
+      { icon: 'pi pi-fw pi-folder-open', name: $localize`Results` }
     ];
     if (this.userType == "admin") {
       this.items.splice(0, 0, {
