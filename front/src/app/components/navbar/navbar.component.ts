@@ -1,261 +1,174 @@
 import { Component } from '@angular/core';
-import { MenuItem } from 'primeng/api';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { ContestService } from 'src/app/services/contest.service';
-import { Subscription } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
+
+interface button {
+  icon: string;
+  name: string;
+  url?: string;
+}
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html'
 })
 export class NavbarComponent {
-  contestName: string;
-  contestId: string;
-  subRouter: Subscription;
-  subContest: Subscription;
+
+  notHome: boolean = true;
   loaded: boolean = true;
   items: MenuItem[] = [];
-  username: MenuItem = {};
+  buttons: button[] = [];
   pageType: string | undefined;
-  userType: string | undefined = "student";
-  studentItems: MenuItem[] = [
-    { label: $localize`Home`, icon: 'pi pi-fw pi-home', style: { 'margin-left': '4%' } },
-    { label: $localize`Problems`, icon: 'pi pi-fw pi-book' },
-    { label: $localize`Ranking`, style: { 'margin-right': 'auto' }, icon: 'pi pi-fw pi-chart-bar' },
-    { label: $localize`Time?`, style: { 'margin': 'auto' } },
-    { label: $localize`Contest`, style: { 'margin-left': 'auto' }, routerLink: ['/student'] }
-  ];
-  judgeItems: MenuItem[] = [
-    { label: $localize`Contests`, icon: 'pi pi-fw pi-star' },
-    { label: $localize`Problems`, icon: 'pi pi-fw pi-book' },
-    { label: $localize`Submissions`, icon: 'pi pi-fw pi-code' },
-    { label: $localize`Ranking`, icon: 'pi pi-fw pi-file' },
-    //disabled?
-    { label: $localize`Rejudge`, icon: 'pi pi-fw pi-undo' }
-  ];
-  adminItems: MenuItem[] = [
-    { label: $localize`Users`, icon: 'pi pi-fw pi-users' },
-    { label: $localize`Results`, icon: 'pi pi-fw pi-folder-open' }
-  ];
-  studentHomeItems: MenuItem[] = [];
+  userType: string | undefined;
+  contestName: string | undefined;
+  contestId: string | undefined;
+  username: string | undefined;
+  roles: string[] | undefined;
+  time: string | undefined;
 
-  constructor(private router: Router, private contestService: ContestService) {
+  constructor(private router: Router, private contestService: ContestService, private userService: UserService) {
   }
 
   ngOnInit() {
-    this.subRouter = this.router.events.subscribe(
+    // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
+    this.userService.getCurrentUser().subscribe((data) => {
+      this.username = data.nickname!;
+      this.roles = data.roles!;
+      if (this.roles.includes("ROLE_ADMIN") && this.roles.length == 1) {
+        this.userType = "admin";
+      } else if (this.roles.includes("ROLE_JUDGE") && this.roles.length == 2) {
+        this.userType = "judge";
+      } else if (this.roles.includes("ROLE_USER") && this.roles.length == 3) {
+        this.userType = "student";
+      }
+    });
+
+    this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
-          this.items = [];
+          this.buttons = [];
+          this.items = [{
+            label: $localize`Log Out`,
+            icon: 'pi pi-times',
+            command: () => {
+              this.logout();
+            }
+          },];
           if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
           if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
             this.loaded = false;
             this.pageType = "student";
             this.contestId = event.url[17];
-            this.subRouter = this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
-              this.contestName = data.nombreContest!
-              /* if (this.studentItems.length > 5) {
-                this.studentItems.pop();
-              }
-              this.studentItems.pop(); */
-              // this.studentItems = [...this.studentItems, { label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] }];
-              // this.studentItems.push({ label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
-              this.studentItems.splice(4, 1, { label: this.contestName, style: { 'margin-left': 'auto' }, routerLink: ['/student'] });
-              this.loaded = true;
+            this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
+              this.contestName = data.nombreContest!;
+              this.calculateTime();
+              this.studentIcons();
             });
           }
-          if (event.url.startsWith("/judge")) { this.pageType = "judge" }
-          if (event.url.startsWith("/admin")) { this.pageType = "admin" }
+          if (event.url.startsWith("/judge")) {
+            this.pageType = "judge";
+            this.judgeIcons();
+          }
+          if (event.url.startsWith("/admin")) {
+            this.pageType = "admin";
+            this.adminIcons();
+          } else if (event.url.endsWith("/")) {
+            this.notHome = false;
+          }
         }
-        this.initUser();
-        this.initItems();
       });
   }
 
-  // Limpiar código y CAMBIAR STYLE LOGOUT amore ponle un width mas chico
-  initUser() {
+  studentIcons() {
+    this.buttons = [
+      { icon: 'pi pi-fw pi-home', name: 'Home' },
+      { icon: 'pi pi-fw pi-book', name: 'Problems', url: '/student/contest/' + this.contestId },
+      { icon: 'pi pi-fw pi-chart-bar', name: 'Ranking', url: '/student/contest/' + this.contestId + '/ranking' }
+    ];
     switch (this.userType) {
-      case "student":
-        this.username = {
-          label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-            {
-              label: $localize`Log Out`,
-              icon: 'pi pi-times',
-              command: () => {
-                this.logout();
-              }
-            }
-          ]
-        };
+      case "admin":
+        this.items.splice(0, 0, {
+          label: $localize`Admin View`,
+          icon: 'pi pi-user',
+          command: () => {
+            this.logout();
+          }
+        },
+          {
+            label: $localize`Judge View`,
+            icon: 'pi pi-user',
+            routerLink: ['/judge']
+          });
         break;
       case "judge":
-        if (this.pageType = "student") {
-          this.username = {
-            label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-              {
-                label: $localize`Judge View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/judge']
-              },
-              {
-                label: $localize`Log Out`,
-                icon: 'pi pi-times',
-                command: () => {
-                  this.logout();
-                }
-              },
-            ]
-          }
-        } else if (this.pageType = "judge") {
-          this.username = {
-            label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-              {
-                label: $localize`Student View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/student']
-              },
-              {
-                label: $localize`Log Out`,
-                icon: 'pi pi-times',
-                command: () => {
-                  this.logout();
-                }
-              },
-            ]
-          }
-        }
-        break;
-      case "admin":
-        if (this.pageType = "student") {
-          this.username = {
-            label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-              {
-                label: $localize`Admin View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/admin']
-              },
-              {
-                label: $localize`Judge View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/judge']
-              },
-              {
-                label: $localize`Log Out`,
-                icon: 'pi pi-times',
-                command: () => {
-                  this.logout();
-                }
-              },
-            ]
-          }
-        } else if (this.pageType = "judge") {
-          this.username = {
-            label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-              {
-                label: $localize`Admin View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/admin']
-              },
-              {
-                label: $localize`Student View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/student']
-              },
-              {
-                label: $localize`Log Out`,
-                icon: 'pi pi-times',
-                command: () => {
-                  this.logout();
-                }
-              },
-            ]
-          }
-        } else if (this.pageType = "admin") {
-          this.username = {
-            label: $localize`Username`, icon: 'pi pi-fw pi-user', style: { 'margin-left': 'auto' }, items: [
-              {
-                label: $localize`Judge View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/judge']
-              },
-              {
-                label: $localize`Student View`,
-                icon: 'pi pi-refresh',
-                routerLink: ['/student']
-              },
-              {
-                label: $localize`Log Out`,
-                icon: 'pi pi-times',
-                command: () => {
-                  this.logout();
-                }
-              },
-            ]
-          }
-        }
-        break;
-      default:
-        break;
+        this.items.splice(0, 0, {
+          label: $localize`Judge View`,
+          icon: 'pi pi-user',
+          routerLink: ['/judge']
+        })
+    }
+    if (this.buttons) {
+      this.loaded = true;
     }
   }
 
-  initItems() {
-    if (this.items.length == 0) {
-      switch (this.pageType) {
-        case "student":
-          if (this.studentItems.length == 5) {
-            this.studentItems.push(this.username);
-          } else {
-            this.studentItems.pop();
-            this.studentItems.push(this.username);
-          }
-          this.items = this.studentItems;
-          break;
-        case "judge":
-          if (this.judgeItems.length == 5) {
-            this.judgeItems.push(this.username);
-          } else {
-            this.judgeItems.pop();
-            this.judgeItems.push(this.username);
-          }
-          this.items = this.judgeItems;
-          break;
-        case "admin":
-          if (this.adminItems.length == 2) {
-            this.adminItems.push(this.username);
-          } else {
-            this.adminItems.pop();
-            this.adminItems.push(this.username);
-          }
-          this.items = this.adminItems;
-          break;
-        case "studentHome":
-          this.studentHomeItems.pop()
-          this.studentHomeItems.push(this.username);
-          this.items = this.studentHomeItems;
-          break;
-        default:
-          break;
-      }
+  judgeIcons() {
+    this.buttons = [
+      { icon: 'pi pi-fw pi-star', name: 'Contests' },
+      { icon: 'pi pi-fw pi-book', name: 'Problems' },
+      { icon: 'pi pi-fw pi-code', name: 'Submissions' },
+      { icon: 'pi pi-fw pi-file', name: 'Ranking' },
+      // disabled?
+      { icon: 'pi pi-fw pi-undo', name: 'Rejudge' }
+    ];
+    switch (this.userType) {
+      case "admin":
+        this.items.splice(0, 0, {
+          label: $localize`Admin View`,
+          icon: 'pi pi-user',
+          routerLink: ['/admin']
+        },
+          {
+            label: $localize`Student View`,
+            icon: 'pi pi-user',
+            routerLink: ['/student']
+          });
+        break;
+      case "judge":
+        this.items.splice(0, 0, {
+          label: $localize`Student View`,
+          icon: 'pi pi-user',
+          routerLink: ['/student']
+        })
     }
+  }
 
+  adminIcons() {
+    this.buttons = [
+      { icon: 'pi pi-fw pi-users', name: 'Users' },
+      { icon: 'pi pi-fw pi-folder-open', name: 'Results' }
+    ];
+    if (this.userType == "admin") {
+      this.items.splice(0, 0, {
+        label: $localize`Judge View`,
+        icon: 'pi pi-user',
+        routerLink: ['/judge']
+      },
+        {
+          label: $localize`Student View`,
+          icon: 'pi pi-user',
+          routerLink: ['/student']
+        });
+    }
+  }
+
+  calculateTime() {
   }
 
   logout() {
-
   }
 
-  redirect(route: string) {
-
-  }
-
-  getMenuItem(array: MenuItem[], label: string): any {
-    return array.find(item => item.label === label);
-  }
-
-  ngOnDestroy() {
-    this.subContest.unsubscribe();
-    this.subRouter.unsubscribe();
-  }
 
 }

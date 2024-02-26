@@ -34,6 +34,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
+import { ToolbarModule } from 'primeng/toolbar';
+
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { MessagesModule } from 'primeng/messages';
     StudentHomeComponent,
     StudentProblemsComponent,
     StudentRankingComponent,
-    SubmitButtonComponent
+    SubmitButtonComponent,
+    NavbarComponent
   ],
   imports: [
     HttpClientModule,
@@ -66,7 +69,8 @@ import { MessagesModule } from 'primeng/messages';
     SkeletonModule,
     FileUploadModule,
     ToastModule,
-    MessagesModule
+    MessagesModule,
+    ToolbarModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

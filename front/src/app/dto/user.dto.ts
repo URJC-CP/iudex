@@ -1,6 +1,7 @@
 export interface UserDTO {
-    name?: String;
-    surname?: String;
-    roles?: String[];
+    id?: number;
+    nickname?: string;
+    email?: string;
+    roles?: string[];
     
   }
