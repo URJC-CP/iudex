@@ -1,11 +1,11 @@
 package es.urjc.etsii.grafo.iudex.entities;
 
+import com.google.common.hash.Hashing;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SampleAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
-import com.google.common.hash.Hashing;
-
 import jakarta.persistence.*;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
@@ -106,6 +106,13 @@ public class Problem {
         }
         problemAPI.setSubmissions(submissionAPIS);
 
+        byte[] contents = this.getDocumento();
+        if (contents == null || contents.length == 0) {
+            problemAPI.setProblemURLpdf(null);
+        } else {
+            problemAPI.setProblemURLpdf(String.format("/API/v1/problem/%s/getPDF", this.id));
+        }
+
         return problemAPI;
     }
 
@@ -117,6 +124,13 @@ public class Problem {
             submissionAPIS.add(submission.toSubmissionAPI());
         }
         problemAPI.setSubmissions(submissionAPIS);
+
+        byte[] contents = this.getDocumento();
+        if (contents == null || contents.length == 0) {
+            problemAPI.setProblemURLpdf(null);
+        } else {
+            problemAPI.setProblemURLpdf(String.format("/API/v1/problem/%s/getPDF", this.id));
+        }
 
         return problemAPI;
     }
