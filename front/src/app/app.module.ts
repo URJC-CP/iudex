@@ -9,11 +9,16 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { StudentContestsComponent } from './components/student-contests/student-contests.component';
+import { StudentHomeComponent } from './components/student-home/student-home.component';
+import { StudentProblemsComponent } from './components/student-problems/student-problems.component';
+import { StudentRankingComponent } from './components/student-ranking/student-ranking.component';
 
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 
 import { routing } from './app.routing';
+
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 
 //PrimeNG imports
 import { MenubarModule } from 'primeng/menubar';
@@ -22,9 +27,6 @@ import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { AccordionModule } from 'primeng/accordion';
 import { CardModule } from 'primeng/card';
-import { StudentHomeComponent } from './components/student-home/student-home.component';
-import { StudentProblemsComponent } from './components/student-problems/student-problems.component';
-import { StudentRankingComponent } from './components/student-ranking/student-ranking.component';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -35,6 +37,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TagModule } from 'primeng/tag';
 
 
 @NgModule({
@@ -70,7 +73,9 @@ import { ToolbarModule } from 'primeng/toolbar';
     FileUploadModule,
     ToastModule,
     MessagesModule,
-    ToolbarModule
+    ToolbarModule,
+    TagModule,
+    MonacoEditorModule.forRoot()
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true
