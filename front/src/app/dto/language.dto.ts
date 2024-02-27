@@ -2,7 +2,7 @@
 export interface LanguageDTO {
     id?: number;
     imgenId?: string;
-    nombreLenguaje?: string;
+    nombreLenguaje: string;
     timestamp?: number;
   
   }
