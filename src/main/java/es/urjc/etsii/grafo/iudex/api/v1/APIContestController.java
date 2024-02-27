@@ -1,17 +1,22 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Contest;
-import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
-import es.urjc.etsii.grafo.iudex.pojos.ContestString;
-import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
+import es.urjc.etsii.grafo.iudex.entities.Team;
+import es.urjc.etsii.grafo.iudex.entities.User;
+import es.urjc.etsii.grafo.iudex.pojos.*;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
+import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,10 +27,20 @@ import java.util.Optional;
 @RequestMapping("/API/v1/")
 public class APIContestController {
 
+    private static final Logger log = LoggerFactory.getLogger(APIContestController.class);
+
     final ContestService contestService;
 
-    public APIContestController(ContestService contestService) {
+    final UserRepository userRepository;
+
+    final UserAndTeamService userAndTeamService;
+
+    public APIContestController(ContestService contestService,
+                                UserRepository userRepository,
+                                UserAndTeamService userAndTeamService) {
         this.contestService = contestService;
+        this.userRepository = userRepository;
+        this.userAndTeamService = userAndTeamService;
     }
 
     @Operation( summary = "Return all contests")
@@ -252,4 +267,18 @@ public class APIContestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation( summary = "Get current user's team in contest")
+    @GetMapping("contest/{contestId}/team")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<TeamAPI> getTeamInContest(@PathVariable String contestId, Authentication authentication) {
+        User user = userAndTeamService.getUserFromAuthentication(authentication);
+
+        Optional<Team> optionalTeam = contestService.getTeamByContestIdAndUser(Long.parseLong(contestId), user);
+
+        if (optionalTeam.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(optionalTeam.get().toTeamAPISimple(), HttpStatus.OK);
+    }
+
 }

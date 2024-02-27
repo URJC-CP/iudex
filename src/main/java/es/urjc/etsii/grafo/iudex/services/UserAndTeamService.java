@@ -3,6 +3,7 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.entities.TeamUser;
 import es.urjc.etsii.grafo.iudex.entities.User;
+import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.pojos.UserString;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
@@ -10,6 +11,7 @@ import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.repositories.UserTeamRespository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -349,6 +351,24 @@ public class UserAndTeamService {
     public Collection<Long> getTeamIdsFromUser(User user) {
         Collection<TeamUser> teamUsers = user.getEquiposParticipantes();
         return teamUsers.stream().map(TeamUser::getTeam).map(Team::getId).toList();
+    }
+
+    public User getUserFromAuthentication(Authentication authentication) throws IudexException {
+        if(!authentication.isAuthenticated()){
+            throw new IudexException("User not authenticated");
+        }
+        String nickname = authentication.getName(); // Our User::nickname is used as the Spring User::username
+        if(nickname == null || nickname.isBlank()){
+            throw new IudexException("Invalid username extracted from auth token: " + (nickname));
+        }
+
+        Optional<User> optionalUser = userRepository.findByNickname(nickname);
+        if(optionalUser.isEmpty()){
+            // May happen but should be extremely rare, log it
+            throw new IudexException("User %s has a signed token but the username does not exist?".formatted(nickname));
+        }
+
+        return optionalUser.get();
     }
 
 }

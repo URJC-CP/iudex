@@ -538,4 +538,13 @@ public class ContestService {
         scores.sort(new TeamScoreComparator());
         return scores;
     }
+
+    public Optional<Team> getTeamByContestIdAndUser(Long contestId, User user) {
+        Collection<Long> teamIds = user.getEquiposParticipantes().stream()
+                .map(teamUser -> teamUser.getTeam().getId())
+                .toList();
+
+        Optional<ContestTeams> optionalContestTeams = contestTeamRespository.findByTeamsIdInAndContestId(teamIds, contestId);
+        return optionalContestTeams.map(ContestTeams::getTeams);
+    }
 }

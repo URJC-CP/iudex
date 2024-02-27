@@ -1,6 +1,7 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
+import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
 import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.ContestTeamService;
@@ -50,23 +51,13 @@ public class APIUserController {
             @ApiResponse(responseCode = "401", description = "Missing or invalid token provided")
     })
     public ResponseEntity<UserAPI> getCurrentUser(Authentication authentication){
-        if(!authentication.isAuthenticated()){
+        User user;
+        try {
+            user = userAndTeamService.getUserFromAuthentication(authentication);
+        } catch (IudexException e) {
+            log.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        String nickname = authentication.getName(); // Our User::nickname is used as the Spring User::username
-        if(nickname == null || nickname.isBlank()){
-            log.warn("Invalid username extracted from auth token: " + (nickname));
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        Optional<User> optionalUser = userRepository.findByNickname(nickname);
-        if(optionalUser.isEmpty()){
-            // May happen but should be extremely rare, log it
-            log.warn("User %s has a signed token but the username does not exist?".formatted(nickname));
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        User user = optionalUser.get();
 
         UserAPI userAPI = user.toUserAPI();
         // Fill additional fields

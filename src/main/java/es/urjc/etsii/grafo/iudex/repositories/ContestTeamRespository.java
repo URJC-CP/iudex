@@ -18,4 +18,6 @@ public interface ContestTeamRespository extends JpaRepository<ContestTeams, Long
     void deleteByContest(Contest contest);
 
     Collection<ContestTeams> findByTeamsIdIn(Collection<Long> teamIds);
+
+    Optional<ContestTeams> findByTeamsIdInAndContestId(Collection<Long> teamIds, long contestId);
 }
