@@ -81,7 +81,7 @@ export class SubmitButtonComponent {
   submitCode() {
     if (this.selProblem && this.selectedLang && this.uploadedFile) {
       this.visible = false;
-      //this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, teamId);
+      this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, '7').subscribe();
     } else {
       this.visible = true;
       this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });

@@ -7,13 +7,13 @@ export interface SubmissionDTO {
   id?: number;
   results?: ResultDTO[];
   team?: TeamDTO;
-  problem?: ProblemDTO;
+  problem: ProblemDTO;
   corregido?: boolean;
   numeroResultCorregidos?: number;
-  resultado?: string;
-  language?:LanguageDTO;
+  resultado: string;
+  language:LanguageDTO;
   execSubmissionTime?: number;
   execSubmissionMemory?: number;
-  timestamp?: number;
+  timestamp: number;
 
 }

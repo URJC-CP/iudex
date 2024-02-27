@@ -60,7 +60,7 @@ export class SubmissionService {
         .set('teamId', teamId)
     };
 
-    return this.http.post(baseUrl, formData, httpOptions);
+    return this.http.post<SubmissionDTO>(baseUrl, formData, httpOptions);
 
   }
 
