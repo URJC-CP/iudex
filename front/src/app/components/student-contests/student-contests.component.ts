@@ -23,6 +23,6 @@ export class StudentContestsComponent {
   }
 
   redirect(id: string) {
-    this.router.navigate(['/student/contest/' + id]);
+    this.router.navigate(['/student/contest/' + id + '/problems']);
   }
 }
