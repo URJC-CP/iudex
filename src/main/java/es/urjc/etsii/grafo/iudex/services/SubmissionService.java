@@ -31,6 +31,7 @@ public class SubmissionService {
     private final ContestProblemRepository contestProblemRepository;
     private final ProblemRepository problemRepository;
     private final TeamRepository teamRepository;
+    private final UserAndTeamService userAndTeamService;
     private final LanguageRepository languageRepository;
     private final SubmissionRepository submissionRepository;
     private final ResultRepository resultRepository;
@@ -46,7 +47,8 @@ public class SubmissionService {
                              TeamRepository teamRepository,
                              ProblemRepository problemRepository,
                              ContestProblemRepository contestProblemRepository,
-                             ContestRepository contestRepository) {
+                             ContestRepository contestRepository,
+                             UserAndTeamService userAndTeamService) {
         this.sender = sender;
         this.rabbitTemplate = rabbitTemplate;
         this.resultRepository = resultRepository;
@@ -56,6 +58,7 @@ public class SubmissionService {
         this.problemRepository = problemRepository;
         this.contestProblemRepository = contestProblemRepository;
         this.contestRepository = contestRepository;
+        this.userAndTeamService = userAndTeamService;
     }
 
     public SubmissionStringResult creaYejecutaSubmission(MultipartFile codigoFile, String problem, String lenguaje, String idContest, String idEquipo) throws IOException {
@@ -332,5 +335,16 @@ public class SubmissionService {
 
     public Page<Submission> getSubmissionsPage(Pageable pageable) {
         return submissionRepository.findAll(pageable);
+    }
+
+    public int countSubmissionsByUser(User user) {
+        return submissionRepository.countSubmissionsByTeamIdIn(userAndTeamService.getTeamIdsFromUser(user));
+    }
+
+    public int countAcceptedSubmissionsByUser(User user) {
+        return submissionRepository.countSubmissionsByResultLikeAndTeamIdIn(
+                "accepted",
+                userAndTeamService.getTeamIdsFromUser(user)
+        );
     }
 }

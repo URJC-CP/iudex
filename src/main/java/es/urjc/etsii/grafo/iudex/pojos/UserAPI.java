@@ -19,6 +19,12 @@ public class UserAPI {
 
     private List<String> roles;
 
+    private Integer submissions = null;
+
+    private Integer contestsParticipated = null;
+
+    private Integer acceptedSubmissions = null;
+
 
     public long getId() {
         return id;
@@ -74,5 +80,29 @@ public class UserAPI {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public int getSubmissions() {
+        return submissions;
+    }
+
+    public void setSubmissions(int submissions) {
+        this.submissions = submissions;
+    }
+
+    public int getContestsParticipated() {
+        return contestsParticipated;
+    }
+
+    public void setContestsParticipated(int contestsParticipated) {
+        this.contestsParticipated = contestsParticipated;
+    }
+
+    public int getAcceptedSubmissions() {
+        return acceptedSubmissions;
+    }
+
+    public void setAcceptedSubmissions(int acceptedSubmissions) {
+        this.acceptedSubmissions = acceptedSubmissions;
     }
 }
