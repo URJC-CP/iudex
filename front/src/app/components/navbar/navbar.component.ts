@@ -33,7 +33,7 @@ export class NavbarComponent {
 
   ngOnInit() {
     // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
-    this.userService.getCurrentUser().subscribe((data) => {
+    /* this.userService.getCurrentUser().subscribe((data) => {
       this.username = data.nickname!;
       this.roles = data.roles!;
       if (this.roles.includes("ROLE_ADMIN") && this.roles.length == 1) {
@@ -44,7 +44,7 @@ export class NavbarComponent {
         this.userType = "student";
       }
     });
-
+ */
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
