@@ -322,6 +322,10 @@ public class SubmissionService {
         return submissionRepository.findSubmissionsByProblemAndContest(problem, contest);
     }
 
+    public List<Submission> getSubmissionFromTeamAndContest(Team team, Contest contest) {
+        return submissionRepository.findSubmissionsByTeamAndContest(team, contest);
+    }
+
     public Optional<Submission> getSubmission(String submissionId) {
         return submissionRepository.findSubmissionById(Long.parseLong(submissionId));
     }
