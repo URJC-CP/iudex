@@ -3,6 +3,8 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
+import es.urjc.etsii.grafo.iudex.services.ContestTeamService;
+import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,10 +27,19 @@ public class APIUserController {
 
     final UserAndTeamService userAndTeamService;
     final UserRepository userRepository;
+    final SubmissionService submissionService;
+    final ContestTeamService contestTeamService;
 
-    public APIUserController(UserAndTeamService userAndTeamService, UserRepository userRepository) {
+    public APIUserController(
+            UserAndTeamService userAndTeamService,
+            UserRepository userRepository,
+            SubmissionService submissionService,
+            ContestTeamService contestTeamService
+    ) {
         this.userAndTeamService = userAndTeamService;
         this.userRepository = userRepository;
+        this.submissionService = submissionService;
+        this.contestTeamService = contestTeamService;
     }
 
 //
@@ -48,13 +59,22 @@ public class APIUserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        var user = userRepository.findByNickname(nickname);
-        if(user.isEmpty()){
+        Optional<User> optionalUser = userRepository.findByNickname(nickname);
+        if(optionalUser.isEmpty()){
             // May happen but should be extremely rare, log it
             log.warn("User %s has a signed token but the username does not exist?".formatted(nickname));
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(user.get().toUserAPI());
+
+        User user = optionalUser.get();
+
+        UserAPI userAPI = user.toUserAPI();
+        // Fill additional fields
+        userAPI.setSubmissions(submissionService.countSubmissionsByUser(user));
+        userAPI.setContestsParticipated(contestTeamService.countContestByUser(user));
+        userAPI.setAcceptedSubmissions(submissionService.countAcceptedSubmissionsByUser(user));
+
+        return ResponseEntity.ok(userAPI);
     }
 
     @Operation( summary = "Add a specific role to an existing user")

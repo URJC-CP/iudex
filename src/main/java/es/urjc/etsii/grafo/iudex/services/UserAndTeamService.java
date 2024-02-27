@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -343,6 +344,11 @@ public class UserAndTeamService {
         userRepository.save(user);
 
         return user;
+    }
+
+    public Collection<Long> getTeamIdsFromUser(User user) {
+        Collection<TeamUser> teamUsers = user.getEquiposParticipantes();
+        return teamUsers.stream().map(TeamUser::getTeam).map(Team::getId).toList();
     }
 
 }
