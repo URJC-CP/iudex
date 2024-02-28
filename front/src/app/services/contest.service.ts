@@ -5,6 +5,8 @@ import { ContestDTO } from '../dto/contest.dto';
 import { PageDTO } from '../dto/page.dto';
 import { ProblemScoreDTO } from '../dto/problemScore.dto';
 import { TeamScoreDTO } from '../dto/teamScore.dto';
+import { SubmissionDTO } from '../dto/submission.dto';
+import { TeamDTO } from '../dto/team.dto';
 
 const baseUrl = '/API/v1/contest';
 
@@ -57,6 +59,10 @@ export class ContestService {
     return this.http.get<TeamScoreDTO[]>(baseUrl + '/' + contestId + '/scoreboard');
   }
 
+  getSubmissionsByContestAndTeam(contestId: string, teamId: string): Observable<SubmissionDTO[]> {
+    return this.http.get<SubmissionDTO[]>(baseUrl + '/' + contestId + '/team/' + teamId + '/submissions');
+  }
+
   createContest(contestName: string, descripcion: string, teamId: string, startTimestamp: number, endTimestamp: number): Observable<ContestDTO> {
     return this.http.post<ContestDTO>(baseUrl, {
       contestName: contestName,
@@ -65,6 +71,10 @@ export class ContestService {
       endTimestamp: endTimestamp,
       teamId: teamId,
     });
+  }
+
+  getCurrentTeam(contestId: string): Observable<TeamDTO> {
+    return this.http.get<TeamDTO>(baseUrl + '/' + contestId + '/team');
   }
 
   addLanguageToContest(contestId: string, language: string): Observable<any> {
