@@ -78,7 +78,10 @@ export class StudentHomeComponent {
         let time = new Date(data[i].timestamp);
         let result = "";
         if (data[i].resultado == "accepted") { result = "AC" }
-        else if (data[i].resultado == "wrong answer") { result = "WA" }
+        else if (data[i].resultado == "wrong_answer") { result = "WA" }
+        else if (data[i].resultado == "time_limit_exceeded") { result = "TLE" }
+        else if (data[i].resultado.startsWith("run_time_error")) { result = "RTE" }
+        else if (data[i].resultado.startsWith("FAILED IN COMPILER")) { result = "CE" }
         this.submissions[this.submissions.length] = ({
           timestamp: time.toLocaleString().replace(", ", " "),
           problem: data[i].problem.nombreEjercicio,
@@ -91,13 +94,6 @@ export class StudentHomeComponent {
 
       }
     })
-
-    this.cols = [
-      { field: 'timestamp', header: 'Time' },
-      { field: 'problem', header: 'Problem' },
-      { field: 'language', header: 'Lang' },
-      { field: 'result', header: 'Result' }
-    ];
   }
 
   getSeverity(result: string) {
@@ -110,7 +106,11 @@ export class StudentHomeComponent {
   }
 
   selectOptions() {
-    this.editorOptions = { theme: this.selectedTheme.name, language: this.selectedLanguage?.name! };
+    if (this.selectedLanguage?.name == 'python3') {
+      this.editorOptions = { theme: this.selectedTheme.name, language: 'python' };
+    } else {
+      this.editorOptions = { theme: this.selectedTheme.name, language: this.selectedLanguage?.name! };
+    }
   }
 
   submitCode() {

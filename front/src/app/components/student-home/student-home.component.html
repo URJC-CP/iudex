@@ -2,16 +2,28 @@
 
 <div class="grid align-content-center">
     <div class="col-5 justify-content-center">
-        <h2 class="text-center" i18n>Submissions</h2>
+        <div class="grid mx-5">
+            <h2 class="text-center col-11" i18n>Submissions</h2>
+            <i class="col-1 pi pi-info-circle mt-4" severity="info" [pTooltip]="tooltipContent"
+                tooltipPosition="right"></i>
+            <ng-template #tooltipContent>
+                <div class="flex align-items-center">
+                    <span i18n> <p-tag severity="success">AC</p-tag> : Accepted <br> <p-tag severity="error">WA</p-tag>
+                        : Wrong Answer <br> <p-tag severity="error">TLE</p-tag> : Time Limit error <br> <p-tag
+                            severity="error">CE</p-tag> : Compilation Error <br> <p-tag severity="error">RTE</p-tag> :
+                        Runtime Error </span>
+                </div>
+            </ng-template>
+        </div>
         <hr class="mx-5 mb-3" />
         <div class="card mx-5" *ngIf="loaded">
             <p-table [value]="submissions">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Time</th>
-                        <th>Problem</th>
-                        <th>Lang</th>
-                        <th>Result</th>
+                        <th i18n>Time</th>
+                        <th i18n>Problem</th>
+                        <th i18n>Lang</th>
+                        <th i18n>Result</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-submission>
