@@ -3,7 +3,10 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 import es.urjc.etsii.grafo.iudex.entities.Contest;
 import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.entities.User;
-import es.urjc.etsii.grafo.iudex.pojos.*;
+import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
+import es.urjc.etsii.grafo.iudex.pojos.ContestString;
+import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
+import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
@@ -16,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -269,12 +271,14 @@ public class APIContestController {
     }
 
     @Operation( summary = "Get current user's team in contest")
-    @GetMapping("contest/{contestId}/team")
+    @GetMapping("contest/{contestId}/user/{userId}/team")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<TeamAPI> getTeamInContest(@PathVariable String contestId, Authentication authentication) {
-        User user = userAndTeamService.getUserFromAuthentication(authentication);
+    public ResponseEntity<TeamAPI> getTeamInContest(@PathVariable String contestId, @PathVariable String userId) {
+        Optional<User> user = userAndTeamService.getUserById(Long.parseLong(userId));
 
-        Optional<Team> optionalTeam = contestService.getTeamByContestIdAndUser(Long.parseLong(contestId), user);
+        if (user.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Optional<Team> optionalTeam = contestService.getTeamByContestIdAndUser(Long.parseLong(contestId), user.get());
 
         if (optionalTeam.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
