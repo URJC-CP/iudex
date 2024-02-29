@@ -2,7 +2,7 @@ package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APIUserController;
 import es.urjc.etsii.grafo.iudex.entities.User;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 

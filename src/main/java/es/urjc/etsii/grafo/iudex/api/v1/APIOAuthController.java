@@ -1,6 +1,6 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
-import es.urjc.etsii.grafo.iudex.security.jwt.AuthResponse;
+import es.urjc.etsii.grafo.iudex.security.AuthResponse;
 import es.urjc.etsii.grafo.iudex.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package es.urjc.etsii.grafo.iudex.security.jwt;
+package es.urjc.etsii.grafo.iudex.security;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -8,21 +8,6 @@ public class Token {
 	private TokenType tokenType;
 	private String tokenValue;
 	private LocalDateTime expiryDate;
-
-	public enum TokenType {
-
-		ACCESS(Duration.ofHours(1)),
-		REFRESH(Duration.ofDays(7));
-
-		/**
-		 * Token lifetime in seconds
-		 */
-		public final Duration duration;
-
-        TokenType(Duration duration) {
-            this.duration = duration;
-        }
-	}
 
 	public Token(TokenType tokenType, String tokenValue, LocalDateTime expiryDate) {
 		super();

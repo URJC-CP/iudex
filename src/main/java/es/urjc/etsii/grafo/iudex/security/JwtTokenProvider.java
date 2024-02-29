@@ -1,8 +1,9 @@
-package es.urjc.etsii.grafo.iudex.security.jwt;
+package es.urjc.etsii.grafo.iudex.security;
 
 import es.urjc.etsii.grafo.iudex.exceptions.JwtIudexException;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ public class JwtTokenProvider {
 	private final JwtParser jwtParser = Jwts.parser().verifyWith(jwtSecret).build();
 
 	public String resolveToken(HttpServletRequest req) {
-		String bearerToken = req.getHeader("Authorization");
+		String bearerToken = req.getHeader(HttpHeaders.AUTHORIZATION);
 		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
 			return bearerToken.substring(7);
 		}
@@ -28,7 +29,7 @@ public class JwtTokenProvider {
 	}
 
 	public Claims validateToken(HttpServletRequest req){
-		String bearerToken = req.getHeader("Authorization");
+		String bearerToken = req.getHeader(HttpHeaders.AUTHORIZATION);
 		if (bearerToken == null) {
 			throw new JwtIudexException("Missing Authorization header");
 		}
@@ -43,14 +44,14 @@ public class JwtTokenProvider {
 	}
 
 	public Token generateAccessToken(UserDetails userDetails) {
-		return generateToken(Token.TokenType.ACCESS, userDetails);
+		return generateToken(TokenType.ACCESS, userDetails);
 	}
 
 	public Token generateRefreshToken(UserDetails userDetails) {
-		return generateToken(Token.TokenType.REFRESH, userDetails);
+		return generateToken(TokenType.REFRESH, userDetails);
 	}
 
-	private Token generateToken(Token.TokenType tokenType, UserDetails userDetails) {
+	private Token generateToken(TokenType tokenType, UserDetails userDetails) {
 		var currentDate = new Date();
 		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));
 		String token = Jwts.builder()

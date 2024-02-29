@@ -5,7 +5,7 @@ import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.entities.TeamUser;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;

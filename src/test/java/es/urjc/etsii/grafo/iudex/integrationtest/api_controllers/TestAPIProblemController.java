@@ -4,7 +4,7 @@ import es.urjc.etsii.grafo.iudex.api.v1.APIProblemController;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;

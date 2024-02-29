@@ -1,4 +1,4 @@
-package es.urjc.etsii.grafo.iudex.security.jwt;
+package es.urjc.etsii.grafo.iudex.security;
 
 public class AuthResponse {
 

@@ -1,4 +1,4 @@
-package es.urjc.etsii.grafo.iudex.security.jwt;
+package es.urjc.etsii.grafo.iudex.security;
 
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;

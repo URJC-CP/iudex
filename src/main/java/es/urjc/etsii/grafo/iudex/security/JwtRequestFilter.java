@@ -1,4 +1,4 @@
-package es.urjc.etsii.grafo.iudex.security.jwt;
+package es.urjc.etsii.grafo.iudex.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
+    static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 
     private final UserDetailsServiceImp userDetailsService;
 

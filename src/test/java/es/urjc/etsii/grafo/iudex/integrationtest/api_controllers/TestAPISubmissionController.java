@@ -3,7 +3,7 @@ package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;

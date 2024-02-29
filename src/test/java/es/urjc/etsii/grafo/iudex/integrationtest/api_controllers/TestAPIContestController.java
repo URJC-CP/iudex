@@ -7,7 +7,7 @@ import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
