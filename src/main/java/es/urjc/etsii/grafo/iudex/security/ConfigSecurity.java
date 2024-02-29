@@ -16,11 +16,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableMethodSecurity(jsr250Enabled=true)
 class ConfigSecurity {
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtRequestFilter jwtRequestFilter) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         http.oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/API/v1/oauth/login", true));

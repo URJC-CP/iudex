@@ -8,54 +8,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(JwtRequestFilter.class);
 
-	private final UserDetailsServiceImp userDetailsService;
+    private static final Logger log = LoggerFactory.getLogger(JwtRequestFilter.class);
 
-	private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsServiceImp userDetailsService;
 
-	public JwtRequestFilter(UserDetailsServiceImp userDetailsService, JwtTokenProvider jwtTokenProvider) {
-		this.userDetailsService = userDetailsService;
-		this.jwtTokenProvider = jwtTokenProvider;
-	}
+    private final JwtTokenProvider jwtTokenProvider;
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-			FilterChain filterChain) throws ServletException, IOException {
+    public JwtRequestFilter(UserDetailsServiceImp userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
-		// If there is not an Authorization header, we skip the filter
-		try {
-			String token = jwtTokenProvider.resolveToken(request);
-			
-			if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-				
-				String username = jwtTokenProvider.getUsername(token);
-				
-				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-				
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-		} catch (Exception ex) {
-			LOG.error("Exception processing JWT Token",ex);
-		}
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-		filterChain.doFilter(request, response);
-	}
+        // If there is not an Authorization header, we skip the filter
+        try {
+            var claims = jwtTokenProvider.validateToken(request);
+            var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
+            var authentication = new UsernamePasswordAuthenticationToken(
+					userDetails,
+					null,
+					userDetails.getAuthorities()
+			);
+
+			// TODO Review: No entiendo para que sirve copiar los details, eliminado por ahora
+            // authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception ex) {
+			// if there has been any kind of error, make sure authentication is empty
+			// so access to protected resources will fail
+			SecurityContextHolder.clearContext();
+            log.info("Exception processing JWT Token", ex);
+        }
+
+        filterChain.doFilter(request, response);
+    }
 
 }

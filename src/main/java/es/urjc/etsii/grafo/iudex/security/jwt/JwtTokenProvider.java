@@ -1,36 +1,23 @@
 package es.urjc.etsii.grafo.iudex.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import es.urjc.etsii.grafo.iudex.exceptions.JwtIudexException;
+import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(JwtTokenProvider.class);
-
-	private static final long JWT_EXPIRATION_IN_MS = 5400000;
-
-	private static final Long REFRESH_TOKEN_EXPIRATION_MSEC = 10800000L;
-
-	private static final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-	public String getUsername(String token) {
-		return Jwts.parserBuilder().setSigningKey(jwtSecret).build()
-				.parseClaimsJws(token).getBody().getSubject();
-	}
+	private static final ZoneId zone = ZoneOffset.systemDefault();
+	private final SecretKey jwtSecret = Jwts.SIG.HS256.key().build();
+	private final JwtParser jwtParser = Jwts.parser().verifyWith(jwtSecret).build();
 
 	public String resolveToken(HttpServletRequest req) {
 		String bearerToken = req.getHeader("Authorization");
@@ -40,22 +27,23 @@ public class JwtTokenProvider {
 		return null;
 	}
 
-	public boolean validateToken(String token) {
-		try {
-			Jwts.parserBuilder().setSigningKey(jwtSecret).build()
-					.parseClaimsJws(token);
-			return true;
-		} catch (JwtException ex) {
-			LOG.debug("Invalid JWT Token");
-		} catch (IllegalArgumentException ex) {
-			LOG.debug("JWT claims string is empty");
+	public Claims validateToken(HttpServletRequest req){
+		String bearerToken = req.getHeader("Authorization");
+		if (bearerToken == null) {
+			throw new JwtIudexException("Missing Authorization header");
 		}
-		return false;
+		if(!bearerToken.startsWith("Bearer ")){
+			throw new JwtIudexException("Authorization header does not start with Bearer: " + bearerToken);
+		}
+
+		return validateToken(bearerToken.substring(7));
+	}
+	public Claims validateToken(String token) {
+		return jwtParser.parseSignedClaims(token).getPayload();
 	}
 
 	public Token generateAccessToken(UserDetails userDetails) {
 		return generateToken(Token.TokenType.ACCESS, userDetails);
-
 	}
 
 	public Token generateRefreshToken(UserDetails userDetails) {
@@ -63,18 +51,16 @@ public class JwtTokenProvider {
 	}
 
 	private Token generateToken(Token.TokenType tokenType, UserDetails userDetails) {
-		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
+		var currentDate = new Date();
+		var expiryDate = Date.from(new Date().toInstant().plus(tokenType.duration));
+		String token = Jwts.builder()
+				.claim("roles", userDetails.getAuthorities())
+				.subject(userDetails.getUsername())
+				.issuedAt(currentDate)
+				.expiration(expiryDate)
+				.signWith(jwtSecret)
+				.compact();
 
-		claims.put("roles", userDetails.getAuthorities());
-
-		long time = (tokenType == Token.TokenType.ACCESS) ? JWT_EXPIRATION_IN_MS : REFRESH_TOKEN_EXPIRATION_MSEC;
-		Date now = new Date();
-		Long duration = now.getTime() + time;
-		Date expiryDate = new Date(now.getTime() + time);
-		String token = Jwts.builder().setClaims(claims).setSubject((userDetails.getUsername())).setIssuedAt(new Date())
-				.setExpiration(expiryDate).signWith(jwtSecret).compact();
-
-		return new Token(tokenType, token, duration,
-				LocalDateTime.ofInstant(expiryDate.toInstant(), ZoneId.systemDefault()));
+		return new Token(tokenType, token, LocalDateTime.ofInstant(expiryDate.toInstant(), zone));
 	}
 }

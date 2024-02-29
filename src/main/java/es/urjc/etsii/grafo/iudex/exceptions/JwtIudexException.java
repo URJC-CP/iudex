@@ -6,4 +6,8 @@ public class JwtIudexException extends RuntimeException {
         super(cause);
     }
 
+    public JwtIudexException(String cause) {
+        super(cause);
+    }
+
 }
