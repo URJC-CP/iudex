@@ -51,7 +51,7 @@ public class APIOAuthController {
 
     // Starts login
     @GetMapping("/login")
-    public void login1(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
+    public void login1(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/keycloak");
     }
 

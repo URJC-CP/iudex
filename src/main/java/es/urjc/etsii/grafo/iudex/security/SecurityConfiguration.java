@@ -24,7 +24,10 @@ class SecurityConfiguration {
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         // We do not need cookies or CSRF or CORS in a REST API
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // TODO review: Commented because the oauth2 redirection from Spring /login/oauth2/code/keycloak?state=...
+        //  to our /completeLogin does not work if enabled. Known bug https://github.com/spring-projects/spring-authorization-server/issues/306
+        // http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         // Disable CORS and CSRF protection too
         http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable);
 
