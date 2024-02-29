@@ -53,13 +53,11 @@ export class SubmitButtonComponent {
     });
     this.loadProblems();
     this.loaded = false;
-    this.langSevice.getAllLanguages().subscribe((data) => {
-      for (let i = 0; i < data.length; i++) {
-        this.lang = [...this.lang, { name: data[i].nombreLenguaje!, id: String(data[i].id!) }];
-      }
-    });
     this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
       this.contest = data;
+      for (let i = 0; i < data.lenguajesAceptados.length; i++) {
+        this.lang = [...this.lang, { name: data.lenguajesAceptados[i].nombreLenguaje!, id: String(data.lenguajesAceptados[i].id!) }];
+      }
       for (let i = 0; i < data.listaProblemas.length; i++) {
         this.problems = [...this.problems, { name: data.listaProblemas[i].nombreEjercicio, id: String(data.listaProblemas[i].id) }];
         //.push({name: problem.nombreEjercicio});
