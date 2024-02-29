@@ -1,17 +1,20 @@
 <p-skeleton height="6rem" styleClass="mb-2"></p-skeleton>
 
 <div class="grid align-content-center">
-    <div class="col-5 justify-content-center">
-        <div class="grid mx-5">
-            <h2 class="text-center col-11" i18n>Submissions</h2>
-            <i class="col-1 pi pi-info-circle mt-4" severity="info" [pTooltip]="tooltipContent"
-                tooltipPosition="right"></i>
+    <div class="col-5">
+        <div class="flex mx-5">
+            <h2 class="text-center col-11 my-2" i18n>Submissions</h2>
+            <i class="col-1 pi pi-info-circle flex align-self-center align-items-center justify-content-center"
+                severity="info" [pTooltip]="tooltipContent" tooltipPosition="right"></i>
             <ng-template #tooltipContent>
                 <div class="flex align-items-center">
-                    <span i18n> <p-tag severity="success">AC</p-tag> : Accepted <br> <p-tag severity="error">WA</p-tag>
-                        : Wrong Answer <br> <p-tag severity="error">TLE</p-tag> : Time Limit error <br> <p-tag
-                            severity="error">CE</p-tag> : Compilation Error <br> <p-tag severity="error">RTE</p-tag> :
-                        Runtime Error </span>
+                    <span i18n>
+                        <p-tag severity="success">AC</p-tag> : Accepted <br>
+                        <p-tag severity="error">WA</p-tag> : Wrong Answer <br>
+                        <p-tag severity="error">TLE</p-tag> : Time Limit error <br>
+                        <p-tag severity="error">CE</p-tag> : Compilation Error <br>
+                        <p-tag severity="error">RTE</p-tag> : Runtime Error
+                    </span>
                 </div>
             </ng-template>
         </div>

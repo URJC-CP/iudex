@@ -73,8 +73,8 @@ export class ContestService {
     });
   }
 
-  getCurrentTeam(contestId: string): Observable<TeamDTO> {
-    return this.http.get<TeamDTO>(baseUrl + '/' + contestId + '/team');
+  getCurrentTeam(contestId: string, userId: string): Observable<TeamDTO> {
+    return this.http.get<TeamDTO>(baseUrl + '/' + contestId + '/user/' + userId + '/team');
   }
 
   addLanguageToContest(contestId: string, language: string): Observable<any> {
