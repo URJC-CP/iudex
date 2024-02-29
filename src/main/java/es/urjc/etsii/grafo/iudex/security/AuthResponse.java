@@ -6,18 +6,18 @@ public class AuthResponse {
     private String message;
     private String error;
 
-    private Token accessToken;
+    private String accessToken;
 
-    private Token refreshToken;
+    private String refreshToken;
 
     public enum Status {
-        SUCCESS, FAILURE
+        SUCCESS, REFRESHED, FAILURE
     }
 
     public AuthResponse() {
     }
 
-    public AuthResponse(Status status, String message, Token accessToken, Token refreshToken) {
+    public AuthResponse(Status status, String message, String accessToken, String refreshToken) {
         this.status = status;
         this.message = message;
         this.accessToken = accessToken;
@@ -54,19 +54,19 @@ public class AuthResponse {
         this.error = error;
     }
 
-    public Token getAccessToken() {
+    public String getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(Token accessToken) {
+    public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public Token getRefreshToken() {
+    public String getRefreshToken() {
         return refreshToken;
     }
 
-    public void setRefreshToken(Token refreshToken) {
+    public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 

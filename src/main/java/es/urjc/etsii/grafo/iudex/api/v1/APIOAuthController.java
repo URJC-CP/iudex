@@ -1,8 +1,13 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.security.AuthResponse;
+import es.urjc.etsii.grafo.iudex.security.JwtTokenProvider;
+import es.urjc.etsii.grafo.iudex.security.TokenType;
 import es.urjc.etsii.grafo.iudex.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,9 +24,23 @@ import java.io.IOException;
 public class APIOAuthController {
 
     private final UserService userService;
+    private final JwtTokenProvider tokenProvider;
 
-    public APIOAuthController(UserService userService) {
+    public APIOAuthController(UserService userService, JwtTokenProvider tokenProvider) {
         this.userService = userService;
+        this.tokenProvider = tokenProvider;
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(HttpServletRequest req){
+        // The only endpoint that receives a refresh token in the auth header instead of an access token
+        var accessToken = tokenProvider.refreshToken(req);
+        return ResponseEntity.ok(new AuthResponse(
+                AuthResponse.Status.REFRESHED,
+                "Generated a new Access Token",
+                accessToken,
+                ""
+        ));
     }
 
     @GetMapping("/exchange")
