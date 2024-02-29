@@ -7,6 +7,7 @@ import { ContestService } from 'src/app/services/contest.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { ProblemService } from 'src/app/services/problem.service';
 import { SubmissionService } from 'src/app/services/submission.service';
+import { UserService } from 'src/app/services/user.service';
 
 interface ProblemName {
   name: string;
@@ -36,13 +37,20 @@ export class SubmitButtonComponent {
   selectedLang: LanguageName | undefined;
   loaded: boolean = true;
   uploadedFile: File | undefined;
-  isDisabled: boolean = false;
+  teamId: string;
+  userId: string;
 
-  constructor(private contestService: ContestService, private problemService: ProblemService, private langSevice: LanguageService, private submissionService: SubmissionService, private messageService: MessageService) {
+  constructor(private contestService: ContestService, private problemService: ProblemService, private langSevice: LanguageService, private submissionService: SubmissionService, private messageService: MessageService, private userService: UserService) {
   }
 
   ngOnInit() {
     this.uploadedFile = undefined;
+    this.userService.getCurrentUser().subscribe((data) => {
+      this.userId = String(data.id!);
+      this.contestService.getCurrentTeam(this.contestId, this.userId).subscribe((data) => {
+        this.teamId = String(data.id!);
+      });
+    });
     this.loadProblems();
     this.loaded = false;
     this.langSevice.getAllLanguages().subscribe((data) => {
@@ -81,7 +89,7 @@ export class SubmitButtonComponent {
   submitCode() {
     if (this.selProblem && this.selectedLang && this.uploadedFile) {
       this.visible = false;
-      this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, '7').subscribe();
+      this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, this.teamId).subscribe();
     } else {
       this.visible = true;
       this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });
