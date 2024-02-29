@@ -56,7 +56,7 @@ public class APIOAuthController {
     // @PreAuthorize("hasAuthority('OIDC_USER')")
     public void login1(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
         if(oAuth2User == null){
-            response.sendRedirect("/login");
+            response.sendRedirect("/oauth2/authorization/keycloak");
         } else {
             String uid = userService.prepareForLogin(oAuth2User);
             response.sendRedirect("/?loginid=" + uid);

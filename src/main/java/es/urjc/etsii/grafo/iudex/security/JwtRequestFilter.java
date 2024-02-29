@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			// if there has been any kind of error, make sure authentication is empty
 			// so access to protected resources will fail
 			SecurityContextHolder.clearContext();
-            log.info("Exception processing JWT Token", ex);
+            log.debug("Exception processing JWT Token", ex);
         }
 
         filterChain.doFilter(request, response);
