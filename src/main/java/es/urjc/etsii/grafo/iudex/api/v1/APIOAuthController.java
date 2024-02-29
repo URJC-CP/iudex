@@ -54,16 +54,4 @@ public class APIOAuthController {
     public void login1(HttpServletResponse response) throws IOException {
         response.sendRedirect("/oauth2/authorization/keycloak");
     }
-
-    // Gets result form auth provider
-    @GetMapping("/completeLogin")
-    public void login2(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
-        if(oAuth2User == null) {
-            response.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid login state");
-            return;
-        }
-
-        String uid = userService.prepareForLogin(oAuth2User);
-        response.sendRedirect("/?loginid=" + uid);
-    }
 }

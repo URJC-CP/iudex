@@ -19,10 +19,10 @@ public class APIErrorController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorAPI> handleAccessDeniedException(AccessDeniedException e, @AuthenticationPrincipal Authentication auth) {
-        if(auth.isAuthenticated()){
-            return errorResponse(HttpStatus.FORBIDDEN, e);
-        } else {
+        if (auth == null || !auth.isAuthenticated()) {
             return errorResponse(HttpStatus.UNAUTHORIZED, e);
+        } else {
+            return errorResponse(HttpStatus.FORBIDDEN, e);
         }
     }
 
