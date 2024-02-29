@@ -136,7 +136,7 @@ public class APIContestController {
         problemId = Sanitizer.removeLineBreaks(problemId);
         contestId = Sanitizer.removeLineBreaks(contestId);
 
-        String salida = contestService.anyadeProblemaContest(contestId, problemId);
+        String salida = contestService.addProblemToContest(contestId, problemId);
         if (salida.equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

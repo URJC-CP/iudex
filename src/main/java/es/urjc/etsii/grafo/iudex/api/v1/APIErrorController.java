@@ -1,25 +1,39 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
+import es.urjc.etsii.grafo.iudex.pojos.ErrorAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static org.springframework.http.ResponseEntity.status;
 
 @RestControllerAdvice
 public class APIErrorController {
     private static final Logger logger = LoggerFactory.getLogger(APIErrorController.class);
 
-    @ExceptionHandler({ org.springframework.security.access.AccessDeniedException.class })
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String handleAccessDeniedException(org.springframework.security.access.AccessDeniedException e) {
-        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
-        return "UNAUTHORIZED";
+    @ExceptionHandler
+    public ResponseEntity<ErrorAPI> handleAccessDeniedException(AccessDeniedException e, @AuthenticationPrincipal Authentication auth) {
+        if(auth.isAuthenticated()){
+            return errorResponse(HttpStatus.FORBIDDEN, e);
+        } else {
+            return errorResponse(HttpStatus.UNAUTHORIZED, e);
+        }
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String handleError(RuntimeException e) {
-        if (logger.isErrorEnabled()) logger.error(e.toString(), e);
-        return "ERROR GENERAL DEL SISTEMA";
+    public ResponseEntity<ErrorAPI> handleError(RuntimeException e) {
+        logger.error(e.toString(), e);
+        return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
+    public ResponseEntity<ErrorAPI> errorResponse(HttpStatus code, Throwable t){
+        var error = new ErrorAPI(t);
+        return status(code).body(error);
     }
 }

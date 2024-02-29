@@ -11,7 +11,6 @@ import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -268,22 +265,22 @@ class TestAPIContestController {
 
         HttpStatus status = HttpStatus.NOT_FOUND;
         String salida = "";
-        when(contestService.anyadeProblemaContest(badContest, badProblem)).thenReturn(salida);
+        when(contestService.addProblemToContest(badContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL, status, salida);
-        when(contestService.anyadeProblemaContest(badContest, goodProblem)).thenReturn(salida);
+        when(contestService.addProblemToContest(badContest, goodProblem)).thenReturn(salida);
         testAddProblem(badURL2, status, salida);
 
         salida = "";
-        when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+        when(contestService.addProblemToContest(goodContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL3, status, salida);
 
         salida = "";
-        when(contestService.anyadeProblemaContest(goodContest, badProblem)).thenReturn(salida);
+        when(contestService.addProblemToContest(goodContest, badProblem)).thenReturn(salida);
         testAddProblem(badURL3, status, salida);
 
         status = HttpStatus.OK;
         salida = "OK";
-        when(contestService.anyadeProblemaContest(goodContest, goodProblem)).thenReturn(salida);
+        when(contestService.addProblemToContest(goodContest, goodProblem)).thenReturn(salida);
         salida = "";
         testAddProblem(goodURL, status, salida);
     }

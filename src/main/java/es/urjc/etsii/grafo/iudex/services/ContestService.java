@@ -168,7 +168,7 @@ public class ContestService {
         return "OK";
     }
 
-    public String anyadeProblemaContest(String idContest, String idProblema) {
+    public String addProblemToContest(String idContest, String idProblema) {
         logger.debug("Add problem {} to contest {}", idProblema, idContest);
         Optional<Contest> contestOptional = getContestById(idContest);
         Optional<Problem> problemOptional = problemService.getProblem(idProblema);
