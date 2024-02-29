@@ -51,9 +51,13 @@ public class APIUserController {
             @ApiResponse(responseCode = "401", description = "Missing or invalid token provided")
     })
     public ResponseEntity<UserAPI> getCurrentUser(Authentication authentication){
+        if(authentication == null || !authentication.isAuthenticated()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         User user;
         try {
-            user = userAndTeamService.getUserFromAuthentication(authentication);
+            user = userAndTeamService.getUserFromAuthentication(authentication.getName());
         } catch (IudexException e) {
             log.warn(e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

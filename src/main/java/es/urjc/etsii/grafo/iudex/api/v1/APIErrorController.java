@@ -18,7 +18,7 @@ public class APIErrorController {
     private static final Logger logger = LoggerFactory.getLogger(APIErrorController.class);
 
     @ExceptionHandler
-    public ResponseEntity<ErrorAPI> handleAccessDeniedException(AccessDeniedException e, @AuthenticationPrincipal Authentication auth) {
+    public ResponseEntity<ErrorAPI> handleAccessDeniedException(AccessDeniedException e, Authentication auth) {
         if (auth == null || !auth.isAuthenticated()) {
             return errorResponse(HttpStatus.UNAUTHORIZED, e);
         } else {

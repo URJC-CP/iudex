@@ -353,11 +353,7 @@ public class UserAndTeamService {
         return teamUsers.stream().map(TeamUser::getTeam).map(Team::getId).toList();
     }
 
-    public User getUserFromAuthentication(Authentication authentication) throws IudexException {
-        if(!authentication.isAuthenticated()){
-            throw new IudexException("User not authenticated");
-        }
-        String nickname = authentication.getName(); // Our User::nickname is used as the Spring User::username
+    public User getUserFromAuthentication(String nickname) throws IudexException {
         if(nickname == null || nickname.isBlank()){
             throw new IudexException("Invalid username extracted from auth token: " + (nickname));
         }
