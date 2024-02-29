@@ -35,7 +35,7 @@ class SecurityConfiguration {
         }));
 
         // Configure oauth and our filter
-        http.oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/API/v1/oauth/login", true));
+        http.oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/API/v1/oauth/completeLogin", true));
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

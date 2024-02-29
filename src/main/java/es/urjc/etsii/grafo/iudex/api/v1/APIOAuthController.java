@@ -2,12 +2,9 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.security.AuthResponse;
 import es.urjc.etsii.grafo.iudex.security.JwtTokenProvider;
-import es.urjc.etsii.grafo.iudex.security.TokenType;
 import es.urjc.etsii.grafo.iudex.services.UserService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,7 +41,7 @@ public class APIOAuthController {
     }
 
     @GetMapping("/exchange")
-    public ResponseEntity<AuthResponse> login2(@RequestParam("token") String uid){
+    public ResponseEntity<AuthResponse> login3(@RequestParam("token") String uid){
         var authObject = userService.completeLogin(uid);
         if(authObject == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -52,14 +49,21 @@ public class APIOAuthController {
         return ResponseEntity.ok(authObject);
     }
 
+    // Starts login
     @GetMapping("/login")
-    // @PreAuthorize("hasAuthority('OIDC_USER')")
     public void login1(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
-        if(oAuth2User == null){
-            response.sendRedirect("/oauth2/authorization/keycloak");
-        } else {
-            String uid = userService.prepareForLogin(oAuth2User);
-            response.sendRedirect("/?loginid=" + uid);
+        response.sendRedirect("/oauth2/authorization/keycloak");
+    }
+
+    // Gets result form auth provider
+    @GetMapping("/completeLogin")
+    public void login2(@AuthenticationPrincipal OAuth2User oAuth2User, HttpServletResponse response) throws IOException {
+        if(oAuth2User == null) {
+            response.sendError(HttpStatus.BAD_REQUEST.value(), "Invalid login state");
+            return;
         }
+
+        String uid = userService.prepareForLogin(oAuth2User);
+        response.sendRedirect("/?loginid=" + uid);
     }
 }
