@@ -11,6 +11,31 @@
         </p>
         <p-button label="PDF" [disabled]="i.problemURLpdf == undefined" (click)="pdf(i.id!)" i18n-label></p-button>
         <p-button label="Test Cases" severity="info" class="mx-2" (click)="testCases(i.id!)" i18n-label></p-button>
-        <app-submit-button contestId="{{id}}" selectedProblem="{{i.nombreEjercicio}}" problemId="{{i.id}}"></app-submit-button>
+        <p-dialog header="Test cases problem {{i.nombreEjercicio}}" [(visible)]="visible[i.id!]"
+            [style]="{width: '50vw'}">
+            <div class="card">
+                <ng-template ngFor let-j [ngForOf]="i.samples">
+                    <h3 class="text-left">{{j.name}}</h3>
+                    <hr style="border-top: 3px dotted #bbb">
+                    <div class="grid">
+                        <h4 class="text-left col-4">Input</h4>
+                        <p-button icon="pi pi-copy" [rounded]="true" [text]="true" severity="info"
+                            [cdkCopyToClipboard]="j.inputText"
+                            class="col-2 flex align-self-center align-items-center justify-content-center"></p-button>
+                        <h4 class="text-left col-4">Output</h4>
+                        <p-button icon="pi pi-copy" [rounded]="true" [text]="true" severity="info"
+                            [cdkCopyToClipboard]="j.outputText"
+                            class="col-2 flex align-self-center align-items-center justify-content-center"></p-button>
+                    </div>
+                    <div class="grid">
+                        <pre class="text-left col-6">{{j.inputText}}</pre>
+                        <pre class="text-left col-6">{{j.outputText}}</pre>
+                    </div>
+                </ng-template>
+                <hr>
+            </div>
+        </p-dialog>
+        <app-submit-button contestId="{{id}}" selectedProblem="{{i.nombreEjercicio}}"
+            problemId="{{i.id}}"></app-submit-button>
     </p-card>
 </div>

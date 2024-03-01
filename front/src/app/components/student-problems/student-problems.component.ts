@@ -14,6 +14,7 @@ export class StudentProblemsComponent {
   id: string | undefined;
   contest: ContestDTO | undefined;
   problemList: ProblemDTO[] = [];
+  visible: { [id: string]: boolean; } = {};
 
   constructor(private activatedRouter: ActivatedRoute, private contestService: ContestService, private problemService: ProblemService) {
     activatedRouter.url.subscribe((data) => {
@@ -27,6 +28,7 @@ export class StudentProblemsComponent {
       for (let i = 0; i < data.listaProblemas.length; i++) {
         this.problemService.getSelectedProblem(String(data.listaProblemas[i].id!)).subscribe((problem) => {
           this.problemList?.push(problem);
+          this.visible[problem.id!] = false;
         });
       }
     });
@@ -37,6 +39,6 @@ export class StudentProblemsComponent {
   }
 
   testCases(problemId: number) {
-
+    this.visible[problemId] = !this.visible[problemId];
   }
 }

@@ -20,6 +20,8 @@ import { routing } from './app.routing';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 
+import { ClipboardModule } from '@angular/cdk/clipboard';
+
 //PrimeNG imports
 import { MenubarModule } from 'primeng/menubar';
 import { MenuModule } from 'primeng/menu';
@@ -38,7 +40,6 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 
 @NgModule({
@@ -76,7 +77,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     MessagesModule,
     ToolbarModule,
     TagModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    ClipboardModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true
