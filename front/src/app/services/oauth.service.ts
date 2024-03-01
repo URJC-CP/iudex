@@ -23,4 +23,8 @@ export class OauthService {
   exchange(token: String): Observable<AuthResponseDTO> {
     return this.http.get<AuthResponseDTO>(baseUrl + '/exchange?token=' + token);
   }
+
+  refresh(): Observable<AuthResponseDTO> {
+    return this.http.get<AuthResponseDTO>(baseUrl + '/refresh');
+  }
 }
