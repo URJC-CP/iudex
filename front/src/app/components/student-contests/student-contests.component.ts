@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ContestDTO } from 'src/app/dto/contest.dto';
 import { ContestService } from 'src/app/services/contest.service';
-import { ProblemService } from 'src/app/services/problem.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-student-contests',
@@ -11,12 +11,23 @@ import { ProblemService } from 'src/app/services/problem.service';
 export class StudentContestsComponent {
 
   allContests: ContestDTO[] | undefined;
+  totalSubmissions: number;
+  contestsParticipated: number;
+  acSubmissions: number;
+  userId: string;
 
-  constructor(private contestService: ContestService, private problemService: ProblemService, private router: Router) {
+
+  constructor(private contestService: ContestService, private router: Router, private userService: UserService) {
 
   }
 
   ngOnInit() {
+    this.userService.getCurrentUser().subscribe((data) => {
+      this.totalSubmissions = data.submissions;
+      this.contestsParticipated = data.contestsParticipated;
+      this.acSubmissions = data.acceptedSubmissions;
+      this.userId = String(data.id!);
+    });
     this.contestService.getAllContests().subscribe((contests) => {
       this.allContests = contests;
     });
