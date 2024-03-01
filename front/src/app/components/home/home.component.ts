@@ -25,9 +25,9 @@ export class HomeComponent {
     if (this.router.url.includes('loginid')) {
       this.tempToken = this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
       this.oauthService.exchange(this.tempToken).subscribe(data => {
-        this.token = data.accessToken?.tokenValue!;
+        this.token = data.accessToken;
         localStorage.setItem('token', this.token);
-        localStorage.setItem('refreshToken', data.refreshToken?.tokenValue!);
+        localStorage.setItem('refreshToken', data.refreshToken);
         this.userService.getCurrentUser().subscribe(me => {
           this.user = me
           console.log(this.user.roles);
