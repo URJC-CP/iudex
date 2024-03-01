@@ -1,7 +1,9 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
+import es.urjc.etsii.grafo.iudex.entities.Contest;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
+import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.ContestTeamService;
@@ -104,6 +106,42 @@ public class APIUserController {
         else user = userAndTeamService.removeRoleFromUser(role, user);
 
         return ResponseEntity.ok(user.getRoles());
+    }
+
+    @Operation( summary = "Get all contests created by a user or where it is participating")
+    @GetMapping("/API/v1/user/{id}/contests")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<ContestAPI>> getContests(@PathVariable long id) {
+        Optional<User> optionalUser = userAndTeamService.getUserById(id);
+        if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
+
+        User user = optionalUser.get();
+        List<Contest> contests = userAndTeamService.getContestsFromUser(user);
+        return ResponseEntity.ok(contests.stream().map(Contest::toContestAPISimple).toList());
+    }
+
+    @Operation( summary = "Get all contests where a user is participating")
+    @GetMapping("/API/v1/user/{id}/contests/participating")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<ContestAPI>> participatingContest(@PathVariable long id) {
+        Optional<User> optionalUser = userAndTeamService.getUserById(id);
+        if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
+
+        User user = optionalUser.get();
+        List<Contest> contests = userAndTeamService.getParticipatingContests(user);
+        return ResponseEntity.ok(contests.stream().map(Contest::toContestAPISimple).toList());
+    }
+
+    @Operation( summary = "Get all contests created by a user")
+    @GetMapping("/API/v1/user/{id}/contests/created")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<ContestAPI>> createdContest(@PathVariable long id) {
+        Optional<User> optionalUser = userAndTeamService.getUserById(id);
+        if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
+
+        User user = optionalUser.get();
+        List<Contest> contests = userAndTeamService.getCreatedContests(user);
+        return ResponseEntity.ok(contests.stream().map(Contest::toContestAPISimple).toList());
     }
 
 }
