@@ -5,10 +5,7 @@ import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemScore;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
-import es.urjc.etsii.grafo.iudex.repositories.ContestProblemRepository;
-import es.urjc.etsii.grafo.iudex.repositories.ContestRepository;
-import es.urjc.etsii.grafo.iudex.repositories.ContestTeamRespository;
-import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
+import es.urjc.etsii.grafo.iudex.repositories.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import es.urjc.etsii.grafo.iudex.utils.TeamScoreComparator;
 import org.slf4j.Logger;
@@ -31,6 +28,7 @@ public class ContestService {
     private final ContestProblemRepository contestProblemRepository;
     private final TeamRepository teamRepository;
     private final ContestTeamRespository contestTeamRespository;
+    private final ContestLanguageRepository contestLanguageRepository;
     private final ProblemService problemService;
     private final UserAndTeamService teamService;
     private final LanguageService languageService;
@@ -43,7 +41,8 @@ public class ContestService {
                           ContestTeamRespository contestTeamRespository,
                           TeamRepository teamRepository,
                           ContestProblemRepository contestProblemRepository,
-                          ContestRepository contestRepository) {
+                          ContestRepository contestRepository,
+                          ContestLanguageRepository contestLanguageRepository) {
         this.contestProblemService = contestProblemService;
         this.languageService = languageService;
         this.teamService = teamService;
@@ -52,6 +51,7 @@ public class ContestService {
         this.teamRepository = teamRepository;
         this.contestProblemRepository = contestProblemRepository;
         this.contestRepository = contestRepository;
+        this.contestLanguageRepository = contestLanguageRepository;
     }
 
     public ContestString creaContest(String nameContest, String teamId, Optional<String> description, long startTimestamp, long endTimestamp) {
@@ -402,13 +402,14 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
-        ContestLanguages contestLanguages = new ContestLanguages(contest,language,LocalDateTime.now());
-
-        if (!contest.getLenguajes().contains(contestLanguages)) {
+        if (!contestLanguageRepository.existsByContestAndLenguajes(contest, language)) {
             logger.error("Language {} not in contest {}", languageId, contest.getId());
             return "LANGUAGE NOT IN CONTEST";
         }
 
+        ContestLanguages contestLanguages = contestLanguageRepository.findByContestAndLenguajes(contest, language);
+
+        contestLanguageRepository.delete(contestLanguages);
         contest.removeLanguage(contestLanguages);
         contestRepository.save(contest);
 
@@ -451,15 +452,15 @@ public class ContestService {
         }
         Language language = languageOptional.get();
 
-        ContestLanguages contestLanguages = new ContestLanguages(contest,language,LocalDateTime.now());
-
-        // add language if it has not been added
-        if (contest.getLenguajes().contains(contestLanguages)) {
+        if (contestLanguageRepository.existsByContestAndLenguajes(contest, language)) {
             logger.error("Language {} already in contest {}", languageName, contest.getId());
             return "LANGUAGE ALREADY IN CONTEST";
         }
 
+        ContestLanguages contestLanguages = new ContestLanguages(contest,language,LocalDateTime.now());
+
         contest.addLanguage(contestLanguages);
+        contestLanguageRepository.save(contestLanguages);
         contestRepository.save(contest);
 
         logger.debug("Finish add language {} to contest {}", languageName, contest.getId());
