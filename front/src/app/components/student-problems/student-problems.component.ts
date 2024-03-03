@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ContestDTO } from 'src/app/dto/contest.dto';
 import { ProblemDTO } from 'src/app/dto/problem.dto';
 import { ContestService } from 'src/app/services/contest.service';
@@ -7,7 +8,8 @@ import { ProblemService } from 'src/app/services/problem.service';
 
 @Component({
   selector: 'app-student-problems',
-  templateUrl: './student-problems.component.html'
+  templateUrl: './student-problems.component.html',
+  providers: [MessageService]
 })
 export class StudentProblemsComponent {
 
@@ -16,7 +18,7 @@ export class StudentProblemsComponent {
   problemList: ProblemDTO[] = [];
   visible: { [id: string]: boolean; } = {};
 
-  constructor(private activatedRouter: ActivatedRoute, private contestService: ContestService, private problemService: ProblemService) {
+  constructor(private activatedRouter: ActivatedRoute, private contestService: ContestService, private problemService: ProblemService, private messageService: MessageService) {
     activatedRouter.url.subscribe((data) => {
       this.id = data[2].path;
     });
@@ -40,5 +42,13 @@ export class StudentProblemsComponent {
 
   testCases(problemId: number) {
     this.visible[problemId] = !this.visible[problemId];
+  }
+
+  messageIn() {
+    this.messageService.add({ key: 'tl', severity: 'success', summary: $localize`Copied to clipboard!`, detail: $localize`The sample input was copied correctly.` });
+  }
+
+  messageOut() {
+    this.messageService.add({ key: 'tl', severity: 'success', summary: $localize`Copied to clipboard!`, detail: $localize`The sample output was copied correctly.` });
   }
 }
