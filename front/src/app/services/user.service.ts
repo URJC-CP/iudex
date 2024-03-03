@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { UserDTO } from '../dto/user.dto';
+import { ContestDTO } from '../dto/contest.dto';
 
 const baseUrl = '/API/v1/user';
 
@@ -23,5 +24,9 @@ export class UserService {
 
   getCurrentUser(): Observable<UserDTO> {
     return this.http.get<UserDTO>(`${baseUrl}/me`);
+  }
+
+  getUserContests(id: string): Observable<ContestDTO[]> {
+    return this.http.get<ContestDTO[]>(`${baseUrl}/${id}/contests`);
   }
 }

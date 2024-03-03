@@ -17,7 +17,7 @@ export class StudentContestsComponent {
   userId: string;
 
 
-  constructor(private contestService: ContestService, private router: Router, private userService: UserService) {
+  constructor(private router: Router, private userService: UserService) {
 
   }
 
@@ -27,13 +27,13 @@ export class StudentContestsComponent {
       this.contestsParticipated = data.contestsParticipated;
       this.acSubmissions = data.acceptedSubmissions;
       this.userId = String(data.id!);
-    });
-    this.contestService.getAllContests().subscribe((contests) => {
-      this.allContests = contests;
+      this.userService.getUserContests(this.userId).subscribe((contests) => {
+        this.allContests = contests;
+      });
     });
   }
 
   redirect(id: string) {
-    this.router.navigate(['/student/contest/' + id + '/problems']);
+    this.router.navigate(['/student/contest/' + id + '/home']);
   }
 }
