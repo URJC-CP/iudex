@@ -48,9 +48,5 @@ export class OauthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
-    window.location.reload(); // TODO is this necessary?
-                              // maybe components should listen to the change in login status
-                              // and react accordingly
   }
-
 }
