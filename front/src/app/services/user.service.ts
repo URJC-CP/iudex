@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { UserDTO } from '../dto/user.dto';
 import { ContestDTO } from '../dto/contest.dto';
+import { empty } from 'rxjs';
 
 const baseUrl = '/API/v1/user';
 
@@ -11,6 +12,9 @@ const baseUrl = '/API/v1/user';
 })
 
 export class UserService {
+
+  private userContests: Observable<ContestDTO[]> | undefined;
+  private user: Observable<UserDTO> | undefined;
 
   constructor(private http: HttpClient) { }
 
@@ -23,10 +27,25 @@ export class UserService {
   }
 
   getCurrentUser(): Observable<UserDTO> {
-    return this.http.get<UserDTO>(`${baseUrl}/me`);
+    if (this.user != undefined) {
+      return this.user;
+    } else {
+      this.user = this.http.get<UserDTO>(`${baseUrl}/me`);
+      return this.user;
+    }
   }
 
   getUserContests(id: string): Observable<ContestDTO[]> {
-    return this.http.get<ContestDTO[]>(`${baseUrl}/${id}/contests`);
+    if (this.userContests != undefined) {
+      return this.userContests;
+    } else {
+      this.userContests = this.http.get<ContestDTO[]>(`${baseUrl}/${id}/contests`);
+      return this.userContests;
+    }
+  }
+
+  logout() {
+    this.userContests = undefined;
+    this.user = undefined;
   }
 }

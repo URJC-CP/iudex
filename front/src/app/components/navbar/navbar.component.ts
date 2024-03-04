@@ -170,6 +170,7 @@ export class NavbarComponent {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
+    this.userService.logout();
     window.location.href = "/";
   }
 
