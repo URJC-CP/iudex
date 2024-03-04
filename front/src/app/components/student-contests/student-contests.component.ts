@@ -15,6 +15,7 @@ export class StudentContestsComponent {
   contestsParticipated: number;
   acSubmissions: number;
   userId: string;
+  username: string;
 
 
   constructor(private router: Router, private userService: UserService) {
@@ -27,6 +28,7 @@ export class StudentContestsComponent {
       this.contestsParticipated = data.contestsParticipated;
       this.acSubmissions = data.acceptedSubmissions;
       this.userId = String(data.id!);
+      this.username = data.nickname!;
       this.userService.getUserContests(this.userId).subscribe((contests) => {
         this.allContests = contests;
       });
