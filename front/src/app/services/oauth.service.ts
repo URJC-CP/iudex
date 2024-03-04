@@ -27,4 +27,30 @@ export class OauthService {
   refresh(): Observable<AuthResponseDTO> {
     return this.http.get<AuthResponseDTO>(baseUrl + '/refresh');
   }
+
+  saveTokens(authResponse: AuthResponseDTO): void {
+    if(authResponse.accessToken && authResponse.refreshToken){
+      localStorage.setItem('token', authResponse.accessToken);
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+    }
+  }
+
+  getToken(){
+    return localStorage.getItem('token');
+  }
+
+  getRefreshToken(){
+    return localStorage.getItem('refreshToken');
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    window.location.reload(); // TODO is this necessary?
+                              // maybe components should listen to the change in login status
+                              // and react accordingly
+  }
+
 }
