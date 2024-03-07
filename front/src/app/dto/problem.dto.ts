@@ -3,15 +3,15 @@ import { SampleDTO } from './sample.dto';
 import { SubmissionDTO } from './submission.dto';
 
 export interface ProblemDTO {
-  id?: number;
+  id: number;
   nombreEjercicio: string;
   samples: SampleDTO[];
   submissions?: SubmissionDTO[];
   equipoPropietario?: TeamDTO;
   valido?: boolean;
   timeout?: string;
-  memoryLimit?: String;
-  color?: String;
-  problemURLpdf?: String;
+  memoryLimit?: string;
+  color: string;
+  problemURLpdf?: string;
 
 }

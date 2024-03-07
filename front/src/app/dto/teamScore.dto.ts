@@ -3,8 +3,8 @@ import { ProblemDTO } from "./problem.dto";
 import { ProblemScoreDTO } from "./problemScore.dto";
 
 export interface TeamScoreDTO {
-    team?: TeamDTO;
-    scoreMap?: Map<ProblemDTO, ProblemScoreDTO>;
-    score?: number;
+    team: TeamDTO;
+    scoreList: ProblemScoreDTO[];
+    score: number;
     solvedProblems?: number;
 }

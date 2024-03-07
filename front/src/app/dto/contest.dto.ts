@@ -8,7 +8,7 @@ export interface ContestDTO {
   id: string;
   listaParticipantes?: TeamDTO[];
   listaProblemas: ProblemDTO[];
-  nombreContest?: string;
+  nombreContest: string;
   teamPropietario?: TeamDTO;
   timestamp?: number;
   endDateTime?: number;

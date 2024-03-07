@@ -5,7 +5,7 @@ import {UserDTO} from './user.dto';
 
 export interface TeamDTO {
   id?: number;
-  nombreEquipo?: string;
+  nombreEquipo: string;
   listaContestsCreados?: ContestDTO[];
   listaContestsParticipados?: ContestDTO[];
   listaDeSubmissions?: SubmissionDTO[];
