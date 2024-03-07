@@ -58,19 +58,17 @@ export class StudentRankingComponent {
           let color = ""
           if (scoreProblem.first) {
             color = 'dark green'
-          } else if (scoreProblem.score > 0){
+          } else if (scoreProblem.score > 0) {
             color = 'green'
-          } else if (scoreProblem.tries == 0) {
-            color = ''
-          }else{
+          } else {
             color = 'red'
           }
-          map.set(String(scoreProblem.problem.id), { score: String(scoreProblem.score), tries: String(scoreProblem.tries), first: scoreProblem.first, color: color})
+          map.set(String(scoreProblem.problem.id), { score: String(scoreProblem.score), tries: String(scoreProblem.tries), first: scoreProblem.first, color: color })
         });
         this.scoreData.push({ position: String(i + 1), team: data[i].team?.nombreEquipo, score: String(data[i].score), problems: map })
         if (i == data.length - 1) {
-        this.loaded = true;
-        console.log(this.scoreData[0].problems.get('3')!.score)
+          this.loaded = true;
+          console.log(this.scoreData[0].problems.get('3')!.score)
         }
       }
     });
