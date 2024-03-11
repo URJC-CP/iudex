@@ -135,7 +135,7 @@ public class Problem {
         return problemAPI;
     }
 
-    private ProblemAPI toProblemAPIWithoutSubmissions() {
+    public ProblemAPI toProblemAPIWithoutSubmissions() {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
