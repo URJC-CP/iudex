@@ -547,6 +547,7 @@ public class ContestService {
                 // obtener tiempo de las entregas aceptadas
                 if (entrega.getResult().equalsIgnoreCase("accepted")) {
                     hasFirstAC.add(equipo);
+                    problemScore.setSolved(true);
 
                     long tiempo = (long) entrega.getExecSubmissionTime();
                     // actualizar puntuacion

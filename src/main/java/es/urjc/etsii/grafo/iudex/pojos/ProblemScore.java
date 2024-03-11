@@ -6,20 +6,22 @@ import java.util.Objects;
 
 public class ProblemScore {
     private final ProblemAPI problem;
+    private boolean solved;
     private boolean first;
     private float score;
     private int tries;
     private long timestamp;
 
     public ProblemScore(@NotNull ProblemAPI problem) {
-        this(problem, 0, 0L, false);
+        this(problem, 0, 0L, false, false);
     }
 
-    public ProblemScore(@NotNull ProblemAPI problem, int tries, long timestamp, boolean isFirst) {
+    public ProblemScore(@NotNull ProblemAPI problem, int tries, long timestamp, boolean isFirst, boolean solved) {
         this.problem = problem;
         this.tries = tries;
         this.timestamp = timestamp;
         this.first = isFirst;
+        this.solved = solved;
     }
 
     public ProblemAPI getProblem() {
@@ -49,6 +51,14 @@ public class ProblemScore {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setSolved(boolean solved) {
+        this.solved = solved;
     }
 
     public boolean isFirst() {
