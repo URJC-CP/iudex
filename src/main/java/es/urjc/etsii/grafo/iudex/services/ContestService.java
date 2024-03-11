@@ -493,6 +493,39 @@ public class ContestService {
             teamScoreMap.put(equipo.getTeams(), teamScore);
         }
 
+        return getTeamScores(contest, teamScoreMap);
+    }
+
+
+    public List<TeamScore> getScoreForTeam(String contestId, String teamId) {
+        logger.debug("Get score of contest {} for team {}", contestId, teamId);
+
+        Optional<Contest> contestOptional = getContestById(contestId);
+        if (contestOptional.isEmpty()) {
+            logger.error("Contest {} not found", contestId);
+            throw new RuntimeException("CONTEST NOT FOUND");
+        }
+        Contest contest = contestOptional.get();
+
+        Optional<Team> teamOptional = teamRepository.findTeamById(Long.parseLong(teamId));
+        if (teamOptional.isEmpty()) {
+            logger.error("Team {} not found", contestId);
+            throw new RuntimeException("TEAM NOT FOUND");
+        }
+        Team team = teamOptional.get();
+
+        logger.debug("Initializing scoreboard");
+        Map<Team, TeamScore> teamScoreMap = new HashMap<>();
+        TeamScore teamScore = new TeamScore(team.toTeamAPISimple());
+        for (ContestProblem problem : contest.getListaProblemas()) {
+            teamScore.addProblemScore(problem.getProblem(), new ProblemScore(problem.getProblem().toProblemAPISimple()));
+        }
+        teamScoreMap.put(team, teamScore);
+
+        return getTeamScores(contest, teamScoreMap);
+    }
+
+    private List<TeamScore> getTeamScores(Contest contest, Map<Team, TeamScore> teamScoreMap) {
         logger.debug("Adding data to scoreboard");
         for (ContestProblem problem : contest.getListaProblemas()) {
             ProblemScore first = null;

@@ -270,6 +270,21 @@ public class APIContestController {
         }
     }
 
+    @Operation( summary = "Get scores of a contest for a specific team")
+    @GetMapping("contest/{contestId}/team/{teamId}/scoreboard")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<TeamScore>> getScores(@PathVariable String contestId, @PathVariable String teamId) {
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+
+        try {
+            List<TeamScore> scores = contestService.getScoreForTeam(contestId, teamId);
+            return new ResponseEntity<>(scores, HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @Operation( summary = "Get current user's team in contest")
     @GetMapping("contest/{contestId}/user/{userId}/team")
     @PreAuthorize("hasAuthority('ROLE_USER')")
