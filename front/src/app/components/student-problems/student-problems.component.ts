@@ -28,10 +28,8 @@ export class StudentProblemsComponent {
     this.contestService.getSelectedContest(this.id!).subscribe((data) => {
       this.contest = data;
       for (let i = 0; i < data.listaProblemas.length; i++) {
-        this.problemService.getSelectedProblem(String(data.listaProblemas[i].id!)).subscribe((problem) => {
-          this.problemList?.push(problem);
-          this.visible[problem.id!] = false;
-        });
+        this.problemList?.push(data.listaProblemas[i]);
+        this.visible[data.listaProblemas[i].id!] = false;
       }
     });
   }
