@@ -59,6 +59,10 @@ export class ContestService {
     return this.http.get<TeamScoreDTO[]>(baseUrl + '/' + contestId + '/scoreboard');
   }
 
+  getTeamScoreboard(contestId: string, teamId: string): Observable<TeamScoreDTO[]> {
+    return this.http.get<TeamScoreDTO[]>(baseUrl + '/' + contestId + '/team/' + teamId + '/scoreboard');
+  }
+
   getSubmissionsByContestAndTeam(contestId: string, teamId: string): Observable<SubmissionDTO[]> {
     return this.http.get<SubmissionDTO[]>(baseUrl + '/' + contestId + '/team/' + teamId + '/submissions');
   }

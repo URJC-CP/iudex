@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { SubmissionDTO } from 'src/app/dto/submission.dto';
+import { TeamScoreDTO } from 'src/app/dto/teamScore.dto';
 import { ContestService } from 'src/app/services/contest.service';
 import { LanguageService } from 'src/app/services/language.service';
 import { SubmissionService } from 'src/app/services/submission.service';
@@ -33,6 +34,25 @@ interface ProblemName {
   id: string;
 }
 
+interface Column {
+  field: string;
+  header: string;
+}
+
+interface problems {
+  score: string;
+  tries: string;
+  first: boolean;
+  color: string
+}
+
+interface scores {
+  position: string;
+  team: string;
+  score: string;
+  problems: Map<String, problems>
+}
+
 @Component({
   selector: 'app-student-home',
   templateUrl: './student-home.component.html',
@@ -40,7 +60,6 @@ interface ProblemName {
 })
 export class StudentHomeComponent {
 
-  cols!: Column[];
   submissions: Submission[] = [];
   loaded: boolean;
   contestId!: string;
@@ -52,8 +71,13 @@ export class StudentHomeComponent {
   themes: Theme[] = [{ name: 'vs' }, { name: 'vs-dark' }, { name: 'hc-black' }];
   problems: ProblemName[] = [];
   selProblem: ProblemName | undefined;
-  teamId: string;
+  teamId: string = '1';
   userId: string;
+
+  problemScore!: TeamScoreDTO[];
+  scoreData: scores[] = [];
+  cols: Column[] = [];
+  end: number;
 
   constructor(private submissionService: SubmissionService, private activatedRouter: ActivatedRoute, private langSevice: LanguageService,
     private contestService: ContestService, private messageService: MessageService, private userService: UserService) {
@@ -63,6 +87,7 @@ export class StudentHomeComponent {
   }
 
   ngOnInit() {
+    this.loadScoreboard();
     this.loaded = false;
     this.userService.getCurrentUser().subscribe((data) => {
       this.userId = String(data.id!);
@@ -97,6 +122,10 @@ export class StudentHomeComponent {
       }
       for (let i = 0; i < data.lenguajesAceptados.length; i++) {
         this.lang = [...this.lang, { name: data.lenguajesAceptados[i].nombreLenguaje!, id: String(data.lenguajesAceptados[i].id!) }];
+      }
+      this.end = data.listaProblemas.length;
+      for (let i = 0; i < data.listaProblemas.length; i++) {
+        this.cols.push({ field: String(data.listaProblemas[i].id), header: data.listaProblemas[i].nombreEjercicio });
       }
     });
 
@@ -146,6 +175,32 @@ export class StudentHomeComponent {
       this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });
     }
 
+  }
+
+  loadScoreboard(){
+    this.loaded = false;
+
+    this.contestService.getTeamScoreboard(this.contestId, this.teamId).subscribe((data) => {
+      this.problemScore = data;
+      for (let i = 0; i < data.length; i++) {
+        let map = new Map<String, problems>();
+        data[i].scoreList.forEach((scoreProblem) => {
+          let color = ""
+          if (scoreProblem.first) {
+            color = 'dark green'
+          } else if (scoreProblem.solved) {
+            color = 'green'
+          } else {
+            color = 'red'
+          }
+          map.set(String(scoreProblem.problem.id), { score: String(scoreProblem.score), tries: String(scoreProblem.tries), first: scoreProblem.first, color: color })
+        });
+        this.scoreData.push({ position: String(i + 1), team: data[i].team?.nombreEquipo, score: String(data[i].score), problems: map })
+        if (i == data.length - 1) {
+          this.loaded = true;
+        }
+      }
+    });
   }
 
 }
