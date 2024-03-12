@@ -58,7 +58,7 @@ export class StudentRankingComponent {
           let color = ""
           if (scoreProblem.first) {
             color = 'dark green'
-          } else if (scoreProblem.score > 0) {
+          } else if (scoreProblem.solved) {
             color = 'green'
           } else {
             color = 'red'
@@ -68,7 +68,6 @@ export class StudentRankingComponent {
         this.scoreData.push({ position: String(i + 1), team: data[i].team?.nombreEquipo, score: String(data[i].score), problems: map })
         if (i == data.length - 1) {
           this.loaded = true;
-          console.log(this.scoreData[0].problems.get('3')!.score)
         }
       }
     });

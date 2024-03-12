@@ -6,4 +6,5 @@ export interface ProblemScoreDTO {
     score: number;
     tries: number;
     timestamp?: number;
+    solved: boolean;
 }
