@@ -27,27 +27,40 @@ export class HomeComponent {
       this.oauthService.exchange(this.tempToken).subscribe(data => {
         this.oauthService.saveTokens(data);
         this.userService.getCurrentUser().subscribe(me => {
-          this.user = me
-          console.log(this.user.roles);
-          if (this.user.roles?.includes("ROLE_ADMIN")) {
-            window.location.href = "/admin";
-          } else if (this.user.roles?.includes("ROLE_JUDGE")) {
-            window.location.href = "/judge";
-          } else if (this.user.roles?.includes("ROLE_USER")) {
-            window.location.href = "/student";
-          } else {
-            window.location.href = "/public";
-          }
+          this.user = me;
+          this.redirect();
         });
       }
       );
+    }
+    if (this.oauthService.hasLoggedIn()) {
+      this.userService.getCurrentUser().subscribe(me => {
+        this.user = me;
+        this.redirect();
+      });
     }
 
   }
 
   //TO-DO: control errores
   login() {
-    this.oauthService.login();
+    if (!this.oauthService.hasLoggedIn()) {
+      this.oauthService.login();
+    } else {
+      this.redirect();
+    }
+  }
+
+  redirect() {
+    if (this.user.roles?.includes("ROLE_ADMIN")) {
+      window.location.href = "/admin";
+    } else if (this.user.roles?.includes("ROLE_JUDGE")) {
+      window.location.href = "/judge";
+    } else if (this.user.roles?.includes("ROLE_USER")) {
+      window.location.href = "/student";
+    } else {
+      window.location.href = "/";
+    }
   }
 
 }

@@ -32,18 +32,6 @@ export class NavbarComponent {
   }
 
   ngOnInit() {
-    // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
-    this.userService.getCurrentUser().subscribe((data) => {
-      this.username = data.nickname!;
-      this.roles = data.roles!;
-      if (this.roles.includes("ROLE_ADMIN") && this.roles.length == 1) {
-        this.userType = "admin";
-      } else if (this.roles.includes("ROLE_JUDGE") && this.roles.length == 2) {
-        this.userType = "judge";
-      } else if (this.roles.includes("ROLE_USER") && this.roles.length == 3) {
-        this.userType = "student";
-      }
-    });
 
     this.router.events.subscribe(
       (event) => {
@@ -56,8 +44,22 @@ export class NavbarComponent {
               this.logout();
             }
           },];
+          if (!event.url.endsWith("/")) {
+            // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
+            this.userService.getCurrentUser().subscribe((data) => {
+              this.username = data.nickname!;
+              this.roles = data.roles!;
+              if (this.roles.includes("ROLE_ADMIN") && this.roles.length == 1) {
+                this.userType = "admin";
+              } else if (this.roles.includes("ROLE_JUDGE") && this.roles.length == 2) {
+                this.userType = "judge";
+              } else if (this.roles.includes("ROLE_USER") && this.roles.length == 3) {
+                this.userType = "student";
+              }
+            });
+          }
           if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
-          if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
+          else if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
             this.loaded = false;
             this.pageType = "student";
             this.contestId = event.url[17];
@@ -67,11 +69,11 @@ export class NavbarComponent {
               this.studentIcons();
             });
           }
-          if (event.url.startsWith("/judge")) {
+          else if (event.url.startsWith("/judge")) {
             this.pageType = "judge";
             this.judgeIcons();
           }
-          if (event.url.startsWith("/admin")) {
+          else if (event.url.startsWith("/admin")) {
             this.pageType = "admin";
             this.adminIcons();
           } else if (event.url.endsWith("/")) {
