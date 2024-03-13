@@ -79,10 +79,9 @@ public class APIProblemController {
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @Operation( summary = "Create Problem from Zip")
-    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PostMapping(value = "problem/fromZip")
+    @PostMapping(value = "problem/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ROLE_JUDGE')")
-    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
         contestId = Sanitizer.removeLineBreaks(contestId);
@@ -107,10 +106,9 @@ public class APIProblemController {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
         contestId = Sanitizer.removeLineBreaks(contestId);
-        String filename = Sanitizer.removeLineBreaks(file.getOriginalFilename());
 
         try {
-            ProblemString salida = problemService.updateProblem(problemId, filename, file, teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {

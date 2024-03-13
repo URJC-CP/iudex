@@ -47,7 +47,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         this.oauthService.saveTokens(data);
         req = req.clone({
           setHeaders: {
-            Authorization: 'Bearer' + data.accessToken
+            Authorization: 'Bearer ' + data.accessToken
           }
         });
         return next.handle(req);

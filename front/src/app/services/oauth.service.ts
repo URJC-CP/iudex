@@ -14,6 +14,8 @@ export class OauthService {
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) { }
 
+
+
   login(): void {
     // return this.http.get<AuthResponseDTO>(baseUrl);
     // Mirar si tiene sesión iniciada, si la tiene return
@@ -31,6 +33,7 @@ export class OauthService {
   saveTokens(authResponse: AuthResponseDTO): void {
     if(authResponse.accessToken && authResponse.refreshToken){
       localStorage.setItem('token', authResponse.accessToken);
+      localStorage.setItem('refreshToken', authResponse.refreshToken);
     } else {
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
@@ -43,6 +46,10 @@ export class OauthService {
 
   getRefreshToken(){
     return localStorage.getItem('refreshToken');
+  }
+
+  hasLoggedIn(){
+    return localStorage.getItem('token') != null;
   }
 
   logout() {

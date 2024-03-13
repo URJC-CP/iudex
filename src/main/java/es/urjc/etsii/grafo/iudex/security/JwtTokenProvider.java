@@ -82,6 +82,7 @@ public class JwtTokenProvider {
 		var token = buildToken(TokenType.REFRESH, userDetails);
 		var serializedToken = token.compact();
 		this.refreshTokens.put(userDetails.getUsername(), serializedToken);
+		this.validTokens.add(serializedToken);
 		return serializedToken;
 	}
 

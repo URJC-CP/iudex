@@ -25,9 +25,7 @@ export class HomeComponent {
     if (this.router.url.includes('loginid')) {
       this.tempToken = this.activatedRoute.snapshot.queryParamMap.get('loginid')!;
       this.oauthService.exchange(this.tempToken).subscribe(data => {
-        this.token = data.accessToken;
-        localStorage.setItem('token', this.token);
-        localStorage.setItem('refreshToken', data.refreshToken);
+        this.oauthService.saveTokens(data);
         this.userService.getCurrentUser().subscribe(me => {
           this.user = me
           console.log(this.user.roles);
@@ -37,6 +35,8 @@ export class HomeComponent {
             window.location.href = "/judge";
           } else if (this.user.roles?.includes("ROLE_USER")) {
             window.location.href = "/student";
+          } else {
+            window.location.href = "/public";
           }
         });
       }
