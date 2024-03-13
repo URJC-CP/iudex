@@ -538,27 +538,31 @@ public class ContestService {
                     continue; // solo se tienen en cuenta las entregas hasta el primer AC ignorando los fallos de compilación
                 }
 
-                TeamScore teamScore = teamScoreMap.get(equipo);
-                ProblemScore problemScore = teamScore.getProblemScore(problem.getProblem());
+                if (teamScoreMap.containsKey(equipo)){
 
-                // actualizar intentos
-                problemScore.setTries(problemScore.getTries() + 1);
+                    TeamScore teamScore = teamScoreMap.get(equipo);
+                    ProblemScore problemScore = teamScore.getProblemScore(problem.getProblem());
 
-                // obtener tiempo de las entregas aceptadas
-                if (entrega.getResult().equalsIgnoreCase("accepted")) {
-                    hasFirstAC.add(equipo);
-                    problemScore.setSolved(true);
+                    // actualizar intentos
+                    problemScore.setTries(problemScore.getTries() + 1);
 
-                    long tiempo = (long) entrega.getExecSubmissionTime();
-                    // actualizar puntuacion
-                    problemScore.setTimestamp(tiempo);
-                    problemScore.evaluate();
-                    teamScore.updateScore(problemScore.getScore());
+                    // obtener tiempo de las entregas aceptadas
+                    if (entrega.getResult().equalsIgnoreCase("accepted")) {
+                        hasFirstAC.add(equipo);
+                        problemScore.setSolved(true);
 
-                    minExecTime = (minExecTime == -1) ? tiempo : Long.min(minExecTime, tiempo);
-                    first = (minExecTime == tiempo || first == null) ? problemScore : first;
+                        long tiempo = (long) entrega.getExecSubmissionTime();
+                        // actualizar puntuacion
+                        problemScore.setTimestamp(tiempo);
+                        problemScore.evaluate();
+                        teamScore.updateScore(problemScore.getScore());
+
+                        minExecTime = (minExecTime == -1) ? tiempo : Long.min(minExecTime, tiempo);
+                        first = (minExecTime == tiempo || first == null) ? problemScore : first;
+                    }
+                    teamScore.addProblemScore(problem.getProblem(), problemScore);
                 }
-                teamScore.addProblemScore(problem.getProblem(), problemScore);
+
             }
 
             // actualizar el primer equipo en resolver el problema
