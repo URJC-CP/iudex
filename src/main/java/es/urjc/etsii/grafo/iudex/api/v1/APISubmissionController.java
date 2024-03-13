@@ -105,7 +105,7 @@ public class APISubmissionController {
 
     @Operation( summary = "Get List of user submissions in a contest ")
     @GetMapping("/API/v1/contest/{contestId}/team/{teamId}/submissions")
-    @PreAuthorize("hasAuthority('ROLE_JUDGE')")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<SubmissionAPI>> getContestUserSubmissions(@PathVariable String contestId, @PathVariable String teamId) {
         contestId = Sanitizer.removeLineBreaks(contestId);
         teamId = Sanitizer.removeLineBreaks(teamId);

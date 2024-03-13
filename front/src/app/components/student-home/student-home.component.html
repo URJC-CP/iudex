@@ -1,7 +1,7 @@
 <div *ngIf="loaded === false">
 <p-skeleton height="6rem" styleClass="mb-2"></p-skeleton>
 </div>
-<div class="card mx-8" *ngIf="loaded">
+<div class="card mx-5 my-3" *ngIf="loaded">
     <p-table [columns]="cols" [value]="scoreData" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header" let-columns>
             <tr>
