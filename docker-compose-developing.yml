@@ -23,7 +23,7 @@ services:
       - "3306:3306"
   backend:
     build:
-      dockerfile: ./DOCKERS/APP/Dockerfile
+      dockerfile: DOCKERS/APP/Dockerfile
       context: .
     container_name: iudex-backend
     restart: always
