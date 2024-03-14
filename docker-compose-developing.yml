@@ -35,9 +35,7 @@ services:
       - "18080:18080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - type: bind
-        source: ./front/dist/front
-        target: /angular
+      - ./front/dist/front/:/angular:ro
     environment:
       - spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
       - spring.datasource.url=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
@@ -47,7 +45,7 @@ services:
       - spring.rabbitmq.host=rabbit
       - spring.rabbitmq.port=5672
       - management.endpoint.health.show-details=always
-      - logging.level.root=debug
+      - logging.level.es.urjc.etsii.grafo.iudex=debug
     env_file:
       - secrets.env
 volumes:
