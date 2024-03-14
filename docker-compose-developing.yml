@@ -35,6 +35,9 @@ services:
       - "18080:18080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - type: bind
+        source: ./front/dist/front
+        target: /angular
     environment:
       - spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
       - spring.datasource.url=jdbc:mysql://bbdd:3306/testdb?serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true

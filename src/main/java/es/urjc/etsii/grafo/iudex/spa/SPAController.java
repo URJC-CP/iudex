@@ -1,4 +1,4 @@
-package es.urjc.etsii.grafo.iudex.controller;
+package es.urjc.etsii.grafo.iudex.spa;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
