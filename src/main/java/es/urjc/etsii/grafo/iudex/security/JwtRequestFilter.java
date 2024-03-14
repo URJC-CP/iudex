@@ -31,7 +31,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        // If there is not an Authorization header, we skip the filter
+        // If there is not an Authorization header, skip the filter
+        if(request.getHeader("Authorization") == null){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Else process it
         try {
             var claims = jwtTokenProvider.validateToken(request);
             var userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
@@ -41,15 +47,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 					userDetails.getAuthorities()
 			);
 
-			// TODO Review: No entiendo para que sirve copiar los details, eliminado por ahora
-            // authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
 			// if there has been any kind of error, make sure authentication is empty
 			// so access to protected resources will fail
 			SecurityContextHolder.clearContext();
-            log.debug("Exception processing JWT Token", ex);
+            log.debug("Exception processing JWT Token: {}", ex.getMessage());
         }
 
         filterChain.doFilter(request, response);
