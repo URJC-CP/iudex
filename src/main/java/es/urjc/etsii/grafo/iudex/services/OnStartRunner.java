@@ -1,5 +1,6 @@
 package es.urjc.etsii.grafo.iudex.services;
 
+import es.urjc.etsii.grafo.iudex.docker.DockerService;
 import es.urjc.etsii.grafo.iudex.entities.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +24,13 @@ public class OnStartRunner implements ApplicationRunner {
 
     private final LanguageService languageService;
 
-    private final ResultHandler resultHandler;
+    private final DockerService docker;
 
-    public OnStartRunner(ResultHandler resultHandler,
+    public OnStartRunner(DockerService docker,
                          LanguageService languageService,
                          UserAndTeamService userAndTeamService,
                          ContestService contestService) {
-        this.resultHandler = resultHandler;
+        this.docker = docker;
         this.languageService = languageService;
         this.userAndTeamService = userAndTeamService;
         this.contestService = contestService;
@@ -61,15 +62,26 @@ public class OnStartRunner implements ApplicationRunner {
     }
 
     public void createLanguage(String name, String path) {
-        if (languageService.existsLanguageByName(name)) {
-            logger.info("Skipping creation of lang {}, already in Database", name);
-            return;
-        }
-        logger.info("Building {} image at path {}", name, path);
+        // Check if language exists in DB
+        logger.info("Checking language {} ...", name);
         File dockerFile = new File(path);
-        String imageId = resultHandler.buildImage(dockerFile);
-        Language language = new Language(name, imageId);
-        languageService.saveLanguage(language);
-        logger.info("Finished building {} image {} from {}", name, imageId, dockerFile.getName());
+        var lang = languageService.getLanguageByName(name);
+        String imageId;
+        if (lang.isEmpty()) {
+            imageId = docker.buildImage(dockerFile);
+            logger.info("Created language and image {} for lang {}, Dockerfile: {}", name, imageId, dockerFile.getAbsolutePath());
+            languageService.saveLanguage(new Language(name, imageId));
+        } else {
+            // Lang exists, check if image exists
+            var newLang = lang.get();
+            imageId = newLang.getImgenId();
+            if (!docker.imageExists(imageId)) {
+                var oldImageId = imageId;
+                imageId = docker.buildImage(dockerFile);
+                newLang.setImgenId(imageId);
+                languageService.saveLanguage(newLang);
+                logger.info("Language {} uses non-existent image {}, replacing with new image {}. Dockerfile: {}", name, oldImageId, imageId, dockerFile.getAbsolutePath());
+            }
+        }
     }
 }

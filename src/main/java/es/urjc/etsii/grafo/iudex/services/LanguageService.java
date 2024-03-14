@@ -30,8 +30,8 @@ public class LanguageService {
         return languageRepository.existsLanguageByNombreLenguaje(name);
     }
 
-    public void saveLanguage(Language language) {
-        languageRepository.save(language);
+    public Language saveLanguage(Language language) {
+        return languageRepository.save(language);
     }
 
     public List<Language> getNLanguages() {

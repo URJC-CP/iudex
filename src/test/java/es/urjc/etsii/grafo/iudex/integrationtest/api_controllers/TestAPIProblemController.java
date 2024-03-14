@@ -305,7 +305,6 @@ class TestAPIProblemController {
 
         when(problemService.updateProblem(
                     problemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
@@ -330,7 +329,6 @@ class TestAPIProblemController {
         problemString2.setSalida("PROBLEM NOT FOUND");
         when(problemService.updateProblem(
                     nonExisingProblemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
@@ -364,7 +362,6 @@ class TestAPIProblemController {
 
         when(problemService.updateProblem(
                     problemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),

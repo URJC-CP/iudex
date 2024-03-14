@@ -1,13 +1,13 @@
-package es.urjc.etsii.grafo.iudex.services;
+package es.urjc.etsii.grafo.iudex.docker;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.core.command.BuildImageResultCallback;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import es.urjc.etsii.grafo.iudex.docker.DockerContainerFactory;
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,11 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 
-//Clase que maneja la entrada de respuestas y llama al tipo de docker correspondiente
 @Service
-public class ResultHandler {
-    private static final Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+public class DockerService {
 
-    private DockerClient dockerClient;
+    private static final Logger logger = LoggerFactory.getLogger(DockerService.class);
+
     @Value("${problem.default.timeout}")
     private String timeoutTime;
     @Value("${problem.default.memory}")
@@ -33,11 +32,14 @@ public class ResultHandler {
     @Value("${problem.default.storage}")
     private String defaultStorage;
 
-    public ResultHandler() {
+    private final DockerClient dockerClient;
+
+    public DockerService() {
         logger.info("Starting connection with docker");
-
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().withDockerHost(getDockerURL()).build();
-
+        DockerClientConfig config = DefaultDockerClientConfig
+                .createDefaultConfigBuilder()
+                .withDockerHost(getDockerURL())
+                .build();
         DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
                 .dockerHost(config.getDockerHost())
                 .sslConfig(config.getSSLConfig())
@@ -46,30 +48,11 @@ public class ResultHandler {
                 .responseTimeout(Duration.ofSeconds(45))
                 .build();
 
-        dockerClient = DockerClientImpl.getInstance(config, httpClient);
-
+        this.dockerClient = DockerClientImpl.getInstance(config, httpClient);
         logger.info("Connection established with docker");
     }
 
-    public void ejecutor(Result res) throws IOException, InterruptedException {
-        DockerContainerFactory.createDockerContainerForResult(res, dockerClient)
-                .ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
-    }
-
-    public String buildImage(File file) {
-        return dockerClient.buildImageCmd().withDockerfile(file).exec(new BuildImageResultCallback()).awaitImageId();
-    }
-
-    public DockerClient getDockerClient() {
-        return dockerClient;
-    }
-
-    public void setDockerClient(DockerClient dockerClient) {
-        this.dockerClient = dockerClient;
-    }
-
-    // returns the correct url to connect to the docker
-    private String getDockerURL() {
+    private static String getDockerURL() {
         String osName = System.getProperty("os.name").toLowerCase();
         String dockerUrl;
         if (osName.startsWith("windows")) { // windows
@@ -82,5 +65,39 @@ public class ResultHandler {
         }
         logger.info("Running docker on {} ", osName);
         return dockerUrl;
+    }
+
+
+    public DockerContainer getContainerForLang(String language) {
+        return switch (language) {
+            case "java" -> new DockerContainerJava(dockerClient);
+            case "python3" -> new DockerContainerPython(dockerClient);
+            case "cpp" -> new DockerContainerCpp(dockerClient);
+            case "c" -> new DockerContainerC(dockerClient);
+            case "sql" -> new DockerContainerMySQL(dockerClient);
+            default -> throw new IllegalArgumentException("Language not supported: " + language);
+        };
+    }
+
+    public DockerContainer getContainerForResult(Result result) {
+        return getContainerForLang(result.getLanguage().getNombreLenguaje());
+    }
+
+    public Result evaluate(Result res) throws IOException, InterruptedException {
+        var container = getContainerForResult(res);
+        return container.ejecutar(res, memoryLimit, timeoutTime, defaultCPU, res.getLanguage().getImgenId());
+    }
+
+    public String buildImage(File file) {
+        return dockerClient.buildImageCmd().withDockerfile(file).exec(new BuildImageResultCallback()).awaitImageId();
+    }
+
+    public boolean imageExists(String imageId) {
+        try {
+            dockerClient.inspectImageCmd(imageId).exec();
+            return true;
+        } catch (NotFoundException e){
+            return false;
+        }
     }
 }
