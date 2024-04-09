@@ -1,7 +1,7 @@
 <div class="sticky top-0 pt-1 z-5">
     <p-toolbar styleClass="align-content-center" [style]="{'height': '5rem'}" *ngIf="notHome && loaded">
         <div class="p-toolbar-group-start">
-            <img class="mr-5" src="images/logo2.svg" height="40" />
+            <img class="mr-5" src="assets/images/logo2.svg" height="40" />
             <button routerLink="{{i.url}}" pButton *ngFor="let i of buttons" pButton icon="{{i.icon}}"
                 class="p-button-text p-button-plain mr-2">{{i.name}}</button>
         </div>

@@ -57,7 +57,7 @@ export class StudentRankingComponent {
         data[i].scoreList.forEach((scoreProblem) => {
           let color = ""
           if (scoreProblem.first) {
-            color = 'dark green'
+            color = 'darkgreen'
           } else if (scoreProblem.solved) {
             color = 'green'
           } else {
