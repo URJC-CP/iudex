@@ -7,7 +7,8 @@
         </div>
         <div class="p-toolbar-group-center">
             <div *ngIf="pageType=='student'">
-                <h4>{{time}}</h4>
+                <h4> <i class="pi pi-clock"> </i> {{negativeTime ? "- ": ""}} {{hours | number:'2.0'}}:{{minutes |
+                    number:'2.0'}}:{{seconds | number:'2.0'}} </h4>
             </div>
         </div>
         <div class="p-toolbar-group-end">

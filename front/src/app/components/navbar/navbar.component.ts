@@ -26,7 +26,15 @@ export class NavbarComponent {
   contestId: string | undefined;
   username: string | undefined;
   roles: string[] | undefined;
-  time: string | undefined;
+  currentTime: Date = new Date();
+  contestEnd: Date = new Date();
+  timeLeft: Date = new Date();
+  negativeTime: boolean = false;
+  days: number = 0;
+  hours: number = 0;
+  minutes: number = 0;
+  seconds: number = 0;
+  difference: number = 0;
 
   constructor(private router: Router, private contestService: ContestService, private userService: UserService) {
   }
@@ -65,6 +73,7 @@ export class NavbarComponent {
             this.contestId = event.url[17];
             this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
               this.contestName = data.nombreContest!;
+              this.contestEnd = new Date(data.endDateTime!);
               this.calculateTime();
               this.studentIcons();
             });
@@ -167,6 +176,26 @@ export class NavbarComponent {
   }
 
   calculateTime() {
+    this.currentTime = new Date();
+    this.difference = this.contestEnd.getTime() - this.currentTime.getTime();
+    this.difference = this.difference / (1000 * 60 * 60 * 24);
+    setInterval(() => {
+      this.getCurrentDate();
+      this.difference = this.contestEnd.getTime() - this.currentTime.getTime();
+      this.difference = this.difference / (1000 * 60 * 60 * 24);
+    }, 1000);
+  }
+
+  getCurrentDate() {
+    if (this.currentTime > this.contestEnd) {
+      this.negativeTime = true;
+    } else { this.negativeTime = false; }
+    this.days = Math.abs(Math.floor(this.difference));
+    this.hours = Math.abs((23 - this.currentTime.getHours()) + this.days * 24);
+    console.log(this.hours);
+    console.log(this.days);
+    this.minutes = Math.abs(60 - this.currentTime.getMinutes());
+    this.seconds = Math.abs(60 - this.currentTime.getSeconds());
   }
 
   logout() {
