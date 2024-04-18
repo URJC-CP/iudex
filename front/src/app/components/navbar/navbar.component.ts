@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ContestService } from 'src/app/services/contest.service';
+import { OauthService } from 'src/app/services/oauth.service';
 import { UserService } from 'src/app/services/user.service';
 
 interface button {
@@ -36,7 +37,7 @@ export class NavbarComponent {
   seconds: number = 0;
   difference: number = 0;
 
-  constructor(private router: Router, private contestService: ContestService, private userService: UserService) {
+  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService) {
   }
 
   ngOnInit() {
@@ -103,9 +104,7 @@ export class NavbarComponent {
         this.items.splice(0, 0, {
           label: $localize`Admin View`,
           icon: 'pi pi-user',
-          command: () => {
-            this.logout();
-          }
+          routerLink: ['/admin']
         },
           {
             label: $localize`Judge View`,
@@ -192,15 +191,12 @@ export class NavbarComponent {
     } else { this.negativeTime = false; }
     this.days = Math.abs(Math.floor(this.difference));
     this.hours = Math.abs((23 - this.currentTime.getHours()) + this.days * 24);
-    console.log(this.hours);
-    console.log(this.days);
     this.minutes = Math.abs(60 - this.currentTime.getMinutes());
     this.seconds = Math.abs(60 - this.currentTime.getSeconds());
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    this.oauthService.logout();
     this.userService.logout();
     window.location.href = "/";
   }
