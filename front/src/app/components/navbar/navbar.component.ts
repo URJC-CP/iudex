@@ -175,24 +175,28 @@ export class NavbarComponent {
   }
 
   calculateTime() {
-    this.currentTime = new Date();
-    this.difference = this.contestEnd.getTime() - this.currentTime.getTime();
-    this.difference = this.difference / (1000 * 60 * 60 * 24);
     setInterval(() => {
       this.getCurrentDate();
-      this.difference = this.contestEnd.getTime() - this.currentTime.getTime();
-      this.difference = this.difference / (1000 * 60 * 60 * 24);
     }, 1000);
   }
 
   getCurrentDate() {
-    if (this.currentTime > this.contestEnd) {
-      this.negativeTime = true;
-    } else { this.negativeTime = false; }
-    this.days = Math.abs(Math.floor(this.difference));
-    this.hours = Math.abs((23 - this.currentTime.getHours()) + this.days * 24);
-    this.minutes = Math.abs(60 - this.currentTime.getMinutes());
-    this.seconds = Math.abs(60 - this.currentTime.getSeconds());
+    this.currentTime = new Date();
+    this.difference = this.contestEnd.getTime() - this.currentTime.getTime();
+
+    this.negativeTime = this.difference < 0;
+
+    const seconds = Math.floor((this.difference / 1000) % 60);
+    const minutes = Math.floor((this.difference / 1000 / 60) % 60);
+    const hours = Math.floor((this.difference / (1000 * 60 * 60)) % 24);
+    const days = Math.floor(this.difference / (1000 * 60 * 60 * 24));
+
+    this.days = Math.abs(days);
+    this.hours = Math.abs(hours + days * 24);
+    this.minutes = Math.abs(minutes);
+    this.seconds = Math.abs(seconds);
+    console.log(this.days + " " + this.hours + " " + this.minutes + " " + this.seconds);
+
   }
 
   logout() {
