@@ -28,8 +28,7 @@
 <hr class="mx-8">
 
 <div class="grid align-content-center pt-3 mx-8">
-    <p-card class="col-4 font-bold text-center border-round" header="{{i.nombreContest}}" *ngFor="let i of allContests"
-        i18n-header>
+    <p-card class="col-4 font-bold text-center border-round" header="{{i.nombreContest}}" *ngFor="let i of allContests">
         <p i18n>
             Start: {{i.startDateTime | date: 'dd-MM-yyyy'}} <br> End: {{i.endDateTime | date: 'dd-MM-yyyy'}}
         </p>

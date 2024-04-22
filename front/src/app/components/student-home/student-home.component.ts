@@ -177,7 +177,7 @@ export class StudentHomeComponent {
 
   }
 
-  loadScoreboard(){
+  loadScoreboard() {
     this.loaded = false;
 
     this.contestService.getTeamScoreboard(this.contestId, this.teamId).subscribe((data) => {

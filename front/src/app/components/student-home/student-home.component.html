@@ -1,13 +1,13 @@
 <div *ngIf="loaded === false">
-<p-skeleton height="6rem" styleClass="mb-2"></p-skeleton>
+    <p-skeleton height="6rem" styleClass="mb-2"></p-skeleton>
 </div>
 <div class="card mx-5 my-3" *ngIf="loaded">
     <p-table [columns]="cols" [value]="scoreData" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th colspan="1" style="width:10px">Position</th>
-                <th colspan="1" style="width:10px">Team</th>
-                <th colspan="1" style="width:10px">Score</th>
+                <th colspan="1" style="width:10px" i18n>Position</th>
+                <th colspan="1" style="width:10px" i18n>Team</th>
+                <th colspan="1" style="width:10px" i18n>Score</th>
                 <th></th>
                 <th class="text-center" *ngFor="let col of columns">
                     {{ col.header }}
