@@ -152,6 +152,13 @@ public class Problem {
         problemAPI.setColor(this.color);
         problemAPI.setTimeout(this.timeout);
 
+        byte[] contents = this.getDocumento();
+        if (contents == null || contents.length == 0) {
+            problemAPI.setProblemURLpdf(null);
+        } else {
+            problemAPI.setProblemURLpdf(String.format("/API/v1/problem/%s/getPDF", this.id));
+        }
+
         return problemAPI;
     }
 
