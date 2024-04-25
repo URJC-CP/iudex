@@ -1,5 +1,11 @@
-<div class="flex pt-2 justify-content-center">
-    <h1 i18n>Ranking {{contestName}}</h1>
+<div class="flex pt-2 justify-content-center align-items-center">
+
+    <h1 *ngIf="pageType=='student'" i18n>Ranking {{contestName}}</h1>
+
+    <h2 class="pr-6" *ngIf="pageType=='judge'" i18n>Ranking</h2>
+    <p-dropdown *ngIf="pageType=='judge'" [options]="contests" [(ngModel)]="selectedContest" optionLabel="name"
+        (onChange)="changeContest()" placeholder="Select a contest"></p-dropdown>
+
     <i class="col-1 pi pi-info-circle flex align-self-center align-items-center justify-content-center" severity="info"
         [pTooltip]="tooltipContent" tooltipPosition="right"></i>
     <ng-template #tooltipContent>
@@ -28,8 +34,12 @@
 </div>
 <hr class="mx-8 my-4">
 
-<div *ngIf="loaded === false">
-    <p-skeleton width="10rem" height="4rem" borderRadius="16px"></p-skeleton>
+<div class="flex justify-content-center" *ngIf="loaded === false && hasScores">
+    <p-skeleton width="80rem" height="4rem" borderRadius="16px"></p-skeleton>
+</div>
+
+<div class="flex justify-content-center" *ngIf="hasScores === false">
+    <h1 i18n>Contest is empty :(</h1>
 </div>
 
 <div class="card mx-8" *ngIf="loaded">

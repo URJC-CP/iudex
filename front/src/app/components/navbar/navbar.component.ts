@@ -58,11 +58,12 @@ export class NavbarComponent {
             this.userService.getCurrentUser().subscribe((data) => {
               this.username = data.nickname!;
               this.roles = data.roles!;
-              if (this.roles.includes("ROLE_ADMIN") && this.roles.length == 1) {
+
+              if (this.roles.includes("ROLE_ADMIN")) {
                 this.userType = "admin";
-              } else if (this.roles.includes("ROLE_JUDGE") && this.roles.length == 2) {
+              } else if (this.roles.includes("ROLE_JUDGE")) {
                 this.userType = "judge";
-              } else if (this.roles.includes("ROLE_USER") && this.roles.length == 3) {
+              } else if (this.roles.includes("ROLE_USER")) {
                 this.userType = "student";
               }
             });
@@ -80,8 +81,16 @@ export class NavbarComponent {
             });
           }
           else if (event.url.startsWith("/judge")) {
+            this.loaded = false;
             this.pageType = "judge";
-            this.judgeIcons();
+            this.contestService.getAllContests().subscribe((data) => {
+              if (data.length == 0) {
+                this.contestId = "0";
+              } else {
+                this.contestId = String(data[0].id);
+              }
+              this.judgeIcons();
+            });
           }
           else if (event.url.startsWith("/admin")) {
             this.pageType = "admin";
@@ -129,7 +138,7 @@ export class NavbarComponent {
       { icon: 'pi pi-fw pi-star', name: $localize`Contests` },
       { icon: 'pi pi-fw pi-book', name: $localize`Problems` },
       { icon: 'pi pi-fw pi-code', name: $localize`Submissions` },
-      { icon: 'pi pi-fw pi-file', name: $localize`Ranking` },
+      { icon: 'pi pi-fw pi-file', name: $localize`Ranking`, url: '/judge/ranking/' + this.contestId },
       // disabled?
       { icon: 'pi pi-fw pi-undo', name: $localize`Rejudge` }
     ];
@@ -152,6 +161,9 @@ export class NavbarComponent {
           icon: 'pi pi-user',
           routerLink: ['/student']
         })
+    }
+    if (this.buttons) {
+      this.loaded = true;
     }
   }
 

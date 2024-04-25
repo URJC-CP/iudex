@@ -12,6 +12,7 @@ const appRoutes: Routes = [
   { path: "student/contest/:id/problems", component: StudentProblemsComponent },
   { path: "student/contest/:id/ranking", component: StudentRankingComponent },
   { path: "student/contest/:id/home", component: StudentHomeComponent },
+  { path: "judge/ranking/:id", component: StudentRankingComponent },
 ]
 
   export const routing = RouterModule.forRoot(appRoutes);

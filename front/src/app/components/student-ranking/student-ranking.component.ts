@@ -24,6 +24,11 @@ interface scores {
   problems: Map<String, problems>
 }
 
+interface contest {
+  name: string;
+  id: string;
+}
+
 
 @Component({
   selector: 'app-student-ranking',
@@ -39,10 +44,26 @@ export class StudentRankingComponent {
   loaded: boolean;
   contestName!: string;
   end: number;
+  pageType: string;
+  selectedContest!: contest;
+  contests: contest[] = [];
+  hasScores: boolean = false;
 
-  constructor(private activatedRouter: ActivatedRoute, private contestService: ContestService) {
+  constructor(private activatedRouter: ActivatedRoute, private contestService: ContestService, private router: Router) {
+
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
+
     activatedRouter.url.subscribe((data) => {
       this.id = data[2].path;
+      console.log(this.id);
+
+      if (data[0].path == "student") {
+        this.pageType = "student";
+      } else if (data[0].path == "judge") {
+        this.pageType = "judge";
+      }
     });
   }
 
@@ -73,11 +94,25 @@ export class StudentRankingComponent {
     });
     this.contestService.getSelectedContest(this.id).subscribe((data1) => {
       this.contestName = data1.nombreContest;
+      this.selectedContest = { name: data1.nombreContest, id: String(data1.id) };
       this.end = data1.listaProblemas.length;
+      this.hasScores = data1.listaProblemas.length > 0;
       for (let i = 0; i < data1.listaProblemas.length; i++) {
         this.cols.push({ field: String(data1.listaProblemas[i].id), header: data1.listaProblemas[i].nombreEjercicio });
       }
     });
 
+    this.contestService.getAllContests().subscribe((data) => {
+      for (let i = 0; i < data.length; i++) {
+        this.contests = [...this.contests, { name: data[i].nombreContest, id: String(data[i].id) }];
+      }
+    });
+
+  }
+
+  changeContest() {
+    if (this.selectedContest.id != this.id) {
+      this.router.navigate(['/judge/ranking/' + this.selectedContest.id]);
+    }
   }
 }
