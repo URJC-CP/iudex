@@ -6,11 +6,11 @@ export interface ProblemDTO {
   id: number;
   nombreEjercicio: string;
   samples: SampleDTO[];
-  submissions?: SubmissionDTO[];
+  submissions: SubmissionDTO[];
   equipoPropietario?: TeamDTO;
   valido?: boolean;
-  timeout?: string;
-  memoryLimit?: string;
+  timeout: string;
+  memoryLimit: string;
   color: string;
   problemURLpdf?: string;
 

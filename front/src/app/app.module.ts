@@ -40,6 +40,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
+import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import { TagModule } from 'primeng/tag';
     StudentProblemsComponent,
     StudentRankingComponent,
     SubmitButtonComponent,
-    NavbarComponent
+    NavbarComponent,
+    AdminTablesComponent
   ],
   imports: [
     HttpClientModule,
