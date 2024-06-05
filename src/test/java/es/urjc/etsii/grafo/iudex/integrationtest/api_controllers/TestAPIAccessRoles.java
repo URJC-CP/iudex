@@ -53,7 +53,7 @@ class TestAPIAccessRoles {
 
     @Test
     void unauthorizedShouldBeRedirectedOnAdminEndpoint() throws Exception {
-        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().is3xxRedirection());
+        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isUnauthorized());
     }
 
 }
