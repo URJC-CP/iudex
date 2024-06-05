@@ -2,7 +2,8 @@ package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 
 import es.urjc.etsii.grafo.iudex.api.v1.APIUserController;
 import es.urjc.etsii.grafo.iudex.entities.User;
-import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
+import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,9 +21,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +43,9 @@ class TestAPIUserController {
 
     @MockBean
     UserAndTeamService userAndTeamService;
+
+    @MockBean
+    UserRepository userRepository;
 
     String baseUrl = "/API/v1/user";
 
