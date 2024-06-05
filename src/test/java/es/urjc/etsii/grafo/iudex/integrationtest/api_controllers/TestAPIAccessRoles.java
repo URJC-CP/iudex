@@ -42,13 +42,13 @@ class TestAPIAccessRoles {
     @Test
     @WithMockUser(username="judge",roles={"USER","JUDGE"})
     void judgeShouldBeDeniedAccessToAdminEndpoint() throws Exception {
-        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isUnauthorized());
+        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(username="user")
     void userShouldBeDeniedAccessToAdminEndpoint() throws Exception {
-        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isUnauthorized());
+        mockMvc.perform(get(ADMIN_ONLY_URL)).andExpect(status().isForbidden());
     }
 
     @Test
