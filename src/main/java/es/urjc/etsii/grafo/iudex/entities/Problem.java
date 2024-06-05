@@ -151,6 +151,7 @@ public class Problem {
         problemAPI.setOwnerRights(this.ownerRights);
         problemAPI.setColor(this.color);
         problemAPI.setTimeout(this.timeout);
+        problemAPI.setNumContest(this.listaConcursos.size());
 
         byte[] contents = this.getDocumento();
         if (contents == null || contents.length == 0) {
@@ -166,6 +167,7 @@ public class Problem {
         ProblemAPI problemAPI = new ProblemAPI();
         problemAPI.setId(this.id);
         problemAPI.setNombreEjercicio(this.nombreEjercicio);
+        problemAPI.setNumContest(this.listaConcursos.size());
         return problemAPI;
     }
 

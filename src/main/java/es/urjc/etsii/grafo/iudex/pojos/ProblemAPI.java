@@ -26,6 +26,8 @@ public class ProblemAPI {
 
     private String problemURLpdf = null;
 
+    private int numContest = 0;
+
     public void setProblemURLpdf(String problemURLpdf) {
         this.problemURLpdf = problemURLpdf;
     }
@@ -144,5 +146,13 @@ public class ProblemAPI {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getNumContest() {
+        return numContest;
+    }
+
+    public void setNumContest(int numContest) {
+        this.numContest = numContest;
     }
 }
