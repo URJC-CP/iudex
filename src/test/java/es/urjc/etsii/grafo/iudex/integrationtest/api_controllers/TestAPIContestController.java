@@ -7,8 +7,10 @@ import es.urjc.etsii.grafo.iudex.entities.Team;
 import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
+import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = APIContestController.class, excludeFilters =
@@ -51,6 +52,10 @@ class TestAPIContestController {
     private MockMvc mockMvc;
     @MockBean
     private ContestService contestService;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private UserAndTeamService userAndTeamService;
     private Contest contest;
     private Team owner;
     private Problem problem;

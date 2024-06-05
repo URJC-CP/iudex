@@ -79,9 +79,10 @@ public class APIProblemController {
 
     //Crea problema y devuelve el problema. Necesita team y contest
     @Operation( summary = "Create Problem from Zip")
-    @PostMapping(value = "problem/fromZip", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Consumes(MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "problem/fromZip")
     @PreAuthorize("hasAuthority('ROLE_JUDGE')")
-    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam String problemName, @RequestParam String teamId, @RequestParam String contestId) {
+    public ResponseEntity<ProblemAPI> createProblemFromZip(@RequestPart("file") MultipartFile file, @RequestParam(required = false) String problemName, @RequestParam String teamId, @RequestParam String contestId) {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
         contestId = Sanitizer.removeLineBreaks(contestId);

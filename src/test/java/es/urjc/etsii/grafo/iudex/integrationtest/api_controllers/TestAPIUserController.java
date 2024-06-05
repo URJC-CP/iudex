@@ -4,6 +4,8 @@ import es.urjc.etsii.grafo.iudex.api.v1.APIUserController;
 import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.services.ContestTeamService;
+import es.urjc.etsii.grafo.iudex.services.SubmissionService;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +48,12 @@ class TestAPIUserController {
 
     @MockBean
     UserRepository userRepository;
+
+    @MockBean
+    private SubmissionService submissionService;
+
+    @MockBean
+    private ContestTeamService contestTeamService;
 
     String baseUrl = "/API/v1/user";
 

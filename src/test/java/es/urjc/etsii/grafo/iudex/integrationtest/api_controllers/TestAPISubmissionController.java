@@ -4,10 +4,7 @@ import es.urjc.etsii.grafo.iudex.api.v1.APISubmissionController;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
 import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
-import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
-import es.urjc.etsii.grafo.iudex.services.ContestService;
-import es.urjc.etsii.grafo.iudex.services.ProblemService;
-import es.urjc.etsii.grafo.iudex.services.SubmissionService;
+import es.urjc.etsii.grafo.iudex.services.*;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +55,8 @@ class TestAPISubmissionController {
     private ProblemService problemService;
     @MockBean
     private ContestProblemService contestProblemService;
+    @MockBean
+    private UserAndTeamService userAndTeamService;
     private Team owner;
 
     private ContestProblem contestProblem;
