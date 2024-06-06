@@ -40,6 +40,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
 
 
@@ -80,7 +81,8 @@ import { AdminTablesComponent } from './components/admin-tables/admin-tables.com
     ToolbarModule,
     TagModule,
     MonacoEditorModule.forRoot(),
-    ClipboardModule
+    ClipboardModule,
+    ToggleButtonModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

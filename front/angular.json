@@ -34,6 +34,16 @@
               { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
             ],
             "styles": [
+              {
+                "input": "src/assets/themes/darkTheme.css",
+                "bundleName": "darkTheme",
+                "inject": false
+              },
+              {
+                "input": "src/assets/themes/lightTheme.css",
+                "bundleName": "lightTheme",
+                "inject": false
+              },
               "src/styles.css",
               "node_modules/primeflex/primeflex.css"
             ],

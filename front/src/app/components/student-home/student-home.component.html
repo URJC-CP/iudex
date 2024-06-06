@@ -21,7 +21,7 @@
                 <td class="text-center">{{scoreData.score}}</td>
                 <td></td>
                 <td class="text-center" *ngFor="let col of columns">
-                    <div [ngStyle]="{'background-color': scoreData.problems.get(col.field).color}"
+                    <div [ngStyle]="{'background-color': scoreData.problems.get(col.field).color, 'color': 'white'}"
                         class="mx-8 py-2 border-round" *ngIf="scoreData.problems.get(col.field).tries > 0">
                         {{scoreData.problems.get(col.field).score}} <br>
                         {{scoreData.problems.get(col.field).tries}} {{scoreData.problems.get(col.field).tries === '1' ?

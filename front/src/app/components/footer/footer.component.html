@@ -1,4 +1,6 @@
-<div class="footer">
-    <h1>footer</h1>
+<div class="footer py-4" *ngIf="notHome">
+    <div class="card flex justify-content-center">
+        <p-toggleButton [(ngModel)]="val" onLabel={{onLabel}} offLabel="Light Mode" onIcon={{onIcon}}
+            offIcon="pi pi-sun" iconPos="right" (onChange)="changeTheme()" i18n-offLabel="LightMode"></p-toggleButton>
+    </div>
 </div>
-

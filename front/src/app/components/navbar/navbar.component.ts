@@ -3,6 +3,7 @@ import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ContestService } from 'src/app/services/contest.service';
 import { OauthService } from 'src/app/services/oauth.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { UserService } from 'src/app/services/user.service';
 
 interface button {
@@ -37,7 +38,7 @@ export class NavbarComponent {
   seconds: number = 0;
   difference: number = 0;
 
-  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService) {
+  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService) {
   }
 
   ngOnInit() {
@@ -215,6 +216,14 @@ export class NavbarComponent {
     this.oauthService.logout();
     this.userService.logout();
     window.location.href = "/";
+  }
+
+  getLogo() {
+    if (this.themeService.getTheme() == "darkTheme") {
+      return "assets/images/logo2.svg";
+    } else {
+      return "assets/images/logo2Black.svg";
+    }
   }
 
 

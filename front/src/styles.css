@@ -1,6 +1,5 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
-@import "assets/themes/darkTheme.css";
 
 body {
     background-color: var(--surface-b);
@@ -8,6 +7,7 @@ body {
     color: var(--text-color);
     position: relative;
     min-height: 100vh;
+    margin: 0px;
 }
 
 
