@@ -3,7 +3,7 @@ package es.urjc.etsii.grafo.iudex.integrationtest.api_controllers;
 import es.urjc.etsii.grafo.iudex.api.v1.APILanguageController;
 import es.urjc.etsii.grafo.iudex.entities.Language;
 import es.urjc.etsii.grafo.iudex.pojos.LanguageAPI;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.LanguageService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.DisplayName;

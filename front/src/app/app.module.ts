@@ -1,87 +1,91 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {
-  NbMenuModule,
-  NbMenuService,
-  NbThemeModule,
-  NbThemeService,
-  NbLayoutModule,
-  NbButtonModule, NbAccordionModule, NbInputModule, NbCardModule, NbListModule, NbSelectModule, NbCheckboxModule
-} from '@nebular/theme';
-import { NbEvaIconsModule } from "@nebular/eva-icons";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {LoginComponent} from "./components/login/login.component";
-import {MenuComponent} from "./components/menu/menu.component";
-import { Ng2SmartTableModule } from 'ng2-smart-table';
-import {FormsModule} from "@angular/forms";
-import {SubmissionComponent} from "./components/submissions/submission.component";
-import { MonacoEditorModule, MONACO_PATH } from '@materia-ui/ngx-monaco-editor';
-import {ContestListComponent} from './components/menu/contestsList/contestList.component';
-import {ProblemViewerComponent} from './components/problemViewer/problemviewer.component';
-import {ProblemEditorComponent} from './components/problemEditor/problemeditor.component';
-import {SubmissionViewerComponent} from './components/submissionViewer/submissionviewer.component';
-import { PieChartComponent } from './components/pie-chart/pie-chart.component';
-import {ChartsModule} from 'ng2-charts';
-import {PublicProblemsComponent} from './components/allProblems/publicproblems.component';
-import {PublicSubmissionsComponent} from './components/statsPublic/publicsubmissions.component';
-import {RankingComponent} from './components/ranking/ranking.component';
-import { IonicModule } from '@ionic/angular';
-import {ContestCreatorComponent} from './components/menu/contestCreator/contestcreator.component';
-import {ContestEditorComponent} from './components/menu/contestEditor/contesteditor.component';
-import {TestCasesRemoverComponent} from './components/problemTestCases/delete/testcasesremover.component';
-import {TestCasesAdderComponent} from './components/problemTestCases/add/testcasesadder.component';
-import {TestCasesEditorComponent} from './components/problemTestCases/edit/testcaseseditor.component';
+import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { StudentContestsComponent } from './components/student-contests/student-contests.component';
+import { StudentHomeComponent } from './components/student-home/student-home.component';
+import { StudentProblemsComponent } from './components/student-problems/student-problems.component';
+import { StudentRankingComponent } from './components/student-ranking/student-ranking.component';
+
+import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { AuthInterceptorService } from './services/auth-interceptor.service';
+
+import { routing } from './app.routing';
+
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
+
+import { ClipboardModule } from '@angular/cdk/clipboard';
+
+//PrimeNG imports
+import { MenubarModule } from 'primeng/menubar';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { AccordionModule } from 'primeng/accordion';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { SubmitButtonComponent } from './components/submit-button/submit-button.component';
+import { FormsModule } from '@angular/forms';
+import { SkeletonModule } from 'primeng/skeleton';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { MessagesModule } from 'primeng/messages';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TagModule } from 'primeng/tag';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    MenuComponent,
-    SubmissionComponent,
-    ContestListComponent,
-    ProblemViewerComponent,
-    ProblemEditorComponent,
-    SubmissionViewerComponent,
-    PieChartComponent,
-    PublicProblemsComponent,
-    PublicSubmissionsComponent,
-    RankingComponent,
-    ContestCreatorComponent,
-    ContestEditorComponent,
-    TestCasesRemoverComponent,
-    TestCasesAdderComponent,
-    TestCasesEditorComponent
+    HomeComponent,
+    NavbarComponent,
+    FooterComponent,
+    StudentContestsComponent,
+    StudentHomeComponent,
+    StudentProblemsComponent,
+    StudentRankingComponent,
+    SubmitButtonComponent,
+    NavbarComponent,
+    AdminTablesComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
     HttpClientModule,
-    NbEvaIconsModule,
-    NbButtonModule,
-    NbAccordionModule,
-    NbInputModule,
-    NbThemeModule.forRoot(),
-    NbMenuModule.forRoot(),
+    BrowserModule,
     BrowserAnimationsModule,
-    //NbThemeModule.forRoot({name: 'dark'}),
-    NbLayoutModule,
-    NbCardModule,
-    NbListModule,
-    Ng2SmartTableModule,
-    NbSelectModule,
+    AppRoutingModule,
+    routing,
+    MenubarModule,
+    MenuModule,
+    ButtonModule,
+    SplitButtonModule,
+    AccordionModule,
+    CardModule,
+    TableModule,
+    DialogModule,
+    DropdownModule,
     FormsModule,
-    MonacoEditorModule,
-    NbCheckboxModule,
-    ChartsModule,
-    IonicModule.forRoot()
+    SkeletonModule,
+    FileUploadModule,
+    ToastModule,
+    MessagesModule,
+    ToolbarModule,
+    TagModule,
+    MonacoEditorModule.forRoot(),
+    ClipboardModule,
+    ToggleButtonModule
   ],
-  providers: [NbMenuService, NbThemeService,{
-    provide: MONACO_PATH,
-    useValue: 'https://unpkg.com/monaco-editor@0.21.2/min/vs'
+  providers: [{
+    provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true
   }],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,8 @@
+.footer {
+  background-color: var(--surface-d);
+  font-family: var(--font-family);
+  color: var(--text-color-secondary);
+  text-align: center;
+  position: absolute;
+  width: 100%;
+}

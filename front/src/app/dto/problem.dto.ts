@@ -1,16 +1,17 @@
-export class ProblemDto {
+import { TeamDTO } from './team.dto';
+import { SampleDTO } from './sample.dto';
+import { SubmissionDTO } from './submission.dto';
 
-  reference?: String;
-  pdf?: String;
-  difficulty?: String;
-  testCases?: String;
-  title?: String;
+export interface ProblemDTO {
+  id: number;
+  nombreEjercicio: string;
+  samples: SampleDTO[];
+  submissions: SubmissionDTO[];
+  equipoPropietario?: TeamDTO;
+  valido?: boolean;
+  timeout: string;
+  memoryLimit: string;
+  color: string;
+  problemURLpdf?: string;
 
-  constructor(){
-    this.reference = "";
-    this.pdf = "";
-    this.difficulty = "";
-    this.testCases = "";
-    this.title = "";
-  }
 }

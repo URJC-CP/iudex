@@ -4,7 +4,7 @@ import es.urjc.etsii.grafo.iudex.api.v1.APIProblemController;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ProblemString;
-import es.urjc.etsii.grafo.iudex.security.jwt.JwtRequestFilter;
+import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
@@ -305,7 +305,6 @@ class TestAPIProblemController {
 
         when(problemService.updateProblem(
                     problemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
@@ -330,7 +329,6 @@ class TestAPIProblemController {
         problemString2.setSalida("PROBLEM NOT FOUND");
         when(problemService.updateProblem(
                     nonExisingProblemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),
@@ -364,7 +362,6 @@ class TestAPIProblemController {
 
         when(problemService.updateProblem(
                     problemId,
-                    problem2File.getOriginalFilename(),
                     problem2File,
                     Sanitizer.removeLineBreaks(teamId),
                     Sanitizer.removeLineBreaks(problem2.getNombreEjercicio()),

@@ -1,7 +1,6 @@
 package es.urjc.etsii.grafo.iudex.pojos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -25,9 +24,16 @@ public class ProblemAPI {
 
     private String color;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String problemURLpdf = null;
+
+    private int numContest = 0;
+
+    public void setProblemURLpdf(String problemURLpdf) {
+        this.problemURLpdf = problemURLpdf;
+    }
+
     public String getProblemURLpdf() {
-        return String.format("/API/v1/problem/%s/getPDF", id);
+        return problemURLpdf;
     }
 
     public long getId() {
@@ -140,5 +146,13 @@ public class ProblemAPI {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getNumContest() {
+        return numContest;
+    }
+
+    public void setNumContest(int numContest) {
+        this.numContest = numContest;
     }
 }

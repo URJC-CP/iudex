@@ -1,0 +1,24 @@
+<div class="sticky top-0 z-5 p-2">
+    <p-toolbar styleClass="align-content-center" [style]="{'height': '5rem'}" *ngIf="notHome && loaded">
+        <div class="p-toolbar-group-start">
+            <img class="mr-5" [src]="getLogo()" height="40" />
+            <button routerLink="{{i.url}}" pButton *ngFor="let i of buttons" pButton icon="{{i.icon}}"
+                class="p-button-text p-button-plain mr-2">{{i.name}}</button>
+        </div>
+        <div class="p-toolbar-group-center">
+            <div *ngIf="pageType=='student'">
+                <h4> <i class="pi pi-clock"> </i> {{negativeTime ? "- ": ""}} {{hours | number:'2.0'}}:{{minutes |
+                    number:'2.0'}}:{{seconds | number:'2.0'}} </h4>
+            </div>
+        </div>
+        <div class="p-toolbar-group-end">
+            <div *ngIf="pageType=='student'" class="inline-flex">
+                <p-button class="mr-2" label="{{contestName}}" [text]="true" [plain]="true"
+                    routerLink="/student"></p-button>
+                <app-submit-button contestId="{{contestId}}"></app-submit-button>
+            </div>
+            <p-splitButton label="{{username}}" icon="pi pi-user" [model]="items"
+                styleClass="p-button-text p-button-plain"></p-splitButton>
+        </div>
+    </p-toolbar>
+</div>

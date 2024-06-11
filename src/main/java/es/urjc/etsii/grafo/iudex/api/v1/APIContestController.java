@@ -1,12 +1,19 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Contest;
+import es.urjc.etsii.grafo.iudex.entities.Team;
+import es.urjc.etsii.grafo.iudex.entities.User;
 import es.urjc.etsii.grafo.iudex.pojos.ContestAPI;
 import es.urjc.etsii.grafo.iudex.pojos.ContestString;
+import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 import es.urjc.etsii.grafo.iudex.pojos.TeamScore;
+import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
 import es.urjc.etsii.grafo.iudex.services.ContestService;
+import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -22,10 +29,20 @@ import java.util.Optional;
 @RequestMapping("/API/v1/")
 public class APIContestController {
 
+    private static final Logger log = LoggerFactory.getLogger(APIContestController.class);
+
     final ContestService contestService;
 
-    public APIContestController(ContestService contestService) {
+    final UserRepository userRepository;
+
+    final UserAndTeamService userAndTeamService;
+
+    public APIContestController(ContestService contestService,
+                                UserRepository userRepository,
+                                UserAndTeamService userAndTeamService) {
         this.contestService = contestService;
+        this.userRepository = userRepository;
+        this.userAndTeamService = userAndTeamService;
     }
 
     @Operation( summary = "Return all contests")
@@ -119,7 +136,7 @@ public class APIContestController {
         problemId = Sanitizer.removeLineBreaks(problemId);
         contestId = Sanitizer.removeLineBreaks(contestId);
 
-        String salida = contestService.anyadeProblemaContest(contestId, problemId);
+        String salida = contestService.addProblemToContest(contestId, problemId);
         if (salida.equals("OK")) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
@@ -252,4 +269,35 @@ public class APIContestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Operation( summary = "Get scores of a contest for a specific team")
+    @GetMapping("contest/{contestId}/team/{teamId}/scoreboard")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<TeamScore>> getScores(@PathVariable String contestId, @PathVariable String teamId) {
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+
+        try {
+            List<TeamScore> scores = contestService.getScoreForTeam(contestId, teamId);
+            return new ResponseEntity<>(scores, HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Operation( summary = "Get current user's team in contest")
+    @GetMapping("contest/{contestId}/user/{userId}/team")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<TeamAPI> getTeamInContest(@PathVariable String contestId, @PathVariable String userId) {
+        Optional<User> user = userAndTeamService.getUserById(Long.parseLong(userId));
+
+        if (user.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        Optional<Team> optionalTeam = contestService.getTeamByContestIdAndUser(Long.parseLong(contestId), user.get());
+
+        if (optionalTeam.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(optionalTeam.get().toTeamAPISimple(), HttpStatus.OK);
+    }
+
 }

@@ -62,7 +62,7 @@ public class Contest {
 
         List<ProblemAPI> listaProblemas = new ArrayList<>();
         for (ContestProblem problem : this.listaProblemas) {
-            listaProblemas.add(problem.getProblem().toProblemAPISimple());
+            listaProblemas.add(problem.getProblem().toProblemAPIWithoutSubmissions());
         }
         contestAPI.setListaProblemas(listaProblemas);
 

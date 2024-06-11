@@ -1,0 +1,109 @@
+<div *ngIf="loaded === false">
+    <p-skeleton height="6rem" styleClass="mb-2"></p-skeleton>
+</div>
+<div class="card mx-5 my-3" *ngIf="loaded">
+    <p-table [columns]="cols" [value]="scoreData" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th colspan="1" style="width:10px" i18n>Position</th>
+                <th colspan="1" style="width:10px" i18n>Team</th>
+                <th colspan="1" style="width:10px" i18n>Score</th>
+                <th></th>
+                <th class="text-center" *ngFor="let col of columns">
+                    {{ col.header }}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-scoreData let-columns="columns">
+            <tr>
+                <td class="text-center">{{scoreData.position}}</td>
+                <td>{{scoreData.team}}</td>
+                <td class="text-center">{{scoreData.score}}</td>
+                <td></td>
+                <td class="text-center" *ngFor="let col of columns">
+                    <div [ngStyle]="{'background-color': scoreData.problems.get(col.field).color, 'color': 'white'}"
+                        class="mx-8 py-2 border-round" *ngIf="scoreData.problems.get(col.field).tries > 0">
+                        {{scoreData.problems.get(col.field).score}} <br>
+                        {{scoreData.problems.get(col.field).tries}} {{scoreData.problems.get(col.field).tries === '1' ?
+                        "try": "tries"}}
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<div class="grid align-content-center">
+    <div class="col-5">
+        <div class="flex mx-5">
+            <h2 class="text-center col-11 my-2" i18n>Submissions</h2>
+            <i class="col-1 pi pi-info-circle flex align-self-center align-items-center justify-content-center"
+                severity="info" [pTooltip]="tooltipContent" tooltipPosition="right"></i>
+            <ng-template #tooltipContent>
+                <div class="flex align-items-center">
+                    <span i18n>
+                        <p-tag severity="success">AC</p-tag> : Accepted <br>
+                        <p-tag severity="error">WA</p-tag> : Wrong Answer <br>
+                        <p-tag severity="error">TLE</p-tag> : Time Limit Exceeded <br>
+                        <p-tag severity="error">CE</p-tag> : Compilation Error <br>
+                        <p-tag severity="error">RTE</p-tag> : Runtime Error
+                    </span>
+                </div>
+            </ng-template>
+        </div>
+        <hr class="mx-5 mb-3" />
+        <div class="card mx-5" *ngIf="loaded">
+            <p-table [value]="submissions">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th i18n>Time</th>
+                        <th i18n>Problem</th>
+                        <th i18n>Lang</th>
+                        <th i18n>Result</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-submission>
+                    <tr>
+                        <td>{{ submission.timestamp }}</td>
+                        <td>{{ submission.problem }}</td>
+                        <td>{{ submission.language }}</td>
+                        <td><p-tag *ngIf="submission.result" [value]="submission.result"
+                                [severity]="getSeverity(submission.result)"></p-tag></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+    <div class="col-7 justify-content-center">
+        <h2 class="text-center" i18n>Code</h2>
+        <hr class="mx-5 mb-5" />
+        <div class="grid mx-5 justify-content-evenly">
+            <span class="p-float-label">
+                <p-dropdown [options]="themes" [(ngModel)]="selectedTheme" [style]="{ minWidth: '175px' }"
+                    placeholder="Select a theme" optionLabel="name" inputId="float-label" (onChange)="selectOptions()"
+                    i18n-label></p-dropdown>
+                <label for="float-label" i18n>Select a theme</label>
+            </span>
+            <span class="p-float-label">
+                <p-dropdown [options]="lang" [(ngModel)]="selectedLanguage" [style]="{ minWidth: '175px' }"
+                    [required]="true" placeholder="Select a language" optionLabel="name" inputId="float-label"
+                    (onChange)="selectOptions()" i18n-label></p-dropdown>
+                <label for="float-label" i18n>Select a language</label>
+            </span>
+            <span class="p-float-label">
+                <p-dropdown appendTo="body" [options]="problems" [(ngModel)]="selProblem" placeholder="Select a problem"
+                    optionLabel="name" inputId="float-label" [style]="{ minWidth: '175px' }" [required]="true"
+                    i18n-label></p-dropdown>
+                <label for="float-label" i18n>Select a problem</label>
+            </span>
+            <div>
+                <p-toast position="top-left" key="tl"></p-toast>
+                <p-button icon="pi pi-check" (click)="submitCode()" label="Submit" severity="success" pAutoFocus
+                    [autofocus]="true" i18n-label></p-button>
+            </div>
+        </div>
+        <ngx-monaco-editor class="mx-5 mt-3" style="height: 500px" [options]="editorOptions"
+            [(ngModel)]="code"></ngx-monaco-editor>
+    </div>
+</div>

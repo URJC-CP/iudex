@@ -1,15 +1,9 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
-import es.urjc.etsii.grafo.iudex.entities.Contest;
-import es.urjc.etsii.grafo.iudex.entities.ContestProblem;
-import es.urjc.etsii.grafo.iudex.entities.Problem;
-import es.urjc.etsii.grafo.iudex.entities.Submission;
+import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionAPI;
 import es.urjc.etsii.grafo.iudex.pojos.SubmissionStringResult;
-import es.urjc.etsii.grafo.iudex.services.ContestProblemService;
-import es.urjc.etsii.grafo.iudex.services.ContestService;
-import es.urjc.etsii.grafo.iudex.services.ProblemService;
-import es.urjc.etsii.grafo.iudex.services.SubmissionService;
+import es.urjc.etsii.grafo.iudex.services.*;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.data.domain.Page;
@@ -32,15 +26,18 @@ public class APISubmissionController {
     final ContestService contestService;
     final ProblemService problemService;
     final ContestProblemService contestProblemService;
+    final UserAndTeamService userAndTeamService;
 
     public APISubmissionController(ContestProblemService contestProblemService,
                                    ProblemService problemService,
                                    ContestService contestService,
-                                   SubmissionService submissionService) {
+                                   SubmissionService submissionService,
+                                   UserAndTeamService userAndTeamService) {
         this.contestProblemService = contestProblemService;
         this.problemService = problemService;
         this.contestService = contestService;
         this.submissionService = submissionService;
+        this.userAndTeamService = userAndTeamService;
     }
 
     @Operation( summary = "Get List of submission given problem, contest or both at the same time")
@@ -104,6 +101,29 @@ public class APISubmissionController {
             }
             return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
         }
+    }
+
+    @Operation( summary = "Get List of user submissions in a contest ")
+    @GetMapping("/API/v1/contest/{contestId}/team/{teamId}/submissions")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<List<SubmissionAPI>> getContestUserSubmissions(@PathVariable String contestId, @PathVariable String teamId) {
+        contestId = Sanitizer.removeLineBreaks(contestId);
+        teamId = Sanitizer.removeLineBreaks(teamId);
+
+        Optional<Contest> contestOptional = contestService.getContestById(contestId);
+        Optional<Team> teamOptional = userAndTeamService.getTeamFromId(teamId);
+        if (teamOptional.isEmpty() || contestOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Contest contest = contestOptional.get();
+        Team team = teamOptional.get();
+        List<SubmissionAPI> submissionAPIS = new ArrayList<>();
+        for (Submission submission : submissionService.getSubmissionFromTeamAndContest(team, contest)) {
+            submissionAPIS.add(submission.toSubmissionAPI());
+        }
+
+        return new ResponseEntity<>(submissionAPIS, HttpStatus.OK);
     }
 
     @Operation( summary = "Return Page of all submissions")

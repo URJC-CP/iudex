@@ -1,17 +1,19 @@
-export class SubmissionDto {
+import {TeamDTO} from './team.dto';
+import {LanguageDTO} from './language.dto';
+import {ResultDTO} from './result.dto';
+import {ProblemDTO} from './problem.dto';
 
-  submissionId?:String;
-  problemRef?:String;
-  alumn?: String;
-  date?: String;
-  result?: String;
-
-  constructor(){
-    this.submissionId = "";
-    this.problemRef = "";
-    this.alumn = "";
-    this.date = "";
-    this.result = "";
-  }
+export interface SubmissionDTO {
+  id?: number;
+  results?: ResultDTO[];
+  team?: TeamDTO;
+  problem: ProblemDTO;
+  corregido?: boolean;
+  numeroResultCorregidos?: number;
+  resultado: string;
+  language:LanguageDTO;
+  execSubmissionTime?: number;
+  execSubmissionMemory?: number;
+  timestamp: number;
 
 }

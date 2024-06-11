@@ -1,8 +1,7 @@
 package es.urjc.etsii.grafo.iudex.services;
 
-import es.urjc.etsii.grafo.iudex.entities.Team;
-import es.urjc.etsii.grafo.iudex.entities.TeamUser;
-import es.urjc.etsii.grafo.iudex.entities.User;
+import es.urjc.etsii.grafo.iudex.entities.*;
+import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
 import es.urjc.etsii.grafo.iudex.pojos.UserString;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
@@ -13,8 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserAndTeamService {
@@ -343,6 +341,58 @@ public class UserAndTeamService {
         userRepository.save(user);
 
         return user;
+    }
+
+    public Collection<Long> getTeamIdsFromUser(User user) {
+        Collection<TeamUser> teamUsers = user.getEquiposParticipantes();
+        return teamUsers.stream().map(TeamUser::getTeam).map(Team::getId).toList();
+    }
+
+    public User getUserFromAuthentication(String nickname) throws IudexException {
+        if(nickname == null || nickname.isBlank()){
+            throw new IudexException("Invalid username extracted from auth token: " + (nickname));
+        }
+
+        Optional<User> optionalUser = userRepository.findByNickname(nickname);
+        if(optionalUser.isEmpty()){
+            // May happen but should be extremely rare, log it
+            throw new IudexException("User %s has a signed token but the username does not exist?".formatted(nickname));
+        }
+
+        return optionalUser.get();
+    }
+
+    public List<Contest> getContestsFromUser(User user) {
+        Set<Contest> contests = new HashSet<>();
+
+        contests.addAll(getCreatedContests(user));
+        contests.addAll(getParticipatingContests(user));
+
+        return new ArrayList<>(contests);
+    }
+
+    public List<Contest> getParticipatingContests(User user) {
+        Set<TeamUser> equiposParticipantes = user.getEquiposParticipantes();
+        List<Contest> contests = new ArrayList<>();
+        for (TeamUser teamUser : equiposParticipantes) {
+            for (ContestTeams contestTeam : teamUser.getTeam().getListaContestsParticipados()) {
+                contests.add(contestTeam.getContest());
+            }
+        }
+
+        return contests;
+    }
+
+    public List<Contest> getCreatedContests(User user) {
+        Set<TeamUser> equiposParticipantes = user.getEquiposParticipantes();
+        List<Contest> contests = new ArrayList<>();
+        for (TeamUser teamUser : equiposParticipantes) {
+            for (ContestTeams contestTeam : teamUser.getTeam().getListaContestsCreados()) {
+                contests.add(contestTeam.getContest());
+            }
+        }
+
+        return contests;
     }
 
 }

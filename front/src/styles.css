@@ -1,11 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+
+body {
+    background-color: var(--surface-b);
+    font-family: var(--font-family);
+    color: var(--text-color);
+    position: relative;
+    min-height: 100vh;
+    margin: 0px;
 }
-ngx-monaco-editor {
-  height: calc(100% - 100px);
-  width: 100%;
-  padding: 15px;
-}
+
+

@@ -7,7 +7,6 @@ import es.urjc.etsii.grafo.iudex.services.ProblemService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.ws.rs.Consumes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
@@ -108,10 +107,9 @@ public class APIProblemController {
         problemName = Sanitizer.removeLineBreaks(problemName);
         teamId = Sanitizer.removeLineBreaks(teamId);
         contestId = Sanitizer.removeLineBreaks(contestId);
-        String filename = Sanitizer.removeLineBreaks(file.getOriginalFilename());
 
         try {
-            ProblemString salida = problemService.updateProblem(problemId, filename, file, teamId, problemName, contestId);
+            ProblemString salida = problemService.updateProblem(problemId, file, teamId, problemName, contestId);
             if (salida.getSalida().equals("OK")) {
                 return new ResponseEntity<>(salida.getProblem().toProblemAPI(), HttpStatus.OK);
             } else {

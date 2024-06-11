@@ -3,8 +3,16 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pascal-judge-web": {
+    "front": {
       "projectType": "application",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "es": {
+            "translation": "src/locale/messages.es.xlf"
+          }
+        }
+      },
       "schematics": {},
       "root": "",
       "sourceRoot": "src",
@@ -13,224 +21,119 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/pascal-judge-web",
+            "outputPath": "dist/front",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/monaco-editor",
-                "output": "assets/monaco-editor/"
-              },
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              }
+              { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
             ],
             "styles": [
-              "src/styles.scss",
+              {
+                "input": "src/assets/themes/darkTheme.css",
+                "bundleName": "darkTheme",
+                "inject": false
+              },
+              {
+                "input": "src/assets/themes/lightTheme.css",
+                "bundleName": "lightTheme",
+                "inject": false
+              },
               "src/styles.css",
-              "./node_modules/nebular-icons/scss/nebular-icons.scss",
-              {
-                "input": "node_modules/@ionic/angular/css/core.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/normalize.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/structure.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/typography.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/display.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/padding.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/float-elements.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/text-alignment.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/text-transformation.css",
-                "inject": true
-              },
-              {
-                "input": "node_modules/@ionic/angular/css/flex-utils.css",
-                "inject": true
-              },
-              {
-                "input": "src/theme/variables.css",
-                "inject": true
-              }
+              "node_modules/primeflex/primeflex.css"
             ],
             "scripts": [],
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
+            "localize": false,
+            "i18nMissingTranslation": "error"
           },
           "configurations": {
-            "es": {
-              "i18nMissingTranslation": "error",
-              "localize": [
-                "es"
-              ]
-            },
-            "en": {
-              "i18nMissingTranslation": "error",
-              "localize": [
-                "en"
-              ]
-            },
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
+              "optimization": false,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "500kb",
+                  "maximumError": "100mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "400kb"
                 }
-              ]
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "en": {
+              "localize": ["en"]
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pascal-judge-web:build",
-            "proxyConfig": "./proxy.conf.json"
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
-            "es": {
-              "browserTarget": "pascal-judge-web:build:es"
-            },
-            "en": {
-              "browserTarget": "pascal-judge-web:build:en"
-            },
             "production": {
-              "browserTarget": "pascal-judge-web:build:production"
+              "browserTarget": "front:build:production"
+            },
+            "development": {
+              "browserTarget": "front:build:development"
+            },
+            "es": {
+              "browserTarget": "front:build:production,es"
+            },
+            "es-dev": {
+              "browserTarget": "front:build:development,es"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pascal-judge-web:build"
+            "browserTarget": "front:build",
+            "format": "xlf",
+            "outputPath": "src/locale"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              {
-                "glob": "**/*.svg",
-                "input": "node_modules/ionicons/dist/ionicons/svg",
-                "output": "./svg"
-              }
+              { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
             ],
             "styles": [
               "src/styles.css"
             ],
             "scripts": []
           }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "pascal-judge-web:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "pascal-judge-web:serve:production"
-            }
-          }
-        },
-        "ionic-cordova-serve": {
-          "builder": "@ionic/angular-toolkit:cordova-serve",
-          "options": {
-            "cordovaBuildTarget": "pascal-judge-web:ionic-cordova-build",
-            "devServerTarget": "pascal-judge-web:serve"
-          },
-          "configurations": {
-            "production": {
-              "cordovaBuildTarget": "pascal-judge-web:ionic-cordova-build:production",
-              "devServerTarget": "pascal-judge-web:serve:production"
-            }
-          }
-        },
-        "ionic-cordova-build": {
-          "builder": "@ionic/angular-toolkit:cordova-build",
-          "options": {
-            "browserTarget": "pascal-judge-web:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "pascal-judge-web:build:production"
-            }
-          }
-        }
-      },
-      "i18n": {
-        "locales": {
-          "es": {
-            "translation": "src/translate/messages.es.xlf",
-            "baseHref": ""
-          },
-          "en": {
-            "translation": "src/translate/messages.en.xlf",
-            "baseHref": ""
-          }
         }
       }
     }
   },
-  "defaultProject": "pascal-judge-web",
   "cli": {
-    "analytics": "fe488fa6-e17c-43f0-bdb8-5f5eac262ce2"
+    "analytics": false
   }
 }

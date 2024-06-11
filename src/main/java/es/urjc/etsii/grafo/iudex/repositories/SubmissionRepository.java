@@ -1,13 +1,11 @@
 package es.urjc.etsii.grafo.iudex.repositories;
 
-import es.urjc.etsii.grafo.iudex.entities.Contest;
-import es.urjc.etsii.grafo.iudex.entities.Problem;
-import es.urjc.etsii.grafo.iudex.entities.Result;
-import es.urjc.etsii.grafo.iudex.entities.Submission;
+import es.urjc.etsii.grafo.iudex.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +22,12 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
     List<Submission> findSubmissionsByProblemAndContest(Problem problem, Contest contest);
 
+    List<Submission> findSubmissionsByTeamAndContest(Team team, Contest contest);
+
     Page<Submission> findAll(Pageable pageable);
+
+    int countSubmissionsByTeamIdIn(Collection<Long> team_id);
+
+    int countSubmissionsByResultLikeAndTeamIdIn(String result, Collection<Long> team_ids);
 
 }

@@ -2,6 +2,9 @@ package es.urjc.etsii.grafo.iudex.pojos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.List;
+import java.util.Optional;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class UserAPI {
@@ -14,6 +17,14 @@ public class UserAPI {
 
     private String familyName;
     private long timestamp;
+
+    private List<String> roles;
+
+    private Optional<Integer> submissions = Optional.empty();
+
+    private Optional<Integer> contestsParticipated = Optional.empty();
+
+    private Optional<Integer> acceptedSubmissions = Optional.empty();
 
 
     public long getId() {
@@ -62,5 +73,37 @@ public class UserAPI {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public List<String> getRoles() {
+        return this.roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public int getSubmissions() {
+        return submissions.orElse(0);
+    }
+
+    public void setSubmissions(int submissions) {
+        this.submissions = Optional.of(submissions);
+    }
+
+    public int getContestsParticipated() {
+        return contestsParticipated.orElse(0);
+    }
+
+    public void setContestsParticipated(int contestsParticipated) {
+        this.contestsParticipated = Optional.of(contestsParticipated);
+    }
+
+    public int getAcceptedSubmissions() {
+        return acceptedSubmissions.orElse(0);
+    }
+
+    public void setAcceptedSubmissions(int acceptedSubmissions) {
+        this.acceptedSubmissions = Optional.of(acceptedSubmissions);
     }
 }
