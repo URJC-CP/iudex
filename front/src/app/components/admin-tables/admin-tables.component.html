@@ -23,6 +23,7 @@
                     {{ col.header }}
                     <p-sortIcon field="{{col.field}}"></p-sortIcon>
                 </th>
+                <th style="width: 5rem"></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -30,7 +31,12 @@
                 <td class="text-center" *ngFor="let col of columns">
                     {{rowData[col.field]}}
                 </td>
+                <td>
+                    <button type="button" pButton pRipple icon="pi pi-trash" (click)="delete(rowData.id)">
+                    </button>
+                </td>
             </tr>
         </ng-template>
     </p-table>
+    <p-confirmDialog [style]="{ width: '450px' }" />
 </div>

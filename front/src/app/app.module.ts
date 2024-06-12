@@ -42,7 +42,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
-
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -82,7 +82,8 @@ import { AdminTablesComponent } from './components/admin-tables/admin-tables.com
     TagModule,
     MonacoEditorModule.forRoot(),
     ClipboardModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    ConfirmDialogModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

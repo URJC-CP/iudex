@@ -164,7 +164,7 @@ export class NavbarComponent {
     this.buttons = [
       { icon: 'pi pi-fw pi-star', name: $localize`Contests`, url: '/judge/contest' },
       { icon: 'pi pi-fw pi-book', name: $localize`Problems`, url: '/judge/problem' },
-      { icon: 'pi pi-fw pi-code', name: $localize`Submissions` },
+      { icon: 'pi pi-fw pi-code', name: $localize`Submissions`, url: '/judge/submission' },
       { icon: 'pi pi-fw pi-file', name: $localize`Ranking`, url: '/judge/ranking/' + this.contestId },
       // disabled?
       { icon: 'pi pi-fw pi-undo', name: $localize`Rejudge` }

@@ -17,6 +17,7 @@ const appRoutes: Routes = [
   { path: "judge/contest", component: AdminTablesComponent },
   { path: "judge", redirectTo: "judge/contest", pathMatch: "full" },
   { path: "judge/problem", component: AdminTablesComponent },
+  { path: "judge/submission", component: AdminTablesComponent },
 ]
 
 export const routing = RouterModule.forRoot(appRoutes);
