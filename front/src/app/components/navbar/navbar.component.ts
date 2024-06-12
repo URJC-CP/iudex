@@ -69,7 +69,10 @@ export class NavbarComponent {
               }
             });
           }
-          if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
+          if (event.url.endsWith("/student")) {
+            this.pageType = "studentHome";
+            this.studentHomeIcons();
+          }
           else if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
             this.loaded = false;
             this.pageType = "student";
@@ -101,6 +104,29 @@ export class NavbarComponent {
           }
         }
       });
+  }
+
+  studentHomeIcons() {
+    switch (this.userType) {
+      case "admin":
+        this.items.splice(0, 0, {
+          label: $localize`Admin View`,
+          icon: 'pi pi-user',
+          routerLink: ['/admin']
+        },
+          {
+            label: $localize`Judge View`,
+            icon: 'pi pi-user',
+            routerLink: ['/judge']
+          });
+        break;
+      case "judge":
+        this.items.splice(0, 0, {
+          label: $localize`Judge View`,
+          icon: 'pi pi-user',
+          routerLink: ['/judge']
+        })
+    }
   }
 
   studentIcons() {
