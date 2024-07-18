@@ -83,7 +83,7 @@ class TestAPIAdminController {
     @Test
     @DisplayName("Get All Results")
     void testAPIGetAllResults() throws Exception {
-        String url = "/API/v1/result/";
+        String url = "/API/v1/result";
 
         String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;

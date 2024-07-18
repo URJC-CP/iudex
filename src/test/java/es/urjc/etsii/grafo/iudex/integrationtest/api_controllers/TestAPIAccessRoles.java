@@ -23,7 +23,7 @@ class TestAPIAccessRoles {
     @Autowired
     private MockMvc mockMvc;
 
-    private final String ADMIN_ONLY_URL = "/API/v1/result/";
+    private final String ADMIN_ONLY_URL = "/API/v1/result";
 
     @MockBean
     private ResultService resultService;
