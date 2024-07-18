@@ -41,7 +41,7 @@ import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
+import { JudgeAdminTablesComponent } from './components/judge-admin-tables/judge-admin-tables.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
@@ -56,7 +56,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     StudentRankingComponent,
     SubmitButtonComponent,
     NavbarComponent,
-    AdminTablesComponent
+    JudgeAdminTablesComponent
   ],
   imports: [
     HttpClientModule,

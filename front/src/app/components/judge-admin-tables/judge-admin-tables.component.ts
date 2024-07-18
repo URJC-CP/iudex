@@ -42,11 +42,11 @@ interface DataSubmission extends Data {
 
 @Component({
   selector: 'app-admin-tables',
-  templateUrl: './admin-tables.component.html',
+  templateUrl: './judge-admin-tables.component.html',
   providers: [ConfirmationService]
 })
 
-export class AdminTablesComponent {
+export class JudgeAdminTablesComponent {
 
   type: string;
   title: string;
@@ -76,8 +76,6 @@ export class AdminTablesComponent {
   ngOnInit() {
     if (this.type == "contest") {
       this.contestTable();
-      console.log(this.type);
-
     }
     else if (this.type == "problem") {
       this.problemTable();
@@ -127,10 +125,9 @@ export class AdminTablesComponent {
   }
 
   delete(id: string) {
-    // traducir type
     if (this.type === "contest") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.type + '?',
+        message: $localize`Are you sure you want to delete this ` + this.title + '?',
         header: $localize`Confirmation`,
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
@@ -143,7 +140,7 @@ export class AdminTablesComponent {
     }
     else if (this.type === "problem") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.type + '?',
+        message: $localize`Are you sure you want to delete this ` + this.title + '?',
         header: $localize`Confirmation`,
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
@@ -156,7 +153,7 @@ export class AdminTablesComponent {
     }
     else if (this.type === "submission") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.type + '?',
+        message: $localize`Are you sure you want to delete this ` + this.title + '?',
         header: $localize`Confirmation`,
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
