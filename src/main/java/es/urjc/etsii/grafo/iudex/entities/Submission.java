@@ -112,6 +112,7 @@ public class Submission {
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResultado(this.result);
         submissionAPI.setTimestamp(this.timestamp);
+        submissionAPI.setProblem(this.getProblem().toProblemAPISimple());
         return submissionAPI;
     }
 
