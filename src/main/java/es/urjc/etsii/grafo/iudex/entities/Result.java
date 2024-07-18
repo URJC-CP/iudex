@@ -51,10 +51,10 @@ public class Result {
     private Submission submission;
 
     public Result() {
-        this(null, null, null, null, "10", "100");
+        this(null, null, null, null, "10", "100", null);
     }
 
-    public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory) {
+    public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory, Submission submission) {
         this.codigo = codigo;
         this.sample = datos;
         this.salidaEstandar = "";
