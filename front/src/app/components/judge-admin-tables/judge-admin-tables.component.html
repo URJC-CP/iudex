@@ -32,7 +32,8 @@
                     {{rowData[col.field]}}
                 </td>
                 <td>
-                    <button type="button" pButton pRipple icon="pi pi-trash" (click)="delete(rowData.id)">
+                    <button *ngIf="(type != 'user') && (type != 'result')" type="button" pButton pRipple
+                        icon="pi pi-trash" (click)="delete(rowData.id)">
                     </button>
                 </td>
             </tr>

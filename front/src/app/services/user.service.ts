@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { UserDTO } from '../dto/user.dto';
 import { ContestDTO } from '../dto/contest.dto';
 import { empty } from 'rxjs';
-import {OauthService} from "./oauth.service";
+import { OauthService } from "./oauth.service";
 
 const baseUrl = '/API/v1/user';
 
@@ -19,6 +19,10 @@ export class UserService {
 
   constructor(private http: HttpClient, private oauth: OauthService) { }
 
+  getAllUsers(): Observable<UserDTO[]> {
+    return this.http.get<UserDTO[]>(baseUrl);
+  }
+
   addRoleToUser(userId: string, role: string): Observable<string[]> {
     return this.http.post<string[]>(`${baseUrl}/${userId}/role/${role}`, null)
   }
@@ -30,7 +34,7 @@ export class UserService {
   getCurrentUser(): Observable<UserDTO> {
     if (this.user != undefined) {
       return this.user;
-    } if(this.oauth.hasLoggedIn()) {
+    } if (this.oauth.hasLoggedIn()) {
       this.user = this.http.get<UserDTO>(`${baseUrl}/me`);
       return this.user;
     } else {
@@ -38,8 +42,10 @@ export class UserService {
         subscriber.next({
           id: -1,
           nickname: "Anonymous",
+          name: "Anonymous",
           email: "anonymous@urjc.es",
           roles: [],
+          rolesString: "",
           submissions: 0,
           contestsParticipated: 0,
           acceptedSubmissions: 0,

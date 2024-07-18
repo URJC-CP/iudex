@@ -20,6 +20,7 @@ const appRoutes: Routes = [
   { path: "judge/submission", component: JudgeAdminTablesComponent },
   { path: "admin/user", component: JudgeAdminTablesComponent },
   { path: "admin/result", component: JudgeAdminTablesComponent },
+  { path: "admin", redirectTo: "admin/user", pathMatch: "full" },
 ]
 
 export const routing = RouterModule.forRoot(appRoutes);

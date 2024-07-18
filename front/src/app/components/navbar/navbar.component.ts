@@ -196,8 +196,8 @@ export class NavbarComponent {
 
   adminIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-users', name: $localize`Users` },
-      { icon: 'pi pi-fw pi-folder-open', name: $localize`Results` }
+      { icon: 'pi pi-fw pi-users', name: $localize`Users`, url: '/admin/user' },
+      { icon: 'pi pi-fw pi-folder-open', name: $localize`Results`, url: '/admin/result' }
     ];
     if (this.userType == "admin") {
       this.items.splice(0, 0, {
