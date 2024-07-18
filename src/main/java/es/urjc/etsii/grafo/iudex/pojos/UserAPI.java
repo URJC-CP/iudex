@@ -109,4 +109,8 @@ public class UserAPI {
     public void setAcceptedSubmissions(int acceptedSubmissions) {
         this.acceptedSubmissions = Optional.of(acceptedSubmissions);
     }
+
+    public String getRolesString() {
+        return rolesString;
+    }
 }
