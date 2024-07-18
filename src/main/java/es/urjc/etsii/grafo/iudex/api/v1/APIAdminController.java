@@ -1,7 +1,6 @@
 package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
-import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
 import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import es.urjc.etsii.grafo.iudex.services.UserService;
@@ -44,7 +43,7 @@ public class APIAdminController {
     }
 
     @Operation( summary = "Get all Results", security = @SecurityRequirement(name = "Bearer"))
-    @GetMapping("/API/v1/result/")
+    @GetMapping("/API/v1/result")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();
