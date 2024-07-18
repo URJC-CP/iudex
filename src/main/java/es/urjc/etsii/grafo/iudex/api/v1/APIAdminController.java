@@ -54,15 +54,4 @@ public class APIAdminController {
         return new ResponseEntity<>(resultList, HttpStatus.OK);
     }
 
-    @Operation( summary = "Get all Users", security = @SecurityRequirement(name = "Bearer"))
-    @GetMapping("/API/v1/users/")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<List<UserAPI>> getAllUsers() {
-        List<UserAPI> userList = userAndTeamService.getAllUsers();
-        if (userList == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(userList, HttpStatus.OK);
-    }
-
 }
