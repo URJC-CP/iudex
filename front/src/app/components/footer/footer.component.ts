@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { ThemeService } from 'src/app/services/theme.service';
 
 @Component({
@@ -7,14 +8,16 @@ import { ThemeService } from 'src/app/services/theme.service';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
+
 export class FooterComponent {
 
   val: boolean = false;
   onIcon = "pi pi-moon";
-  onLabel = $localize`Dark Mode`;
+  onLabel: string;
   notHome: boolean;
+  currentLang: string;
 
-  constructor(private router: Router, private themeService: ThemeService) {
+  constructor(private router: Router, private themeService: ThemeService, public translate: TranslateService) {
     this.router.events.subscribe(
       (event) => {
         if (event instanceof NavigationStart) {
@@ -28,6 +31,15 @@ export class FooterComponent {
     );
   }
 
+  ngOnInit() {
+    this.currentLang = this.translate.currentLang;
+    console.log(this.currentLang);
+
+    this.translate.get('DarkMode').subscribe((res: string) => {
+      this.onLabel = res;
+    });
+  }
+
 
   changeTheme() {
     if (this.val) {
@@ -35,6 +47,13 @@ export class FooterComponent {
     } else {
       this.themeService.switchTheme("darkTheme");
     }
+  }
+
+  changeLang(lang: string): void {
+    this.translate.use(lang);
+    this.currentLang = lang;
+    console.log(lang);
+
   }
 
 }

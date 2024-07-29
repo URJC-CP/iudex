@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { FileSelectEvent } from 'primeng/fileupload';
 import { ContestDTO } from 'src/app/dto/contest.dto';
@@ -40,7 +41,7 @@ export class SubmitButtonComponent {
   teamId: string;
   userId: string;
 
-  constructor(private contestService: ContestService, private problemService: ProblemService, private langSevice: LanguageService, private submissionService: SubmissionService, private messageService: MessageService, private userService: UserService) {
+  constructor(private contestService: ContestService, private problemService: ProblemService, private langSevice: LanguageService, private submissionService: SubmissionService, private messageService: MessageService, private userService: UserService, public translate: TranslateService) {
   }
 
   ngOnInit() {
@@ -89,7 +90,7 @@ export class SubmitButtonComponent {
       this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, this.teamId).subscribe();
     } else {
       this.visible = true;
-      this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });
+      this.messageService.add({ key: 'tl', severity: 'error', summary: this.translate.instant("RequiredFields"), detail: this.translate.instant("MustCompleteFieldsSubmisssion") });
     }
 
   }

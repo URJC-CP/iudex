@@ -19,6 +19,8 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
     "monaco-editor": "^0.38.0",
     "ngx-monaco-editor-v2": "^16.0.0",
     "primeflex": "^3.3.1",

@@ -1,20 +1,20 @@
 <div class="flex pt-5 justify-content-center">
-    <h1 i18n>Welcome, {{username}}</h1>
+    <h1>{{ 'WelcomeUser' | translate }}{{username}}</h1>
 </div>
 
 <div class="pt-3 justify-content-center mx-8">
     <p-card>
         <div class="flex">
             <div class="flex-1 font-bold text-center border-round">
-                <p i18n>Total submissions</p>
+                <p>{{ 'TotalSubmissions' | translate }}</p>
                 <h3>{{totalSubmissions}}</h3>
             </div>
             <div class="flex-1 font-bold text-center border-round mx-4">
-                <p i18n>Participated contests</p>
+                <p>{{ 'ParticipatedContests' | translate }}</p>
                 <h3>{{contestsParticipated}}</h3>
             </div>
             <div class="flex-1 font-bold text-center border-round">
-                <p i18n>AC Submissions</p>
+                <p>{{ 'ACSubmissions' | translate }}</p>
                 <h3>{{acSubmissions}}</h3>
             </div>
         </div>
@@ -23,15 +23,16 @@
 
 <!--no subjects in API yet-->
 <div class="flex pt-3 justify-content-center">
-    <h2 i18n>Contests subject 1</h2>
+    <h2>{{ 'ContestsSubject' | translate }}</h2>
 </div>
 <hr class="mx-8">
 
 <div class="grid align-content-center pt-3 mx-8">
     <p-card class="col-4 font-bold text-center border-round" header="{{i.nombreContest}}" *ngFor="let i of allContests">
-        <p i18n>
-            Start: {{i.startDateTime | date: 'dd-MM-yyyy'}} <br> End: {{i.endDateTime | date: 'dd-MM-yyyy'}}
+        <p>
+            {{ 'Start' | translate }}: {{i.startDateTime | date: 'dd-MM-yyyy'}} <br> {{ 'End' | translate }}:
+            {{i.endDateTime | date: 'dd-MM-yyyy'}}
         </p>
-        <p-button label="Go to contest" severity="success" (click)="redirect(i.id)" i18n-label></p-button>
+        <p-button label="{{ 'GoContest' | translate }}" severity="success" (click)="redirect(i.id)"></p-button>
     </p-card>
 </div>

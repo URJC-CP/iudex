@@ -6,6 +6,7 @@ import { SubmissionService } from 'src/app/services/submission.service';
 import { ConfirmationService } from 'primeng/api';
 import { UserService } from 'src/app/services/user.service';
 import { AdminService } from 'src/app/services/admin.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 interface Column {
@@ -75,7 +76,7 @@ export class JudgeAdminTablesComponent {
   userData: DataUser[] = [];
   resultData: DataResult[] = [];
 
-  constructor(private activatedRouter: ActivatedRoute, private router: Router, private contestService: ContestService, private problemService: ProblemService, private submissionService: SubmissionService, private confirmationService: ConfirmationService, private userService: UserService, private adminService: AdminService) {
+  constructor(private activatedRouter: ActivatedRoute, private router: Router, private contestService: ContestService, private problemService: ProblemService, private submissionService: SubmissionService, private confirmationService: ConfirmationService, private userService: UserService, private adminService: AdminService, public translate: TranslateService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -114,8 +115,8 @@ export class JudgeAdminTablesComponent {
   }
 
   contestTable() {
-    this.title = $localize`Contests`;
-    this.cols.push({ header: $localize`Id`, field: 'id' }, { header: $localize`Name`, field: 'name' }, { header: $localize`Description`, field: 'desc' }, { header: $localize`Owner`, field: 'owner' }, { header: $localize`Start`, field: 'start' }, { header: $localize`End`, field: 'end' });
+    this.title = this.translate.instant("Contests");
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("Description"), field: 'desc' }, { header: this.translate.instant("Owner"), field: 'owner' }, { header: this.translate.instant("Start"), field: 'start' }, { header: this.translate.instant("End"), field: 'end' });
     this.contestService.getAllContests().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var start = new Date(data[i].startDateTime).toLocaleString();
@@ -128,8 +129,8 @@ export class JudgeAdminTablesComponent {
   }
 
   problemTable() {
-    this.title = $localize`Problems`;
-    this.cols.push({ header: $localize`Id`, field: 'id' }, { header: $localize`Name`, field: 'name' }, { header: $localize`Time Limit`, field: 'timeLim' }, { header: $localize`Memory Limit`, field: 'memLim' }, { header: $localize`Cases #`, field: 'cases' }, { header: $localize`Contests #`, field: 'contests' }, { header: $localize`Submissions #`, field: 'submissions' });
+    this.title = this.translate.instant("Problems");
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("TL"), field: 'timeLim' }, { header: this.translate.instant("ML"), field: 'memLim' }, { header: this.translate.instant("CasesNum"), field: 'cases' }, { header: this.translate.instant("ContestsNum"), field: 'contests' }, { header: this.translate.instant("SubmissionsNum"), field: 'submissions' });
     this.problemService.getAllProblems().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         this.problemData.push({ id: data[i].id.toString(), name: data[i].nombreEjercicio, timeLim: data[i].timeout, memLim: data[i].memoryLimit, cases: data[i].samples.length.toString(), contests: data[i].numContest.toString(), submissions: data[i].submissions.length.toString() });
@@ -140,8 +141,8 @@ export class JudgeAdminTablesComponent {
   }
 
   submissionTable() {
-    this.title = $localize`Submissions`;
-    this.cols.push({ header: $localize`Id`, field: 'id' }, { header: $localize`Time`, field: 'time' }, { header: $localize`Team`, field: 'time' }, { header: $localize`Problem`, field: 'problem' }, { header: $localize`Language`, field: 'lang' }, { header: $localize`Result`, field: 'result' });
+    this.title = this.translate.instant("Submissions");
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.submissionService.getAllSubmissions("", "").subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
@@ -153,8 +154,8 @@ export class JudgeAdminTablesComponent {
   }
 
   userTable() {
-    this.title = $localize`Users`;
-    this.cols.push({ header: $localize`Id`, field: 'id' }, { header: $localize`Username`, field: 'username' }, { header: $localize`Name`, field: 'name' }, { header: $localize`Roles`, field: 'roles' });
+    this.title = this.translate.instant("Users");
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Username"), field: 'username' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("Roles"), field: 'roles' });
     this.userService.getAllUsers().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         this.userData.push({ id: data[i].id.toString(), username: data[i].nickname, name: data[i].name, roles: data[i].rolesString });
@@ -165,8 +166,8 @@ export class JudgeAdminTablesComponent {
   }
 
   resultTable() {
-    this.title = $localize`Results`;
-    this.cols.push({ header: $localize`Id`, field: 'id' }, { header: $localize`Time`, field: 'time' }, { header: $localize`Submission`, field: 'time' }, { header: $localize`Problem`, field: 'problem' }, { header: $localize`Language`, field: 'lang' }, { header: $localize`Result`, field: 'result' });
+    this.title = this.translate.instant("Results");
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.adminService.getAllResults().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
@@ -180,8 +181,8 @@ export class JudgeAdminTablesComponent {
   delete(id: string) {
     if (this.type === "contest") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.title + '?',
-        header: $localize`Confirmation`,
+        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
@@ -193,8 +194,8 @@ export class JudgeAdminTablesComponent {
     }
     else if (this.type === "problem") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.title + '?',
-        header: $localize`Confirmation`,
+        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
@@ -206,8 +207,8 @@ export class JudgeAdminTablesComponent {
     }
     else if (this.type === "submission") {
       this.confirmationService.confirm({
-        message: $localize`Are you sure you want to delete this ` + this.title + '?',
-        header: $localize`Confirmation`,
+        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {

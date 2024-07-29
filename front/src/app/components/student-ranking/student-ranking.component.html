@@ -1,8 +1,8 @@
 <div class="flex pt-2 justify-content-center align-items-center">
 
-    <h1 *ngIf="pageType=='student'" i18n>Ranking {{contestName}}</h1>
+    <h1 *ngIf="pageType=='student'">{{ 'Ranking' | translate }} {{contestName}}</h1>
 
-    <h1 class="pr-6" *ngIf="pageType=='judge'" i18n>Ranking</h1>
+    <h1 class="pr-6" *ngIf="pageType=='judge'">{{ 'Ranking' | translate }}</h1>
     <p-dropdown *ngIf="pageType=='judge'" [options]="contests" [(ngModel)]="selectedContest" optionLabel="name"
         (onChange)="changeContest()" placeholder="Select a contest"></p-dropdown>
 
@@ -10,23 +10,26 @@
         [pTooltip]="tooltipContent" tooltipPosition="right"></i>
     <ng-template #tooltipContent>
         <div class="flex align-items-center">
-            <span i18n>
+            <span>
                 <table>
                     <tr>
-                        <th class="p-2 border-round">Cell colors</th>
+                        <th class="p-2 border-round">{{ 'CellColors' | translate }}</th>
                     </tr>
                     <tr>
-                        <td class="p-2 border-round" style="background-color: darkgreen; color: white;">Solved first
+                        <td class="p-2 border-round" style="background-color: darkgreen; color: white;">{{ 'SolvedFirst'
+                            | translate }}
                         </td>
                     </tr>
                     <tr>
-                        <td class="p-2 border-round" style="background-color: green; color: white;">Solved</td>
+                        <td class="p-2 border-round" style="background-color: green; color: white;">{{ 'Solved' |
+                            translate }}</td>
                     </tr>
                     <tr>
-                        <td class="p-2 border-round" style="background-color: red; color: white;">Tried, incorrect</td>
+                        <td class="p-2 border-round" style="background-color: red; color: white;">{{ 'Tried' | translate
+                            }}</td>
                     </tr>
                     <tr>
-                        <td class="p-2 border-round">Not tried</td>
+                        <td class="p-2 border-round">{{ 'NotTried' | translate }}</td>
                     </tr>
                 </table>
             </span>
@@ -40,16 +43,16 @@
 </div>
 
 <div class="flex justify-content-center" *ngIf="hasScores === false">
-    <h1 i18n>Contest is empty :(</h1>
+    <h1>{{ 'ContestEmpty' | translate }}</h1>
 </div>
 
 <div class="card mx-8" *ngIf="loaded">
     <p-table [columns]="cols" [value]="scoreData" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th colspan="1" style="width:10px" i18n>Position</th>
-                <th colspan="1" style="width:10px" i18n>Team</th>
-                <th colspan="1" style="width:10px" i18n>Score</th>
+                <th colspan="1" style="width:10px">{{ 'Position' | translate }}</th>
+                <th colspan="1" style="width:10px">{{ 'Team' | translate }}</th>
+                <th colspan="1" style="width:10px">{{ 'Score' | translate }}</th>
                 <th></th>
                 <th class="text-center" *ngFor="let col of columns">
                     {{ col.header }}
