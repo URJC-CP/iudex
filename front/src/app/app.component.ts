@@ -10,15 +10,18 @@ import { PrimeNGConfig } from 'primeng/api';
 export class AppComponent {
   title = 'IUDEX';
 
-  constructor(private primengConfig: PrimeNGConfig, private translateService: TranslateService) { }
+  constructor(private primengConfig: PrimeNGConfig, private translateService: TranslateService) {
+    this.translateService.use(localStorage.getItem("lang") || 'es');
+    localStorage.setItem('lang', this.translateService.currentLang);
+  }
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-    this.translateService.use('es');
   }
 
   translate(lang: string) {
     this.translateService.use(lang);
+    localStorage.setItem('lang', lang);
     this.translateService.get('primeng').subscribe(res => this.primengConfig.setTranslation(res));
   }
 

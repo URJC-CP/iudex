@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
+import { firstValueFrom } from 'rxjs';
 import { ContestService } from 'src/app/services/contest.service';
 import { OauthService } from 'src/app/services/oauth.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -42,10 +43,12 @@ export class NavbarComponent {
   constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService, public translate: TranslateService) {
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
     this.router.events.subscribe(
-      (event) => {
+      async (event) => {
+
+        const translation = await firstValueFrom(this.translate.get('Name'));
+
         if (event instanceof NavigationStart) {
           this.buttons = [];
           this.items = [{
@@ -71,6 +74,7 @@ export class NavbarComponent {
             });
           }
           if (event.url.endsWith("/student")) {
+            this.loaded = false;
             this.pageType = "studentHome";
             this.studentHomeIcons();
           }
@@ -107,7 +111,11 @@ export class NavbarComponent {
       });
   }
 
-  studentHomeIcons() {
+  async studentHomeIcons() {
+    while (!this.userType) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     switch (this.userType) {
       case "admin":
         this.items.splice(0, 0, {
@@ -128,6 +136,7 @@ export class NavbarComponent {
           routerLink: ['/judge']
         })
     }
+    this.loaded = true;
   }
 
   studentIcons() {
@@ -233,7 +242,6 @@ export class NavbarComponent {
     this.hours = Math.abs(hours + days * 24);
     this.minutes = Math.abs(minutes);
     this.seconds = Math.abs(seconds);
-    console.log(this.days + " " + this.hours + " " + this.minutes + " " + this.seconds);
 
   }
 
@@ -250,6 +258,5 @@ export class NavbarComponent {
       return "assets/images/logo2Black.svg";
     }
   }
-
 
 }

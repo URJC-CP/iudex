@@ -6,7 +6,8 @@ import { SubmissionService } from 'src/app/services/submission.service';
 import { ConfirmationService } from 'primeng/api';
 import { UserService } from 'src/app/services/user.service';
 import { AdminService } from 'src/app/services/admin.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { Subscription, firstValueFrom } from 'rxjs';
 
 
 interface Column {
@@ -75,6 +76,7 @@ export class JudgeAdminTablesComponent {
   submissionData: DataSubmission[] = [];
   userData: DataUser[] = [];
   resultData: DataResult[] = [];
+  private langChangeSub: Subscription;
 
   constructor(private activatedRouter: ActivatedRoute, private router: Router, private contestService: ContestService, private problemService: ProblemService, private submissionService: SubmissionService, private confirmationService: ConfirmationService, private userService: UserService, private adminService: AdminService, public translate: TranslateService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
@@ -96,7 +98,15 @@ export class JudgeAdminTablesComponent {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const translation = await firstValueFrom(this.translate.get('Name'));
+    this.langChangeSub = this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.tablesInit();
+    });
+    this.tablesInit();
+  }
+
+  tablesInit() {
     if (this.type == "contest") {
       this.contestTable();
     }
@@ -115,6 +125,8 @@ export class JudgeAdminTablesComponent {
   }
 
   contestTable() {
+    this.cols = [];
+    this.contestData = [];
     this.title = this.translate.instant("Contests");
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("Description"), field: 'desc' }, { header: this.translate.instant("Owner"), field: 'owner' }, { header: this.translate.instant("Start"), field: 'start' }, { header: this.translate.instant("End"), field: 'end' });
     this.contestService.getAllContests().subscribe((data) => {
@@ -129,6 +141,8 @@ export class JudgeAdminTablesComponent {
   }
 
   problemTable() {
+    this.cols = [];
+    this.problemData = [];
     this.title = this.translate.instant("Problems");
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("TL"), field: 'timeLim' }, { header: this.translate.instant("ML"), field: 'memLim' }, { header: this.translate.instant("CasesNum"), field: 'cases' }, { header: this.translate.instant("ContestsNum"), field: 'contests' }, { header: this.translate.instant("SubmissionsNum"), field: 'submissions' });
     this.problemService.getAllProblems().subscribe((data) => {
@@ -141,6 +155,8 @@ export class JudgeAdminTablesComponent {
   }
 
   submissionTable() {
+    this.cols = [];
+    this.submissionData = [];
     this.title = this.translate.instant("Submissions");
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.submissionService.getAllSubmissions("", "").subscribe((data) => {
@@ -154,6 +170,8 @@ export class JudgeAdminTablesComponent {
   }
 
   userTable() {
+    this.cols = [];
+    this.userData = [];
     this.title = this.translate.instant("Users");
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Username"), field: 'username' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("Roles"), field: 'roles' });
     this.userService.getAllUsers().subscribe((data) => {
@@ -166,6 +184,8 @@ export class JudgeAdminTablesComponent {
   }
 
   resultTable() {
+    this.cols = [];
+    this.resultData = [];
     this.title = this.translate.instant("Results");
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.adminService.getAllResults().subscribe((data) => {
@@ -217,6 +237,12 @@ export class JudgeAdminTablesComponent {
       });
       this.submissionData = this.submissionData.filter((data) => data.id !== id);
       this.data = this.submissionData;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.langChangeSub) {
+      this.langChangeSub.unsubscribe();
     }
   }
 

@@ -33,7 +33,6 @@ export class FooterComponent {
 
   ngOnInit() {
     this.currentLang = this.translate.currentLang;
-    console.log(this.currentLang);
 
     this.translate.get('DarkMode').subscribe((res: string) => {
       this.onLabel = res;
@@ -51,8 +50,8 @@ export class FooterComponent {
 
   changeLang(lang: string): void {
     this.translate.use(lang);
+    localStorage.setItem('lang', lang);
     this.currentLang = lang;
-    console.log(lang);
 
   }
 
