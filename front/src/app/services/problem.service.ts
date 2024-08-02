@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProblemDTO } from '../dto/problem.dto';
 import { PageDTO } from '../dto/page.dto';
@@ -36,7 +36,18 @@ export class ProblemService {
   }
 
   getPdfFromProblem(problemId: string): void {
-    window.open(baseUrl + '/' + problemId + '/getPDF', '_blank');
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/pdf',
+      responseType: 'blob',
+      Accept: 'application/pdf',
+      observe: 'response'
+    });
+    this.http.get<Blob>(`${baseUrl}/${problemId}/getPDF`, { headers: headers, responseType: 'blob' as 'json' })
+      .subscribe((data) => {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+      });
   }
 
   //esto probablemente hay que cambiarlo
