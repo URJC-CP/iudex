@@ -50,10 +50,17 @@ interface DataUser extends Data {
   roles: string;
 }
 
+// interface DataResult extends Data {
+//   time: string;
+//   submission: string;
+//   problem: string;
+//   lang: string;
+//   result: string;
+// }
+
+// Temporal, backend no devuelve submission
 interface DataResult extends Data {
   time: string;
-  submission: string;
-  problem: string;
   lang: string;
   result: string;
 }
@@ -191,7 +198,8 @@ export class JudgeAdminTablesComponent {
     this.adminService.getAllResults().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
-        this.resultData.push({ id: data[i].id.toString(), time: time, submission: data[i].submission.id.toString(), problem: data[i].submission.problem.id.toString(), lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
+        // this.resultData.push({ id: data[i].id.toString(), time: time, submission: data[i].submission.id.toString(), problem: data[i].submission.problem.id.toString(), lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
+        this.resultData.push({ id: data[i].id.toString(), time: time, lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
       }
       this.loaded = true;
     });
