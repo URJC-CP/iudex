@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { SubmissionDTO } from 'src/app/dto/submission.dto';
 import { TeamScoreDTO } from 'src/app/dto/teamScore.dto';
@@ -80,7 +81,7 @@ export class StudentHomeComponent {
   end: number;
 
   constructor(private submissionService: SubmissionService, private activatedRouter: ActivatedRoute, private langSevice: LanguageService,
-    private contestService: ContestService, private messageService: MessageService, private userService: UserService) {
+    private contestService: ContestService, private messageService: MessageService, private userService: UserService, public translate: TranslateService) {
     activatedRouter.url.subscribe((data) => {
       this.contestId = data[2].path;
     });
@@ -170,9 +171,9 @@ export class StudentHomeComponent {
       }
       var file = new File([this.code], "submission." + ext);
       this.submissionService.createSubmission(file, this.contestId, this.selectedLanguage.id, this.selProblem.id, this.teamId).subscribe();
-      this.messageService.add({ key: 'tl', severity: 'success', summary: $localize`Submission sent!!`, detail: $localize`Your submission has been sent correctly` });
+      this.messageService.add({ key: 'tl', severity: 'success', summary: this.translate.instant("SubmissionSent"), detail: this.translate.instant("SubmissionSentCorrect") });
     } else {
-      this.messageService.add({ key: 'tl', severity: 'error', summary: $localize`Required fields`, detail: $localize`You must complete the fields to make the submission` });
+      this.messageService.add({ key: 'tl', severity: 'error', summary: this.translate.instant("RequiredFields"), detail: this.translate.instant("MustCompleteFieldsSubmission") });
     }
 
   }

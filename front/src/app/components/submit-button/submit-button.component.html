@@ -1,31 +1,32 @@
-<p-button (click)="showDialog()" label="Submit" severity="success" class="mr-4" i18n-label></p-button>
+<p-button (click)="showDialog()" label="{{ 'Submit' | translate }}" severity="success" class="mr-4"></p-button>
 <div *ngIf="loaded">
-    <p-dialog header="Submit code to contest {{contestId}}" [(visible)]="visible" [style]="{ width: '35vw' }"
-        appendTo="body" i18n-header>
+    <p-dialog header="{{ 'SubmitCode' | translate }} {{contestId}}" [(visible)]="visible" [style]="{ width: '35vw' }"
+        appendTo="body">
         <div class="card flex justify-content-center pt-4">
             <span class="p-float-label">
-                <p-dropdown appendTo="body" [options]="problems" [(ngModel)]="selProblem" placeholder="Select a problem"
-                    optionLabel="name" inputId="float-label" [style]="{ minWidth: '175px' }" [required]="true"
-                    i18n-label></p-dropdown>
-                <label for="float-label" i18n>Select a problem</label>
+                <p-dropdown appendTo="body" [options]="problems" [(ngModel)]="selProblem"
+                    placeholder="{{ 'SelectProblem' | translate }}" optionLabel="name" inputId="float-label"
+                    [style]="{ minWidth: '175px' }" [required]="true"></p-dropdown>
+                <label for="float-label">{{ 'SelectProblem' | translate }}</label>
             </span>
         </div>
         <div class="card flex justify-content-center pt-4">
             <span class="p-float-label">
                 <p-dropdown appendTo="body" [options]="lang" [(ngModel)]="selectedLang"
-                    placeholder="Select submission language" optionLabel="name" inputId="float-label"
-                    [style]="{ minWidth: '175px' }" [required]="true" i18n-label></p-dropdown>
-                <label for="float-label" i18n>Select submission language</label>
+                    placeholder="{{ 'SelectSubmissionLang' | translate }}" optionLabel="name" inputId="float-label"
+                    [style]="{ minWidth: '175px' }" [required]="true"></p-dropdown>
+                <label for="float-label">{{ 'SelectSubmissionLang' | translate }}</label>
             </span>
         </div>
         <div class="flex justify-content-center pt-4">
-            <p-fileUpload chooseLabel="Upload file" name="file" url="your-upload-url" [showUploadButton]="false"
-                [showCancelButton]="false" (onSelect)="onFileSelected($event)" i18n-chooseLabel></p-fileUpload>
+            <p-fileUpload chooseLabel="{{ 'UploadFile' | translate }}" name="file" url="your-upload-url"
+                [showUploadButton]="false" [showCancelButton]="false"
+                (onSelect)="onFileSelected($event)"></p-fileUpload>
         </div>
         <ng-template pTemplate="footer">
             <p-toast position="top-left" key="tl"></p-toast>
-            <p-button icon="pi pi-check" (click)="submitCode()" label="Submit" severity="success" pAutoFocus
-                [autofocus]="true" i18n-label></p-button>
+            <p-button icon="pi pi-check" (click)="submitCode()" label="{{ 'Submit' | translate }}" severity="success"
+                pAutoFocus [autofocus]="true"></p-button>
         </ng-template>
     </p-dialog>
 </div>

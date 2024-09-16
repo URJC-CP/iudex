@@ -57,7 +57,6 @@ export class StudentRankingComponent {
 
     activatedRouter.url.subscribe((data) => {
       this.id = data[2].path;
-      console.log(this.id);
 
       if (data[0].path == "student") {
         this.pageType = "student";

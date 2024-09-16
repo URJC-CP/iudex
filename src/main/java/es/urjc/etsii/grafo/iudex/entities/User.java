@@ -55,9 +55,10 @@ public class User {
         UserAPI userAPI = new UserAPI();
         userAPI.setId(this.id);
         userAPI.setNickname(this.nickname);
+        userAPI.setName(this.name);
         userAPI.setEmail(this.email);
         userAPI.setTimestamp(this.timestamp);
-        userAPI.setRoles(new ArrayList<>(this.roles));
+        userAPI.setRoles(new ArrayList<>(this.roles).stream().filter(r -> r.startsWith("ROLE_")).toList());
         return userAPI;
     }
 

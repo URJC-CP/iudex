@@ -1,6 +1,19 @@
-<div class="footer py-4" *ngIf="notHome">
-    <div class="card flex justify-content-center">
-        <p-toggleButton [(ngModel)]="val" onLabel={{onLabel}} offLabel="Light Mode" onIcon={{onIcon}}
-            offIcon="pi pi-sun" iconPos="right" (onChange)="changeTheme()" i18n-offLabel="LightMode"></p-toggleButton>
+<div class="grid footer py-4">
+  <div class="col-6 card flex align-items-center justify-content-center">
+    <p-toggleButton [(ngModel)]="val" onLabel={{onLabel}} offLabel="{{ 'LightMode' | translate }}" onIcon={{onIcon}}
+      offIcon="pi pi-sun" iconPos="right" (onChange)="changeTheme()"></p-toggleButton>
+  </div>
+  <div class="col-6 card flex flex-column justify-content-center">
+    <div class="flex align-items-center justify-content-center">
+      <p>{{ 'ChangeLang' | translate }}</p>
     </div>
+    <div class="flex align-items-center justify-content-center">
+      <p-button styleClass="p-0" (onClick)="changeLang('es')" *ngIf="currentLang=='en'">
+        <img class="m-0" src="assets/images/spain.png" height="30" width="45" />
+      </p-button>
+      <p-button styleClass="p-0" (onClick)="changeLang('en')" *ngIf="currentLang=='es'">
+        <img class="m-0" src="assets/images/england.png" height="30" width="45" />
+      </p-button>
+    </div>
+  </div>
 </div>

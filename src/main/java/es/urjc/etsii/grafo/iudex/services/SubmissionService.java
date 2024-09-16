@@ -151,7 +151,7 @@ public class SubmissionService {
 
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         for (Sample datos : problema.getData()) {
-            Result resAux = new Result(datos, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(datos, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit(), submission);
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             resultRepository.save(resAux);
@@ -225,7 +225,7 @@ public class SubmissionService {
         logger.debug("Create results for submission {} of problem {}", submission.getId(), problema.getId());
         //Creamos los result que tienen que ir con la submission y anadimos a submision
         for (Sample sample : problema.getData()) {
-            Result resAux = new Result(sample, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit());
+            Result resAux = new Result(sample, codigo, language, submission.getFilename(), problema.getTimeout(), problema.getMemoryLimit(), submission);
             resAux.setNumeroCasoDePrueba(numeroDeResult);
             numeroDeResult++;
             submission.addResult(resAux);

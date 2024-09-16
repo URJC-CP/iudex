@@ -20,6 +20,8 @@ public class UserAPI {
 
     private List<String> roles;
 
+    private String rolesString;
+
     private Optional<Integer> submissions = Optional.empty();
 
     private Optional<Integer> contestsParticipated = Optional.empty();
@@ -81,6 +83,7 @@ public class UserAPI {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+        this.rolesString = String.join(" ", roles);
     }
 
     public int getSubmissions() {
@@ -105,5 +108,9 @@ public class UserAPI {
 
     public void setAcceptedSubmissions(int acceptedSubmissions) {
         this.acceptedSubmissions = Optional.of(acceptedSubmissions);
+    }
+
+    public String getRolesString() {
+        return rolesString;
     }
 }

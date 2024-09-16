@@ -3,6 +3,7 @@ package es.urjc.etsii.grafo.iudex.services;
 import es.urjc.etsii.grafo.iudex.entities.*;
 import es.urjc.etsii.grafo.iudex.exceptions.IudexException;
 import es.urjc.etsii.grafo.iudex.pojos.TeamString;
+import es.urjc.etsii.grafo.iudex.pojos.UserAPI;
 import es.urjc.etsii.grafo.iudex.pojos.UserString;
 import es.urjc.etsii.grafo.iudex.repositories.TeamRepository;
 import es.urjc.etsii.grafo.iudex.repositories.UserRepository;
@@ -393,6 +394,10 @@ public class UserAndTeamService {
         }
 
         return contests;
+    }
+
+    public List<UserAPI> getAllUsers() {
+        return userRepository.findAll().stream().map(User::toUserAPI).toList();
     }
 
 }

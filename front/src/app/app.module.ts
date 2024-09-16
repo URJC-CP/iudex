@@ -41,8 +41,14 @@ import { MessagesModule } from 'primeng/messages';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TagModule } from 'primeng/tag';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-import { AdminTablesComponent } from './components/admin-tables/admin-tables.component';
+import { JudgeAdminTablesComponent } from './components/judge-admin-tables/judge-admin-tables.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -56,7 +62,7 @@ import { AdminTablesComponent } from './components/admin-tables/admin-tables.com
     StudentRankingComponent,
     SubmitButtonComponent,
     NavbarComponent,
-    AdminTablesComponent
+    JudgeAdminTablesComponent
   ],
   imports: [
     HttpClientModule,
@@ -82,7 +88,16 @@ import { AdminTablesComponent } from './components/admin-tables/admin-tables.com
     TagModule,
     MonacoEditorModule.forRoot(),
     ClipboardModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    ConfirmDialogModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'es',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/', '.json'),
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true

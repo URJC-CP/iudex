@@ -13,5 +13,6 @@ export interface ProblemDTO {
   memoryLimit: string;
   color: string;
   problemURLpdf?: string;
+  numContest: number;
 
 }

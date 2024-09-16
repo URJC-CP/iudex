@@ -14,8 +14,8 @@ export class AdminService {
   constructor(private http: HttpClient) {
   }
 
-  getAllResults(): Observable<ResultDTO> {
-    return this.http.get<ResultDTO>(baseUrl + 'result');
+  getAllResults(): Observable<ResultDTO[]> {
+    return this.http.get<ResultDTO[]>(baseUrl);
   }
 
   getSelectedResult(resultId: string): Observable<ResultDTO> {

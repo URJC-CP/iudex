@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
+import { firstValueFrom } from 'rxjs';
 import { ContestService } from 'src/app/services/contest.service';
 import { OauthService } from 'src/app/services/oauth.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -38,17 +40,19 @@ export class NavbarComponent {
   seconds: number = 0;
   difference: number = 0;
 
-  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService) {
+  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService, public translate: TranslateService) {
   }
 
-  ngOnInit() {
-
+  async ngOnInit() {
     this.router.events.subscribe(
-      (event) => {
+      async (event) => {
+
+        const translation = await firstValueFrom(this.translate.get('Name'));
+
         if (event instanceof NavigationStart) {
           this.buttons = [];
           this.items = [{
-            label: $localize`Log Out`,
+            label: this.translate.instant("Logout"),
             icon: 'pi pi-times',
             command: () => {
               this.logout();
@@ -69,7 +73,11 @@ export class NavbarComponent {
               }
             });
           }
-          if (event.url.endsWith("/student")) { this.pageType = "studentHome" }
+          if (event.url.endsWith("/student")) {
+            this.loaded = false;
+            this.pageType = "studentHome";
+            this.studentHomeIcons();
+          }
           else if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
             this.loaded = false;
             this.pageType = "student";
@@ -103,28 +111,56 @@ export class NavbarComponent {
       });
   }
 
-  studentIcons() {
-    this.buttons = [
-      { icon: 'pi pi-fw pi-home', name: $localize`Home`, url: '/student/contest/' + this.contestId + '/home' },
-      { icon: 'pi pi-fw pi-book', name: $localize`Problems`, url: '/student/contest/' + this.contestId + '/problems' },
-      { icon: 'pi pi-fw pi-chart-bar', name: $localize`Ranking`, url: '/student/contest/' + this.contestId + '/ranking' }
-    ];
+  async studentHomeIcons() {
+    while (!this.userType) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     switch (this.userType) {
       case "admin":
         this.items.splice(0, 0, {
-          label: $localize`Admin View`,
+          label: this.translate.instant("AdminView"),
           icon: 'pi pi-user',
           routerLink: ['/admin']
         },
           {
-            label: $localize`Judge View`,
+            label: this.translate.instant("JudgeView"),
             icon: 'pi pi-user',
             routerLink: ['/judge']
           });
         break;
       case "judge":
         this.items.splice(0, 0, {
-          label: $localize`Judge View`,
+          label: this.translate.instant("JudgeView"),
+          icon: 'pi pi-user',
+          routerLink: ['/judge']
+        })
+    }
+    this.loaded = true;
+  }
+
+  studentIcons() {
+    this.buttons = [
+      { icon: 'pi pi-fw pi-home', name: this.translate.instant("Home"), url: '/student/contest/' + this.contestId + '/home' },
+      { icon: 'pi pi-fw pi-book', name: this.translate.instant("Problems"), url: '/student/contest/' + this.contestId + '/problems' },
+      { icon: 'pi pi-fw pi-chart-bar', name: this.translate.instant("Ranking"), url: '/student/contest/' + this.contestId + '/ranking' }
+    ];
+    switch (this.userType) {
+      case "admin":
+        this.items.splice(0, 0, {
+          label: this.translate.instant("AdminView"),
+          icon: 'pi pi-user',
+          routerLink: ['/admin']
+        },
+          {
+            label: this.translate.instant("JudgeView"),
+            icon: 'pi pi-user',
+            routerLink: ['/judge']
+          });
+        break;
+      case "judge":
+        this.items.splice(0, 0, {
+          label: this.translate.instant("JudgeView"),
           icon: 'pi pi-user',
           routerLink: ['/judge']
         })
@@ -136,29 +172,29 @@ export class NavbarComponent {
 
   judgeIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-star', name: $localize`Contests`, url: '/judge/contest' },
-      { icon: 'pi pi-fw pi-book', name: $localize`Problems`, url: '/judge/problem' },
-      { icon: 'pi pi-fw pi-code', name: $localize`Submissions` },
-      { icon: 'pi pi-fw pi-file', name: $localize`Ranking`, url: '/judge/ranking/' + this.contestId },
+      { icon: 'pi pi-fw pi-star', name: this.translate.instant("Contests"), url: '/judge/contest' },
+      { icon: 'pi pi-fw pi-book', name: this.translate.instant("Problems"), url: '/judge/problem' },
+      { icon: 'pi pi-fw pi-code', name: this.translate.instant("Submissions"), url: '/judge/submission' },
+      { icon: 'pi pi-fw pi-file', name: this.translate.instant("Ranking"), url: '/judge/ranking/' + this.contestId },
       // disabled?
-      { icon: 'pi pi-fw pi-undo', name: $localize`Rejudge` }
+      { icon: 'pi pi-fw pi-undo', name: this.translate.instant("Rejudge") }
     ];
     switch (this.userType) {
       case "admin":
         this.items.splice(0, 0, {
-          label: $localize`Admin View`,
+          label: this.translate.instant("AdminView"),
           icon: 'pi pi-user',
           routerLink: ['/admin']
         },
           {
-            label: $localize`Student View`,
+            label: this.translate.instant("StudentView"),
             icon: 'pi pi-user',
             routerLink: ['/student']
           });
         break;
       case "judge":
         this.items.splice(0, 0, {
-          label: $localize`Student View`,
+          label: this.translate.instant("StudentView"),
           icon: 'pi pi-user',
           routerLink: ['/student']
         })
@@ -170,21 +206,19 @@ export class NavbarComponent {
 
   adminIcons() {
     this.buttons = [
-      { icon: 'pi pi-fw pi-users', name: $localize`Users` },
-      { icon: 'pi pi-fw pi-folder-open', name: $localize`Results` }
+      { icon: 'pi pi-fw pi-users', name: this.translate.instant("Users"), url: '/admin/user' },
+      { icon: 'pi pi-fw pi-folder-open', name: this.translate.instant("Results"), url: '/admin/result' }
     ];
-    if (this.userType == "admin") {
-      this.items.splice(0, 0, {
-        label: $localize`Judge View`,
+    this.items.splice(0, 0, {
+      label: this.translate.instant("JudgeView"),
+      icon: 'pi pi-user',
+      routerLink: ['/judge']
+    },
+      {
+        label: this.translate.instant("StudentView"),
         icon: 'pi pi-user',
-        routerLink: ['/judge']
-      },
-        {
-          label: $localize`Student View`,
-          icon: 'pi pi-user',
-          routerLink: ['/student']
-        });
-    }
+        routerLink: ['/student']
+      });
   }
 
   calculateTime() {
@@ -208,7 +242,6 @@ export class NavbarComponent {
     this.hours = Math.abs(hours + days * 24);
     this.minutes = Math.abs(minutes);
     this.seconds = Math.abs(seconds);
-    console.log(this.days + " " + this.hours + " " + this.minutes + " " + this.seconds);
 
   }
 
@@ -225,6 +258,5 @@ export class NavbarComponent {
       return "assets/images/logo2Black.svg";
     }
   }
-
 
 }

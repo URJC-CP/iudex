@@ -5,6 +5,8 @@ import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.entities.Sample;
 import es.urjc.etsii.grafo.iudex.security.JwtRequestFilter;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
+import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
+import es.urjc.etsii.grafo.iudex.services.UserService;
 import es.urjc.etsii.grafo.iudex.utils.JSONConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +39,10 @@ class TestAPIAdminController {
     private MockMvc mockMvc;
     @MockBean
     private ResultService resultService;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private UserAndTeamService userAndTeamService;
 
     private Result result;
 
@@ -77,7 +83,7 @@ class TestAPIAdminController {
     @Test
     @DisplayName("Get All Results")
     void testAPIGetAllResults() throws Exception {
-        String url = "/API/v1/result/";
+        String url = "/API/v1/result";
 
         String salida = "";
         HttpStatus status = HttpStatus.NOT_FOUND;

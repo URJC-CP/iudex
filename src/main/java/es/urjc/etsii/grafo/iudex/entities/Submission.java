@@ -20,7 +20,7 @@ public class Submission {
     private String filename;
     @ManyToOne
     private Problem problem;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submission", fetch = FetchType.EAGER)
     private Set<Result> results;
 
     private boolean corregido;
@@ -112,6 +112,7 @@ public class Submission {
         submissionAPI.setTeam(this.team.toTeamAPISimple());
         submissionAPI.setResultado(this.result);
         submissionAPI.setTimestamp(this.timestamp);
+        submissionAPI.setProblem(this.getProblem().toProblemAPISimple());
         return submissionAPI;
     }
 

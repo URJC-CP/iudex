@@ -21,6 +21,7 @@ public class ResultAPI {
 
     private LanguageAPI language;
     private long timestamp;
+    private SubmissionAPI submission;
 
     public Long getId() {
         return id;
@@ -100,5 +101,13 @@ public class ResultAPI {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public SubmissionAPI getSubmission() {
+        return submission;
+    }
+
+    public void setSubmission(SubmissionAPI submission) {
+        this.submission = submission;
     }
 }

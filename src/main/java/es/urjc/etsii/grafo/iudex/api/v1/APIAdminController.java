@@ -2,6 +2,8 @@ package es.urjc.etsii.grafo.iudex.api.v1;
 
 import es.urjc.etsii.grafo.iudex.entities.Result;
 import es.urjc.etsii.grafo.iudex.services.ResultService;
+import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
+import es.urjc.etsii.grafo.iudex.services.UserService;
 import es.urjc.etsii.grafo.iudex.utils.Sanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,9 +20,13 @@ import java.util.List;
 public class APIAdminController {
 
     final ResultService resultService;
+    private final UserService userService;
+    private final UserAndTeamService userAndTeamService;
 
-    public APIAdminController(ResultService resultService) {
+    public APIAdminController(ResultService resultService, UserService userService, UserAndTeamService userAndTeamService) {
         this.resultService = resultService;
+        this.userService = userService;
+        this.userAndTeamService = userAndTeamService;
     }
 
     @Operation(summary = "Get a full Result", security = @SecurityRequirement(name = "Bearer"))
@@ -37,7 +43,7 @@ public class APIAdminController {
     }
 
     @Operation( summary = "Get all Results", security = @SecurityRequirement(name = "Bearer"))
-    @GetMapping("/API/v1/result/")
+    @GetMapping("/API/v1/result")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<Result>> getAllResult() {
         List<Result> resultList = resultService.getAllResults();

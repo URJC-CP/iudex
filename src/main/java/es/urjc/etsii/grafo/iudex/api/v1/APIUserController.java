@@ -12,6 +12,7 @@ import es.urjc.etsii.grafo.iudex.services.UserAndTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -142,6 +143,17 @@ public class APIUserController {
         User user = optionalUser.get();
         List<Contest> contests = userAndTeamService.getCreatedContests(user);
         return ResponseEntity.ok(contests.stream().map(Contest::toContestAPISimple).toList());
+    }
+
+    @Operation( summary = "Get all Users", security = @SecurityRequirement(name = "Bearer"))
+    @GetMapping("/API/v1/user")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<UserAPI>> getAllUsers() {
+        List<UserAPI> userList = userAndTeamService.getAllUsers();
+        if (userList == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
 }

@@ -47,12 +47,14 @@ public class Result {
 
     private String maxMemory;
     private String maxTimeout;
+    @ManyToOne
+    private Submission submission;
 
     public Result() {
-        this(null, null, null, null, "10", "100");
+        this(null, null, null, null, "10", "100", null);
     }
 
-    public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory) {
+    public Result(Sample datos, String codigo, Language language, String fileName, String maxtimeout, String maxMemory, Submission submission) {
         this.codigo = codigo;
         this.sample = datos;
         this.salidaEstandar = "";
@@ -79,6 +81,7 @@ public class Result {
         resultAPI.setResultadoRevision(this.resultadoRevision);
         resultAPI.setLanguage(this.language.toLanguageAPI());
         resultAPI.setTimestamp(this.timestamp);
+        resultAPI.setSubmission(this.submission.toSubmissionAPISimple());
         return resultAPI;
     }
 
@@ -266,5 +269,9 @@ public class Result {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Submission getSubmission() {
+        return submission;
     }
 }
