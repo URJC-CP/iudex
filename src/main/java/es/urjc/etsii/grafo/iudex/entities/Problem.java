@@ -22,7 +22,7 @@ public class Problem {
     @Column(unique = true)
     private String nombreEjercicio;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Sample> datos;
 
     @OneToMany(cascade = CascadeType.ALL)
