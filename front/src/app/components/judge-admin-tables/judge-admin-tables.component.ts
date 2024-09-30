@@ -165,7 +165,7 @@ export class JudgeAdminTablesComponent {
     this.cols = [];
     this.submissionData = [];
     this.title = this.translate.instant("Submissions");
-    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'team' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.submissionService.getAllSubmissions("", "").subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
@@ -194,7 +194,7 @@ export class JudgeAdminTablesComponent {
     this.cols = [];
     this.resultData = [];
     this.title = this.translate.instant("Results");
-    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'submission' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.adminService.getAllResults().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
