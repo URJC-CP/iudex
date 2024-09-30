@@ -5,15 +5,16 @@
   </div>
   <div class="col-6 card flex flex-column justify-content-center">
     <div class="flex align-items-center justify-content-center">
-      <p>{{ 'ChangeLang' | translate }}</p>
-    </div>
+      <p style="margin-right: 10px;">{{ 'ChangeLang' | translate }} </p>
+    
     <div class="flex align-items-center justify-content-center">
       <p-button styleClass="p-0" (onClick)="changeLang('es')" *ngIf="currentLang=='en'">
-        <img class="m-0" src="assets/images/spain.png" height="30" width="45" />
+        <img class="m-0" src="assets/images/spain.png" alt="Flag of Spain" height="30" width="45" />
       </p-button>
       <p-button styleClass="p-0" (onClick)="changeLang('en')" *ngIf="currentLang=='es'">
-        <img class="m-0" src="assets/images/england.png" height="30" width="45" />
+        <img class="m-0" src="assets/images/england.png" alt="Flag of England" height="30" width="45" />
       </p-button>
     </div>
+  </div>
   </div>
 </div>
