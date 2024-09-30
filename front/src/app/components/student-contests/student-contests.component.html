@@ -30,8 +30,8 @@
 <div class="grid align-content-center pt-3 mx-8">
     <p-card class="col-4 font-bold text-center border-round" header="{{i.nombreContest}}" *ngFor="let i of allContests">
         <p>
-            {{ 'Start' | translate }}: {{i.startDateTime | date: 'dd-MM-yyyy'}} <br> {{ 'End' | translate }}:
-            {{i.endDateTime | date: 'dd-MM-yyyy'}}
+            {{ 'Start' | translate }}: {{i.startDateTime | date: 'dd-MM-yyyy HH:mm'}} <br> {{ 'End' | translate }}:
+            {{i.endDateTime | date: 'dd-MM-yyyy HH:mm'}}
         </p>
         <p-button label="{{ 'GoContest' | translate }}" severity="success" (click)="redirect(i.id)"></p-button>
     </p-card>
