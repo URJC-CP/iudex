@@ -5,7 +5,6 @@ import { SubmissionDTO } from "./submission.dto";
 export interface ResultDTO {
   id: number;
   codigo?: string;
-  submission: SubmissionDTO;
   sample?: SampleDTO;
   salidaEstandar?: string;
   salidaError?: string;

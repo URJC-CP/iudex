@@ -47,8 +47,6 @@ public class Result {
 
     private String maxMemory;
     private String maxTimeout;
-    @ManyToOne
-    private Submission submission;
 
     public Result() {
         this(null, null, null, null, "10", "100", null);
@@ -81,7 +79,6 @@ public class Result {
         resultAPI.setResultadoRevision(this.resultadoRevision);
         resultAPI.setLanguage(this.language.toLanguageAPI());
         resultAPI.setTimestamp(this.timestamp);
-        resultAPI.setSubmission(this.submission.toSubmissionAPISimple());
         return resultAPI;
     }
 
@@ -271,7 +268,4 @@ public class Result {
         return Objects.hash(id);
     }
 
-    public Submission getSubmission() {
-        return submission;
-    }
 }
