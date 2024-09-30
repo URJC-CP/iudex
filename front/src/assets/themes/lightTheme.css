@@ -9,7 +9,7 @@
     --text-color-secondary: #303030;
     --primary-color: #cb0017;
     --primary-color-text: #ffffff;
-    --font-family: Lato, Helvetica, sans-serif;
+    --font-family: Inter, Helvetica, sans-serif;
     --surface-0: #ffffff;
     --surface-50: #f1f4f6;
     --surface-100: #e2e8ee;
@@ -48,24 +48,24 @@
 }
 
 @font-face {
-    font-family: "Lato";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 300;
-    src: local("Lato Light"), local("Lato-Light"), url("../fonts/Lato-Light.ttf") format("ttf")
+    src: local("Inter Light"), local("Inter-Light"), url("../fonts/Inter-Light.ttf") format("ttf")
 }
 
 @font-face {
-    font-family: "Lato";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 400;
-    src: local("Lato Regular"), local("Lato-Regular"), url("../fonts/Lato-Regular.ttf") format("ttf")
+    src: local("Inter Regular"), local("Inter-Regular"), url("../fonts/Inter-Regular.ttf") format("ttf")
 }
 
 @font-face {
-    font-family: "Lato";
+    font-family: "Inter";
     font-style: normal;
     font-weight: 700;
-    src: local("Lato Bold"), local("Lato-Bold"), url("../fonts/Lato-Bold.ttf") format("ttf")
+    src: local("Inter Bold"), local("Inter-Bold"), url("../fonts/Inter-Bold.ttf") format("ttf")
 }
 
 * {
@@ -73,7 +73,7 @@
 }
 
 .p-component {
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: Inter, Helvetica, sans-serif;
     font-size: 1rem;
     font-weight: normal
 }
@@ -107,7 +107,7 @@
 
 .p-link {
     font-size: 1rem;
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: Inter, Helvetica, sans-serif;
     border-radius: 15px
 }
 
@@ -297,7 +297,7 @@
 }
 
 .p-autocomplete .p-autocomplete-multiple-container .p-autocomplete-input-token input {
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: Inter, Helvetica, sans-serif;
     font-size: 1rem;
     color: #272727;
     padding: 0;
@@ -887,7 +887,7 @@ p-checkbox.ng-dirty.ng-invalid>.p-checkbox>.p-checkbox-box {
 }
 
 .p-chips .p-chips-multiple-container .p-chips-input-token input {
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: Inter, Helvetica, sans-serif;
     font-size: 1rem;
     color: #272727;
     padding: 0;
@@ -1350,7 +1350,7 @@ p-inputswitch.ng-dirty.ng-invalid>.p-inputswitch {
 }
 
 .p-inputtext {
-    font-family: Lato, Helvetica, sans-serif;
+    font-family: Inter, Helvetica, sans-serif;
     font-size: 1rem;
     color: #272727;
     background: #1d1e27;
@@ -7686,7 +7686,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 
 .p-terminal .p-terminal-input {
     font-size: 1rem;
-    font-family: Lato, Helvetica, sans-serif
+    font-family: Inter, Helvetica, sans-serif
 }
 
 .p-carousel .p-carousel-indicators .p-carousel-indicator.p-highlight button {
