@@ -52,7 +52,14 @@ export class FooterComponent {
     this.translate.use(lang);
     localStorage.setItem('lang', lang);
     this.currentLang = lang;
+  }
 
+  getImage() {
+    if (this.themeService.getTheme() == "darkTheme") {
+      return "assets/images/logoURJCBlanco.png";
+    } else {
+      return "assets/images/logoURJC.png";
+    }
   }
 
 }
