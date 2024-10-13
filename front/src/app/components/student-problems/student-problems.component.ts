@@ -44,10 +44,10 @@ export class StudentProblemsComponent {
   }
 
   messageIn() {
-    this.messageService.add({ key: 'tl', severity: 'success', summary: this.translate.instant("CopiedClipboard"), detail: this.translate.instant("InputCopiedCorrectly") });
+    this.messageService.add({ key: 'tl', severity: 'success', summary: this.translate.instant("CopiedClipboard"), detail: this.translate.instant("InputCopiedCorrect") });
   }
 
   messageOut() {
-    this.messageService.add({ key: 'tl', severity: 'success', summary: this.translate.instant("CopiedClipboard"), detail: this.translate.instant("OutputCopiedCorrectly") });
+    this.messageService.add({ key: 'tl', severity: 'success', summary: this.translate.instant("CopiedClipboard"), detail: this.translate.instant("OutputCopiedCorrect") });
   }
 }

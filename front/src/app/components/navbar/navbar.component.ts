@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { NavigationSkipped, NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { ContestService } from 'src/app/services/contest.service';
 import { OauthService } from 'src/app/services/oauth.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -39,8 +39,12 @@ export class NavbarComponent {
   minutes: number = 0;
   seconds: number = 0;
   difference: number = 0;
+  private langChangeSubscription: Subscription;
 
-  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService, public translate: TranslateService) {
+  constructor(private router: Router, private contestService: ContestService, private userService: UserService, private oauthService: OauthService, private themeService: ThemeService, public translate: TranslateService, private cdr: ChangeDetectorRef) {
+    this.router.routeReuseStrategy.shouldReuseRoute = function () {
+      return false;
+    };
   }
 
   async ngOnInit() {
@@ -50,65 +54,74 @@ export class NavbarComponent {
         const translation = await firstValueFrom(this.translate.get('Name'));
 
         if (event instanceof NavigationStart) {
-          this.buttons = [];
-          this.items = [{
-            label: this.translate.instant("Logout"),
-            icon: 'pi pi-times',
-            command: () => {
-              this.logout();
-            }
-          },];
-          if (!event.url.endsWith("/")) {
-            // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
-            this.userService.getCurrentUser().subscribe((data) => {
-              this.username = data.nickname!;
-              this.roles = data.roles!;
-
-              if (this.roles.includes("ROLE_ADMIN")) {
-                this.userType = "admin";
-              } else if (this.roles.includes("ROLE_JUDGE")) {
-                this.userType = "judge";
-              } else if (this.roles.includes("ROLE_USER")) {
-                this.userType = "student";
-              }
-            });
-          }
-          if (event.url.endsWith("/student")) {
-            this.loaded = false;
-            this.pageType = "studentHome";
-            this.studentHomeIcons();
-          }
-          else if (event.url.startsWith("/student") && !event.url.endsWith("/student")) {
-            this.loaded = false;
-            this.pageType = "student";
-            this.contestId = event.url[17];
-            this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
-              this.contestName = data.nombreContest!;
-              this.contestEnd = new Date(data.endDateTime!);
-              this.calculateTime();
-              this.studentIcons();
-            });
-          }
-          else if (event.url.startsWith("/judge")) {
-            this.loaded = false;
-            this.pageType = "judge";
-            this.contestService.getAllContests().subscribe((data) => {
-              if (data.length == 0) {
-                this.contestId = "0";
-              } else {
-                this.contestId = String(data[0].id);
-              }
-              this.judgeIcons();
-            });
-          }
-          else if (event.url.startsWith("/admin")) {
-            this.pageType = "admin";
-            this.adminIcons();
-          } else if (event.url.endsWith("/")) {
-            this.notHome = false;
-          }
+          this.init(event.url);
         }
       });
+
+    this.langChangeSubscription = this.translate.onLangChange.subscribe(() => {
+      this.init(this.router.url);
+    });
+  }
+
+  init(url: string) {
+    this.buttons = [];
+    this.items = [{
+      label: this.translate.instant("Logout"),
+      icon: 'pi pi-times',
+      command: () => {
+        this.logout();
+      }
+    },];
+    if (!url.endsWith("/")) {
+      // ASUMO QUE ADMINS SIEMPRE TIENEN TODOS LOS ROLES, Y QUE JUECES TIENEN SIEMPRE USER
+      this.userService.getCurrentUser().subscribe((data) => {
+        this.username = data.nickname!;
+        this.roles = data.roles!;
+
+        if (this.roles.includes("ROLE_ADMIN")) {
+          this.userType = "admin";
+        } else if (this.roles.includes("ROLE_JUDGE")) {
+          this.userType = "judge";
+        } else if (this.roles.includes("ROLE_USER")) {
+          this.userType = "student";
+        }
+      });
+    }
+    if (url.endsWith("/student")) {
+      this.loaded = false;
+      this.pageType = "studentHome";
+      this.studentHomeIcons();
+    }
+    else if (url.startsWith("/student") && !url.endsWith("/student")) {
+      this.loaded = false;
+      this.pageType = "student";
+      this.contestId = url.slice(17, url.indexOf("/", 17));
+      this.contestService.getSelectedContest(this.contestId).subscribe((data) => {
+        this.contestName = data.nombreContest!;
+        this.contestEnd = new Date(data.endDateTime!);
+        this.calculateTime();
+        this.studentIcons();
+      });
+    }
+    else if (url.startsWith("/judge")) {
+      this.loaded = false;
+      this.pageType = "judge";
+      this.contestService.getAllContests().subscribe((data) => {
+        if (data.length == 0) {
+          this.contestId = "0";
+        } else {
+          this.contestId = String(data[0].id);
+        }
+        this.judgeIcons();
+      });
+    }
+    else if (url.startsWith("/admin")) {
+      this.pageType = "admin";
+      this.adminIcons();
+    } else if (url.endsWith("/")) {
+      this.notHome = false;
+    }
+
   }
 
   async studentHomeIcons() {
@@ -256,6 +269,12 @@ export class NavbarComponent {
       return "assets/images/logo2.svg";
     } else {
       return "assets/images/logo2Black.svg";
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.langChangeSubscription) {
+      this.langChangeSubscription.unsubscribe();
     }
   }
 
