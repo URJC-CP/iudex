@@ -53,6 +53,7 @@ export class AuthInterceptorService implements HttpInterceptor {
         return next.handle(req);
       }), catchError(error => {
         this.oauthService.logout(); // TODO review and prob change this, maybe leave as not logged in front page?
+        window.location.href = "/";
         return throwError(() => error);
       })
     );

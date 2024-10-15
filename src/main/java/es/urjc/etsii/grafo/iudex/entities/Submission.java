@@ -20,7 +20,7 @@ public class Submission {
     private String filename;
     @ManyToOne
     private Problem problem;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "submission", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Result> results;
 
     private boolean corregido;

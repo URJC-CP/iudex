@@ -16,7 +16,7 @@ interface Column {
 }
 
 interface Data {
-  id: string;
+  id: number;
 }
 
 interface DataContest extends Data {
@@ -140,7 +140,7 @@ export class JudgeAdminTablesComponent {
       for (let i = 0; i < data.length; i++) {
         var start = new Date(data[i].startDateTime).toLocaleString();
         var end = new Date(data[i].endDateTime).toLocaleString();
-        this.contestData.push({ id: data[i].id, name: data[i].nombreContest, desc: data[i].descripcion, owner: data[i].teamPropietario.nombreEquipo, start: start, end: end });
+        this.contestData.push({ id: +data[i].id, name: data[i].nombreContest, desc: data[i].descripcion, owner: data[i].teamPropietario.nombreEquipo, start: start, end: end });
       }
       this.loaded = true;
     });
@@ -154,7 +154,7 @@ export class JudgeAdminTablesComponent {
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("TL"), field: 'timeLim' }, { header: this.translate.instant("ML"), field: 'memLim' }, { header: this.translate.instant("CasesNum"), field: 'cases' }, { header: this.translate.instant("ContestsNum"), field: 'contests' }, { header: this.translate.instant("SubmissionsNum"), field: 'submissions' });
     this.problemService.getAllProblems().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
-        this.problemData.push({ id: data[i].id.toString(), name: data[i].nombreEjercicio, timeLim: data[i].timeout, memLim: data[i].memoryLimit, cases: data[i].samples.length.toString(), contests: data[i].numContest.toString(), submissions: data[i].submissions.length.toString() });
+        this.problemData.push({ id: data[i].id, name: data[i].nombreEjercicio, timeLim: data[i].timeout, memLim: data[i].memoryLimit, cases: data[i].samples.length.toString(), contests: data[i].numContest.toString(), submissions: data[i].submissions.length.toString() });
       }
       this.loaded = true;
     });
@@ -165,11 +165,11 @@ export class JudgeAdminTablesComponent {
     this.cols = [];
     this.submissionData = [];
     this.title = this.translate.instant("Submissions");
-    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Team"), field: 'team' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.submissionService.getAllSubmissions("", "").subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
-        this.submissionData.push({ id: data[i].id.toString(), time: time, team: data[i].team.nombreEquipo, problem: data[i].problem.nombreEjercicio, lang: data[i].language.nombreLenguaje, result: data[i].resultado });
+        this.submissionData.push({ id: data[i].id, time: time, team: data[i].team.nombreEquipo, problem: data[i].problem.nombreEjercicio, lang: data[i].language.nombreLenguaje, result: data[i].resultado });
       }
       this.loaded = true;
     });
@@ -183,7 +183,7 @@ export class JudgeAdminTablesComponent {
     this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Username"), field: 'username' }, { header: this.translate.instant("Name"), field: 'name' }, { header: this.translate.instant("Roles"), field: 'roles' });
     this.userService.getAllUsers().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
-        this.userData.push({ id: data[i].id.toString(), username: data[i].nickname, name: data[i].name, roles: data[i].rolesString });
+        this.userData.push({ id: data[i].id, username: data[i].nickname, name: data[i].name, roles: data[i].rolesString });
       }
       this.loaded = true;
     });
@@ -194,19 +194,19 @@ export class JudgeAdminTablesComponent {
     this.cols = [];
     this.resultData = [];
     this.title = this.translate.instant("Results");
-    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'time' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
+    this.cols.push({ header: this.translate.instant("Id"), field: 'id' }, { header: this.translate.instant("Time"), field: 'time' }, { header: this.translate.instant("Submission"), field: 'submission' }, { header: this.translate.instant("Problem"), field: 'problem' }, { header: this.translate.instant("Language"), field: 'lang' }, { header: this.translate.instant("Result"), field: 'result' });
     this.adminService.getAllResults().subscribe((data) => {
       for (let i = 0; i < data.length; i++) {
         var time = new Date(data[i].timestamp).toLocaleString();
         // this.resultData.push({ id: data[i].id.toString(), time: time, submission: data[i].submission.id.toString(), problem: data[i].submission.problem.id.toString(), lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
-        this.resultData.push({ id: data[i].id.toString(), time: time, lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
+        this.resultData.push({ id: data[i].id, time: time, lang: data[i].language.nombreLenguaje, result: data[i].resultadoRevision });
       }
       this.loaded = true;
     });
     this.data = this.resultData;
   }
 
-  delete(id: string) {
+  delete(id: number) {
     if (this.type === "contest") {
       this.confirmationService.confirm({
         message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
@@ -214,7 +214,7 @@ export class JudgeAdminTablesComponent {
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
-          this.contestService.deleteContest(id).subscribe();
+          this.contestService.deleteContest(id.toString()).subscribe();
         }
       });
       this.contestData = this.contestData.filter((data) => data.id !== id);
@@ -227,7 +227,7 @@ export class JudgeAdminTablesComponent {
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
-          this.problemService.deleteProblem(id).subscribe();
+          this.problemService.deleteProblem(id.toString()).subscribe();
         }
       });
       this.problemData = this.problemData.filter((data) => data.id !== id);
@@ -240,7 +240,7 @@ export class JudgeAdminTablesComponent {
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
-          this.submissionService.deleteSubmission(id).subscribe();
+          this.submissionService.deleteSubmission(id.toString()).subscribe();
         }
       });
       this.submissionData = this.submissionData.filter((data) => data.id !== id);

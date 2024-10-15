@@ -95,7 +95,7 @@ export class StudentHomeComponent {
       this.contestService.getCurrentTeam(this.contestId, this.userId).subscribe((data) => {
         this.teamId = String(data.id!);
         this.contestService.getSubmissionsByContestAndTeam(this.contestId, this.teamId).subscribe((data) => {
-          for (let i = 0; i < data.length; i++) {
+          for (let i = data.length-1; i >= 0; i--) {
             let time = new Date(data[i].timestamp);
             let result = "";
             if (data[i].resultado == "accepted") { result = "AC" }

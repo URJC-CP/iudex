@@ -7,6 +7,7 @@ import es.urjc.etsii.grafo.iudex.pojos.TeamAPI;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Entity
@@ -115,6 +116,9 @@ public class Contest {
         ContestAPI contestAPI = new ContestAPI();
         contestAPI.setId(this.id);
         contestAPI.setNombreContest(this.nombreContest);
+        contestAPI.setStartDateTime(convertLocalDateTimeToMillis(this.startDateTime));
+        contestAPI.setEndDateTime(convertLocalDateTimeToMillis(this.endDateTime));
+
         return contestAPI;
     }
 

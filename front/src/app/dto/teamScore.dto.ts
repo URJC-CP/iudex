@@ -6,5 +6,5 @@ export interface TeamScoreDTO {
     team: TeamDTO;
     scoreList: ProblemScoreDTO[];
     score: number;
-    solvedProblems?: number;
+    solvedProblems: number;
 }

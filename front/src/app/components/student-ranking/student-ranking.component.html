@@ -52,7 +52,7 @@
             <tr>
                 <th colspan="1" style="width:10px">{{ 'Position' | translate }}</th>
                 <th colspan="1" style="width:10px">{{ 'Team' | translate }}</th>
-                <th colspan="1" style="width:10px">{{ 'Score' | translate }}</th>
+                <th colspan="1" style="width:12px">{{ 'Score' | translate }}</th>
                 <th></th>
                 <th class="text-center" *ngFor="let col of columns">
                     {{ col.header }}
@@ -63,7 +63,10 @@
             <tr>
                 <td class="text-center">{{scoreData.position}}</td>
                 <td>{{scoreData.team}}</td>
-                <td class="text-center">{{scoreData.score}}</td>
+                <td>
+                    <div style="float: left; font-weight: bold;">{{scoreData.solvedProblems}}</div>
+                    <div style="float: right;">{{scoreData.score}}</div>
+                </td>
                 <td></td>
                 <td class="text-center" *ngFor="let col of columns">
                     <div [ngStyle]="{'background-color': scoreData.problems.get(col.field).color, 'color': 'white'}"

@@ -20,6 +20,7 @@ interface problems {
 interface scores {
   position: string;
   team: string;
+  solvedProblems: number;
   score: string;
   problems: Map<String, problems>
 }
@@ -85,7 +86,7 @@ export class StudentRankingComponent {
           }
           map.set(String(scoreProblem.problem.id), { score: String(scoreProblem.score), tries: String(scoreProblem.tries), first: scoreProblem.first, color: color })
         });
-        this.scoreData.push({ position: String(i + 1), team: data[i].team?.nombreEquipo, score: String(data[i].score), problems: map })
+        this.scoreData.push({ position: String(i + 1), team: data[i].team?.nombreEquipo, solvedProblems: data[i].solvedProblems, score: String(data[i].score), problems: map })
         if (i == data.length - 1) {
           this.loaded = true;
         }

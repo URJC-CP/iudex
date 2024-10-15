@@ -90,7 +90,7 @@ export class SubmitButtonComponent {
       this.submissionService.createSubmission(this.uploadedFile, this.contestId, this.selectedLang.id, this.selProblem.id, this.teamId).subscribe();
     } else {
       this.visible = true;
-      this.messageService.add({ key: 'tl', severity: 'error', summary: this.translate.instant("RequiredFields"), detail: this.translate.instant("MustCompleteFieldsSubmisssion") });
+      this.messageService.add({ key: 'tl', severity: 'error', summary: this.translate.instant("RequiredFields"), detail: this.translate.instant("MustCompleteFieldsSubmission") });
     }
 
   }
