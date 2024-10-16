@@ -27,6 +27,9 @@
                         {{scoreData.problems.get(col.field).tries}} {{scoreData.problems.get(col.field).tries === '1' ?
                         "try": "tries"}}
                     </div>
+                    <div
+                        class="mx-8 py-2" *ngIf="scoreData.problems.get(col.field).tries == 0">
+                    </div>
                 </td>
             </tr>
         </ng-template>

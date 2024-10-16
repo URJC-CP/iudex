@@ -209,41 +209,41 @@ export class JudgeAdminTablesComponent {
   delete(id: number) {
     if (this.type === "contest") {
       this.confirmationService.confirm({
-        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        message: this.translate.instant("deleteConf") + this.title.toLowerCase().slice(0, -1) + '?',
         header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
           this.contestService.deleteContest(id.toString()).subscribe();
+          this.contestData = this.contestData.filter((data) => data.id !== id);
         }
       });
-      this.contestData = this.contestData.filter((data) => data.id !== id);
       this.data = this.contestData;
     }
     else if (this.type === "problem") {
       this.confirmationService.confirm({
-        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        message: this.translate.instant("deleteConf") + this.title.toLowerCase().slice(0, -1) + '?',
         header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
           this.problemService.deleteProblem(id.toString()).subscribe();
+          this.problemData = this.problemData.filter((data) => data.id !== id);
         }
       });
-      this.problemData = this.problemData.filter((data) => data.id !== id);
       this.data = this.problemData;
     }
     else if (this.type === "submission") {
       this.confirmationService.confirm({
-        message: this.translate.instant("Are you sure you want to delete this ") + this.title + '?',
+        message: this.translate.instant("deleteConf") + this.title.toLowerCase().slice(0, -1) + '?',
         header: this.translate.instant("Confirmation"),
         icon: 'pi pi-exclamation-triangle',
         rejectButtonStyleClass: "p-button-outlined",
         accept: () => {
           this.submissionService.deleteSubmission(id.toString()).subscribe();
+          this.submissionData = this.submissionData.filter((data) => data.id !== id);
         }
       });
-      this.submissionData = this.submissionData.filter((data) => data.id !== id);
       this.data = this.submissionData;
     }
   }

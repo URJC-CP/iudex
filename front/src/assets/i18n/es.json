@@ -86,5 +86,6 @@
   "SubmitCode": "Enviar código al concurso ",
   "SelectSubmissionLang": "Elige el lenguaje de envío",
   "UploadFile": "Subir archivo",
-  "ChangeLang": "Cambiar idioma:"
+  "ChangeLang": "Cambiar idioma:",
+  "deleteConf": "¿Estás seguro de que quieres eliminar este "
 }

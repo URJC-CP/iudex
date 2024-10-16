@@ -72,7 +72,7 @@ export class StudentHomeComponent {
   themes: Theme[] = [{ name: 'vs' }, { name: 'vs-dark' }, { name: 'hc-black' }];
   problems: ProblemName[] = [];
   selProblem: ProblemName | undefined;
-  teamId: string = '1';
+  teamId: string;
   userId: string;
 
   problemScore!: TeamScoreDTO[];
@@ -88,14 +88,14 @@ export class StudentHomeComponent {
   }
 
   ngOnInit() {
-    this.loadScoreboard();
     this.loaded = false;
     this.userService.getCurrentUser().subscribe((data) => {
       this.userId = String(data.id!);
       this.contestService.getCurrentTeam(this.contestId, this.userId).subscribe((data) => {
         this.teamId = String(data.id!);
+        this.loadScoreboard();
         this.contestService.getSubmissionsByContestAndTeam(this.contestId, this.teamId).subscribe((data) => {
-          for (let i = data.length-1; i >= 0; i--) {
+          for (let i = data.length - 1; i >= 0; i--) {
             let time = new Date(data[i].timestamp);
             let result = "";
             if (data[i].resultado == "accepted") { result = "AC" }
@@ -109,7 +109,7 @@ export class StudentHomeComponent {
               language: data[i].language.nombreLenguaje,
               result: result
             });
-            if (i == data.length - 1) {
+            if (i == 0) {
               this.loaded = true;
             }
           }

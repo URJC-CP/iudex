@@ -49,6 +49,7 @@ public class Problem {
     private String ownerRights;
     private String hashString;
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] documento;
     private String validation;
     private String validationFlags;

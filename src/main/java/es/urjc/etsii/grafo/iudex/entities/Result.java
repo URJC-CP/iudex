@@ -14,6 +14,7 @@ public class Result {
     private long id;
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String codigo;
 
     @ManyToOne

@@ -16,6 +16,7 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String codigo;
     private String filename;
     @ManyToOne

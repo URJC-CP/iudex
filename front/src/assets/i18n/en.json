@@ -86,5 +86,6 @@
   "SubmitCode": "Submit code to contest ",
   "SelectSubmissionLang": "Select submission language",
   "UploadFile": "Upload file",
-  "ChangeLang": "Change language:"
+  "ChangeLang": "Change language:",
+  "deleteConf": "Are you sure you want to delete this "
 }
