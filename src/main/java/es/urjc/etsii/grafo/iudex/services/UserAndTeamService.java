@@ -172,6 +172,7 @@ public class UserAndTeamService {
             TeamUser teamUser = new TeamUser(team,user,LocalDateTime.now());
             team.addUserToTeam(teamUser);
             teamRepository.save(teamUser.getTeam());
+            userTeamRespository.save(teamUser);
             logger.debug("Finish add user {} to team {} ", user.getId(), team.getId());
             return "OK";
         }
