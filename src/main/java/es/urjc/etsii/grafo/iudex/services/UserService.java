@@ -91,7 +91,9 @@ public class UserService {
         userAndTeamService.addUserToTeam(team, user);
 
         Contest contest = contestService.getContestByName("contestPrueba").orElseThrow();
-        contestService.addTeamToContest(String.valueOf(contest.getId()), String.valueOf(team.getId()));
+        String s = contestService.addTeamToContest(String.valueOf(contest.getId()), String.valueOf(team.getId()));
+
+        System.out.println(s);
     }
 
     public String prepareForLogin(OAuth2User oAuth2User) {

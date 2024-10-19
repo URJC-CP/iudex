@@ -32,7 +32,7 @@ public class Team {
     @OneToMany(mappedBy = "teams")
     private Set<TeamsProblems> listaProblemsParticipados;
 
-    @OneToMany(mappedBy = "teams")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teams")
     private Set<ContestTeams> listaContestsParticipados;
 
     @OneToMany(mappedBy = "teams")
