@@ -39,6 +39,7 @@ Los trabajos realizados sobre iudex se pueden observar en los siguientes enlaces
 * [4. Interfaz Web (2022)](https://github.com/URJC-CP/iudex/blob/master/docs/4.%20Interfaz%20Web.pdf)
 * [5. Nuevas funcionaliades.pdf (2023)](https://github.com/URJC-CP/iudex/blob/master/docs/5.%20Nuevas%20funcionalidades.pdf)
 * [6. Pruebas automáticas.pdf (2024)](https://github.com/URJC-CP/iudex/blob/master/docs/6.%20Pruebas%20automaticas.pdf)
+* [7. Nueva interfaz web.pdf (2024)](https://github.com/URJC-CP/iudex/blob/master/docs/7.%20Nueva%20interfaz%20web.pdf)
 
 Estructura del proyecto de GitHub
 -------------
